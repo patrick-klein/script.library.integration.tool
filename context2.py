@@ -1,4 +1,10 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
+'''
+This module gets called from the context menu item "Sync directory to library" (32001).
+The purpose is to stage all movies/tvshows in the current directory, and update synced.pkl
+'''
 
 import sys
 import xbmc
@@ -10,24 +16,30 @@ import simplejson as json
 from resources.lib.contentitem import MovieItem, EpisodeItem
 from resources.lib.utils import log_msg, get_items, save_items
 
-# Display an error is user hasn't configured managed folder yet
-if not xbmcaddon.Addon().getSetting('managed_folder'):
-    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(32122))
-    log_msg('No managed folder!', xbmc.LOGERROR)
-    sys.exit()
 
 if __name__ == '__main__':
     #TODO: add recursive option
-    #TODO: have piracy addons be in default blocked plugins, rick roll pirates that deleted blocked items... but only half the time
+    #TODO: have piracy ADDONs be in default blocked plugins, rick roll pirates that deleted blocked items... but only half the time
 
     addon = xbmcaddon.Addon()
-    str_addon_name = addon.getAddonInfo('name')
-    str_choose_content_type = addon.getLocalizedString(32100)
-    str_tv_shows = addon.getLocalizedString(32108)
-    str_movies = addon.getLocalizedString(32109)
-    str_already_synced = addon.getLocalizedString(32110)
-    str_i_movies_staged = addon.getLocalizedString(32111)
-    str_i_episodes_staged = addon.getLocalizedString(32111)
+    STR_ADDON_NAME = addon.getAddonInfo('name')
+
+    # Display an error is user hasn't configured managed folder yet
+    if not addon.getSetting('managed_folder'):
+        STR_CHOOSE_FOLDER = addon.getLocalizedString(32123)
+        xbmc.executebuiltin(
+            'Notification("{0}", "{1}")'.format(
+                STR_ADDON_NAME, STR_CHOOSE_FOLDER))
+        log_msg('No managed folder!', xbmc.LOGERROR)
+        sys.exit()
+
+    # define localized strings for readability
+    STR_CHOOSE_CONTENT_TYPE = addon.getLocalizedString(32100)
+    STR_TV_SHOWS = addon.getLocalizedString(32108)
+    STR_MOVIES = addon.getLocalizedString(32109)
+    STR_ALREADY_SYNCED = addon.getLocalizedString(32110)
+    STR_i_MOVIES_STAGED = addon.getLocalizedString(32111)
+    STR_i_EPISODES_STAGED = addon.getLocalizedString(32111)
 
     # get content type
     container_type = xbmc.getInfoLabel('Container.Content')
@@ -36,8 +48,9 @@ if __name__ == '__main__':
         content_type = "movie"
     else:
         # ask user otherwise
-        is_show = xbmcgui.Dialog().yesno(str_addon_name, str_choose_content_type,
-            yeslabel=str_tv_shows, nolabel=str_movies)
+        is_show = xbmcgui.Dialog().yesno(
+            STR_ADDON_NAME, STR_CHOOSE_CONTENT_TYPE,
+            yeslabel=STR_TV_SHOWS, nolabel=STR_MOVIES)
         if is_show:
             content_type = 'tvshow'
         else:
@@ -47,7 +60,8 @@ if __name__ == '__main__':
     synced_dirs = get_items('synced.pkl')
     current_dir = {'dir':xbmc.getInfoLabel('Container.FolderPath'), 'mediatype':content_type}
     if current_dir in synced_dirs:
-        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_already_synced))
+        xbmc.executebuiltin(
+            'Notification("{0}", "{1}")'.format(STR_ADDON_NAME, STR_ALREADY_SYNCED))
     else:
         synced_dirs.append(current_dir)
     save_items('synced.pkl', synced_dirs)
@@ -55,11 +69,13 @@ if __name__ == '__main__':
 
     # query json-rpc to get files in directory
     # TODO: try xbmcvfs.listdir(path) instead
-    results = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % current_dir['dir'])
+    results = xbmc.executeJSONRPC(
+        '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
+        "params": {"directory":"%s"}, "id": 1}' % current_dir['dir'])
     dir_items = json.loads(results)["result"]["files"]
     log_msg('dir_items: %s' % dir_items, xbmc.LOGNOTICE)
 
-    if content_type=='movie':
+    if content_type == 'movie':
 
         # loop through all items and get titles and paths and stage them
         staged_items = get_items('staged.pkl')
@@ -86,7 +102,9 @@ if __name__ == '__main__':
             items_to_stage.append(item)
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
-        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_i_movies_staged % len(items_to_stage)))
+        xbmc.executebuiltin(
+            'Notification("{0}", "{1}")'.format(
+                STR_ADDON_NAME, STR_i_MOVIES_STAGED % len(items_to_stage)))
 
 
     elif content_type=='tvshow':
@@ -103,11 +121,14 @@ if __name__ == '__main__':
         for ditem in dir_items:
             # get name of show and skip if blocked
             tvshow_label = ditem['label']
-            if tvshow_label in blocked_shows or any(x in tvshow_label.lower() for x in blocked_keywords):
+            if tvshow_label in blocked_shows or \
+                any(x in tvshow_label.lower() for x in blocked_keywords):
                 continue
             # get everything inside tvshow path
             tvshow_path = ditem['file']
-            results = json.loads(xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % tvshow_path))
+            results = json.loads(xbmc.executeJSONRPC(
+                '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
+                "params": {"directory":"%s"}, "id": 1}' % tvshow_path))
             if not results.has_key('result'):
                 continue
             if not results["result"].has_key('files'):
@@ -121,11 +142,14 @@ if __name__ == '__main__':
                     continue
                 elif path in managed_paths:
                     continue
-                elif label in blocked_episodes or any(x in tvshow_label.lower() for x in blocked_keywords):
+                elif label in blocked_episodes or \
+                    any(x in tvshow_label.lower() for x in blocked_keywords):
                     continue
                 item = EpisodeItem(path, shitem['label'], content_type, tvshow_label)
                 items_to_stage.append(item)
         # add all items from all shows to stage list
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
-        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_i_episodes_staged % len(items_to_stage)))
+        xbmc.executebuiltin(
+            'Notification("{0}", "{1}")'.format(
+                STR_ADDON_NAME, STR_i_EPISODES_STAGED % len(items_to_stage)))

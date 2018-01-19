@@ -1,7 +1,12 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
+'''
+This module gets called from the context menu item "Add selected item to library" (32000).
+The purpose is to stage the currently selected movie/tvshow, and update synced.pkl.
+'''
 
 import sys
-import os
 import xbmc
 import xbmcgui
 import xbmcaddon
@@ -11,46 +16,51 @@ import simplejson as json
 from resources.lib.contentitem import MovieItem, EpisodeItem
 from resources.lib.utils import log_msg, get_items, save_items
 
-# Display an error is user hasn't configured managed folder yet
-if not xbmcaddon.Addon().getSetting('managed_folder'):
-    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(32122))
-    log_msg('No managed folder!', xbmc.LOGERROR)
-    sys.exit()
-
 if __name__ == '__main__':
     #TODO: don't add items already in library
 
     addon = xbmcaddon.Addon()
-    str_addon_name = addon.getAddonInfo('name')
-    str_choose_content_type = addon.getLocalizedString(32100)
-    str_tv_show = addon.getLocalizedString(32101)
-    str_movie = addon.getLocalizedString(32102)
-    str_item_is_already_staged = addon.getLocalizedString(32103)
-    str_item_is_already_managed = addon.getLocalizedString(32104)
-    str_movie_staged = addon.getLocalizedString(32105)
-    str_i_new_episodes_i_already_staged_i_aleady_managed = addon.getLocalizedString(32106)
-    str_i_new_episodes_staged = addon.getLocalizedString(32107)
+    STR_ADDON_NAME = addon.getAddonInfo('name')
+
+    # Display an error is user hasn't configured managed folder yet
+    if not addon.getSetting('managed_folder'):
+        STR_CHOOSE_FOLDER = addon.getLocalizedString(32123)
+        xbmc.executebuiltin(
+            'Notification("{0}", "{1}")'.format(
+                STR_ADDON_NAME, STR_CHOOSE_FOLDER))
+        log_msg('No managed folder!', xbmc.LOGERROR)
+        sys.exit()
+
+    # define localized strings for readability
+    STR_CHOOSE_CONTENT_TYPE = addon.getLocalizedString(32100)
+    STR_TV_SHOW = addon.getLocalizedString(32101)
+    STR_MOVIE = addon.getLocalizedString(32102)
+    STR_ITEM_IS_ALREADY_STAGED = addon.getLocalizedString(32103)
+    STR_ITEM_IS_ALREADY_MANAGED = addon.getLocalizedString(32104)
+    STR_MOVIE_STAGED = addon.getLocalizedString(32105)
+    STR_i_NEW_i_STAGED_i_MANAGED = addon.getLocalizedString(32106)
+    STR_i_NEW = addon.getLocalizedString(32107)
 
     # get content type
     container_type = xbmc.getInfoLabel('Container.Content')
-    if container_type=='tvshows':
+    if container_type == 'tvshows':
         # if listitem is folder, it must be a tv show
         content_type = "tvshow"
-    elif container_type=='movies':
+    elif container_type == 'movies':
         # check if contents are movie
         content_type = "movie"
     else:
         # ask user otherwise
-        is_show = xbmcgui.Dialog().yesno(str_addon_name,
-            str_choose_content_type,
-            yeslabel=str_tv_show, nolabel=str_movie)
+        is_show = xbmcgui.Dialog().yesno(
+            STR_ADDON_NAME, STR_CHOOSE_CONTENT_TYPE,
+            yeslabel=STR_TV_SHOW, nolabel=STR_MOVIE)
         if is_show:
             content_type = 'tvshow'
         else:
             content_type = 'movie'
 
     # stage single item for movie
-    if content_type=='movie':
+    if content_type == 'movie':
 
         # get content info
         label = sys.listitem.getLabel()
@@ -72,18 +82,24 @@ if __name__ == '__main__':
 
         # check for duplicate
         if path in staged_paths:
-            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_item_is_already_staged))
+            xbmc.executebuiltin(
+                'Notification("{0}", "{1}")'.format(
+                    STR_ADDON_NAME, STR_ITEM_IS_ALREADY_STAGED))
         elif path in managed_paths:
-            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_item_is_already_managed))
+            xbmc.executebuiltin(
+                'Notification("{0}", "{1}")'.format(
+                    STR_ADDON_NAME, STR_ITEM_IS_ALREADY_MANAGED))
         else:
             # stage item
             item = MovieItem(path, label, content_type)
             staged_items.append(item)
             save_items('staged.pkl', staged_items)
-            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_movie_staged))
+            xbmc.executebuiltin(
+                'Notification("{0}", "{1}")'.format(
+                    STR_ADDON_NAME, STR_MOVIE_STAGED))
 
     # stage multiple episodes for tvshow
-    elif content_type=='tvshow':
+    elif content_type == 'tvshow':
         #TODO: progress bar
 
         # get name and path of tvshow
@@ -100,7 +116,9 @@ if __name__ == '__main__':
             log_msg('sync: %s' % show_dir)
 
         # get everything inside tvshow path
-        results = json.loads(xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % tvshow_path))
+        results = json.loads(xbmc.executeJSONRPC(
+            '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
+            "params": {"directory":"%s"}, "id": 1}' % tvshow_path))
         if results.has_key('result'):
             dir_items = results["result"]["files"]
         else:
@@ -137,7 +155,12 @@ if __name__ == '__main__':
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
 
-        if num_already_staged>0 or num_already_managed>0:
-            xbmc.executebuiltin('Notification("{0}", "{1}}")'.format(str_addon_name, str_i_new_episodes_i_already_staged_i_aleady_managed % (len(items_to_stage), num_already_staged, num_already_managed) ))
+        if num_already_staged > 0 or num_already_managed > 0:
+            xbmc.executebuiltin(
+                'Notification("{0}", "{1}")'.format(
+                    STR_ADDON_NAME, STR_i_NEW_i_STAGED_i_MANAGED % \
+                    (len(items_to_stage), num_already_staged, num_already_managed)))
         else:
-            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_i_new_episodes_staged % len(items_to_stage)))
+            xbmc.executebuiltin(
+                'Notification("{0}", "{1}")'.format(
+                    STR_ADDON_NAME, STR_i_NEW % len(items_to_stage)))
