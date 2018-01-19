@@ -467,3 +467,47 @@ msgstr ""
 msgctxt "#32112"
 msgid "All TV shows staged. %i episodes staged"
 msgstr ""
+
+msgctxt "#32113"
+msgid "Keyword"
+msgstr ""
+
+msgctxt "#32114"
+msgid "Episode"
+msgstr ""
+
+msgctxt "#32115"
+msgid "Single TV Show"
+msgstr ""
+
+msgctxt "#32116"
+msgid "Single Movie"
+msgstr ""
+
+msgctxt "#32117"
+msgid "General"
+msgstr ""
+
+msgctxt "#32118"
+msgid "Manged Folder"
+msgstr ""
+
+msgctxt "#32119"
+msgid "No blocked items"
+msgstr ""
+
+msgctxt "#32120"
+msgid "No synced directories"
+msgstr ""
+
+msgctxt "#32121"
+msgid "All items are up-to-date"
+msgstr ""
+
+msgctxt "#32122"
+msgid "All items were successfully updated.  Please clean library and review staged items."
+msgstr ""
+
+msgctxt "#32122"
+msgid "Choose managed folder in settings"
+msgstr ""

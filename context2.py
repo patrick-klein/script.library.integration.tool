@@ -10,6 +10,12 @@ import simplejson as json
 from resources.lib.contentitem import MovieItem, EpisodeItem
 from resources.lib.utils import log_msg, get_items, save_items
 
+# Display an error is user hasn't configured managed folder yet
+if not xbmcaddon.Addon().getSetting('managed_folder'):
+    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(32122))
+    log_msg('No managed folder!', xbmc.LOGERROR)
+    sys.exit()
+
 if __name__ == '__main__':
     #TODO: add recursive option
     #TODO: have piracy addons be in default blocked plugins, rick roll pirates that deleted blocked items... but only half the time
@@ -25,9 +31,6 @@ if __name__ == '__main__':
 
     # get content type
     container_type = xbmc.getInfoLabel('Container.Content')
-    #if container_type=='tvshows':
-    #    # if listitem is folder, it must be a tv show
-    #    content_type = "tvshow"
     if container_type=='movies':
         # check if contents are movie
         content_type = "movie"
@@ -48,7 +51,7 @@ if __name__ == '__main__':
     else:
         synced_dirs.append(current_dir)
     save_items('synced.pkl', synced_dirs)
-    log_msg('sync: %s' % current_dir, xbmc.LOGNOTICE)
+    log_msg('sync: %s' % current_dir)
 
     # query json-rpc to get files in directory
     # TODO: try xbmcvfs.listdir(path) instead
@@ -93,7 +96,7 @@ if __name__ == '__main__':
         staged_paths = [x.get_path() for x in staged_items]
         managed_paths = [x.get_path() for x in get_items('managed.pkl')]
         blocked_items = get_items('blocked.pkl')
-        blocked_shows = [x['label'] for x in blocked_items if x['type']=='show']
+        blocked_shows = [x['label'] for x in blocked_items if x['type']=='tvshow']
         blocked_episodes = [x['label'] for x in blocked_items if x['type']=='episode']
         blocked_keywords = [x['label'].lower() for x in blocked_items if x['type']=='keyword']
         items_to_stage = []

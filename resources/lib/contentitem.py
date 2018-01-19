@@ -3,18 +3,17 @@
 
 import os
 import sys
-import cPickle as pickle
 import xbmc
+import xbmcaddon
 
 from bs4 import BeautifulSoup
-
+import cPickle as pickle
 from fnmatch import fnmatch
 from glob import glob
 
-
 from utils import log_msg, get_items, save_items, clean
 
-managed_folder = '/Volumes/Drobo Media/LibraryTools/'
+managed_folder = xbmcaddon.Addon().getSetting('managed_folder')
 
 class ContentItem(object):
     #?TODO: remove mediatype from init now that there are subclasses
@@ -26,8 +25,11 @@ class ContentItem(object):
         #TODO: add parent folder and optional year param
         #TODO: move create_metadata_item to new stage() method
         self.path = path.encode('utf-8')
-        self.title = title.encode('utf-8')
         self.mediatype = mediatype.encode('utf-8')
+        try:
+            self.title = title.encode('utf-8')
+        except UnicodeEncodeError:
+            self.title = title.decode('utf-8').encode('utf-8')
 
     def __str__(self):
         return '[B]%s[/B] - [I]%s[/I]' % (self.title, self.path)
@@ -50,7 +52,7 @@ class ContentItem(object):
         raise NotImplementedError('ContentItem.rename_using_metadata() not implemented!')
 
     def rename(self, name):
-        raise NotImplementedError('ContentItem.rename_using_metadata(name) not implemented!')
+        raise NotImplementedError('ContentItem.rename(name) not implemented!')
 
     def add_to_managed_file(self):
         items = get_items('managed.pkl')
@@ -132,25 +134,29 @@ class EpisodeItem(ContentItem):
         return '[B]%s[/B] - [I]%s[/I]' % (self.title, self.path)
 
     def add_to_library(self):
-        #TODO: handle exception when no folder in metadata
+        #TODO: only add items with episode id in name
         # check if tvshow folder already exists
         self.rename_using_metadata()
         safe_showtitle = clean(self.show_title)
         metadata_dir = os.path.join(managed_folder, 'Metadata', 'TV', safe_showtitle)
         show_dir = os.path.join(managed_folder, 'ManagedTV', safe_showtitle)
-        # if not, create folder, and copy tvshow.nfo and artwork
-        if not os.path.exists(show_dir):
+        # if not, create folder in ManagedTV
+        if not os.path.isdir(show_dir):
             os.system('mkdir "%s"' % show_dir)
-            files = os.listdir(metadata_dir)
-            for fname in files:
-                if not (fnmatch(fname, '*[0-9]x[0-9]*') or fnmatch(fname, '*[Ss][0-9]*[Ee][0-9]*')):
-                    os.system( 'ln -s "{0}" "{1}"'.format(os.path.join(metadata_dir, fname), os.path.join(show_dir, fname)))
-        # link stream file and related thumb/nfo
+            if os.path.isdir(metadata_dir):
+                # link tvshow.nfo and artwork now, if metadata_dir exists
+                files = os.listdir(metadata_dir)
+                for fname in files:
+                    if not (fnmatch(fname, '*[0-9]x[0-9]*') or fnmatch(fname, '*[Ss][0-9]*[Ee][0-9]*')):
+                        os.system( 'ln -s "{0}" "{1}"'.format(os.path.join(metadata_dir, fname), os.path.join(show_dir, fname)))
+        # create stream file
         safe_title = clean(self.title)
         filepath = os.path.join(show_dir, safe_title+'.strm')
         os.system('echo "{0}" > "{1}"'.format(self.path, filepath) )
-        os.system('ln -s "{0}.nfo" "{1}"'.format(os.path.join(metadata_dir, safe_title), show_dir) )
-        os.system('ln -s "{0}-thumb.jpg" "{1}"'.format(os.path.join(metadata_dir, safe_title), show_dir) )
+        # link metadata for episode if it exists
+        if os.path.isdir(metadata_dir):
+            os.system('ln -s "{0}.nfo" "{1}"'.format(os.path.join(metadata_dir, safe_title), show_dir) )
+            os.system('ln -s "{0}-thumb.jpg" "{1}"'.format(os.path.join(metadata_dir, safe_title), show_dir) )
         # remove from staged, add to managed
         self.add_to_managed_file()
         self.remove_from_staged()
@@ -232,7 +238,7 @@ class EpisodeItem(ContentItem):
         safe_title = clean(self.title)
         metadata_dir = os.path.join(managed_folder, 'Metadata', 'TV', safe_showtitle)
         nfo_path = os.path.join(metadata_dir,  safe_title+'.nfo')
-        log_msg('nfo_path: %s' % nfo_path, xbmc.LOGNOTICE)
+        log_msg('nfo_path: %s' % nfo_path)
         # only rename if nfo file exists
         if os.path.exists(nfo_path):
             # open nfo file and get xml soup

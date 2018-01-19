@@ -11,9 +11,14 @@ import simplejson as json
 from resources.lib.contentitem import MovieItem, EpisodeItem
 from resources.lib.utils import log_msg, get_items, save_items
 
+# Display an error is user hasn't configured managed folder yet
+if not xbmcaddon.Addon().getSetting('managed_folder'):
+    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(xbmcaddon.Addon().getAddonInfo('name'), xbmcaddon.Addon().getLocalizedString(32122))
+    log_msg('No managed folder!', xbmc.LOGERROR)
+    sys.exit()
+
 if __name__ == '__main__':
     #TODO: don't add items already in library
-    #TODO: add "single movie" or "single tvshows" synced directory so they're correctly updated/pruned
 
     addon = xbmcaddon.Addon()
     str_addon_name = addon.getAddonInfo('name')
@@ -51,6 +56,15 @@ if __name__ == '__main__':
         label = sys.listitem.getLabel()
         path = sys.listitem.getPath()
 
+        # update synced file
+        synced_dirs = get_items('synced.pkl')
+        folder_path = xbmc.getInfoLabel('Container.FolderPath')
+        movie_dir = {'dir':path, 'mediatype':'single-movie', 'label':label}
+        if (movie_dir not in synced_dirs) and ({'dir': folder_path, 'mediatype':'movie'} not in synced_dirs):
+            synced_dirs.append(movie_dir)
+            save_items('synced.pkl', synced_dirs)
+            log_msg('sync: %s' % movie_dir)
+
         # prepare to stage
         staged_items = get_items('staged.pkl')
         staged_paths = [x.get_path() for x in staged_items]
@@ -76,13 +90,22 @@ if __name__ == '__main__':
         tvshow_label = sys.listitem.getLabel()
         tvshow_path = sys.listitem.getPath()
 
+        # update synced file
+        synced_dirs = get_items('synced.pkl')
+        folder_path = xbmc.getInfoLabel('Container.FolderPath')
+        show_dir = {'dir':tvshow_path, 'mediatype':'single-tvshow', 'label':tvshow_label}
+        if (show_dir not in synced_dirs) and ({'dir': folder_path, 'mediatype':'tvshow'} not in synced_dirs):
+            synced_dirs.append(show_dir)
+            save_items('synced.pkl', synced_dirs)
+            log_msg('sync: %s' % show_dir)
+
         # get everything inside tvshow path
         results = json.loads(xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % tvshow_path))
         if results.has_key('result'):
             dir_items = results["result"]["files"]
         else:
             dir_items = []
-        log_msg('show_items: %s' % dir_items, xbmc.LOGNOTICE)
+        log_msg('show_items: %s' % dir_items)
 
         # get all items to stage
         staged_items = get_items('staged.pkl')
@@ -115,7 +138,6 @@ if __name__ == '__main__':
         save_items('staged.pkl', staged_items)
 
         if num_already_staged>0 or num_already_managed>0:
-            xbmc.executebuiltin('Notification("{0}", "{1}}")'.format(str_addon_name,
-                str_i_new_episodes_i_already_staged_i_aleady_managed % (len(items_to_stage), num_already_staged, num_already_managed) )
+            xbmc.executebuiltin('Notification("{0}", "{1}}")'.format(str_addon_name, str_i_new_episodes_i_already_staged_i_aleady_managed % (len(items_to_stage), num_already_staged, num_already_managed) ))
         else:
-            xbmc.executebuiltin('Notification("{0}", "{1}")' % (str_addon_name, str_i_new_episodes_staged % len(items_to_stage)))
+            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_i_new_episodes_staged % len(items_to_stage)))

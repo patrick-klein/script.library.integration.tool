@@ -10,22 +10,42 @@ import xbmcgui
 import xbmcaddon
 
 from contentitem import MovieItem, EpisodeItem
-from utils import log_msg, get_items, save_items, append_item, remove_item, clean, localize_mediatype
+from utils import log_msg, get_items, save_items, append_item, remove_item, clean, localize_blocktype, localize_synctype
 
-managed_folder = '/Volumes/Drobo Media/LibraryTools/'
+# define managed folder for use throughout code
+managed_folder = xbmcaddon.Addon().getSetting('managed_folder')
+log_msg('managed_folder: %s' % managed_folder)
 
 class Main(object):
     #TODO: use staticmethod tag and maybe move some methods to utils
-    #TODO: define strings here (and eventually localize)
     #TODO: use sqlite database... will lead to LOTS of optimizations
     #TODO: unit tests
     #TODO: pass around a 'previous view' function handle
     #TODO: mark strm items as watched after played
 
-    addon = xbmcaddon.Addon()
-    str_addon_name  = addon.getAddonInfo('name')
-
     def __init__(self):
+        self.addon = xbmcaddon.Addon()
+        self.str_addon_name  = self.addon.getAddonInfo('name')
+
+        # Display an error is user hasn't configured managed folder yet
+        if not managed_folder:
+            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(self.addon.getAddonInfo('name'), self.addon.getLocalizedString(32122)))
+            log_msg('No managed folder!', xbmc.LOGERROR)
+            sys.exit()
+
+        # Create subfolders in managed_folder if they don't exist
+        if not os.path.isdir(os.path.join(managed_folder, 'ManagedMovies')):
+            os.system('mkdir "%s"' % os.path.join(managed_folder, 'ManagedMovies'))
+        if not os.path.isdir(os.path.join(managed_folder, 'ManagedTV')):
+            os.system('mkdir "%s"' % os.path.join(managed_folder, 'ManagedTV'))
+        if not os.path.isdir(os.path.join(managed_folder, 'Metadata')):
+            os.system('mkdir "%s"' % os.path.join(managed_folder, 'Metadata'))
+        if not os.path.isdir(os.path.join(managed_folder, 'Metadata', 'Movies')):
+            os.system('mkdir "%s"' % os.path.join(managed_folder, 'Metadata', 'Movies'))
+        if not os.path.isdir(os.path.join(managed_folder, 'Metadata', 'TV')):
+            os.system('mkdir "%s"' % os.path.join(managed_folder, 'Metadata', 'TV'))
+
+        # Open main menu
         self.choose_action()
 
     def choose_action(self):
@@ -43,8 +63,8 @@ class Main(object):
         str_view_staged_tv_shows = self.addon.getLocalizedString(32005)
         str_view_synced_directories = self.addon.getLocalizedString(32006)
         str_view_blocked_items = self.addon.getLocalizedString(32007)
-        str_update_library = xbmc.getLocalizedString(653)
-        str_clean_library = xbmc.getLocalizedString(14247)
+        str_update_library = xbmc.getLocalizedString(653).title()
+        str_clean_library = xbmc.getLocalizedString(14247).title()
 
         lines = [str_view_managed_movies, str_view_managed_tv_shows, str_view_staged_movies, str_view_staged_tv_shows,
             str_view_synced_directories, str_view_blocked_items, str_update_library, str_clean_library]
@@ -620,12 +640,11 @@ class Main(object):
             else:
                 pDialog.update(0,line2=' ')
         pDialog.close()
-        xbmc.executebuiltin('Notification("{0}", "{1}")' % (self.str_addon_name, str_all_x_episodes_added))
+        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(self.str_addon_name, str_all_x_episodes_added))
 
     def add_all_tvshow_items_with_metadata(self, show_title):
         str_adding_all_x_episodes_with_metadata = self.addon.getLocalizedString(32073) % show_title
         str_all_x_episodes_with_metadata_added = self.addon.getLocalizedString(32074) % show_title
-
 
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.str_addon_name, str_adding_all_x_episodes_with_metadata)
@@ -641,7 +660,7 @@ class Main(object):
                     item.add_to_library()
             pDialog.update(0,line2=' ',line3=' ')
         pDialog.close()
-        xbmc.executebuiltin('Notification("{0}", "{1}")' % (self.str_addon_name, str_all_x_episodes_with_metadata_added))
+        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(self.str_addon_name, str_all_x_episodes_with_metadata_added))
 
     def remove_all_staged_episodes(self, show_title):
         str_removing_all_x_episodes = self.addon.getLocalizedString(32032) % show_title
@@ -657,7 +676,7 @@ class Main(object):
             else:
                 pDialog.update(0,line2=' ')
         pDialog.close()
-        xbmc.executebuiltin('Notification("{0}", "{1}")' % (self.str_addon_name, str_all_x_episodes_removed))
+        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(self.str_addon_name, str_all_x_episodes_removed))
 
     def remove_and_block_staged_tvshow(self, show_title):
         #TODO: move to ContentItem method
@@ -668,7 +687,7 @@ class Main(object):
         metadata_dir = os.path.join(managed_folder, 'Metadata', 'TV', safe_showtitle)
         os.system('rm -r "%s"' % metadata_dir)
         # add show title to blocked
-        append_item('blocked.pkl', {'type':'show', 'label':show_title})
+        append_item('blocked.pkl', {'type':'tvshow', 'label':show_title})
 
     def rename_tvshow_using_metadata(self, show_title):
         str_renaming_all_x_episodes_using_metadata = self.addon.getLocalizedString(32075) % show_title
@@ -684,7 +703,7 @@ class Main(object):
             else:
                 pDialog.update(0,line2=' ')
         pDialog.close()
-        xbmc.executebuiltin('Notification("{0}", "{1}")' % (self.str_addon_name, str_all_x_episodes_renamed_using_metadata))
+        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(self.str_addon_name, str_all_x_episodes_renamed_using_metadata))
 
     def generate_all_episodes_metadata(self, show_title):
         str_generating_all_x_metadata = self.addon.getLocalizedString(32077) % show_title
@@ -763,15 +782,20 @@ class Main(object):
             item.rename(input_ret)
 
     def view_synced(self):
-        #TODO: localization for mediatype
         #?TODO: class for synced directories
+        #TODO: update only movies or tvshows
+        #TODO: sort
         str_update_all = self.addon.getLocalizedString(32081)
         str_remove_all = self.addon.getLocalizedString(32082)
         str_back = self.addon.getLocalizedString(32011)
         str_synced_directories = self.addon.getLocalizedString(32011)
+        str_no_synced_dirs = self.addon.getLocalizedString(32120)
 
         synced_dirs = get_items('synced.pkl')
-        lines = ['%ss - [I]%s[/I]'%(x['mediatype'], x['dir']) for x in synced_dirs]
+        if len(synced_dirs)==0:
+            xbmcgui.Dialog().ok(self.str_addon_name, str_no_synced_dirs)
+            return self.choose_action()
+        lines = ['%s - [I]%s[/I]'%(localize_synctype(x['mediatype']), x['dir']) for x in synced_dirs]
         lines += [str_update_all, str_remove_all, str_back]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(self.str_addon_name, str_synced_directories), lines)
         if not ret<0:
@@ -790,16 +814,13 @@ class Main(object):
 
     def synced_dir_options(self, item):
         #TODO: remove all from plugin
-        str_update = self.addon.getLocalizedString(32084)
         str_remove = self.addon.getLocalizedString(32017)
         str_synced_directory_options = self.addon.getLocalizedString(32085)
 
-        lines = [str_update, str_remove]
-        ret = xbmcgui.Dialog().select('{0} - {1} - {2}' % (self.str_addon_name, str_synced_directory_options, item['dir']), lines)
+        lines = [str_remove]
+        ret = xbmcgui.Dialog().select('{0} - {1} - {2}'.format(self.str_addon_name, str_synced_directory_options, item['dir']), lines)
         if not ret<0:
-            if lines[ret] == str_update:
-                self.update_synced_dir(item)
-            elif lines[ret] == str_remove:
+            if lines[ret] == str_remove:
                 remove_item('synced.pkl', item)
         self.view_synced()
 
@@ -812,16 +833,12 @@ class Main(object):
             save_items('synced.pkl', [])
             xbmc.executebuiltin('Notification("{0}", "{1}")'.format(self.str_addon_name, str_all_synced_directories_removed))
 
-    def update_synced_dir(self, item):
-        # TODO: allow updating individual directories
-        pass
-
     def update_all_synced(self, synced_dirs):
-        #TODO: make it so manually added items don't just get deleted
-        #   (need to add 'single-movie' and 'single-tvshow' mediatype that gets checked in 'getting all...')
-        #TODO: don't initialize ContentItem until after confirmation
         #TODO: should move blocked check up to 'getting all items from ...'
         #TODO: move out of main
+        #TODO: make synced object
+        #TODO: bugfix: single-movies won't actually get removed if they become unavailable
+        #       maybe load parent dir and check for path or label?  it would be slower though
         str_getting_all_items_from_synced_directories = self.addon.getLocalizedString(32089)
         str_finding_items_to_remove_from_managed = self.addon.getLocalizedString(32090)
         str_removing_items_from_staged = self.addon.getLocalizedString(32091)
@@ -830,36 +847,85 @@ class Main(object):
         str_removing_items = self.addon.getLocalizedString(32094)
         str_staging_items = self.addon.getLocalizedString(32095)
         str_all_synced_directories_updated = self.addon.getLocalizedString(32095)
+        str_all_items_uptodate = self.addon.getLocalizedString(32121)
+        str_success = self.addon.getLocalizedString(32122)
 
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.str_addon_name)
 
         # get current items in all directories
         pDialog.update(0, line1 = str_getting_all_items_from_synced_directories)
+        # get blocked lists ready
+        blocked_items = get_items('blocked.pkl')
+        blocked_movies = [x['label'] for x in blocked_items if x['type']=='movie']
+        blocked_episodes = [x['label'] for x in blocked_items if x['type']=='episode']
+        blocked_shows = [x['label'] for x in blocked_items if x['type']=='tvshow']
+        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type']=='keyword']
         dir_items = []
         for synced_dir in synced_dirs:
             pDialog.update(0, line2=synced_dir['dir'])
-            result = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % synced_dir['dir'])
-            synced_dir_items = json.loads(result)["result"]["files"]
-            if synced_dir['mediatype']=='movie':
-                for ditem in synced_dir_items:
-                    ditem['mediatype'] = 'movie'
-                dir_items += synced_dir_items
-            elif synced_dir['mediatype']=='tvshow':
-                for ditem in synced_dir_items:
-                    show_title = ditem['label']
-                    pDialog.update(0, line3 = show_title)
-                    show_path = ditem['file']
-                    show_result = json.loads(xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % show_path))
-                    if not (show_result.has_key('result') and show_result["result"].has_key('files')):
+            # directory is just a path to a single movie
+            if synced_dir['mediatype']=='single-movie':
+                # add formatted single-movie items to dir_items (no need to check for blocked)
+                dir_items.append({'file':synced_dir['dir'], 'label':synced_dir['label'], 'mediatype':'movie'})
+            else:
+                # need to load results for other mediatypes
+                result = json.loads(xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % synced_dir['dir']))
+                # skip if results don't load
+                if not (result.has_key('result') and result["result"].has_key('files')):
+                    continue
+                synced_dir_items = result["result"]["files"]
+                # directory is a path to a tv show folder
+                if synced_dir['mediatype']=='single-tvshow':
+                    # check every episode in results
+                    for ditem in synced_dir_items:
+                        # need to check episode against blocklists
+                        label = ditem['label']
+                        if label in blocked_episodes or any(x in label.lower() for x in blocked_keywords):
+                            continue
+                        # add formatted item
+                        ditem['mediatype'] = 'tvshow'
+                        ditem['show_title'] = synced_dir['label']
+                        dir_items.append(ditem)
+                # directory is a path to list of movies
+                elif synced_dir['mediatype']=='movie':
+                    # check every movie in results
+                    for ditem in synced_dir_items:
+                        # skip if blocked
+                        label = ditem['label']
+                        if label in blocked_movies or any(x in label.lower() for x in blocked_keywords):
+                            continue
+                        # add tag to items
+                        ditem['mediatype'] = 'movie'
+                        dir_items.append(ditem)
+                # dirctory is a path to a list of tv shows
+                elif synced_dir['mediatype']=='tvshow':
+                    # check every tvshow in list
+                    for ditem in synced_dir_items:
+                        show_title = ditem['label']
+                        # check show_title against blocklists
+                        if show_title in blocked_shows or any(x in show_title.lower() for x in blocked_keywords):
+                            continue
+                        # load results if show isn't blocked
+                        pDialog.update(0, line3 = show_title)
+                        show_path = ditem['file']
+                        show_result = json.loads(xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": {"directory":"%s"}, "id": 1}' % show_path))
+                        # skip if results don't load
+                        if not (show_result.has_key('result') and show_result["result"].has_key('files')):
+                            pDialog.update(0, line3=' ')
+                            continue
+                        # check every episode in show
+                        show_items = show_result["result"]["files"]
+                        for shitem in show_items:
+                            # need to check episode against blocklists
+                            label = shitem['label']
+                            if label in blocked_episodes or any(x in label.lower() for x in blocked_keywords):
+                                continue
+                            # add formatted item
+                            shitem['mediatype'] = 'tvshow'
+                            shitem['show_title'] = show_title
+                            dir_items.append(shitem)
                         pDialog.update(0, line3=' ')
-                        continue
-                    show_items = show_result["result"]["files"]
-                    for shitem in show_items:
-                        shitem['mediatype'] = 'tvshow'
-                        shitem['show_title'] = show_title
-                    dir_items += show_items
-                    pDialog.update(0, line3=' ')
             pDialog.update(0, line2=' ')
 
         # find managed_items not in dir_items, and prepare to remove
@@ -872,7 +938,6 @@ class Main(object):
                 pDialog.update(0, line2=item.get_title())
                 items_to_remove.append(item)
             pDialog.update(0, line2=' ')
-
 
         # remove them from staged also (can do that immediately)
         pDialog.update(0, line1 = str_removing_items_from_staged)
@@ -888,28 +953,19 @@ class Main(object):
         managed_paths = [x.get_path() for x in managed_items]
         staged_items = get_items('staged.pkl')
         staging_paths = [x.get_path() for x in staged_items]
-        blocked_items = get_items('blocked.pkl')
-        blocked_movies = [x['label'] for x in blocked_items if x['type']=='movie']
-        blocked_episodes = [x['label'] for x in blocked_items if x['type']=='episode']
-        blocked_shows = [x['label'] for x in blocked_items if x['type']=='show']
-        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type']=='keyword']
         items_to_stage = []
         for ditem in dir_items:
             label = ditem['label']
             path = ditem['file']
+            mediatype = ditem['mediatype']
             pDialog.update(0, line2=label)
+            # don't prepare items that are already staged or managed
             if path in managed_paths or path in staging_paths:
                 continue
-            elif any(x in label.lower() for x in blocked_keywords):
-                continue
-            elif ditem['mediatype']=='movie' and label in blocked_movies:
-                continue
-            elif ditem['mediatype']=='tvshow' and ((label in blocked_episodes) or (ditem['show_title'] in blocked_shows)):
-                continue
-            if ditem['mediatype']=='movie':
-                item = MovieItem(ditem['file'], ditem['label'], ditem['mediatype'])
-            elif ditem['mediatype']=='tvshow':
-                item = EpisodeItem(ditem['file'], ditem['label'], ditem['mediatype'], ditem['show_title'])
+            if mediatype=='movie':
+                item = MovieItem(path, label, mediatype)
+            elif mediatype=='tvshow':
+                item = EpisodeItem(path, label, mediatype, ditem['show_title'])
             items_to_stage.append(item)
             staging_paths.append(ditem['file'])
         pDialog.update(0, line2=' ')
@@ -931,9 +987,9 @@ class Main(object):
                     staged_items += items_to_stage
                     save_items('staged.pkl',staged_items)
                     log_msg('Updated staged file with items from synced directories.', xbmc.LOGNOTICE)
-                if num_to_remove>0:
-                    xbmc.executebuiltin('CleanLibrary("video")')
-                xbmc.executebuiltin('Notification("{0}", "{1}")'.format(self.str_addon_name, str_all_synced_directories_updated))
+                xbmcgui.Dialog().ok(self.str_addon_name, str_success)
+        else:
+            xbmcgui.Dialog().ok(self.str_addon_name, str_all_items_uptodate)
         pDialog.close()
 
     def view_blocked(self):
@@ -943,9 +999,13 @@ class Main(object):
         str_add_keyword = self.addon.getLocalizedString(32097)
         str_back = self.addon.getLocalizedString(32011)
         str_blocked_items = self.addon.getLocalizedString(32098)
+        str_no_blocked_items = self.addon.getLocalizedString(32119)
 
         blocked_items = get_items('blocked.pkl')
-        lines = ['[B]%s[/B] - %s' % (x['label'], localize_mediatype(x['type'])) for x in blocked_items]
+        if len(blocked_items)==0:
+            xbmcgui.Dialog().ok(self.str_addon_name, str_no_blocked_items)
+            return self.choose_action()
+        lines = ['{0} - [B]{1}[/B]'.format(localize_blocktype(x['type']), x['label']) for x in blocked_items]
         lines, blocked_items = (list(t) for t in zip(*sorted(zip(lines, blocked_items), key=lambda x: x[0].lower())))
         lines += [str_add_keyword, str_back]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(self.str_addon_name, str_blocked_items), lines)
