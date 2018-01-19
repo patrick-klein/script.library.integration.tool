@@ -14,11 +14,11 @@
   <extension point="kodi.context.item">
     <menu id="kodi.core.main">
       <item library="context.py">
-        <label>Add selected item to library</label>
+        <label>32000</label>
         <visible>String.StartsWith(ListItem.Path,plugin) + !Container.Content(addons)</visible>
       </item>
       <item library="context2.py">
-        <label>Sync directory to library</label>
+        <label>32001</label>
         <visible>String.StartsWith(ListItem.Path,plugin) + !Container.Content(addons)</visible>
       </item>
     </menu>

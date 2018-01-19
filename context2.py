@@ -3,6 +3,7 @@
 import sys
 import xbmc
 import xbmcgui
+import xbmcaddon
 
 import simplejson as json
 
@@ -11,7 +12,16 @@ from resources.lib.utils import log_msg, get_items, save_items
 
 if __name__ == '__main__':
     #TODO: add recursive option
-    #TODO: rick roll pirates
+    #TODO: have piracy addons be in default blocked plugins, rick roll pirates that deleted blocked items... but only half the time
+
+    addon = xbmcaddon.Addon()
+    str_addon_name = addon.getAddonInfo('name')
+    str_choose_content_type = addon.getLocalizedString(32100)
+    str_tv_shows = addon.getLocalizedString(32108)
+    str_movies = addon.getLocalizedString(32109)
+    str_already_synced = addon.getLocalizedString(32110)
+    str_i_movies_staged = addon.getLocalizedString(32111)
+    str_i_episodes_staged = addon.getLocalizedString(32111)
 
     # get content type
     container_type = xbmc.getInfoLabel('Container.Content')
@@ -23,9 +33,8 @@ if __name__ == '__main__':
         content_type = "movie"
     else:
         # ask user otherwise
-        is_show = xbmcgui.Dialog().yesno("Library Integration Tool",
-            'Unable to determine content.  Choose content type:',
-            yeslabel="TV Shows", nolabel="Movies")
+        is_show = xbmcgui.Dialog().yesno(str_addon_name, str_choose_content_type,
+            yeslabel=str_tv_shows, nolabel=str_movies)
         if is_show:
             content_type = 'tvshow'
         else:
@@ -35,7 +44,7 @@ if __name__ == '__main__':
     synced_dirs = get_items('synced.pkl')
     current_dir = {'dir':xbmc.getInfoLabel('Container.FolderPath'), 'mediatype':content_type}
     if current_dir in synced_dirs:
-        xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"Current directory already synced.  Looking for new items...\")")
+        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_already_synced))
     else:
         synced_dirs.append(current_dir)
     save_items('synced.pkl', synced_dirs)
@@ -74,7 +83,7 @@ if __name__ == '__main__':
             items_to_stage.append(item)
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
-        xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"%s movies staged\")" % len(items_to_stage))
+        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_i_movies_staged % len(items_to_stage)))
 
 
     elif content_type=='tvshow':
@@ -116,4 +125,4 @@ if __name__ == '__main__':
         # add all items from all shows to stage list
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
-        xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"All TV shows staged. %s episodes added\")" % len(items_to_stage))
+        xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_i_episodes_staged % len(items_to_stage)))

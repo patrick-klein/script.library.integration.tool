@@ -1,10 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import cPickle as pickle
 import xbmc
+import xbmcaddon
+
+import cPickle as pickle
 
 managed_folder = '/Volumes/Drobo Media/LibraryTools/'
+addon = xbmcaddon.Addon()
+str_addon_name = addon.getAddonInfo('name')
+str_addon_ver = addon.getAddonInfo('version')
 
 def get_items(name):
     # add to staged list
@@ -35,11 +40,23 @@ def remove_item(name, item):
 
 def clean(s):
     #TODO: test stripping '.', '%'
+    #TODO: replace part # in title directly, not just filename
     return s.replace(':','').replace('/','').replace('Part 1', 'Part One').replace('Part 2', 'Part Two')
+
+def localize_mediatype(mediatype):
+    #TODO: string file
+    if mediatype=='movie':
+        return addon.getLocalizedString(32102)
+    elif mediatype=='show':
+        return addon.getLocalizedString(32101)
+    elif mediatype=='keyword':
+        return addon.getLocalizedString(32113)
+    elif mediatype=='episode':
+        return addon.getLocalizedString(32114)
 
 def log_msg(msg, loglevel=xbmc.LOGDEBUG):
     #TODO: add version number to log string
     '''log message to kodi log'''
     if isinstance(msg, unicode):
         msg = msg.encode('utf-8')
-    xbmc.log("Library Integration Tool --> %s" % msg, level=loglevel)
+    xbmc.log("{0} ({1}) --> {1}".format(str_addon_name, str_addon_ver, msg), level=loglevel)

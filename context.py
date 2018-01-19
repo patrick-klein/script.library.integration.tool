@@ -4,6 +4,7 @@ import sys
 import os
 import xbmc
 import xbmcgui
+import xbmcaddon
 
 import simplejson as json
 
@@ -14,11 +15,16 @@ if __name__ == '__main__':
     #TODO: don't add items already in library
     #TODO: add "single movie" or "single tvshows" synced directory so they're correctly updated/pruned
 
-    # Manual warning
-    #proceed = xbmcgui.Dialog().yesno("Library Integration Tool",
-    #    'Manually added items will not be automatically cleaned from library if they become unavailable. Proceed with action?')
-    #if not proceed:
-    #    sys.exit()
+    addon = xbmcaddon.Addon()
+    str_addon_name = addon.getAddonInfo('name')
+    str_choose_content_type = addon.getLocalizedString(32100)
+    str_tv_show = addon.getLocalizedString(32101)
+    str_movie = addon.getLocalizedString(32102)
+    str_item_is_already_staged = addon.getLocalizedString(32103)
+    str_item_is_already_managed = addon.getLocalizedString(32104)
+    str_movie_staged = addon.getLocalizedString(32105)
+    str_i_new_episodes_i_already_staged_i_aleady_managed = addon.getLocalizedString(32106)
+    str_i_new_episodes_staged = addon.getLocalizedString(32107)
 
     # get content type
     container_type = xbmc.getInfoLabel('Container.Content')
@@ -30,9 +36,9 @@ if __name__ == '__main__':
         content_type = "movie"
     else:
         # ask user otherwise
-        is_show = xbmcgui.Dialog().yesno("Library Integration Tool",
-            'Unable to determine content.  Choose content type:',
-            yeslabel="TV Show", nolabel="Movie")
+        is_show = xbmcgui.Dialog().yesno(str_addon_name,
+            str_choose_content_type,
+            yeslabel=str_tv_show, nolabel=str_movie)
         if is_show:
             content_type = 'tvshow'
         else:
@@ -52,15 +58,15 @@ if __name__ == '__main__':
 
         # check for duplicate
         if path in staged_paths:
-            xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"Item is already staged\")")
+            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_item_is_already_staged))
         elif path in managed_paths:
-            xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"Item is already managed\")")
+            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_item_is_already_managed))
         else:
             # stage item
             item = MovieItem(path, label, content_type)
             staged_items.append(item)
             save_items('staged.pkl', staged_items)
-            xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"Movie staged\")")
+            xbmc.executebuiltin('Notification("{0}", "{1}")'.format(str_addon_name, str_movie_staged))
 
     # stage multiple episodes for tvshow
     elif content_type=='tvshow':
@@ -109,7 +115,7 @@ if __name__ == '__main__':
         save_items('staged.pkl', staged_items)
 
         if num_already_staged>0 or num_already_managed>0:
-            xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"%s new episodes staged.  %s were already staged, and %s were already managed\")"
-                % (len(items_to_stage), num_already_staged, num_already_managed) )
+            xbmc.executebuiltin('Notification("{0}", "{1}}")'.format(str_addon_name,
+                str_i_new_episodes_i_already_staged_i_aleady_managed % (len(items_to_stage), num_already_staged, num_already_managed) )
         else:
-            xbmc.executebuiltin("Notification(\"Library Integration Tool\", \"%s new episodes staged\")" % len(items_to_stage))
+            xbmc.executebuiltin('Notification("{0}", "{1}")' % (str_addon_name, str_i_new_episodes_staged % len(items_to_stage)))

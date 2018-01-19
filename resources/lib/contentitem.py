@@ -20,6 +20,7 @@ class ContentItem(object):
     #?TODO: remove mediatype from init now that there are subclasses
     #TODO: create refresh method so you don't have to remove_from_staged then add_to_staged_file
     #TODO: make rename on add & metadata on stage optional in settings
+    #TODO: save original_label, would be able to rename entire filename using metadata
 
     def __init__(self, path, title, mediatype):
         #TODO: add parent folder and optional year param
@@ -89,7 +90,6 @@ class MovieItem(ContentItem):
 
     def __init__(self, path, title, mediatype):
         super(MovieItem, self).__init__(path, title, mediatype)
-        #self.create_metadata_item()
 
     def add_to_library(self):
         # parse and fix file/dir names
@@ -127,7 +127,6 @@ class EpisodeItem(ContentItem):
     def __init__(self, path, title, mediatype, show_title):
         self.show_title = show_title.encode('utf-8')
         super(EpisodeItem, self).__init__(path, title, mediatype)
-        #self.create_metadata_item()
 
     def __str__(self):
         return '[B]%s[/B] - [I]%s[/I]' % (self.title, self.path)
