@@ -3,8 +3,8 @@
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="xbmc.addon" version="12.0.0"/>
-    <import addon="script.module.metadatautils" version="1.0.0"/>
     <import addon="script.module.beautifulsoup4" version="1.0.0"/>
+    <import addon="script.module.simplejson" version="1.0.0"/>
   </requires>
 
   <extension point="xbmc.python.script" library="default.py">
@@ -25,11 +25,16 @@
   </extension>
 
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">Allows video add-on content to be integrated into library</summary>
-    <description></description>
+    <summary lang="en">Allows video add-on content to be integrated into your library.</summary>
+    <description lang="en">
+      See README for full description.
+    </description>
+    <disclaimer lang="en">
+      Must choose a Managed Folder in settings before running
+    </disclaimer>
     <language></language>
-    <platform></platform>
-    <license></license>
+    <platform>osx linux</platform>
+    <license>GPL v2.0</license>
     <forum></forum>
     <website></website>
     <source></source>

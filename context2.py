@@ -39,7 +39,10 @@ if __name__ == '__main__':
     STR_MOVIES = addon.getLocalizedString(32109)
     STR_ALREADY_SYNCED = addon.getLocalizedString(32110)
     STR_i_MOVIES_STAGED = addon.getLocalizedString(32111)
-    STR_i_EPISODES_STAGED = addon.getLocalizedString(32111)
+    STR_i_EPISODES_STAGED = addon.getLocalizedString(32112)
+    STR_UPDATING_SYNCED_FILE = addon.getLocalizedString(32124)
+    STR_GETTING_ITEMS_IN_DIR = addon.getLocalizedString(32125)
+    STR_GETTING_ITEMS_IN_x = addon.getLocalizedString(32126)
 
     # get content type
     container_type = xbmc.getInfoLabel('Container.Content')
@@ -56,19 +59,21 @@ if __name__ == '__main__':
         else:
             content_type = 'movie'
 
+    pDialog = xbmcgui.DialogProgress()
+    pDialog.create(STR_ADDON_NAME)
+
     # update synced file
+    pDialog.update(0, line1=STR_UPDATING_SYNCED_FILE)
     synced_dirs = get_items('synced.pkl')
     current_dir = {'dir':xbmc.getInfoLabel('Container.FolderPath'), 'mediatype':content_type}
-    if current_dir in synced_dirs:
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(STR_ADDON_NAME, STR_ALREADY_SYNCED))
-    else:
+    if current_dir not in synced_dirs:
         synced_dirs.append(current_dir)
+        log_msg('sync: %s' % current_dir)
     save_items('synced.pkl', synced_dirs)
-    log_msg('sync: %s' % current_dir)
 
     # query json-rpc to get files in directory
     # TODO: try xbmcvfs.listdir(path) instead
+    pDialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
     results = xbmc.executeJSONRPC(
         '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
         "params": {"directory":"%s"}, "id": 1}' % current_dir['dir'])
@@ -86,10 +91,11 @@ if __name__ == '__main__':
         blocked_keywords = [x['label'].lower() for x in blocked_items if x['type']=='keyword']
         items_to_stage = []
         for i, ditem in enumerate(dir_items):
-            # get label for item
+            # get label & path for item
             label = ditem['label']
-            # get path for item
             path = ditem['file']
+            # update progress
+            pDialog.update(0, line2=label)
             # check for duplicate paths
             if (path in staged_paths) or (path in managed_paths):
                 continue
@@ -100,8 +106,10 @@ if __name__ == '__main__':
             item = MovieItem(path, label, content_type)
             # add to staged
             items_to_stage.append(item)
+            pDialog.update(0, line2=' ')
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
+        pDialog.close()
         xbmc.executebuiltin(
             'Notification("{0}", "{1}")'.format(
                 STR_ADDON_NAME, STR_i_MOVIES_STAGED % len(items_to_stage)))
@@ -124,6 +132,8 @@ if __name__ == '__main__':
             if tvshow_label in blocked_shows or \
                 any(x in tvshow_label.lower() for x in blocked_keywords):
                 continue
+            # update progress
+            pDialog.update(0, line1=(STR_GETTING_ITEMS_IN_x % tvshow_label))
             # get everything inside tvshow path
             tvshow_path = ditem['file']
             results = json.loads(xbmc.executeJSONRPC(
@@ -136,8 +146,12 @@ if __name__ == '__main__':
             show_items = results["result"]["files"]
             # get all items to stage in show
             for shitem in show_items:
+                # get label and path
                 label = shitem['label']
                 path = shitem['file']
+                # update progress
+                pDialog.update(0, line2=label)
+                # check if already managed or staged
                 if path in staged_paths:
                     continue
                 elif path in managed_paths:
@@ -147,9 +161,12 @@ if __name__ == '__main__':
                     continue
                 item = EpisodeItem(path, shitem['label'], content_type, tvshow_label)
                 items_to_stage.append(item)
+                pDialog.update(0, line2=' ')
+            pDialog.update(0, line1=' ')
         # add all items from all shows to stage list
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
+        pDialog.close()
         xbmc.executebuiltin(
             'Notification("{0}", "{1}")'.format(
                 STR_ADDON_NAME, STR_i_EPISODES_STAGED % len(items_to_stage)))

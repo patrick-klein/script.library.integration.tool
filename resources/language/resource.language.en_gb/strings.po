@@ -489,7 +489,7 @@ msgid "General"
 msgstr ""
 
 msgctxt "#32118"
-msgid "Manged Folder"
+msgid "Managed Folder"
 msgstr ""
 
 msgctxt "#32119"
@@ -510,4 +510,24 @@ msgstr ""
 
 msgctxt "#32123"
 msgid "Choose managed folder in settings"
+msgstr ""
+
+msgctxt "#32124"
+msgid "Updating synced file..."
+msgstr ""
+
+msgctxt "#32125"
+msgid "Getting all items in directory..."
+msgstr ""
+
+msgctxt "#32126"
+msgid "Getting all items in %s..."
+msgstr ""
+
+msgctxt "#32127"
+msgid "Configured managed folder.  Remember to set ManagedTV and ManagedMovies as video sources!"
+msgstr ""
+
+msgctxt "#32128"
+msgid "Synced Directories"
 msgstr ""

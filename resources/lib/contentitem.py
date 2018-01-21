@@ -173,33 +173,42 @@ class EpisodeItem(ContentItem):
         return '[B]%s[/B] - [I]%s[/I]' % (self.title, self.path)
 
     def add_to_library(self):
-        #TODO: only add items with episode id in name
-        # check if tvshow folder already exists
+        #TODO: add a return value so Staged will know if episode wasn't added
+        #       and can display a relevant notification
+        # rename episode if metadata is available
         self.rename_using_metadata()
+        # don't add episodes that don't have episode id in name
+        safe_title = clean(self.title)
+        if not (fnmatch(safe_title, '*[0-9]x[0-9]*')\
+            or fnmatch(safe_title, '*[Ss][0-9]*[Ee][0-9]*')):
+            return
+        # check if tvshow folder already exists
         safe_showtitle = clean(self.show_title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         show_dir = os.path.join(MANAGED_FOLDER, 'ManagedTV', safe_showtitle)
-        # if not, create folder in ManagedTV
         if not os.path.isdir(show_dir):
+            # if not, create folder in ManagedTV
             os.system('mkdir "%s"' % show_dir)
             if os.path.isdir(metadata_dir):
                 # link tvshow.nfo and artwork now, if metadata_dir exists
                 files = os.listdir(metadata_dir)
                 for fname in files:
-                    if not (fnmatch(fname, '*[0-9]x[0-9]*') or \
-                        fnmatch(fname, '*[Ss][0-9]*[Ee][0-9]*')):
+                    if not (fnmatch(fname, '*[0-9]x[0-9]*') \
+                        or fnmatch(fname, '*[Ss][0-9]*[Ee][0-9]*') \
+                        or '.strm' in fname):
                         os.system('ln -s "{0}" "{1}"'.format(
                             os.path.join(metadata_dir, fname), os.path.join(show_dir, fname)))
         # create stream file
-        safe_title = clean(self.title)
         filepath = os.path.join(show_dir, safe_title+'.strm')
         os.system('echo "{0}" > "{1}"'.format(self.path, filepath))
         # link metadata for episode if it exists
         if os.path.isdir(metadata_dir):
-            os.system('ln -s "{0}.nfo" "{1}"'.format(
-                os.path.join(metadata_dir, safe_title), show_dir))
-            os.system('ln -s "{0}-thumb.jpg" "{1}"'.format(
-                os.path.join(metadata_dir, safe_title), show_dir))
+            nfo_path = os.path.join(metadata_dir, safe_title+'.nfo')
+            if os.path.exists(nfo_path):
+                os.system('ln -s "{0}" "{1}"'.format(nfo_path, show_dir))
+            thumb_path = os.path.join(metadata_dir, safe_title+'-thumb.jpg')
+            if os.path.exists(thumb_path):
+                os.system('ln -s "{0}" "{1}"'.format(thumb_path, show_dir))
         # remove from staged, add to managed
         self.add_to_managed_file()
         self.remove_from_staged()
@@ -271,16 +280,18 @@ class EpisodeItem(ContentItem):
                 self.add_to_staged_file()
 
     def rename(self, name):
+        # rename files if they exist
         safe_showtitle = clean(self.show_title)
         safe_title = clean(self.title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
-        # define "title paths" (paths without extensions)
-        title_path = os.path.join(metadata_dir, safe_title)
-        new_title_path = os.path.join(metadata_dir, clean(name))
-        # rename stream placeholder, nfo file, and thumb
-        os.system('mv "%s"*.strm "%s.strm"' % (title_path, new_title_path))
-        os.system('mv "%s"*.nfo "%s.nfo"' % (title_path, new_title_path))
-        os.system('mv "%s"*-thumb.jpg "%s-thumb.jpg"' % (title_path, new_title_path))
+        if os.path.isdir(metadata_dir):
+            # define "title paths" (paths without extensions)
+            title_path = os.path.join(metadata_dir, safe_title)
+            new_title_path = os.path.join(metadata_dir, clean(name))
+            # rename stream placeholder, nfo file, and thumb
+            os.system('mv "%s"*.strm "%s.strm"' % (title_path, new_title_path))
+            os.system('mv "%s"*.nfo "%s.nfo"' % (title_path, new_title_path))
+            os.system('mv "%s"*-thumb.jpg "%s-thumb.jpg"' % (title_path, new_title_path))
         # rename property and refresh in staged file
         self.title = name
         self.remove_from_staged()

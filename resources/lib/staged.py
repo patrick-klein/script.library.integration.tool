@@ -160,8 +160,9 @@ class StagedMovies(object):
         STR_AUTOMATICALLY_RENAME_USING_METADTA = self.addon.getLocalizedString(32051)
         STR_GENERATE_METADTA_ITEM = self.addon.getLocalizedString(32052)
         STR_STAGED_MOVIE_OPTIONS = self.addon.getLocalizedString(32053)
-        lines = [STR_ADD, STR_REMOVE, STR_REMOVE_AND_BLOCK, STR_RENAME,
-                 STR_AUTOMATICALLY_RENAME_USING_METADTA, STR_GENERATE_METADTA_ITEM]
+        lines = [STR_ADD, STR_REMOVE, STR_REMOVE_AND_BLOCK,
+                 #STR_RENAME, STR_AUTOMATICALLY_RENAME_USING_METADTA,
+                 STR_GENERATE_METADTA_ITEM]
         ret = xbmcgui.Dialog().select('{0} - {1} - {2}'.format(
             self.STR_ADDON_NAME, STR_STAGED_MOVIE_OPTIONS, item.get_title()), lines)
         if not ret < 0:

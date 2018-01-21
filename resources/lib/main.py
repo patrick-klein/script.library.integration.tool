@@ -30,6 +30,11 @@ class Main(object):
     #TODO: unit tests
     #TODO: mark strm items as watched after played
     #!TODO: documentation
+    #TODO: use plugin menu system instead of dialog windows
+    #TODO: option to automatically add movies & episodes with epids
+    #TODO: option to automatically clean & update when adding/removing
+    #TODO: add default location for managed folder
+    #TODO: move pickle files to special path
 
     def __init__(self):
         self.addon = xbmcaddon.Addon()
@@ -37,24 +42,36 @@ class Main(object):
 
         # Display an error is user hasn't configured managed folder yet
         if not MANAGED_FOLDER:
-            str_choose_folder = self.addon.getLocalizedString(32123)
+            STR_CHOOSE_FOLDER = self.addon.getLocalizedString(32123)
             xbmc.executebuiltin(
                 'Notification("{0}", "{1}")'.format(
-                    self.STR_ADDON_NAME, str_choose_folder))
+                    self.STR_ADDON_NAME, STR_CHOOSE_FOLDER))
             log_msg('No managed folder!', xbmc.LOGERROR)
             sys.exit()
 
         # Create subfolders in managed_folder if they don't exist
+        exit = False
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedMovies')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'ManagedMovies'))
+            exit = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedTV')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'ManagedTV'))
+            exit = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata'))
+            exit = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies'))
+            exit = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'TV')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata', 'TV'))
+            exit = True
+        if exit:
+            STR_SUBFOLDERS_CREATED = self.addon.getLocalizedString(32127)
+            xbmc.executebuiltin(
+                'Notification("{0}", "{1}")'.format(
+                    self.STR_ADDON_NAME, STR_SUBFOLDERS_CREATED))
+            sys.exit()
 
         # Open main menu
         self.view()

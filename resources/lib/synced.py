@@ -36,7 +36,7 @@ class Synced(object):
         STR_UPDATE_ALL = self.addon.getLocalizedString(32081)
         STR_REMOVE_ALL = self.addon.getLocalizedString(32082)
         STR_BACK = self.addon.getLocalizedString(32011)
-        STR_SYNCED_DIRECTORIES = self.addon.getLocalizedString(32011)
+        STR_SYNCED_DIRECTORIES = self.addon.getLocalizedString(32128)
         STR_NO_SYNCED_DIRS = self.addon.getLocalizedString(32120)
         if not self.synced_dirs:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_SYNCED_DIRS)
