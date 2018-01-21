@@ -50,23 +50,23 @@ class Main(object):
             sys.exit()
 
         # Create subfolders in managed_folder if they don't exist
-        exit = False
+        created_folders = False
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedMovies')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'ManagedMovies'))
-            exit = True
+            created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedTV')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'ManagedTV'))
-            exit = True
+            created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata'))
-            exit = True
+            created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies'))
-            exit = True
+            created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'TV')):
             os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata', 'TV'))
-            exit = True
-        if exit:
+            created_folders = True
+        if created_folders:
             STR_SUBFOLDERS_CREATED = self.addon.getLocalizedString(32127)
             xbmc.executebuiltin(
                 'Notification("{0}", "{1}")'.format(

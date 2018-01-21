@@ -8,7 +8,7 @@ which provide dialog windows and tools for manged blocked items
 import xbmcgui
 import xbmcaddon
 
-from utils import get_items, save_items, log_msg
+from utils import get_items, save_items
 
 class Blocked(object):
     '''

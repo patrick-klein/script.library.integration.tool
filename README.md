@@ -1,22 +1,21 @@
 # Library Integration Tool for Kodi
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
+[![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
 
-Badge!
 
-Kodi addon that lets you integrate content from any video plugin into your library.  Provides tools for you to directly manage their metadata, and automatically add/remove items based on their current availability.
-
-Kodi Forum Page: ...
+Library Integration Tool is a Kodi addon that lets you integrate content from any video plugin into your library.  Provides tools for you to directly manage their metadata, and automatically add/remove items based on their current availability.
 
 ---
 
 ## Requirements
 
-* **Kodi v17 "Krypton"**
+* **Kodi 17 Krypton**
 
-* **Linux** or **MacOS** (depends on BASH for system commands)
+* **Linux** or **MacOS** (uses BASH for system commands)
 
 ## Installation
 
-1. Download this zip from the LibraryTools repository [here]
+1. Download this zip for the [LibraryTools repository](repository.librarytools/repository.librarytools/repository.librarytools-1.0.0.zip)
 
 2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.
 
@@ -88,7 +87,7 @@ After updating, you may notice that you already have a local copy of one of the 
 
 From "View Staged Movies", select the movie you already have.  Choose the option "Remove and block".  That simple!  You can block episodes and entire TV shows as well.  Keep in mind that any metadata you've generated for items you block will be deleted from the Metadata folder.
 
-Sometimes when you sync a directory, items may show up that aren't actually videos.  For example, Popcornflix includes items called "<span style="color:red">Next Page</span>", which will also be added to staged movies.  You can block these like you would for normal content, or you can add a blocked keyword.  Any movie, episode, or TV show that contains a blocked keyword in the title won't be automatically staged.  You can add blocked keywords by going to "View Blocked Items" from the main menu, then choose "Add keyword" at the bottom.  A few common keywords you might want to add are "next page" and "featured episodes".
+Sometimes when you sync a directory, items may show up that aren't actually videos.  For example, Popcornflix includes items called "<span style="color:red">Next Page</span>", which will also be added to staged movies.  You can block these like you would for normal content, or you can add a blocked keyword.  Any movie, episode, or TV show that contains a blocked keyword in the title won't be automatically staged.  You can add blocked keywords by going to "View Blocked Items" from the main menu, then choose "Add keyword" at the bottom.  A few common keywords you might want to add are "next page" and "coming soon".
 
 And if you change your mind later, you can select any blocked item from the list and choose "Remove".
 
@@ -108,12 +107,12 @@ And if you change your mind later, you can select any blocked item from the list
 * **Popcornflix** by t1m - *Lots of content, but most have low ratings and the lists constantly change*
 * **Top Documentary Films** by Damon Toumbourou - *Most items won't be automatically scraped*
 * **Travel Channel** by t1m
-* **TV Land** by Lunatixz - *Don't trust the episode numbers in the title *
+* **TV Land** by Lunatixz - *Don't trust the episode numbers in the title*
 * **WNBC Programs** by t1m - *Huge amount of content, but slow to update*
 
 ### Other Addons
 
-**Skin Helper Service Widgets [Beta version]** by marcelveldt - *The latest versions include a new recommendation system that dynamically shows you personalized content on your homescreen.  So if you decide to add every possible directory and end up with 4000+ new items in your library, this addon will help ensure you only see the most relevant titles*
+**Skin Helper Service Widgets BETA** by marcelveldt - *The latest versions include a new recommendation system that dynamically shows you personalized content on your homescreen.  So if you decide to add every possible directory and end up with 4000+ new items in your library, this addon will help ensure you only see the most relevant titles*
 
 **WatchedList** by schapplm - *Because you'll potentially remove and re-add streamed content several times with Library Integration Tool, WatchedList makes your watched status persistent by storing it in an independent database*
 
@@ -125,16 +124,10 @@ If this addon generates enough interest, I will include a guide on contributing 
 
 This addon also includes full localization support, so you are welcome to submit and update translated string files.
 
-And thank you for considering improving this project!  Full credit will be given in the release notes for your pull requests.
+And thank you for considering improving this project!  Full credit for your contributions will be given in the release notes and here in the README.
 
 ---
 
 ## Known Issues
 
 * .strm files aren't automatically marked as watched by Kodi
-
----
-
-## Planned Features
-
-TODO
