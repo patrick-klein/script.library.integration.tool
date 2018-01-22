@@ -1,5 +1,5 @@
 <img src="./logo.png" width=512>
-</br></br>
+
 
 [![Version](https://img.shields.io/badge/latest%20version-0.1.0-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
