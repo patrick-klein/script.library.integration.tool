@@ -1,4 +1,4 @@
-<img src="./logo.png" width=512>
+<img src="./resources/logo.png" width=512>
 
 
 [![Version](https://img.shields.io/badge/latest%20version-0.1.0-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
