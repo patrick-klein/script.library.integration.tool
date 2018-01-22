@@ -15,7 +15,6 @@ from utils import get_items, append_item, clean, log_msg
 
 # define managed folder for use throughout code
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
-log_msg('managed_folder: %s' % MANAGED_FOLDER)
 
 class StagedMovies(object):
     '''
@@ -490,7 +489,7 @@ class StagedTV(object):
                 pDialog.update(0, line2=' ')
         pDialog.close()
         xbmc.executebuiltin(
-            'Notification("{0}", {1}")'.format(
+            'Notification("{0}", "{1}")'.format(
                 self.STR_ADDON_NAME, STR_ALL_x_METADATA_CREATED))
 
     def episode_options(self, item):

@@ -1,7 +1,11 @@
-# Library Integration Tool for Kodi
+<center>
+<img src="./logo.png" width=512>
+</br></br>
+[![Version](https://img.shields.io/badge/latest%20version-0.1.0-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
 [![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
-
+</center>
+</br>
 
 Library Integration Tool is a Kodi addon that lets you integrate content from any video plugin into your library.  Provides tools for you to directly manage their metadata, and automatically add/remove items based on their current availability.
 
@@ -19,7 +23,7 @@ Library Integration Tool is a Kodi addon that lets you integrate content from an
 
 2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.
 
-3. After installing the repo, "LibraryTools repository" will be available in Kodi.
+3. After installing the repo, "Library Tools repository" will be available in Kodi.
 
 4. While in Add-ons, go to Install from repository --> LibraryTools repository --> Program add-ons --> Select Library Integration Tool
 
@@ -29,7 +33,7 @@ Library Integration Tool is a Kodi addon that lets you integrate content from an
 
 7. From Kodi Settings, go to Media Settings --> Library --> Videos... --> and navigate to your Managed Folder.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  Recommended to use "Local information only" if you want to use your own metadata.
 
-DISCLAIMER:  You should NEVER edit the contents of ManagedMovies, ManagedTV, or the .pkl lists.  This will break your addon.  If you do break the addon, you can delete ManagedMovies, ManagedTV, and the .pkl lists.  Library Integration Tool will automatically generate new, blank ones the next time you run it.
+DISCLAIMER:  You should NEVER edit the contents of ManagedMovies, ManagedTV, or the .pkl lists.  This will break your addon.  If you do break the addon, you can delete ManagedMovies, ManagedTV, and the .pkl lists, and Library Integration Tool will automatically generate new, blank ones the next time you run it.
 
 ---
 
@@ -60,7 +64,7 @@ You may be tempted to immediately add all the Seinfeld episodes like you did for
 
 #### 1) Renaming episodes within Library Integration Tool
 
-The first option is to select each episode, click "Rename", and include the correct episode id at the beginning of the file.  For example, if "The Busboy" is in your list, you can rename it to "02x12 - The Busboy" or "S02E12 - The Busboy".  Now you will be able to add the item to your library.  Note: you should pad zeros to the episode id to make sure there are at least two digits, so you would use 02x12, not 2x12.
+The first option is to select each episode, click "Rename", and include the correct episode id at the beginning of the file.  For example, if "The Busboy" is in your list, you can rename it to "02x12 - The Busboy" or "S02E12 - The Busboy".  Now you will be able to add the item to your library.
 
 #### 2) Using an external media manager
 
@@ -68,9 +72,9 @@ The second option is to use a media manager to generate .nfo files for each of t
 
 Have your favorite media manager (MediaElch works great) scan the Metadata/TV/ directory.  It will find all the items that have generated metadata items.  Now, you can create .nfo files and download artwork automatically for every episode and tvshow.  Once you've gotten .nfo files saved with the correct episode numbers, you are ready to add the episodes.
 
-In Library Integration Tool, you can select "Add all episodes" or "Add all episodes with metadata".  Both options will automatically rename the episodes using the episode number in their .nfo files, but you can also select "Automatically rename using metadata" on an episode to test it first.  Now, all of your Seinfeld episodes from Crackle (with their metadata) are in the library! Don't forget to update!
+In Library Integration Tool, you can select "Add all episodes" or "Add all episodes with metadata".  Both options will automatically rename the episodes using the episode number in their .nfo files, but you can also select "Automatically rename using metadata" on an episode to test it first.  Now, all of your Seinfeld episodes from Crackle (with their metadata) are in the library. Don't forget to update!
 
-Note: You should NEVER rename files directly in the Metadata folder; you must use the built-in rename tool.
+Note: Do NOT rename files directly in the Metadata folder; you must use the built-in rename tool or .nfo files.
 
 ### Tutorial - Updating Directories
 
@@ -85,7 +89,7 @@ After the directories are updated, you can review and add your staged items.  An
 
 After updating, you may notice that you already have a local copy of one of the new staged movies.  Rather than just removing it from staged movies, you should consider blocking it.  If you block an item, it will not be automatically re-staged when updating directories again.
 
-From "View Staged Movies", select the movie you already have.  Choose the option "Remove and block".  That simple!  You can block episodes and entire TV shows as well.  Keep in mind that any metadata you've generated for items you block will be deleted from the Metadata folder.
+From "View Staged Movies", select the movie you already have.  Choose the option "Remove and block".  That simple!  You can block episodes and entire TV shows as well.  Keep in mind that any metadata files you've generated for items you block will be deleted from the Metadata folder.
 
 Sometimes when you sync a directory, items may show up that aren't actually videos.  For example, Popcornflix includes items called "<span style="color:red">Next Page</span>", which will also be added to staged movies.  You can block these like you would for normal content, or you can add a blocked keyword.  Any movie, episode, or TV show that contains a blocked keyword in the title won't be automatically staged.  You can add blocked keywords by going to "View Blocked Items" from the main menu, then choose "Add keyword" at the bottom.  A few common keywords you might want to add are "next page" and "coming soon".
 
@@ -120,11 +124,9 @@ And if you change your mind later, you can select any blocked item from the list
 
 ## Contributing
 
-If this addon generates enough interest, I will include a guide on contributing further.  As for now, refer to inline TODO tags for known bugs and planned feature development.  Also, please message me before working so I can confirm the latest development version is live on GitHub.
-
 This addon also includes full localization support, so you are welcome to submit and update translated string files.
 
-And thank you for considering improving this project!  Full credit for your contributions will be given in the release notes and here in the README.
+For now, refer to inline TODO tags for known bugs and planned feature development.  And thank you for considering improving this project!  Full credit for your contributions will be given in the release notes and here in the README.
 
 ---
 

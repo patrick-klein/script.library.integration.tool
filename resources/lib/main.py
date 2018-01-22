@@ -29,8 +29,7 @@ class Main(object):
     #TODO: use sqlite database... will lead to LOTS of optimizations
     #TODO: unit tests
     #TODO: mark strm items as watched after played
-    #!TODO: documentation
-    #TODO: use plugin menu system instead of dialog windows
+    #?TODO: use plugin menu system instead of dialog windows
     #TODO: option to automatically add movies & episodes with epids
     #TODO: option to automatically clean & update when adding/removing
     #TODO: add default location for managed folder
@@ -79,15 +78,11 @@ class Main(object):
     def view(self):
         ''' displays main menu and leads to other modules '''
         #TODO: fix update library to only update path
-        #TODO: view by show title
         #TODO: remove extraneous tv show folders in Metadata
-        #TODO: add all items with metadata
-        #?TODO: add all from here
-        #?TODO: view all
         #TODO: rebuild managed list (remove all items, then re-add new instance of ContentItem)
         #TODO: add parameter for location in list -
-        #   useful when returning here after doing something on an item
-        #   (preselct is broken when pressing cancel)
+        #       useful when returning here after doing something on an item
+        #       (preselct is broken when pressing cancel)
         STR_VIEW_MANAGED_MOVIES = self.addon.getLocalizedString(32002)
         STR_VIEW_MANAGED_TV_SHOWS = self.addon.getLocalizedString(32003)
         STR_VIEW_STAGED_MOVIES = self.addon.getLocalizedString(32004)

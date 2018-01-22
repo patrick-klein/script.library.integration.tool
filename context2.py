@@ -19,7 +19,6 @@ from resources.lib.utils import log_msg, get_items, save_items
 
 if __name__ == '__main__':
     #TODO: add recursive option
-    #TODO: have piracy ADDONs be in default blocked plugins, rick roll pirates that deleted blocked items... but only half the time
 
     addon = xbmcaddon.Addon()
     STR_ADDON_NAME = addon.getAddonInfo('name')
@@ -63,6 +62,7 @@ if __name__ == '__main__':
     pDialog.create(STR_ADDON_NAME)
 
     # update synced file
+    #TODO: add label to 'movie' and 'tvshow' types
     pDialog.update(0, line1=STR_UPDATING_SYNCED_FILE)
     synced_dirs = get_items('synced.pkl')
     current_dir = {'dir':xbmc.getInfoLabel('Container.FolderPath'), 'mediatype':content_type}

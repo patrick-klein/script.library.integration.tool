@@ -45,12 +45,13 @@ def remove_item(name, item):
 
 def clean(s):
     ''' this function removes problematic characters/substrings from strings for filenames '''
-    #TODO: test stripping '.', '%'
-    #TODO: replace part # in title directly, not just filename
+    #?TODO: replace in title directly, not just filename
+    s = s.replace('.', '')
     s = s.replace(':', '')
     s = s.replace('/', '')
     s = s.replace('Part 1', 'Part One')
     s = s.replace('Part 2', 'Part Two')
+    s = s.replace(' [cc]','')
     return s
 
 def log_msg(msg, loglevel=xbmc.LOGDEBUG):
