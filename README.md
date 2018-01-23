@@ -9,6 +9,8 @@
 
 Library Integration Tool is a Kodi addon that lets you integrate content from any video plugin into your library.  Provides tools for you to directly manage their metadata, and automatically add/remove items based on their current availability.
 
+View Forum Page: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.kodi.tv/showthread.php?tid=327514)
+
 ---
 
 ## Requirements
@@ -25,7 +27,7 @@ Library Integration Tool is a Kodi addon that lets you integrate content from an
 
 3. After installing the repo, "Library Tools repository" will be available in Kodi.
 
-4. While in Add-ons, go to Install from repository --> LibraryTools repository --> Program add-ons --> Select Library Integration Tool
+4. While in Add-ons, go to Install from repository --> Library Tools repository --> Program add-ons --> Select Library Integration Tool
 
 5. Open the settings for Library Integration Tool and choose a Managed Folder.  This is where the metadata and stream files will be stored.  I suggest you create a new folder near your existing media called "ManagedMedia", but any folder will work.
 
@@ -78,7 +80,7 @@ Note: Do NOT rename files directly in the Metadata folder; you must use the buil
 
 ### Tutorial - Updating Directories
 
-Now that you've added this content from Crackle to your library, you can continue to add movies and TV shows from all of your favorite plugins.  Refer to the list at the bottom of the README for several suggested addons that work well with Library Integration Tool.  However, after you've been using and enjoying this add-on for a while, the availability of streamed content may change.
+Now that you've added this content from Crackle to your library, you can continue to add movies and TV shows from all of your favorite plugins.  Refer to the list at the bottom of the README for several suggested addons that work well with Library Integration Tool.  However, after you've been using this add-on for a while, the availability of streamed content may change.
 
 To quickly update your directories, open "View Synced Directories" from the main menu and choose "Update all" at the bottom of the list.  This action will reload all synced directories and automatically find old managed and staged items that have become unavailable, and new items to stage.  Depending on how many directories need to be loaded, and which plugins you use, this may take a while.  Once the tool is done loading all the items, it will ask for your confirmation before proceeding.
 
@@ -111,7 +113,7 @@ And if you change your mind later, you can select any blocked item from the list
 * **Popcornflix** by t1m - *Lots of content, but most have low ratings and the lists constantly change*
 * **Top Documentary Films** by Damon Toumbourou - *Most items won't be automatically scraped*
 * **Travel Channel** by t1m
-* **TV Land** by Lunatixz - *Don't trust the episode numbers in the title*
+* **TV Land** by Lunatixz - *Double check episode numbers before scraping*
 * **WNBC Programs** by t1m - *Huge amount of content, but slow to update*
 
 ### Other Addons
@@ -133,3 +135,4 @@ For now, refer to inline TODO tags for known bugs and planned feature developmen
 ## Known Issues
 
 * .strm files aren't automatically marked as watched by Kodi
+* Manually added single movies aren't automatically removed if they become unavailable
