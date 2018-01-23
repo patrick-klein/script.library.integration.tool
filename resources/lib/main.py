@@ -40,7 +40,8 @@ class Main(object):
         self.STR_ADDON_NAME = self.addon.getAddonInfo('name')
 
         # Display an error is user hasn't configured managed folder yet
-        if not MANAGED_FOLDER:
+        if not (MANAGED_FOLDER and os.path.isdir(MANAGED_FOLDER)):
+            #TODO: open prompt to just set managed folder from here
             STR_CHOOSE_FOLDER = self.addon.getLocalizedString(32123)
             xbmc.executebuiltin(
                 'Notification("{0}", "{1}")'.format(
