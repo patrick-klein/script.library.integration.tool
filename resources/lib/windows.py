@@ -11,7 +11,7 @@ from glob import glob
 
 def create_empty_file(filepath):
     ''' creates empty file at filepath '''
-    open(filepath, 'a').close()
+    open(filepath, 'w').close()
 
 def create_stream_file(plugin_path, filepath):
     ''' creates stream file with plugin_path at filepath '''
