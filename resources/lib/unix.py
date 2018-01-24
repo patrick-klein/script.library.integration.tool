@@ -33,7 +33,7 @@ def mv_with_type(title_path, filetype, title_dst):
 
 def rm_strm_in_dir(dir_path):
     ''' removes all stream files in dir '''
-    os.system('rm "{0}/*.strm"'.format(dir_path))
+    os.system('rm "{0}/"*.strm'.format(dir_path))
 
 def rm_with_wildcard(title_path):
     ''' removes all files starting with title_path using wildcard '''
