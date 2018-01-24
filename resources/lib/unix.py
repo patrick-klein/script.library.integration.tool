@@ -29,7 +29,7 @@ def mkdir(dir_path):
 
 def mv_with_type(title_path, filetype, title_dst):
     ''' moves files with wildcard between title_path & filetype to title_dst '''
-    os.system('mv "{0}"*{1} "{2}.strm"'.format(title_path, filetype, title_dst))
+    os.system('mv "{0}"*{1} "{2}{1}"'.format(title_path, filetype, title_dst))
 
 def rm_strm_in_dir(dir_path):
     ''' removes all stream files in dir '''
