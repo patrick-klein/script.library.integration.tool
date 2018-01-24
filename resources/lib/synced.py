@@ -33,6 +33,7 @@ class Synced(object):
         '''
         #TODO: update only movies or tvshows
         #TODO: sort
+        #TODO: show title for single movie or tvshow
         STR_UPDATE_ALL = self.addon.getLocalizedString(32081)
         STR_REMOVE_ALL = self.addon.getLocalizedString(32082)
         STR_BACK = self.addon.getLocalizedString(32011)
@@ -116,6 +117,7 @@ class Synced(object):
         #TODO: wait until after confirmation to remove staged items also
         #TODO: bugfix: single-movies won't actually get removed if they become unavailable
         #       maybe load parent dir and check for path or label?  it would be slower though
+        #TODO: bugfix: unicode error when comparing some blocked titles
         STR_GETTING_ALL_ITEMS_FROM_SYNCED_DIRS = self.addon.getLocalizedString(32089)
         STR_FINDING_ITEMS_TO_REMOVE_FROM_MANAGED = self.addon.getLocalizedString(32090)
         STR_REMOVING_ITEMS_FROM_STAGED = self.addon.getLocalizedString(32091)

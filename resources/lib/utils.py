@@ -4,6 +4,8 @@
 '''
 This module contains various helper functions used thoughout the addon
 '''
+#TODO: 'Notification' shorthand
+
 import cPickle as pickle
 
 import xbmc
@@ -51,7 +53,7 @@ def clean(s):
     s = s.replace('/', '')
     s = s.replace('Part 1', 'Part One')
     s = s.replace('Part 2', 'Part Two')
-    s = s.replace(' [cc]','')
+    s = s.replace(' [cc]', '')
     return s
 
 def log_msg(msg, loglevel=xbmc.LOGDEBUG):

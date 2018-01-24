@@ -21,7 +21,7 @@ View Forum Page: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum
 
 ## Installation
 
-1. Download this zip for the [Library Tools repository](https://github.com/patrick-klein/repository.librarytools/raw/master/repository.librarytools/repository.librarytools-1.0.0.zip)
+1. Download this zip for the [LibraryTools repository](repository.librarytools/repository.librarytools/repository.librarytools-1.0.0.zip)
 
 2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.
 
@@ -126,9 +126,11 @@ And if you change your mind later, you can select any blocked item from the list
 
 ## Contributing
 
+The most important way to contribute right now is to use the addon and post a full debug log if there are any issues.  This is an early release and still likely to undergo drastic changes as I receive feedback.
+
 This addon also includes full localization support, so you are welcome to submit and update translated string files.
 
-For now, refer to inline TODO tags for known bugs and planned feature development.  And thank you for considering improving this project!  Full credit for your contributions will be given in the release notes and here in the README.
+For all known bugs and planned feature development, refer to inline TODO tags.  And thank you for considering improving this project!  Full credit for your contributions will be given in the release notes and here in the README.
 
 ---
 

@@ -130,8 +130,8 @@ if __name__ == '__main__':
         staged_paths = [x.get_path() for x in staged_items]
         managed_paths = [x.get_path() for x in get_items('managed.pkl')]
         blocked_items = get_items('blocked.pkl')
-        blocked_episodes = [x['label'] for x in blocked_items if x['type']=='episode']
-        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type']=='keyword']
+        blocked_episodes = [x['label'] for x in blocked_items if x['type'] == 'episode']
+        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type'] == 'keyword']
         items_to_stage = []
         num_already_staged = 0
         num_already_managed = 0

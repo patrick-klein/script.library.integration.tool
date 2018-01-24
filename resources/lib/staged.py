@@ -11,7 +11,7 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 
-from utils import get_items, append_item, clean, log_msg
+from utils import get_items, append_item, clean
 
 # define managed folder for use throughout code
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')

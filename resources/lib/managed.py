@@ -102,8 +102,6 @@ class ManagedMovies(object):
         ''' provides options for a single managed movie in a dialog window '''
         # TODO: add rename option
         # TODO: add reload metadata option
-        # TODO: move back to staging
-        # TODO: change item.show_title to item.get_show_title after I've rebuilt library
         STR_REMOVE = self.addon.getLocalizedString(32017)
         STR_MOVE_BACK_TO_STAGED = self.addon.getLocalizedString(32018)
         STR_BACK = self.addon.getLocalizedString(32011)

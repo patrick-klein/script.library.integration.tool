@@ -16,9 +16,9 @@ import simplejson as json
 from resources.lib.contentitem import MovieItem, EpisodeItem
 from resources.lib.utils import log_msg, get_items, save_items
 
-
 if __name__ == '__main__':
     #TODO: add recursive option
+    #TODO: fix for empty directories
 
     addon = xbmcaddon.Addon()
     STR_ADDON_NAME = addon.getAddonInfo('name')
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # get content type
     container_type = xbmc.getInfoLabel('Container.Content')
-    if container_type=='movies':
+    if container_type == 'movies':
         # check if contents are movie
         content_type = "movie"
     else:
@@ -87,8 +87,8 @@ if __name__ == '__main__':
         staged_paths = [x.get_path() for x in staged_items]
         managed_paths = [x.get_path() for x in get_items('managed.pkl')]
         blocked_items = get_items('blocked.pkl')
-        blocked_movies = [x['label'] for x in blocked_items if x['type']=='movie']
-        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type']=='keyword']
+        blocked_movies = [x['label'] for x in blocked_items if x['type'] == 'movie']
+        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type'] == 'keyword']
         items_to_stage = []
         for i, ditem in enumerate(dir_items):
             # get label & path for item
@@ -115,16 +115,16 @@ if __name__ == '__main__':
                 STR_ADDON_NAME, STR_i_MOVIES_STAGED % len(items_to_stage)))
 
 
-    elif content_type=='tvshow':
+    elif content_type == 'tvshow':
         #TODO: add fix for smithsonian, so you can add from episode directory
 
         staged_items = get_items('staged.pkl')
         staged_paths = [x.get_path() for x in staged_items]
         managed_paths = [x.get_path() for x in get_items('managed.pkl')]
         blocked_items = get_items('blocked.pkl')
-        blocked_shows = [x['label'] for x in blocked_items if x['type']=='tvshow']
-        blocked_episodes = [x['label'] for x in blocked_items if x['type']=='episode']
-        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type']=='keyword']
+        blocked_shows = [x['label'] for x in blocked_items if x['type'] == 'tvshow']
+        blocked_episodes = [x['label'] for x in blocked_items if x['type'] == 'episode']
+        blocked_keywords = [x['label'].lower() for x in blocked_items if x['type'] == 'keyword']
         items_to_stage = []
         for ditem in dir_items:
             # get name of show and skip if blocked

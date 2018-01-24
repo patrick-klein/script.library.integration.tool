@@ -100,12 +100,15 @@ class ContentItem(object):
         save_items('staged.pkl', staged)
 
     def get_title(self):
+        ''' returns title of video as string '''
         return self.title
 
     def get_path(self):
+        ''' returns path to video in plugin as string '''
         return self.path
 
     def get_mediatype(self):
+        ''' returns mediatype (movie or tvshow) as string '''
         return self.mediatype
 
 class MovieItem(ContentItem):
@@ -324,4 +327,5 @@ class EpisodeItem(ContentItem):
                 self.rename(new_title)
 
     def get_show_title(self):
+        ''' returns title of tvshow for episode as string '''
         return self.show_title
