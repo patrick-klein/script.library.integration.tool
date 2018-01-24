@@ -6,39 +6,52 @@ This module contains system commands for nt/windows systems
 '''
 
 import os
+import shutil
+from glob import glob
 
 def create_empty_file(filepath):
     ''' creates empty file at filepath '''
-    raise NotImplementedError('windows.create_empty_file() not implemented!')
+    os.mknod(filepath)
 
 def create_stream_file(plugin_path, filepath):
     ''' creates stream file with plugin_path at filepath '''
-    raise NotImplementedError('windows.create_stream_file() not implemented!')
+    with open(filepath,'w') as f:
+        f.write(plugin_path)
 
 def softlink_file(src, dst):
     ''' symlink file at src to dst '''
-    raise NotImplementedError('windows.softlink_file() not implemented!')
+    # can't symlink on windows, just copying file
+    shutil.copyfile(src, dst)
 
 def softlink_files_in_dir(src_dir, dst_dir):
     ''' symlink all files in src_dir using wildcard to dst_dir '''
-    raise NotImplementedError('windows.softlink_files_in_dir() not implemented!')
+    # can't symlink on windows, just copying files
+    for fname in os.listdir(src_dir):
+        shutil.copyfile(os.path.join(src_dir, fname),
+                        os.path.join(dst_dir, fname))
 
 def mkdir(dir_path):
     ''' make directory at dir_path '''
-    raise NotImplementedError('windows.mkdir() not implemented!')
+    try:
+        os.mkdir(dir_path)
+    except OSError:
+        pass
 
 def mv_with_type(title_path, filetype, title_dst):
     ''' moves files with wildcard between title_path & filetype to title_dst '''
-    raise NotImplementedError('windows.mv_with_type() not implemented!')
+    for path in glob('{0}*{1}'.format(title_path, filetype)):
+        os.rename(fname, title_dst+filetype)
 
 def rm_strm_in_dir(dir_path):
     ''' removes all stream files in dir '''
-    raise NotImplementedError('windows.rm_strm_in_dir() not implemented!')
+    for filepath in glob(os.path.join(dir_path, '*.strm')):
+        os.remove(filepath)
 
 def rm_with_wildcard(title_path):
     ''' removes all files starting with title_path using wildcard '''
-    raise NotImplementedError('windows.rm_with_wildcard() not implemented!')
+    for filepath in glob(title_path+'*'):
+        os.remove(filepath)
 
 def remove_dir(dir_path):
     ''' removes directory at dir_path '''
-    raise NotImplementedError('windows.remove_dir() not implemented!')
+    shutil.rmtree(dir_path)
