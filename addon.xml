@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.1.0" provider-name="patrick-klein">
+<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.2.0" provider-name="patrick-klein">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -33,7 +33,7 @@
       Must choose a Managed Folder in settings before running
     </disclaimer>
     <language></language>
-    <platform>osx linux</platform>
+    <platform>all</platform>
     <license>GPL v2.0</license>
     <forum></forum>
     <website></website>
@@ -46,6 +46,12 @@
       <screenshot>resources/screenshot-03.jpg</screenshot>
     </assets>
     <news>
+      v0.2.0 (2018-1-24)
+      - Windows support
+      - new icon
+      - check if managed directory exists when first called
+      - various improvements
+
       v0.1.0 (2018-1-22)
       - Initial release
     </news>
