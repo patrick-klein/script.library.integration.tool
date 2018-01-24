@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import xbmc
 import xbmcaddon
 
-from utils import log_msg, get_items, save_items, append_item, clean
+from utils import log_msg, get_items, save_items, append_item, clean_name
 
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
 
@@ -123,7 +123,7 @@ class MovieItem(ContentItem):
 
     def add_to_library(self):
         # parse and fix file/dir names
-        safe_title = clean(self.title)
+        safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'ManagedMovies', safe_title)
         filepath = os.path.join(movie_dir, safe_title + '.strm')
         # create directory for movie
@@ -140,7 +140,7 @@ class MovieItem(ContentItem):
         self.remove_from_staged()
 
     def remove_from_library(self):
-        safe_title = clean(self.title)
+        safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'ManagedMovies', safe_title)
         os.system('rm -r "%s"' % movie_dir)
         self.remove_from_managed()
@@ -149,14 +149,14 @@ class MovieItem(ContentItem):
         # add title to blocked
         append_item('blocked.pkl', {'type':'movie', 'label':self.title})
         # delete metadata items
-        safe_title = clean(self.title)
+        safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
         os.system('rm -r "%s"' % movie_dir)
         # remove from staged
         self.remove_from_staged()
 
     def create_metadata_item(self):
-        safe_title = clean(self.title)
+        safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
         filepath = os.path.join(movie_dir, safe_title+'.strm')
         os.system('mkdir "%s"' % movie_dir)
@@ -181,12 +181,12 @@ class EpisodeItem(ContentItem):
         # rename episode if metadata is available
         self.rename_using_metadata()
         # don't add episodes that don't have episode id in name
-        safe_title = clean(self.title)
+        safe_title = clean_name(self.title)
         if not (fnmatch(safe_title, '*[0-9]x[0-9]*')\
             or fnmatch(safe_title, '*[Ss][0-9]*[Ee][0-9]*')):
             return
         # check if tvshow folder already exists
-        safe_showtitle = clean(self.show_title)
+        safe_showtitle = clean_name(self.show_title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         show_dir = os.path.join(MANAGED_FOLDER, 'ManagedTV', safe_showtitle)
         if not os.path.isdir(show_dir):
@@ -218,8 +218,8 @@ class EpisodeItem(ContentItem):
 
     def remove_from_library(self):
         # delete stream, nfo & thumb
-        safe_showtitle = clean(self.show_title)
-        safe_title = clean(self.title)
+        safe_showtitle = clean_name(self.show_title)
+        safe_title = clean_name(self.title)
         show_dir = os.path.join(MANAGED_FOLDER, 'ManagedTV', safe_showtitle)
         #os.remove(os.path.join(show_dir, safe_title))
         os.system('rm "%s"*' % os.path.join(show_dir, safe_title))
@@ -239,8 +239,8 @@ class EpisodeItem(ContentItem):
         # add show title to blocked
         append_item('blocked.pkl', {'type':'episode', 'label':self.title.replace('-0x0', '')})
         # delete metadata items
-        safe_showtitle = clean(self.show_title)
-        safe_title = clean(self.title)
+        safe_showtitle = clean_name(self.show_title)
+        safe_title = clean_name(self.title)
         title_path = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle, safe_title)
         os.system('rm "%s"*' % title_path)
         # remove from staged
@@ -252,12 +252,12 @@ class EpisodeItem(ContentItem):
         #?TODO: could probably just rename based on existing strm file instead of nfo file
         #   (shouldn't make a difference though)
         # create show_dir in Metadata/TV if it doesn't already exist
-        safe_showtitle = clean(self.show_title)
+        safe_showtitle = clean_name(self.show_title)
         show_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         if not os.path.exists(show_dir):
             os.system('mkdir "%s"' % show_dir)
         # check for existing stream file
-        safe_title = clean(self.title)
+        safe_title = clean_name(self.title)
         strm_path = os.path.join(show_dir, safe_title+'.strm')
         # only create metadata item if it doesn't already exist (by checking for stream title)
         if not os.path.exists(strm_path):
@@ -274,7 +274,7 @@ class EpisodeItem(ContentItem):
             else:
                 new_title = self.title
             # create a blank file so media managers can recognize it and create nfo file
-            filepath = os.path.join(show_dir, clean(new_title)+'.strm')
+            filepath = os.path.join(show_dir, clean_name(new_title)+'.strm')
             os.system('echo "" > "%s"' % filepath)
             # refresh item in staged file if name changed
             if new_title != self.title:
@@ -284,13 +284,13 @@ class EpisodeItem(ContentItem):
 
     def rename(self, name):
         # rename files if they exist
-        safe_showtitle = clean(self.show_title)
-        safe_title = clean(self.title)
+        safe_showtitle = clean_name(self.show_title)
+        safe_title = clean_name(self.title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         if os.path.isdir(metadata_dir):
             # define "title paths" (paths without extensions)
             title_path = os.path.join(metadata_dir, safe_title)
-            new_title_path = os.path.join(metadata_dir, clean(name))
+            new_title_path = os.path.join(metadata_dir, clean_name(name))
             # rename stream placeholder, nfo file, and thumb
             os.system('mv "%s"*.strm "%s.strm"' % (title_path, new_title_path))
             os.system('mv "%s"*.nfo "%s.nfo"' % (title_path, new_title_path))
@@ -302,8 +302,8 @@ class EpisodeItem(ContentItem):
 
     def rename_using_metadata(self):
         #?TODO: rename show_title too
-        safe_showtitle = clean(self.show_title)
-        safe_title = clean(self.title)
+        safe_showtitle = clean_name(self.show_title)
+        safe_title = clean_name(self.title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         nfo_path = os.path.join(metadata_dir, safe_title+'.nfo')
         log_msg('nfo_path: %s' % nfo_path)

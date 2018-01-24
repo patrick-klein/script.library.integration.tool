@@ -15,7 +15,7 @@ from managed import ManagedMovies, ManagedTV
 from staged import StagedMovies, StagedTV
 from synced import Synced
 from blocked import Blocked
-from utils import log_msg
+from utils import log_msg, notification
 
 # define managed folder for use throughout code
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
@@ -43,9 +43,7 @@ class Main(object):
         if not (MANAGED_FOLDER and os.path.isdir(MANAGED_FOLDER)):
             #TODO: open prompt to just set managed folder from here
             STR_CHOOSE_FOLDER = self.addon.getLocalizedString(32123)
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    self.STR_ADDON_NAME, STR_CHOOSE_FOLDER))
+            notification(STR_CHOOSE_FOLDER)
             log_msg('No managed folder!', xbmc.LOGERROR)
             sys.exit()
 
@@ -68,9 +66,7 @@ class Main(object):
             created_folders = True
         if created_folders:
             STR_SUBFOLDERS_CREATED = self.addon.getLocalizedString(32127)
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    self.STR_ADDON_NAME, STR_SUBFOLDERS_CREATED))
+            notification(STR_SUBFOLDERS_CREATED)
             sys.exit()
 
         # Open main menu

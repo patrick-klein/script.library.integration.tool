@@ -10,7 +10,7 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 
-from utils import get_items
+from utils import get_items, notification
 
 class ManagedMovies(object):
     '''
@@ -75,9 +75,7 @@ class ManagedMovies(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_MOVIES_REMOVED))
+        notification(STR_ALL_MOVIES_REMOVED)
 
     def move_all_to_staged(self):
         ''' removes all managed movies from library, and adds them to staged '''
@@ -94,9 +92,7 @@ class ManagedMovies(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_MOVIES_MOVED_TO_STAGED))
+        notification(STR_ALL_MOVIES_MOVED_TO_STAGED)
 
     def options(self, item):
         ''' provides options for a single managed movie in a dialog window '''
@@ -184,9 +180,7 @@ class ManagedTV(object):
             else:
                 pDialog.update(0, line2=' ', line3=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_TV_SHOWS_REMOVED))
+        notification(STR_ALL_TV_SHOWS_REMOVED)
 
     def move_all_to_staged(self):
         ''' removes all managed tvshow items from library, and adds them to staged '''
@@ -203,9 +197,7 @@ class ManagedTV(object):
             else:
                 pDialog.update(0, line2=' ', line3=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_TV_SHOWS_MOVED_TO_STAGED))
+        notification(STR_ALL_TV_SHOWS_MOVED_TO_STAGED)
 
     def view_episodes(self, show_title):
         '''
@@ -260,9 +252,7 @@ class ManagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_x_EPISODES_REMOVED))
+        notification(STR_ALL_x_EPISODES_REMOVED)
 
     def move_episodes_to_staged(self, show_title):
         ''' removes all managed episodes in specified show from library, and adds them to staged '''
@@ -279,9 +269,7 @@ class ManagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_x_EPISODES_MOVED_TO_STAGED))
+        notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED)
 
     def episode_options(self, item):
         ''' provides options for a single managed episode in a dialog window '''

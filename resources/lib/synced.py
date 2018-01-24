@@ -12,7 +12,7 @@ import xbmcgui
 import xbmcaddon
 
 from contentitem import MovieItem, EpisodeItem
-from utils import get_items, save_items, log_msg
+from utils import get_items, save_items, notification, log_msg
 
 class Synced(object):
     '''
@@ -104,9 +104,7 @@ class Synced(object):
                 self.STR_ADDON_NAME, STR_REMOVE_ALL_SYNCED_DIRS), STR_ARE_YOU_SURE):
             self.synced_dirs = []
             save_items('synced.pkl', self.synced_dirs)
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    self.STR_ADDON_NAME, STR_ALL_SYNCED_DIRS_REMOVED))
+            notification(STR_ALL_SYNCED_DIRS_REMOVED)
 
     def update_all(self):
         '''

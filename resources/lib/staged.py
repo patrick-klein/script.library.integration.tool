@@ -11,7 +11,7 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 
-from utils import get_items, append_item, clean
+from utils import get_items, append_item, clean_name, notification
 
 # define managed folder for use throughout code
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
@@ -89,9 +89,7 @@ class StagedMovies(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_MOVIES_ADDED))
+        notification(STR_ALL_MOVIES_ADDED)
 
     def add_all_with_metadata(self):
         ''' adds all movies with nfo files to the library '''
@@ -102,7 +100,7 @@ class StagedMovies(object):
         staged_items = get_items('staged.pkl')
         for item in staged_items:
             if item.get_mediatype() == 'movie':
-                safe_title = clean(item.get_title())
+                safe_title = clean_name(item.get_title())
                 metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
                 nfo_path = os.path.join(metadata_dir, safe_title + '.nfo')
                 if os.path.exists(nfo_path):
@@ -110,9 +108,7 @@ class StagedMovies(object):
                     item.add_to_library()
             pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_MOVIES_WITH_METADTA_ADDED))
+        notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
     def remove_all(self):
         ''' removes all staged movies '''
@@ -128,9 +124,7 @@ class StagedMovies(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_MOVIES_REMOVED))
+        notification(STR_ALL_MOVIES_REMOVED)
 
     def generate_all_metadata(self):
         ''' generates metadata items for all staged movies '''
@@ -146,9 +140,7 @@ class StagedMovies(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_MOVIE_METADTA_CREATED))
+        notification(STR_ALL_MOVIE_METADTA_CREATED)
 
     def options(self, item):
         ''' provides options for a single staged movie in a dialog window '''
@@ -264,9 +256,7 @@ class StagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_TV_SHOWS_ADDED))
+        notification(STR_ALL_TV_SHOWS_ADDED)
 
     def add_all_with_metadata(self):
         ''' adds all tvshow items with nfo file to library'''
@@ -277,8 +267,8 @@ class StagedTV(object):
         staged_items = get_items('staged.pkl')
         for item in staged_items:
             if item.get_mediatype() == 'tvshow':
-                safe_title = clean(item.get_title())
-                safe_showtitle = clean(item.get_show_title())
+                safe_title = clean_name(item.get_title())
+                safe_showtitle = clean_name(item.get_show_title())
                 metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
                 nfo_path = os.path.join(metadata_dir, safe_title + '.nfo')
                 if os.path.exists(nfo_path):
@@ -286,9 +276,7 @@ class StagedTV(object):
                     item.add_to_library()
             pDialog.update(0, line2=' ', line3=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED))
+        notification(STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED)
 
     def remove_all(self):
         ''' removes all staged tvshow items '''
@@ -304,9 +292,7 @@ class StagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_TV_SHOW_REMOVED))
+        notification(STR_ALL_TV_SHOW_REMOVED)
 
     def generate_all_metadata(self):
         ''' creates metadata for all staged tvshow items '''
@@ -322,9 +308,7 @@ class StagedTV(object):
             else:
                 pDialog.update(0, line2=' ', line3=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_TV_SHOW_METADATA_CREATED))
+        notification(STR_ALL_TV_SHOW_METADATA_CREATED)
 
     def view_episodes(self, show_title):
         '''
@@ -398,9 +382,7 @@ class StagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_x_EPISODES_ADDED))
+        notification(STR_ALL_x_EPISODES_ADDED)
 
     def add_all_episodes_with_metadata(self, show_title):
         ''' adds all episodes in the specified show with metadata to the library '''
@@ -411,8 +393,8 @@ class StagedTV(object):
         staged_items = get_items('staged.pkl')
         for item in staged_items:
             if item.get_mediatype() == 'tvshow' and item.get_show_title() == show_title:
-                safe_title = clean(item.get_title())
-                safe_showtitle = clean(show_title)
+                safe_title = clean_name(item.get_title())
+                safe_showtitle = clean_name(show_title)
                 metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
                 nfo_path = os.path.join(metadata_dir, safe_title + '.nfo')
                 if os.path.exists(nfo_path):
@@ -420,9 +402,7 @@ class StagedTV(object):
                     item.add_to_library()
             pDialog.update(0, line2=' ', line3=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_x_EPISODES_WITH_METADATA_ADDED))
+        notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED)
 
     def remove_all_episodes(self, show_title):
         ''' removes all episodes from the specified show '''
@@ -438,9 +418,7 @@ class StagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_x_EPISODES_REMOVED))
+        notification(STR_ALL_x_EPISODES_REMOVED)
 
     def remove_and_block_show(self, show_title):
         '''
@@ -450,7 +428,7 @@ class StagedTV(object):
         # remove from staged
         self.remove_all_episodes(show_title)
         # delete metadata folder
-        safe_showtitle = clean(show_title)
+        safe_showtitle = clean_name(show_title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         os.system('rm -r "%s"' % metadata_dir)
         # add show title to blocked
@@ -470,9 +448,7 @@ class StagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_x_EPISODES_RENAMED_USING_METADATA))
+        notification(STR_x_EPISODES_RENAMED_USING_METADATA)
 
     def generate_all_episodes_metadata(self, show_title):
         ''' generates metadata items for all episodes in show '''
@@ -488,9 +464,7 @@ class StagedTV(object):
             else:
                 pDialog.update(0, line2=' ')
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                self.STR_ADDON_NAME, STR_ALL_x_METADATA_CREATED))
+        notification(STR_ALL_x_METADATA_CREATED)
 
     def episode_options(self, item):
         ''' provides options for a single staged episode in a dialog window '''

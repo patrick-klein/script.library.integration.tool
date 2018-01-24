@@ -14,7 +14,7 @@ import xbmcaddon
 import simplejson as json
 
 from resources.lib.contentitem import MovieItem, EpisodeItem
-from resources.lib.utils import log_msg, get_items, save_items
+from resources.lib.utils import get_items, save_items, notification, log_msg
 
 if __name__ == '__main__':
     #TODO: add recursive option
@@ -26,9 +26,7 @@ if __name__ == '__main__':
     # Display an error is user hasn't configured managed folder yet
     if not addon.getSetting('managed_folder'):
         STR_CHOOSE_FOLDER = addon.getLocalizedString(32123)
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                STR_ADDON_NAME, STR_CHOOSE_FOLDER))
+        notification(STR_CHOOSE_FOLDER)
         log_msg('No managed folder!', xbmc.LOGERROR)
         sys.exit()
 
@@ -110,9 +108,7 @@ if __name__ == '__main__':
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                STR_ADDON_NAME, STR_i_MOVIES_STAGED % len(items_to_stage)))
+        notification(STR_i_MOVIES_STAGED % len(items_to_stage))
 
 
     elif content_type == 'tvshow':
@@ -167,6 +163,4 @@ if __name__ == '__main__':
         staged_items += items_to_stage
         save_items('staged.pkl', staged_items)
         pDialog.close()
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                STR_ADDON_NAME, STR_i_EPISODES_STAGED % len(items_to_stage)))
+        notification(STR_i_EPISODES_STAGED % len(items_to_stage))

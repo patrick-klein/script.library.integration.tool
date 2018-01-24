@@ -14,7 +14,7 @@ import xbmcaddon
 import simplejson as json
 
 from resources.lib.contentitem import MovieItem, EpisodeItem
-from resources.lib.utils import log_msg, get_items, save_items
+from resources.lib.utils import get_items, save_items, notification, log_msg
 
 if __name__ == '__main__':
     #TODO: don't add items already in library
@@ -25,9 +25,7 @@ if __name__ == '__main__':
     # Display an error is user hasn't configured managed folder yet
     if not addon.getSetting('managed_folder'):
         STR_CHOOSE_FOLDER = addon.getLocalizedString(32123)
-        xbmc.executebuiltin(
-            'Notification("{0}", "{1}")'.format(
-                STR_ADDON_NAME, STR_CHOOSE_FOLDER))
+        notification(STR_CHOOSE_FOLDER)
         log_msg('No managed folder!', xbmc.LOGERROR)
         sys.exit()
 
@@ -82,21 +80,15 @@ if __name__ == '__main__':
 
         # check for duplicate
         if path in staged_paths:
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    STR_ADDON_NAME, STR_ITEM_IS_ALREADY_STAGED))
+            notification(STR_ITEM_IS_ALREADY_STAGED)
         elif path in managed_paths:
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    STR_ADDON_NAME, STR_ITEM_IS_ALREADY_MANAGED))
+            notification(STR_ITEM_IS_ALREADY_MANAGED)
         else:
             # stage item
             item = MovieItem(path, label, content_type)
             staged_items.append(item)
             save_items('staged.pkl', staged_items)
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    STR_ADDON_NAME, STR_MOVIE_STAGED))
+            notification(STR_MOVIE_STAGED)
 
     # stage multiple episodes for tvshow
     elif content_type == 'tvshow':
@@ -156,11 +148,7 @@ if __name__ == '__main__':
         save_items('staged.pkl', staged_items)
 
         if num_already_staged > 0 or num_already_managed > 0:
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    STR_ADDON_NAME, STR_i_NEW_i_STAGED_i_MANAGED % \
-                    (len(items_to_stage), num_already_staged, num_already_managed)))
+            notification(STR_i_NEW_i_STAGED_i_MANAGED % \
+                (len(items_to_stage), num_already_staged, num_already_managed))
         else:
-            xbmc.executebuiltin(
-                'Notification("{0}", "{1}")'.format(
-                    STR_ADDON_NAME, STR_i_NEW % len(items_to_stage)))
+            notification(STR_i_NEW % len(items_to_stage))

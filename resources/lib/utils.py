@@ -45,7 +45,7 @@ def remove_item(name, item):
     items.remove(item)
     save_items(name, items)
 
-def clean(s):
+def clean_name(s):
     ''' this function removes problematic characters/substrings from strings for filenames '''
     #?TODO: replace in title directly, not just filename
     s = s.replace('.', '')
@@ -55,6 +55,9 @@ def clean(s):
     s = s.replace('Part 2', 'Part Two')
     s = s.replace(' [cc]', '')
     return s
+
+def notification(msg):
+    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(STR_ADDON_NAME, msg))
 
 def log_msg(msg, loglevel=xbmc.LOGDEBUG):
     ''' log message with addon name and version to kodi log '''
