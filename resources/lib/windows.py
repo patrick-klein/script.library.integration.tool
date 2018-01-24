@@ -15,17 +15,17 @@ def create_empty_file(filepath):
 
 def create_stream_file(plugin_path, filepath):
     ''' creates stream file with plugin_path at filepath '''
-    with open(filepath,'w') as f:
+    with open(filepath, 'w') as f:
         f.write(plugin_path)
 
 def softlink_file(src, dst):
     ''' symlink file at src to dst '''
-    # can't symlink on windows, just copying file
+    # can only symlink on unix, just copy file
     shutil.copyfile(src, dst)
 
 def softlink_files_in_dir(src_dir, dst_dir):
     ''' symlink all files in src_dir using wildcard to dst_dir '''
-    # can't symlink on windows, just copying files
+    # can only symlink on unix, just copy files
     for fname in os.listdir(src_dir):
         shutil.copyfile(os.path.join(src_dir, fname),
                         os.path.join(dst_dir, fname))
@@ -40,7 +40,7 @@ def mkdir(dir_path):
 def mv_with_type(title_path, filetype, title_dst):
     ''' moves files with wildcard between title_path & filetype to title_dst '''
     for path in glob('{0}*{1}'.format(title_path, filetype)):
-        os.rename(fname, title_dst+filetype)
+        os.rename(path, title_dst+filetype)
 
 def rm_strm_in_dir(dir_path):
     ''' removes all stream files in dir '''
