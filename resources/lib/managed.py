@@ -6,7 +6,6 @@ This module contains the classes ManagedMovies and ManagedTV,
 which provide dialog windows and tools for editing managed movies and tvshow items
 '''
 
-import xbmc
 import xbmcgui
 import xbmcaddon
 

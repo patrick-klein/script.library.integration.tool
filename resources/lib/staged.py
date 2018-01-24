@@ -7,7 +7,6 @@ which provide dialog windows and tools for editing staged movies and tvshow item
 '''
 
 import os
-import xbmc
 import xbmcgui
 import xbmcaddon
 

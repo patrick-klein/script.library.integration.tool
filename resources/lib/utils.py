@@ -4,7 +4,6 @@
 '''
 This module contains various helper functions used thoughout the addon
 '''
-#TODO: 'Notification' shorthand
 
 import cPickle as pickle
 
@@ -57,6 +56,7 @@ def clean_name(s):
     return s
 
 def notification(msg):
+    ''' provides shorthand for xbmc builtin notification with addon name '''
     xbmc.executebuiltin('Notification("{0}", "{1}")'.format(STR_ADDON_NAME, msg))
 
 def log_msg(msg, loglevel=xbmc.LOGDEBUG):
