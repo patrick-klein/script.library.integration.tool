@@ -531,3 +531,7 @@ msgstr ""
 msgctxt "#32128"
 msgid "Synced Directories"
 msgstr ""
+
+msgctxt "#32129"
+msgid "Unable to load system tools due to unrecognized platform."
+msgstr ""

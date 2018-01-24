@@ -12,6 +12,15 @@ import xbmcaddon
 
 from utils import get_items, append_item, clean_name, notification
 
+# get tools depending on platform
+if os.name == 'posix':
+    import unix as fs
+elif os.name == 'nt':
+    import windows as fs
+else:
+    notification(xbmcaddon.Addon().getLocalizedString(32129))
+    log_msg('Unrecognized OS "%s".  Quitting addon...' % os.name)
+
 # define managed folder for use throughout code
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
 
@@ -429,7 +438,7 @@ class StagedTV(object):
         # delete metadata folder
         safe_showtitle = clean_name(show_title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
-        os.system('rm -r "%s"' % metadata_dir)
+        fs.remove_dir(metadata_dir)
         # add show title to blocked
         append_item('blocked.pkl', {'type':'tvshow', 'label':show_title})
 

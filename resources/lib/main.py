@@ -17,6 +17,15 @@ from synced import Synced
 from blocked import Blocked
 from utils import log_msg, notification
 
+# get tools depending on platform
+if os.name == 'posix':
+    import unix as fs
+elif os.name == 'nt':
+    import windows as fs
+else:
+    notification(xbmcaddon.Addon().getLocalizedString(32129))
+    log_msg('Unrecognized OS "%s".  Quitting addon...' % os.name)
+
 # define managed folder for use throughout code
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
 log_msg('managed_folder: %s' % MANAGED_FOLDER)
@@ -50,19 +59,19 @@ class Main(object):
         # Create subfolders in managed_folder if they don't exist
         created_folders = False
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedMovies')):
-            os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'ManagedMovies'))
+            fs.mkdir(os.path.join(MANAGED_FOLDER, 'ManagedMovies'))
             created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedTV')):
-            os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'ManagedTV'))
+            fs.mkdir(os.path.join(MANAGED_FOLDER, 'ManagedTV'))
             created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata')):
-            os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata'))
+            fs.mkdir(os.path.join(MANAGED_FOLDER, 'Metadata'))
             created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies')):
-            os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies'))
+            fs.mkdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies'))
             created_folders = True
         if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'TV')):
-            os.system('mkdir "%s"' % os.path.join(MANAGED_FOLDER, 'Metadata', 'TV'))
+            fs.mkdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'TV'))
             created_folders = True
         if created_folders:
             STR_SUBFOLDERS_CREATED = self.addon.getLocalizedString(32127)

@@ -14,7 +14,16 @@ from bs4 import BeautifulSoup
 import xbmc
 import xbmcaddon
 
-from utils import log_msg, get_items, save_items, append_item, clean_name
+from utils import get_items, save_items, append_item, clean_name, log_msg
+
+# get tools depending on platform
+if os.name == 'posix':
+    import unix as fs
+elif os.name == 'nt':
+    import windows as fs
+else:
+    notification(xbmcaddon.Addon().getLocalizedString(32129))
+    log_msg('Unrecognized OS "%s".  Quitting addon...' % os.name)
 
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
 
@@ -127,14 +136,14 @@ class MovieItem(ContentItem):
         movie_dir = os.path.join(MANAGED_FOLDER, 'ManagedMovies', safe_title)
         filepath = os.path.join(movie_dir, safe_title + '.strm')
         # create directory for movie
-        os.system('mkdir "%s"' % movie_dir)
+        fs.mkdir(movie_dir)
         # add metadata (optional)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
         if os.path.isdir(metadata_dir):
-            os.system('ln -s "%s/"* "%s"' % (metadata_dir, movie_dir))
-            os.system('rm "%s/*.strm"' % movie_dir)
+            fs.softlink_files_in_dir(metadata_dir, movie_dir)
+            fs.rm_strm_in_dir(movie_dir)
         # add stream file to movie_dir
-        os.system('echo "%s" > "%s"' % (self.path, filepath))
+        fs.create_stream_file(self.path, filepath)
         # add to managed file
         self.add_to_managed_file()
         self.remove_from_staged()
@@ -142,7 +151,7 @@ class MovieItem(ContentItem):
     def remove_from_library(self):
         safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'ManagedMovies', safe_title)
-        os.system('rm -r "%s"' % movie_dir)
+        fs.remove_dir(movie_dir)
         self.remove_from_managed()
 
     def remove_and_block(self):
@@ -151,7 +160,7 @@ class MovieItem(ContentItem):
         # delete metadata items
         safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
-        os.system('rm -r "%s"' % movie_dir)
+        fs.remove_dir(movie_dir)
         # remove from staged
         self.remove_from_staged()
 
@@ -159,8 +168,8 @@ class MovieItem(ContentItem):
         safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
         filepath = os.path.join(movie_dir, safe_title+'.strm')
-        os.system('mkdir "%s"' % movie_dir)
-        os.system('echo "" > "%s"' % filepath)
+        fs.mkdir(movie_dir)
+        fs.create_empty_file(filepath)
 
 class EpisodeItem(ContentItem):
     '''
@@ -184,6 +193,8 @@ class EpisodeItem(ContentItem):
         safe_title = clean_name(self.title)
         if not (fnmatch(safe_title, '*[0-9]x[0-9]*')\
             or fnmatch(safe_title, '*[Ss][0-9]*[Ee][0-9]*')):
+            log_msg('No episode number detected for {0}. Not adding to library...'.format(
+                safe_title), xbmc.LOGWARNING)
             return
         # check if tvshow folder already exists
         safe_showtitle = clean_name(self.show_title)
@@ -191,7 +202,7 @@ class EpisodeItem(ContentItem):
         show_dir = os.path.join(MANAGED_FOLDER, 'ManagedTV', safe_showtitle)
         if not os.path.isdir(show_dir):
             # if not, create folder in ManagedTV
-            os.system('mkdir "%s"' % show_dir)
+            fs.mkdir(show_dir)
             if os.path.isdir(metadata_dir):
                 # link tvshow.nfo and artwork now, if metadata_dir exists
                 files = os.listdir(metadata_dir)
@@ -199,19 +210,20 @@ class EpisodeItem(ContentItem):
                     if not (fnmatch(fname, '*[0-9]x[0-9]*') \
                         or fnmatch(fname, '*[Ss][0-9]*[Ee][0-9]*') \
                         or '.strm' in fname):
-                        os.system('ln -s "{0}" "{1}"'.format(
-                            os.path.join(metadata_dir, fname), os.path.join(show_dir, fname)))
+                        fs.softlink_file(
+                            os.path.join(metadata_dir, fname),
+                            os.path.join(show_dir, fname))
         # create stream file
         filepath = os.path.join(show_dir, safe_title+'.strm')
-        os.system('echo "{0}" > "{1}"'.format(self.path, filepath))
+        fs.create_stream_file(self.path, filepath)
         # link metadata for episode if it exists
         if os.path.isdir(metadata_dir):
             nfo_path = os.path.join(metadata_dir, safe_title+'.nfo')
             if os.path.exists(nfo_path):
-                os.system('ln -s "{0}" "{1}"'.format(nfo_path, show_dir))
+                fs.softlink_file(nfo_path, show_dir)
             thumb_path = os.path.join(metadata_dir, safe_title+'-thumb.jpg')
             if os.path.exists(thumb_path):
-                os.system('ln -s "{0}" "{1}"'.format(thumb_path, show_dir))
+                fs.softlink_file(thumb_path, show_dir)
         # remove from staged, add to managed
         self.add_to_managed_file()
         self.remove_from_staged()
@@ -221,8 +233,7 @@ class EpisodeItem(ContentItem):
         safe_showtitle = clean_name(self.show_title)
         safe_title = clean_name(self.title)
         show_dir = os.path.join(MANAGED_FOLDER, 'ManagedTV', safe_showtitle)
-        #os.remove(os.path.join(show_dir, safe_title))
-        os.system('rm "%s"*' % os.path.join(show_dir, safe_title))
+        fs.rm_with_wildcard(os.path.join(show_dir, safe_title))
         # check if last stream file, and remove entire dir if so
         files = os.listdir(show_dir)
         remove_dir = True
@@ -231,7 +242,7 @@ class EpisodeItem(ContentItem):
                 remove_dir = False
                 break
         if remove_dir:
-            os.system('rm -r "%s"' % show_dir)
+            fs.remove_dir(show_dir)
         # remove from managed list
         self.remove_from_managed()
 
@@ -242,7 +253,7 @@ class EpisodeItem(ContentItem):
         safe_showtitle = clean_name(self.show_title)
         safe_title = clean_name(self.title)
         title_path = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle, safe_title)
-        os.system('rm "%s"*' % title_path)
+        fs.rm_with_wildcard(title_path)
         # remove from staged
         self.remove_from_staged()
 
@@ -255,7 +266,7 @@ class EpisodeItem(ContentItem):
         safe_showtitle = clean_name(self.show_title)
         show_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         if not os.path.exists(show_dir):
-            os.system('mkdir "%s"' % show_dir)
+            fs.mkdir(show_dir)
         # check for existing stream file
         safe_title = clean_name(self.title)
         strm_path = os.path.join(show_dir, safe_title+'.strm')
@@ -275,7 +286,7 @@ class EpisodeItem(ContentItem):
                 new_title = self.title
             # create a blank file so media managers can recognize it and create nfo file
             filepath = os.path.join(show_dir, clean_name(new_title)+'.strm')
-            os.system('echo "" > "%s"' % filepath)
+            fs.create_empty_file(filepath)
             # refresh item in staged file if name changed
             if new_title != self.title:
                 self.title = new_title
@@ -292,9 +303,9 @@ class EpisodeItem(ContentItem):
             title_path = os.path.join(metadata_dir, safe_title)
             new_title_path = os.path.join(metadata_dir, clean_name(name))
             # rename stream placeholder, nfo file, and thumb
-            os.system('mv "%s"*.strm "%s.strm"' % (title_path, new_title_path))
-            os.system('mv "%s"*.nfo "%s.nfo"' % (title_path, new_title_path))
-            os.system('mv "%s"*-thumb.jpg "%s-thumb.jpg"' % (title_path, new_title_path))
+            fs.mv_with_type(title_path, '.strm', new_title_path)
+            fs.mv_with_type(title_path, '.nfo', new_title_path)
+            fs.mv_with_type(title_path, '.-thumb.jpg', new_title_path)
         # rename property and refresh in staged file
         self.title = name
         self.remove_from_staged()
