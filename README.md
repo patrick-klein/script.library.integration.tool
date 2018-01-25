@@ -1,7 +1,7 @@
 <img src="./resources/logo.png" width=512>
 
 
-[![Version](https://img.shields.io/badge/latest%20version-0.2.0-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
+[![Version](https://img.shields.io/badge/latest%20version-0.2.1-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
 [![GitHub last commit](https://img.shields.io/github/last-commit/patrick-klein/script.library.integration.tool.svg)](https://github.com/patrick-klein/script.library.integration.tool/commits/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
 [![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
