@@ -218,12 +218,22 @@ class EpisodeItem(ContentItem):
         fs.create_stream_file(self.path, filepath)
         # link metadata for episode if it exists
         if os.path.isdir(metadata_dir):
+            # link nfo file for episode
             nfo_path = os.path.join(metadata_dir, safe_title+'.nfo')
             if os.path.exists(nfo_path):
                 fs.softlink_file(nfo_path, show_dir)
-            thumb_path = os.path.join(metadata_dir, safe_title+'-thumb.jpg')
-            if os.path.exists(thumb_path):
-                fs.softlink_file(thumb_path, show_dir)
+            # link thumbnail for episode
+            meta_thumb_path = os.path.join(metadata_dir, safe_title+'-thumb.jpg')
+            managed_thumb_path = os.path.join(show_dir, safe_title+'-thumb.jpg')
+            landscape_path = os.path.join(metadata_dir, 'landscape.jpg')
+            fanart_path = os.path.join(metadata_dir, 'fanart.jpg')
+            if os.path.exists(meta_thumb_path):
+                fs.softlink_file(meta_thumb_path, managed_thumb_path)
+            # try show landscape or fanart (since Kodi can't generate thumb for strm)
+            elif os.path.exists(landscape_path):
+                fs.softlink_file(landscape_path, managed_thumb_path)
+            elif os.path.exists(fanart_path):
+                fs.softlink_file(fanart_path, managed_thumb_path)
         # remove from staged, add to managed
         self.add_to_managed_file()
         self.remove_from_staged()
