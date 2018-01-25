@@ -87,7 +87,7 @@ class ContentItem(object):
 
     def add_to_staged_file(self):
         ''' adds object to staged file '''
-        # TODO: create stage() method, and move the call to create_metadata_item there
+        # TODO: create stage() method
         items = get_items('staged.pkl')
         items.append(self)
         save_items('staged.pkl', items)
@@ -305,7 +305,7 @@ class EpisodeItem(ContentItem):
             # rename stream placeholder, nfo file, and thumb
             fs.mv_with_type(title_path, '.strm', new_title_path)
             fs.mv_with_type(title_path, '.nfo', new_title_path)
-            fs.mv_with_type(title_path, '.-thumb.jpg', new_title_path)
+            fs.mv_with_type(title_path, '-thumb.jpg', new_title_path)
         # rename property and refresh in staged file
         self.title = name
         self.remove_from_staged()
