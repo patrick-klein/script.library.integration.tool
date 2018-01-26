@@ -19,11 +19,8 @@ from utils import get_items, save_items, append_item, clean_name, log_msg
 # get tools depending on platform
 if os.name == 'posix':
     import unix as fs
-elif os.name == 'nt':
-    import windows as fs
 else:
-    notification(xbmcaddon.Addon().getLocalizedString(32129))
-    log_msg('Unrecognized OS "%s".  Quitting addon...' % os.name)
+    import universal as fs
 
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
 

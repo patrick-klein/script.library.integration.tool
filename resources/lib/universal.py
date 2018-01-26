@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-This module contains system commands for nt/windows systems
+This module contains os-independent commands for handling files
 '''
 
 import os

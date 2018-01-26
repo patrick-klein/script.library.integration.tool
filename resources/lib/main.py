@@ -20,11 +20,10 @@ from utils import log_msg, notification
 # get tools depending on platform
 if os.name == 'posix':
     import unix as fs
-elif os.name == 'nt':
-    import windows as fs
+    log_msg('Loaded unix module for system operations')
 else:
-    notification(xbmcaddon.Addon().getLocalizedString(32129))
-    log_msg('Unrecognized OS "%s".  Quitting addon...' % os.name)
+    import universal as fs
+    log_msg('Loaded universal module for system operations')
 
 # define managed folder for use throughout code
 MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
