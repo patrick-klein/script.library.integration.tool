@@ -279,15 +279,17 @@ class EpisodeItem(ContentItem):
             fs.mkdir(show_dir)
         # check for existing stream file
         safe_title = clean_name(self.title)
+        safe_title_no_0x0 = safe_title.replace('-0x0', '')
         strm_path = os.path.join(show_dir, safe_title+'.strm')
         # only create metadata item if it doesn't already exist (by checking for stream title)
         if not os.path.exists(strm_path):
             # rename file if old nfo file has episode id
-            old_renamed = glob(os.path.join(show_dir, '*[0-9]x[0-9]* - {0}.nfo'.format(safe_title)))
+            old_renamed = glob(os.path.join(show_dir,
+                                            '*[0-9]x[0-9]* - {0}.nfo'.format(safe_title_no_0x0)))
             if old_renamed:
                 # prepend title with epid if so
-                epid = old_renamed[0].split('/')[-1].replace(safe_title+'.nfo', '')
-                new_title = epid + self.title
+                epid = old_renamed[0].split('/')[-1].replace(safe_title_no_0x0+'.nfo', '')
+                new_title = epid + self.title.replace('-0x0', '')
             elif not (fnmatch(safe_title, '*[0-9]x[0-9]*') or \
                 fnmatch(safe_title, '*[Ss][0-9]*[Ee][0-9]*')):
                 # otherwise, append -0x0 if title doesn't already have episode id
@@ -338,7 +340,7 @@ class EpisodeItem(ContentItem):
             episode = int(soup.find('episode').get_text())
             # format into episode id
             epid = '{0:02}x{1:02} - '.format(season, episode)
-            log_msg('epid: %s' % epid, xbmc.LOGNOTICE)
+            log_msg('epid: %s' % epid)
             # only rename if epid not already in name (otherwise it would get duplicated)
             if epid not in safe_title:
                 new_title = epid + safe_title.replace('-0x0', '')
