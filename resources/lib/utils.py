@@ -20,7 +20,7 @@ def get_items(name):
     filename = MANAGED_FOLDER + name
     try:
         items = pickle.load(open(filename, "rb"))
-        log_msg('Opening file %s' % filename, xbmc.LOGNOTICE)
+        log_msg('Opening file %s' % filename)
     except IOError:
         items = []
         log_msg('Creating %s' % filename)
@@ -50,9 +50,13 @@ def clean_name(s):
     s = s.replace('.', '')
     s = s.replace(':', '')
     s = s.replace('/', '')
-    s = s.replace('"','')
+    s = s.replace('"', '')
     s = s.replace('Part 1', 'Part One')
     s = s.replace('Part 2', 'Part Two')
+    s = s.replace('Part 3', 'Part Three')
+    s = s.replace('Part 4', 'Part Four')
+    s = s.replace('Part 5', 'Part Five')
+    s = s.replace('Part 6', 'Part Six')
     s = s.replace(' [cc]', '')
     return s
 
