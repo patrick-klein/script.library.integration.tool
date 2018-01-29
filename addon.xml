@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.2.1" provider-name="patrick-klein">
+<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.2.2" provider-name="patrick-klein">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -27,11 +27,15 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en">Allows video add-on content to be integrated into your library.</summary>
     <description lang="en">
-      See README for full description.
+Provides options in the context menu that lets you add any movie or TV show from video plugins into your library.  These videos will show up in your library and play just like any other local file.
+
+You can also sync all of the videos from plugins with a single click, so new videos are automatically available to your library, and old videos videos are removed.
+
+This tool gives you complete control over any custom metadata you want to use for your videos added from plugins.
+
+See the README for a full tutorial.
     </description>
-    <disclaimer lang="en">
-      Must choose a Managed Folder in settings before running
-    </disclaimer>
+    <disclaimer lang="en">Must choose a Managed Folder in settings before running</disclaimer>
     <language></language>
     <platform>all</platform>
     <license>GPL v2.0</license>
@@ -45,19 +49,20 @@
       <screenshot>resources/screenshot-02.jpg</screenshot>
       <screenshot>resources/screenshot-03.jpg</screenshot>
     </assets>
-    <news>
-      v0.2.1 (2018-1-25)
-      - fix for items with quotes in name
-      - fix for renaming thumbnails for episodes
+    <news>v0.2.2 (2018-1-28)
+- add setting to use tvshow artwork when episode thumb is unavailable
+- better file name handling when "Part #" is in episode name
+- use universal fs module when on unrecognized platform
 
-      v0.2.0 (2018-1-24)
-      - Windows support
-      - new icon
-      - check if managed directory exists when first called
-      - various improvements
+v0.2.1 (2018-1-25)
+- fix for items with quotes in name
+- fix for renaming thumbnails for episodes
 
-      v0.1.0 (2018-1-22)
-      - Initial release
+v0.2.0 (2018-1-24)
+- Windows support
+- new icon
+- check if managed directory exists when first called
+- various improvements
     </news>
   </extension>
 

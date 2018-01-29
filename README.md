@@ -1,7 +1,7 @@
 <img src="./resources/logo.png" width=512>
 
 
-[![Version](https://img.shields.io/badge/latest%20version-0.2.1-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
+[![Version](https://img.shields.io/badge/latest%20version-0.2.2-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
 [![GitHub last commit](https://img.shields.io/github/last-commit/patrick-klein/script.library.integration.tool.svg)](https://github.com/patrick-klein/script.library.integration.tool/commits/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
 [![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
@@ -12,8 +12,6 @@
 Library Integration Tool is a Kodi addon that lets you integrate content from any video plugin into your library.  Provides tools for you to directly manage their metadata, and automatically add/remove items based on their current availability.
 
 Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.kodi.tv/showthread.php?tid=327514)
-
----
 
 ## Requirements
 
@@ -36,8 +34,6 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 7. From Kodi Settings, go to Media Settings --> Library --> Videos... --> and navigate to your Managed Folder.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  Recommended to use "Local information only" if you want to use your own metadata.
 
 DISCLAIMER:  You should NEVER edit the contents of ManagedMovies, ManagedTV, or the .pkl lists.  This will break your addon.  If you do break the addon, you can delete ManagedMovies, ManagedTV, and the .pkl lists, and Library Integration Tool will automatically generate new, blank ones the next time you run it.
-
----
 
 ## User Guide
 
@@ -97,8 +93,6 @@ Sometimes when you sync a directory, items may show up that aren't actually vide
 
 And if you change your mind later, you can select any blocked item from the list and choose "Remove".
 
----
-
 ## Recommended Addons
 
 ### Video Plugins
@@ -122,8 +116,6 @@ And if you change your mind later, you can select any blocked item from the list
 
 **WatchedList** by schapplm - *Because you'll potentially remove and re-add streamed content several times with Library Integration Tool, WatchedList makes your watched status persistent by storing it in an independent database*
 
----
-
 ## Contributing
 
 The most important way to contribute right now is to use the addon and post a full debug log if there are any issues.  This is an early release and still likely to undergo drastic changes as I receive feedback.
@@ -131,8 +123,6 @@ The most important way to contribute right now is to use the addon and post a fu
 This addon also includes full localization support, so you are welcome to submit and update translated string files.
 
 For all known bugs and planned feature development, refer to inline TODO tags.  And thank you for considering improving this project!  Full credit for your contributions will be given in the release notes and here in the README.
-
----
 
 ## Known Issues
 
