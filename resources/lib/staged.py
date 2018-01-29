@@ -403,9 +403,9 @@ class StagedTV(object):
                 metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
                 nfo_path = os.path.join(metadata_dir, safe_title + '.nfo')
                 if os.path.exists(nfo_path):
-                    pDialog.update(0, line2=show_title, line3=item.get_title())
+                    pDialog.update(0, line2=item.get_title())
                     item.add_to_library()
-            pDialog.update(0, line2=' ', line3=' ')
+            pDialog.update(0, line2=' ')
         pDialog.close()
         notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED)
 
