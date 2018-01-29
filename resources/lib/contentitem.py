@@ -224,7 +224,7 @@ class EpisodeItem(ContentItem):
             managed_thumb_path = os.path.join(show_dir, safe_title+'-thumb.jpg')
             if os.path.exists(meta_thumb_path):
                 fs.softlink_file(meta_thumb_path, managed_thumb_path)
-            elif xbmcaddon.Addon().getSetting('use_show_artwork')=='true':
+            elif xbmcaddon.Addon().getSetting('use_show_artwork') == 'true':
                 # try show landscape or fanart (since Kodi can't generate thumb for strm)
                 landscape_path = os.path.join(metadata_dir, 'landscape.jpg')
                 fanart_path = os.path.join(metadata_dir, 'fanart.jpg')
