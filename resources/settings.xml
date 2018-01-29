@@ -2,5 +2,6 @@
 <settings>
     <category label="32117">
         <setting label="32118" type="folder" id="managed_folder" source="auto" option="writeable"/>
+        <setting label="32129" type="bool" id="use_show_artwork" default="false"/>
     </category>
 </settings>
