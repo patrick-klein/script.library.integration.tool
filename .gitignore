@@ -1,3 +1,4 @@
 *.pyo
 .DS_Store
 *.pyc
+resources/test/coverage/

@@ -5,7 +5,6 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/patrick-klein/script.library.integration.tool.svg)](https://github.com/patrick-klein/script.library.integration.tool/commits/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
 [![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
-[![Ethereum Donate](https://img.shields.io/badge/ethereum-donate-yellow.svg)](https://www.etherchain.org/account/7c963409d3fc33393e73f06e489b1f9794f7622b)
 
 </br>
 

@@ -535,3 +535,15 @@ msgstr ""
 msgctxt "#32129"
 msgid "Use TV show artwork if episode thumb is unavailable"
 msgstr ""
+
+msgctxt "#32130"
+msgid "Testing"
+msgstr ""
+
+msgctxt "#32131"
+msgid "Run Test Suite"
+msgstr ""
+
+msgctxt "#32132"
+msgid "Run Fuzzer"
+msgstr ""
