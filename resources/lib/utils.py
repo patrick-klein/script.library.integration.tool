@@ -51,6 +51,8 @@ def clean_name(s):
     s = s.replace(':', '')
     s = s.replace('/', '')
     s = s.replace('"', '')
+    s = s.replace('$', '')
+    s = s.replace('é', 'e')
     s = s.replace('Part 1', 'Part One')
     s = s.replace('Part 2', 'Part Two')
     s = s.replace('Part 3', 'Part Three')
