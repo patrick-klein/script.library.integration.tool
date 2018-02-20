@@ -20,9 +20,7 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 1. Download this zip for the [LibraryTools repository](repository.librarytools/repository.librarytools/repository.librarytools-1.0.0.zip)
 
-2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.
-
-3. After installing the repo, "Library Tools repository" will be available in Kodi.
+2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.  After installing the repo, "Library Tools repository" will be available in Kodi.
 
 4. While in Add-ons, go to Install from repository --> Library Tools repository --> Program add-ons --> Select Library Integration Tool
 
@@ -127,3 +125,4 @@ For all known bugs and planned feature development, refer to inline TODO tags.  
 
 * .strm files aren't automatically marked as watched by Kodi
 * Manually added single movies aren't automatically removed if they become unavailable
+* Kodi sorts episodes according to episode number in file name, not .nfo file.
