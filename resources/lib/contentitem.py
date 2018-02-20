@@ -237,19 +237,17 @@ class EpisodeItem(ContentItem):
         self.remove_from_staged()
 
     def remove_from_library(self):
-        # delete stream, nfo & thumb
+        # delete stream & episode metadata
         safe_showtitle = clean_name(self.show_title)
         safe_title = clean_name(self.title)
         show_dir = os.path.join(MANAGED_FOLDER, 'ManagedTV', safe_showtitle)
         fs.rm_with_wildcard(os.path.join(show_dir, safe_title))
         # check if last stream file, and remove entire dir if so
         files = os.listdir(show_dir)
-        remove_dir = True
         for fname in files:
             if '.strm' in fname:
-                remove_dir = False
                 break
-        if remove_dir:
+        else:
             fs.remove_dir(show_dir)
         # remove from managed list
         self.remove_from_managed()
