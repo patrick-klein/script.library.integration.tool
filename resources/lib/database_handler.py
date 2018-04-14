@@ -72,7 +72,7 @@ class DB_Handler(object):
         # create entry in log
         log_msg('Attemping to load path... {0}'.format(path))
         # query database
-        self.c.execute('SELECT * FROM Content WHERE path=?', (path,))
+        self.c.execute('SELECT * FROM Content WHERE Directory=?', (path,))
         # get results and return items as object
         item = self.c.fetchone()
         return self.content_item_from_db(item)
@@ -116,7 +116,7 @@ class DB_Handler(object):
         # create entry in log
         log_msg('Setting content item status... ({0}, {1})'.format(path, status))
         # update item
-        self.c.execute("UPDATE Content SET Status=('?') WHERE Directory=?", (status, path))
+        self.c.execute("UPDATE Content SET Status=(?) WHERE Directory=?", (status, path))
         self.db.commit()
 
     @utf8_decorator

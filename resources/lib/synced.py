@@ -135,7 +135,7 @@ class Synced(object):
         for synced_dir in synced_dirs:
             pDialog.update(0, line2=synced_dir['dir'])
             # directory is just a path to a single movie
-            if synced_dir['mediatype'] == 'single-movie':
+            if synced_dir['type'] == 'single-movie':
                 # add formatted single-movie items to dir_items (no need to check for blocked)
                 dir_items.append(
                     {'file':synced_dir['dir'], 'label':synced_dir['label'], 'mediatype':'movie'})
@@ -161,7 +161,7 @@ class Synced(object):
                         ditem['show_title'] = synced_dir['label']
                         dir_items.append(ditem)
                 # directory is a path to list of movies
-                elif synced_dir['mediatype'] == 'movie':
+                elif synced_dir['type'] == 'movie':
                     # check every movie in results
                     for ditem in synced_dir_items:
                         # skip if blocked

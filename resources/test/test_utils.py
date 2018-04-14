@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 ''' Defines class for testing utils module '''
 
-import os
 import unittest
 
 import xbmcaddon
@@ -26,42 +25,6 @@ class UtilsTest(unittest.TestCase):
         self.assertEqual(utils.STR_ADDON_NAME, addon.getAddonInfo('name'))
         self.assertEqual(utils.STR_ADDON_VER, addon.getAddonInfo('version'))
         self.assertEqual(utils.MANAGED_FOLDER, addon.getSetting('managed_folder'))
-
-    def test_save_and_get_items(self):
-        ''' save and load a list as a pickle file '''
-        h = [1, 2, 3, 4, 5]
-        utils.save_items('test.pkl', h)
-        h_prime = utils.get_items('test.pkl')
-        self.assertEqual(h, h_prime)
-        os.remove(os.path.join(MANAGED_FOLDER, 'test.pkl'))
-
-    def test_get_items_no_file(self):
-        ''' try to load non-existent pickle file '''
-        h = []
-        utils.get_items('test.pkl')
-        h_prime = utils.get_items('test.pkl')
-        self.assertEqual(h, h_prime)
-        os.remove(os.path.join(MANAGED_FOLDER, 'test.pkl'))
-
-    def test_append_item(self):
-        ''' append item to pickle file '''
-        h = [1, 2, 3, 4, 5]
-        utils.save_items('test.pkl', h)
-        utils.append_item('test.pkl', 6)
-        h_prime = utils.get_items('test.pkl')
-        h.append(6)
-        self.assertEqual(h, h_prime)
-        os.remove(os.path.join(MANAGED_FOLDER, 'test.pkl'))
-
-    def test_remove_item(self):
-        ''' remove item from pickle file '''
-        h = [1, 2, 3, 4, 5]
-        utils.save_items('test.pkl', h)
-        utils.remove_item('test.pkl', 3)
-        h_prime = utils.get_items('test.pkl')
-        h.remove(3)
-        self.assertEqual(h, h_prime)
-        os.remove(os.path.join(MANAGED_FOLDER, 'test.pkl'))
 
     def test_clean_name(self):
         ''' test all keywords in clean_name '''
