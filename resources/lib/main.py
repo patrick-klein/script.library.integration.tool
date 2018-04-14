@@ -42,6 +42,7 @@ class Main(object):
     #TODO: option to automatically clean & update when adding/removing
     #TODO: add default location for managed folder
     #TODO: move database to special path
+    #TODO: setting to delete all entries & managed folders, other than synced
 
     def __init__(self):
         self.addon = xbmcaddon.Addon()

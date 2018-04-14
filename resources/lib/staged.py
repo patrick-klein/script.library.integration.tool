@@ -10,8 +10,6 @@ import os
 import xbmcgui
 import xbmcaddon
 
-#from contentitem2 import format_content
-from contentitem import ContentItem
 from utils import clean_name, notification
 from database_handler import DB_Handler
 

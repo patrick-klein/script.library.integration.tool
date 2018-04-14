@@ -5,8 +5,6 @@
 This module contains various helper functions used thoughout the addon
 '''
 
-import os
-
 import xbmc
 import xbmcaddon
 

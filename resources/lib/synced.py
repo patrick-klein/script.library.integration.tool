@@ -11,7 +11,6 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 
-from contentitem import MovieItem, EpisodeItem
 from utils import notification, log_msg
 from database_handler import DB_Handler
 
@@ -62,8 +61,7 @@ class Synced(object):
                 return self.mainmenu.view()
             elif lines[ret] == STR_BACK:
                 return self.mainmenu.view()
-        else:
-            return self.mainmenu.view()
+        return self.mainmenu.view()
 
     def localize_type(self, mediatype):
         ''' localizes tages used for identifying mediatype '''
@@ -80,6 +78,7 @@ class Synced(object):
     def options(self, item):
         ''' provides options for a single synced directory in a dialog window '''
         #TODO: remove all from plugin
+        #TODO: rename label
         STR_REMOVE = self.addon.getLocalizedString(32017)
         STR_SYNCED_DIR_OPTIONS = self.addon.getLocalizedString(32085)
         STR_BACK = self.addon.getLocalizedString(32011)
