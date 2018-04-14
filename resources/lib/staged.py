@@ -135,6 +135,7 @@ class StagedMovies(object):
 
     def options(self, item):
         ''' provides options for a single staged movie in a dialog window '''
+        #TODO: add a back button
         STR_ADD = self.addon.getLocalizedString(32048)
         STR_REMOVE = self.addon.getLocalizedString(32017)
         STR_REMOVE_AND_BLOCK = self.addon.getLocalizedString(32049)

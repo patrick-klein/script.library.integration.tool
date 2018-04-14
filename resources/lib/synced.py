@@ -84,7 +84,7 @@ class Synced(object):
         STR_BACK = self.addon.getLocalizedString(32011)
         lines = [STR_REMOVE, STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1} - {2}'.format(
-            self.STR_ADDON_NAME, STR_SYNCED_DIR_OPTIONS, item[0]), lines)
+            self.STR_ADDON_NAME, STR_SYNCED_DIR_OPTIONS, item['label']), lines)
         if not ret < 0:
             if lines[ret] == STR_REMOVE:
                 self.dbh.remove_synced_dir(item['dir'])
@@ -114,6 +114,7 @@ class Synced(object):
         #       maybe load parent dir and check for path or label?  it would be slower though
         #TODO: bugfix: unicode error when comparing some blocked titles
         #TODO: option to only update specified or managed items
+        #TODO: option to add update frequencies for specific directories (i.e. weekly/monthly/etc.)
         STR_GETTING_ALL_ITEMS_FROM_SYNCED_DIRS = self.addon.getLocalizedString(32089)
         STR_FINDING_ITEMS_TO_REMOVE_FROM_MANAGED = self.addon.getLocalizedString(32090)
         STR_REMOVING_ITEMS_FROM_STAGED = self.addon.getLocalizedString(32091)
@@ -259,7 +260,9 @@ class Synced(object):
                     pDialog.update(0, line2=' ')
                 pDialog.update(0, line1=STR_STAGING_ITEMS)
                 for item in items_to_stage:
+                    pDialog.update(0, line2=item[1])
                     self.dbh.add_content_item(*item)
+                    pDialog.update(0, line2=' ')
                 xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_SUCCESS)
         else:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_ALL_ITEMS_UPTODATE)

@@ -40,7 +40,9 @@ class UtilsTest(unittest.TestCase):
                       'test10 Part 6':'test10 Part Six',
                       'test11 [cc]':'test11',
                       'test12.:/"Part 1Part 5Part 6 [cc]':
-                      'test12Part OnePart FivePart Six'
+                      'test12Part OnePart FivePart Six',
+                      'test13é': 'test13e',
+                      'test14$': 'test14',
                      }
         for key, value in test_names.iteritems():
             self.assertEqual(utils.clean_name(key), value)

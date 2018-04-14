@@ -211,8 +211,8 @@ class EpisodeItem(ContentItem):
 
     def remove_from_library(self):
         # delete stream & episode metadata
-        safe_showtitle = clean_name(self.show_title)
         safe_title = clean_name(self.title)
+        safe_showtitle = clean_name(self.show_title)
         show_dir = os.path.join(MANAGED_FOLDER, 'ManagedTV', safe_showtitle)
         fs.rm_with_wildcard(os.path.join(show_dir, safe_title))
         # check if last stream file, and remove entire dir if so
@@ -226,12 +226,9 @@ class EpisodeItem(ContentItem):
     def remove_and_block(self):
         dbh = db.DB_Handler()
         # add episode title to blocked
-        dbh.add_blocked_item(self.title.replace('-0x0', ''), 'movie')
+        dbh.add_blocked_item(self.title.replace('-0x0', ''), 'episode')
         # delete metadata items
-        safe_showtitle = clean_name(self.show_title)
-        safe_title = clean_name(self.title)
-        title_path = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle, safe_title)
-        fs.rm_with_wildcard(title_path)
+        self.remove_from_library()
         # remove from db
         dbh.remove_content_item(self.path)
 

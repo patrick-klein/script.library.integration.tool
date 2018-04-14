@@ -17,15 +17,14 @@ def utf8_encode(s):
     ''' tries to force utf-8 encoding '''
     # attempt to encode input
     try:
-        s = s.encode('utf-8')
+        return s.encode('utf-8')
     except (UnicodeEncodeError, UnicodeDecodeError):
-        s = s.decode('utf-8').encode('utf-8')
-    return s
+        return s.decode('utf-8').encode('utf-8')
 
 def utf8_decorator(func):
-    ''' decorator for calling etf8_encode on all arguments '''
+    ''' decorator for calling utf8_encode on all arguments '''
     def wrapper(*orig_args, **orig_kwargs):
-        ''' decorator wrapper '''
+        ''' function wrapper '''
         new_args = list()
         for arg in orig_args:
             if isinstance(arg, basestring):
@@ -41,7 +40,7 @@ def utf8_decorator(func):
     return wrapper
 
 def clean_name(s):
-    ''' this function removes problematic characters/substrings from strings for filenames '''
+    ''' this function removes/replaces problematic characters/substrings from strings for filenames '''
     #TODO?: replace in title directly, not just filename
     c = {'.': '',
          ':': '',

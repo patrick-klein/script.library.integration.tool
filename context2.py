@@ -79,10 +79,10 @@ if __name__ == '__main__':
     # query json-rpc to get files in directory
     # TODO: try xbmcvfs.listdir(path) instead
     pDialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-    results = xbmc.executeJSONRPC(
+    results = json.loads(xbmc.executeJSONRPC(
         '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
-        "params": {"directory":"%s"}, "id": 1}' % dir)
-    dir_items = json.loads(results)["result"]["files"]
+        "params": {"directory":"%s"}, "id": 1}' % dir_path))
+    dir_items = results["result"]["files"]
 
     if content_type == 'movie':
 
@@ -120,9 +120,8 @@ if __name__ == '__main__':
             results = json.loads(xbmc.executeJSONRPC(
                 '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
                 "params": {"directory":"%s"}, "id": 1}' % tvshow_path))
-            if not results.has_key('result'):
-                continue
-            if not results["result"].has_key('files'):
+            # skip if results don't load
+            if not (results.has_key('result') and results["result"].has_key('files')):
                 continue
             show_items = results["result"]["files"]
             # get all items to stage in show

@@ -17,7 +17,7 @@ DB_FILE = os.path.join(MANAGED_FOLDER, 'managed.db')
 class DB_Handler(object):
     '''
     This class initializes a connection with the SQLite file
-    and provides methods for interfacing with database
+    and provides methods for interfacing with database.
     SQLite connection is closed when object is deleted.
     '''
     #TODO: update old pkl files
@@ -33,7 +33,7 @@ class DB_Handler(object):
         # create tables if they doesn't exist
         self.c.execute("CREATE TABLE IF NOT EXISTS Content (Directory TEXT PRIMARY KEY, Title TEXT, Mediatype TEXT, Status TEXT, Show_Title TEXT)")
         self.c.execute("CREATE TABLE IF NOT EXISTS Synced (Directory TEXT PRIMARY KEY, Label TEXT, Type TEXT)")
-        self.c.execute("CREATE TABLE IF NOT EXISTS Blocked (Value TEXT, Type TEXT)")
+        self.c.execute("CREATE TABLE IF NOT EXISTS Blocked (Value TEXT NOT NULL, Type TEXT NOT NULL)")
         self.db.commit()
 
     def __del__(self):
@@ -204,10 +204,12 @@ class DB_Handler(object):
         ''' Adds an item to Blocked with the specified valeus '''
         # create entry in log
         log_msg('Attemping to add blocked item ({0}, {1})...'.format(value, mediatype))
-        # insert (label, dir, type) into table
-        self.c.execute("INSERT OR IGNORE INTO Blocked (Value, Type) VALUES (?, ?)",\
-            (value, mediatype))
-        self.db.commit()
+        # ignore if already in table
+        if not self.check_blocked(value, mediatype):
+            # insert into table
+            self.c.execute("INSERT INTO Blocked (Value, Type) VALUES (?, ?)",\
+                (value, mediatype))
+            self.db.commit()
 
     @utf8_decorator
     def check_blocked(self, value, mediatype):
