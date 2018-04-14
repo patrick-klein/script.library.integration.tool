@@ -228,7 +228,10 @@ class EpisodeItem(ContentItem):
         # add episode title to blocked
         dbh.add_blocked_item(self.title.replace('-0x0', ''), 'episode')
         # delete metadata items
-        self.remove_from_library()
+        safe_showtitle = clean_name(self.show_title)
+        safe_title = clean_name(self.title)
+        title_path = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle, safe_title)
+        fs.rm_with_wildcard(title_path)
         # remove from db
         dbh.remove_content_item(self.path)
 
