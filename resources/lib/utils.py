@@ -5,7 +5,7 @@
 This module contains various helper functions used thoughout the addon
 '''
 
-import cPickle as pickle
+import os
 
 import xbmc
 import xbmcaddon
@@ -15,58 +15,59 @@ STR_ADDON_NAME = addon.getAddonInfo('name')
 STR_ADDON_VER = addon.getAddonInfo('version')
 MANAGED_FOLDER = addon.getSetting('managed_folder')
 
-def get_items(name):
-    ''' this function returns the items in the specified pickle file '''
-    filename = MANAGED_FOLDER + name
+def utf8_encode(s):
+    ''' tries to force utf-8 encoding '''
+    # attempt to encode input
     try:
-        items = pickle.load(open(filename, "rb"))
-        log_msg('Opening file %s' % filename)
-    except IOError:
-        items = []
-        log_msg('Creating %s' % filename)
-        pickle.dump(items, open(filename, "wb"))
-    return items
+        s = s.encode('utf-8')
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        s = s.decode('utf-8').encode('utf-8')
+    return s
 
-def save_items(name, items):
-    ''' this function saves the items into the specified pickle file '''
-    filename = MANAGED_FOLDER + name
-    pickle.dump(items, open(filename, "wb"))
-
-def append_item(name, item):
-    ''' this function opens the specifies pickle file, appends the item, then saves it '''
-    items = get_items(name)
-    items.append(item)
-    save_items(name, items)
-
-def remove_item(name, item):
-    ''' this function opens the specifies pickle file, removes the item, then saves it '''
-    items = get_items(name)
-    items.remove(item)
-    save_items(name, items)
+def utf8_decorator(func):
+    ''' decorator for calling etf8_encode on all arguments '''
+    def wrapper(*orig_args, **orig_kwargs):
+        ''' decorator wrapper '''
+        new_args = list()
+        for arg in orig_args:
+            if isinstance(arg, basestring):
+                arg = utf8_encode(arg)
+            new_args.append(arg)
+        new_args = tuple(new_args)
+        new_kwargs = dict()
+        for k, v in orig_kwargs.iteritems():
+            if isinstance(v, basestring):
+                v = utf8_encode(v)
+            new_kwargs[k] = v
+        return func(*new_args, **new_kwargs)
+    return wrapper
 
 def clean_name(s):
     ''' this function removes problematic characters/substrings from strings for filenames '''
-    #?TODO: replace in title directly, not just filename
-    s = s.replace('.', '')
-    s = s.replace(':', '')
-    s = s.replace('/', '')
-    s = s.replace('"', '')
-    s = s.replace('$', '')
-    s = s.replace('é', 'e')
-    s = s.replace('Part 1', 'Part One')
-    s = s.replace('Part 2', 'Part Two')
-    s = s.replace('Part 3', 'Part Three')
-    s = s.replace('Part 4', 'Part Four')
-    s = s.replace('Part 5', 'Part Five')
-    s = s.replace('Part 6', 'Part Six')
-    s = s.replace(' [cc]', '')
+    #TODO?: replace in title directly, not just filename
+    c = {'.': '',
+         ':': '',
+         '/': '',
+         '"': '',
+         '$': '',
+         ' [cc]': '',
+         'é': 'e',
+         'Part 1': 'Part One',
+         'Part 2': 'Part Two',
+         'Part 3': 'Part Three',
+         'Part 4': 'Part Four',
+         'Part 5': 'Part Five',
+         'Part 6': 'Part Six',
+        }
+    for k, v in c.iteritems():
+        s = s.replace(k, v)
     return s
 
 def notification(msg):
     ''' provides shorthand for xbmc builtin notification with addon name '''
     xbmc.executebuiltin('Notification("{0}", "{1}")'.format(STR_ADDON_NAME, msg))
 
-def log_msg(msg, loglevel=xbmc.LOGDEBUG):
+def log_msg(msg, loglevel=xbmc.LOGNOTICE):
     ''' log message with addon name and version to kodi log '''
     if isinstance(msg, unicode):
         msg = msg.encode('utf-8')

@@ -14,7 +14,8 @@ from bs4 import BeautifulSoup
 import xbmc
 import xbmcaddon
 
-from utils import get_items, save_items, append_item, clean_name, log_msg
+import database_handler as db
+from utils import clean_name, log_msg
 
 # get tools depending on platform
 if os.name == 'posix':
@@ -29,20 +30,14 @@ class ContentItem(object):
     this is a parent class for MovieItem and EpisodeItem,
     and defines required methods, and a few helper methods
     '''
-    #?TODO: remove mediatype from init now that there are subclasses
-    #TODO: create refresh method so you don't have to remove_from_staged then add_to_staged_file
-    #TODO: make rename on add & metadata on stage optional in settings
+    #TODO?: make rename on add optional in settings
     #TODO: save original_label, would be able to rename entire filename using metadata
 
     def __init__(self, path, title, mediatype):
         #TODO: add parent folder and optional year param
-        #TODO: move create_metadata_item to new stage() method
-        self.path = path.encode('utf-8')
-        self.mediatype = mediatype.encode('utf-8')
-        try:
-            self.title = title.encode('utf-8')
-        except UnicodeEncodeError:
-            self.title = title.decode('utf-8').encode('utf-8')
+        self.path = path
+        self.mediatype = mediatype
+        self.title = title
 
     def __str__(self):
         return '[B]%s[/B] - [I]%s[/I]' % (self.title, self.path)
@@ -53,7 +48,8 @@ class ContentItem(object):
         raise NotImplementedError('ContentItem.add_to_library() not implemented!')
 
     def remove_from_library(self):
-        ''' defines required method for child classes -- removes its content from the library '''
+        ''' defines required method for child classes --
+        removes its content from the library, does NOT change/remove item in database '''
         #TODO: remove from library using json-rpc
         raise NotImplementedError('ContentItem.remove_from_library() not implemented!')
 
@@ -76,34 +72,13 @@ class ContentItem(object):
         ''' defines required method for child classes -- rename title and files '''
         raise NotImplementedError('ContentItem.rename(name) not implemented!')
 
-    def add_to_managed_file(self):
-        ''' adds object to managed file '''
-        items = get_items('managed.pkl')
-        items.append(self)
-        save_items('managed.pkl', items)
+    def delete(self):
+        ''' removes the item from the database '''
+        db.DB_Handler().remove_content_item(self.path)
 
-    def add_to_staged_file(self):
-        ''' adds object to staged file '''
-        # TODO: create stage() method
-        items = get_items('staged.pkl')
-        items.append(self)
-        save_items('staged.pkl', items)
-
-    def remove_from_managed(self):
-        ''' removes all items with the object's path from managed file '''
-        managed = get_items('managed.pkl')
-        for item in managed:
-            if item.get_path() == self.path:
-                managed.remove(item)
-        save_items('managed.pkl', managed)
-
-    def remove_from_staged(self):
-        ''' removes all items with the object's path from staged file '''
-        staged = get_items('staged.pkl')
-        for item in staged:
-            if item.get_path() == self.path:
-                staged.remove(item)
-        save_items('staged.pkl', staged)
+    def set_as_staged(self):
+        ''' sets the item status as staged in database '''
+        db.DB_Handler().update_content_status(self.path, 'staged')
 
     def get_title(self):
         ''' returns title of video as string '''
@@ -116,6 +91,7 @@ class ContentItem(object):
     def get_mediatype(self):
         ''' returns mediatype (movie or tvshow) as string '''
         return self.mediatype
+
 
 class MovieItem(ContentItem):
     '''
@@ -141,25 +117,23 @@ class MovieItem(ContentItem):
             fs.rm_strm_in_dir(movie_dir)
         # add stream file to movie_dir
         fs.create_stream_file(self.path, filepath)
-        # add to managed file
-        self.add_to_managed_file()
-        self.remove_from_staged()
+        db.DB_Handler().update_content_status(self.path, 'managed')
 
     def remove_from_library(self):
         safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'ManagedMovies', safe_title)
         fs.remove_dir(movie_dir)
-        self.remove_from_managed()
 
     def remove_and_block(self):
+        dbh = db.DB_Handler()
         # add title to blocked
-        append_item('blocked.pkl', {'type':'movie', 'label':self.title})
+        dbh.add_blocked_item(self.title, 'movie')
         # delete metadata items
         safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
         fs.remove_dir(movie_dir)
-        # remove from staged
-        self.remove_from_staged()
+        # remove from db
+        dbh.remove_content_item(self.path)
 
     def create_metadata_item(self):
         safe_title = clean_name(self.title)
@@ -168,6 +142,7 @@ class MovieItem(ContentItem):
         fs.mkdir(movie_dir)
         fs.create_empty_file(filepath)
 
+
 class EpisodeItem(ContentItem):
     '''
     keeps track of a tvshow episode item from a plugin,
@@ -175,7 +150,7 @@ class EpisodeItem(ContentItem):
     '''
 
     def __init__(self, path, title, mediatype, show_title):
-        self.show_title = show_title.encode('utf-8')
+        self.show_title = show_title
         super(EpisodeItem, self).__init__(path, title, mediatype)
 
     def __str__(self):
@@ -232,9 +207,7 @@ class EpisodeItem(ContentItem):
                     fs.softlink_file(landscape_path, managed_thumb_path)
                 elif os.path.exists(fanart_path):
                     fs.softlink_file(fanart_path, managed_thumb_path)
-        # remove from staged, add to managed
-        self.add_to_managed_file()
-        self.remove_from_staged()
+        db.DB_Handler().update_content_status(self.path, 'managed')
 
     def remove_from_library(self):
         # delete stream & episode metadata
@@ -249,25 +222,23 @@ class EpisodeItem(ContentItem):
                 break
         else:
             fs.remove_dir(show_dir)
-        # remove from managed list
-        self.remove_from_managed()
 
     def remove_and_block(self):
-        # add show title to blocked
-        append_item('blocked.pkl', {'type':'episode', 'label':self.title.replace('-0x0', '')})
+        dbh = db.DB_Handler()
+        # add episode title to blocked
+        dbh.add_blocked_item(self.title.replace('-0x0', ''), 'movie')
         # delete metadata items
         safe_showtitle = clean_name(self.show_title)
         safe_title = clean_name(self.title)
         title_path = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle, safe_title)
         fs.rm_with_wildcard(title_path)
-        # remove from staged
-        self.remove_from_staged()
+        # remove from db
+        dbh.remove_content_item(self.path)
 
     def create_metadata_item(self):
         #TODO: automatically call this when staging
         #TODO: actually create basic nfo file with name and episode number, and thumb if possible
-        #?TODO: could probably just rename based on existing strm file instead of nfo file
-        #   (shouldn't make a difference though)
+        #TODO?: could probably just rename based on existing strm file instead of nfo file
         # create show_dir in Metadata/TV if it doesn't already exist
         safe_showtitle = clean_name(self.show_title)
         show_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
@@ -298,8 +269,7 @@ class EpisodeItem(ContentItem):
             # refresh item in staged file if name changed
             if new_title != self.title:
                 self.title = new_title
-                self.remove_from_staged()
-                self.add_to_staged_file()
+                db.DB_Handler().update_content_title(self.path, self.title)
 
     def rename(self, name):
         # rename files if they exist
@@ -316,16 +286,15 @@ class EpisodeItem(ContentItem):
             fs.mv_with_type(title_path, '-thumb.jpg', new_title_path)
         # rename property and refresh in staged file
         self.title = name
-        self.remove_from_staged()
-        self.add_to_staged_file()
+        db.DB_Handler().update_content_title(self.path, self.title)
 
     def rename_using_metadata(self):
-        #?TODO: rename show_title too
+        #TODO?: rename show_title too
+        #TODO: recognize old episodes with epid like create_metadata_item
         safe_showtitle = clean_name(self.show_title)
         safe_title = clean_name(self.title)
         metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         nfo_path = os.path.join(metadata_dir, safe_title+'.nfo')
-        log_msg('nfo_path: %s' % nfo_path)
         # only rename if nfo file exists
         if os.path.exists(nfo_path):
             # open nfo file and get xml soup
@@ -336,7 +305,6 @@ class EpisodeItem(ContentItem):
             episode = int(soup.find('episode').get_text())
             # format into episode id
             epid = '{0:02}x{1:02} - '.format(season, episode)
-            log_msg('epid: %s' % epid)
             # only rename if epid not already in name (otherwise it would get duplicated)
             if epid not in safe_title:
                 new_title = epid + safe_title.replace('-0x0', '')

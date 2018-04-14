@@ -21,14 +21,14 @@ class UtilsTest(unittest.TestCase):
         pass
 
     def test_constants(self):
-        ''' checks values returned by utils constants '''
+        ''' check values returned by utils constants '''
         addon = xbmcaddon.Addon(id='script.library.integration.tool')
         self.assertEqual(utils.STR_ADDON_NAME, addon.getAddonInfo('name'))
         self.assertEqual(utils.STR_ADDON_VER, addon.getAddonInfo('version'))
         self.assertEqual(utils.MANAGED_FOLDER, addon.getSetting('managed_folder'))
 
     def test_save_and_get_items(self):
-        ''' save and load a simple list as a pickle file '''
+        ''' save and load a list as a pickle file '''
         h = [1, 2, 3, 4, 5]
         utils.save_items('test.pkl', h)
         h_prime = utils.get_items('test.pkl')

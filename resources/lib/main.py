@@ -16,6 +16,7 @@ from staged import StagedMovies, StagedTV
 from synced import Synced
 from blocked import Blocked
 from utils import log_msg, notification
+import update_pkl
 
 # get tools depending on platform
 if os.name == 'posix':
@@ -34,14 +35,13 @@ class Main(object):
     performs basic initialization of folder structure
     and displays a window that leads to other class options
     '''
-    #TODO: use sqlite database... will lead to LOTS of optimizations
     #TODO: unit tests
     #TODO: mark strm items as watched after played
-    #?TODO: use plugin menu system instead of dialog windows
+    #TODO?: use plugin menu system instead of dialog windows
     #TODO: option to automatically add movies & episodes with epids
     #TODO: option to automatically clean & update when adding/removing
     #TODO: add default location for managed folder
-    #TODO: move pickle files to special path
+    #TODO: move database to special path
 
     def __init__(self):
         self.addon = xbmcaddon.Addon()
@@ -55,23 +55,19 @@ class Main(object):
             log_msg('No managed folder!', xbmc.LOGERROR)
             sys.exit()
 
+        if any(['.pkl' in x for x in os.listdir(MANAGED_FOLDER)]):
+            update_pkl.main()
+
         # Create subfolders in managed_folder if they don't exist
+        subfolders = ['ManagedMovies', 'ManagedTV', 'Metadata',
+                      os.path.join('Metadata', 'Movies'),
+                      os.path.join('Metadata', 'TV')]
         created_folders = False
-        if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedMovies')):
-            fs.mkdir(os.path.join(MANAGED_FOLDER, 'ManagedMovies'))
-            created_folders = True
-        if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'ManagedTV')):
-            fs.mkdir(os.path.join(MANAGED_FOLDER, 'ManagedTV'))
-            created_folders = True
-        if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata')):
-            fs.mkdir(os.path.join(MANAGED_FOLDER, 'Metadata'))
-            created_folders = True
-        if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies')):
-            fs.mkdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies'))
-            created_folders = True
-        if not os.path.isdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'TV')):
-            fs.mkdir(os.path.join(MANAGED_FOLDER, 'Metadata', 'TV'))
-            created_folders = True
+        for folder in subfolders:
+            full_path = os.path.join(MANAGED_FOLDER, folder)
+            if not os.path.isdir(full_path):
+                fs.mkdir(full_path)
+                created_folders = True
         if created_folders:
             STR_SUBFOLDERS_CREATED = self.addon.getLocalizedString(32127)
             notification(STR_SUBFOLDERS_CREATED)
