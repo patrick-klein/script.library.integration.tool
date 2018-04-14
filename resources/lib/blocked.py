@@ -38,7 +38,7 @@ class Blocked(object):
         if not blocked_items:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_BLOCKED_ITEMS)
             return self.mainmenu.view()
-        lines = ['{0} - [B]{1}[/B]'.format(self.localize_type(x[1]), x[0]) \
+        lines = ['{0} - [B]{1}[/B]'.format(self.localize_type(x['type']), x['value']) \
             for x in blocked_items]
         lines, blocked_items = (list(t) for t in zip(*sorted(zip(lines, blocked_items),
                                                              key=lambda x: x[0].lower())))
@@ -61,10 +61,10 @@ class Blocked(object):
         STR_BLOCKED_ITEM_OPTIONS = self.addon.getLocalizedString(32099)
         lines = [STR_REMOVE, STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1} - {2}'.format(
-            self.STR_ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item[0]), lines)
+            self.STR_ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item['value']), lines)
         if not ret < 0:
             if lines[ret] == STR_REMOVE:
-                self.dbh.remove_blocked(*item)
+                self.dbh.remove_blocked(item['value'], item['type'])
                 return self.view()
             elif lines[ret] == STR_BACK:
                 return self.view()

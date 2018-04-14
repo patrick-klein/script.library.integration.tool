@@ -61,7 +61,8 @@ def update_blocked():
         dbh = DB_Handler()
         items = pickle.load(open(blocked_file, 'rb'))
         for item in items:
-            dbh.add_blocked_item(item['label'], item['type'])
+            if item['type'] != 'keyword':
+                dbh.add_blocked_item(item['label'], item['type'])
         os.remove(blocked_file)
 
 def main():
