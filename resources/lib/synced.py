@@ -26,6 +26,7 @@ class Synced(object):
         self.mainmenu = mainmenu
         self.dbh = DB_Handler()
 
+    @log_decorator
     def view(self):
         '''
         displays all synced directories, which are selectable and lead to options.
@@ -61,6 +62,7 @@ class Synced(object):
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
+    @log_decorator
     def localize_type(self, mediatype):
         ''' localizes tages used for identifying mediatype '''
         if mediatype == 'movie':      # Movies
@@ -73,6 +75,7 @@ class Synced(object):
             return self.addon.getLocalizedString(32115)
         return mediatype
 
+    @log_decorator
     def options(self, item):
         ''' provides options for a single synced directory in a dialog window '''
         #TODO: remove all from plugin
@@ -91,6 +94,7 @@ class Synced(object):
                 return self.view()
         return self.view()
 
+    @log_decorator
     def remove_all(self):
         ''' removes all synced directories '''
         STR_REMOVE_ALL_SYNCED_DIRS = self.addon.getLocalizedString(32086)
@@ -101,6 +105,7 @@ class Synced(object):
             self.dbh.remove_all_synced_dirs()
             notification(STR_ALL_SYNCED_DIRS_REMOVED)
 
+    @log_decorator
     def update_all(self):
         '''
         gets all items from synced directories,

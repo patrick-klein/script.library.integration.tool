@@ -5,7 +5,6 @@
 import os
 import cPickle as pickle
 
-import xbmc
 import xbmcaddon
 import xbmcgui
 
