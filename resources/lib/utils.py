@@ -14,29 +14,61 @@ STR_ADDON_VER = addon.getAddonInfo('version')
 MANAGED_FOLDER = addon.getSetting('managed_folder')
 
 def utf8_encode(s):
-    ''' tries to force utf-8 encoding '''
-    # attempt to encode input
+    ''' returns string (re)encoded as utf-8 '''
     try:
         return s.encode('utf-8')
     except (UnicodeEncodeError, UnicodeDecodeError):
         return s.decode('utf-8').encode('utf-8')
 
 def utf8_decorator(func):
-    ''' decorator for calling utf8_encode on all arguments '''
-    def wrapper(*orig_args, **orig_kwargs):
+    ''' decorator for calling utf8_encode on all string arguments '''
+    def wrapper(*args, **kwargs):
         ''' function wrapper '''
-        new_args = list()
-        for arg in orig_args:
-            if isinstance(arg, basestring):
-                arg = utf8_encode(arg)
-            new_args.append(arg)
-        new_args = tuple(new_args)
-        new_kwargs = dict()
-        for k, v in orig_kwargs.iteritems():
-            if isinstance(v, basestring):
-                v = utf8_encode(v)
-            new_kwargs[k] = v
+        new_args = (utf8_encode(x) if isinstance(x, basestring) else x for x in args)
+        new_kwargs = {k: utf8_encode(v) if isinstance(v, basestring) else v \
+            for k, v in kwargs.iteritems()}
         return func(*new_args, **new_kwargs)
+    return wrapper
+
+def log_msg(msg, loglevel=xbmc.LOGNOTICE):
+    ''' log message with addon name and version to kodi log '''
+    if isinstance(msg, unicode):
+        msg = msg.encode('utf-8')
+    xbmc.log("{0} v{1} --> {2}".format(STR_ADDON_NAME, STR_ADDON_VER, msg), level=loglevel)
+
+def log_decorator(func):
+    ''' decorator for logging function call and return values '''
+    def wrapper(*args, **kwargs):
+        ''' function wrapper '''
+        # call the function and get the return value
+        ret = func(*args, **kwargs)
+        # define the string for the function call (include class name for methods)
+        is_method = hasattr(args[0].__class__, func.__name__)
+        if is_method:
+            func_str = '{0}.{1}'.format(args[0].__class__.__name__, func.__name__)
+        else:
+            func_str = '{0}.{1}'.format(func.__module__.replace('resources.lib.', ''), func.__name__)
+        # pretty formating for argument string
+        arg_list = list()
+        for arg in args[1 if is_method else 0:]:
+            arg_list.append("'{0}'".format(arg) if isinstance(arg, basestring) else str(arg))
+        for k, v in kwargs.iteritems():
+            arg_list.append('{0}={1}'\
+                .format(k, "'{0}'".format(v) if isinstance(v, basestring) else str(v)))
+        arg_str = '({0})'.format(', '.join(arg_list))
+        # add line breaks and limit output if ret value is iterable
+        try:
+            ret_list = ['\n'+str(x) for x in ret[:5]]
+            if len(ret) > 5:
+                ret_list += ['\n+{0} more items...'.format(len(ret)-5)]
+            ret_str = str().join(ret_list)
+        except TypeError:
+            ret_str = str(ret)
+        # log message at default loglevel
+        message = '{0}{1}: {2}'.format(func_str, arg_str, ret_str)
+        log_msg(message)
+        # return ret value from wrapper
+        return ret
     return wrapper
 
 def clean_name(s):
@@ -63,9 +95,3 @@ def clean_name(s):
 def notification(msg):
     ''' provides shorthand for xbmc builtin notification with addon name '''
     xbmc.executebuiltin('Notification("{0}", "{1}")'.format(STR_ADDON_NAME, msg))
-
-def log_msg(msg, loglevel=xbmc.LOGNOTICE):
-    ''' log message with addon name and version to kodi log '''
-    if isinstance(msg, unicode):
-        msg = msg.encode('utf-8')
-    xbmc.log("{0} v{1} --> {2}".format(STR_ADDON_NAME, STR_ADDON_VER, msg), level=loglevel)
