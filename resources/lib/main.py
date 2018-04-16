@@ -16,7 +16,6 @@ from staged import StagedMovies, StagedTV
 from synced import Synced
 from blocked import Blocked
 from utils import log_msg, notification
-import update_pkl
 
 # get tools depending on platform
 if os.name == 'posix':
@@ -36,7 +35,6 @@ class Main(object):
     and displays a window that leads to other class options
     '''
     #TODO: unit tests
-    #TODO: mark strm items as watched after played
     #TODO?: use plugin menu system instead of dialog windows
     #TODO: option to automatically add movies & episodes with epids
     #TODO: option to automatically clean & update when adding/removing
@@ -56,7 +54,9 @@ class Main(object):
             log_msg('No managed folder!', xbmc.LOGERROR)
             sys.exit()
 
+        # update .pkl files if present
         if any(['.pkl' in x for x in os.listdir(MANAGED_FOLDER)]):
+            import update_pkl
             update_pkl.main()
 
         # Create subfolders in managed_folder if they don't exist

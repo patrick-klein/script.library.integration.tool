@@ -8,15 +8,13 @@ The purpose is to stage all movies/tvshows in the current directory, and update 
 
 import os
 import sys
+import simplejson as json
 import xbmc
 import xbmcgui
 import xbmcaddon
 
-import simplejson as json
-
 from resources.lib.utils import notification, log_msg
 from resources.lib.database_handler import DB_Handler
-import resources.lib.update_pkl
 
 if __name__ == '__main__':
     #TODO: add recursive option
@@ -45,7 +43,9 @@ if __name__ == '__main__':
         log_msg('No managed folder!', xbmc.LOGERROR)
         sys.exit()
 
+    # update .pkl files if present
     if any(['.pkl' in x for x in os.listdir(MANAGED_FOLDER)]):
+        import resources.lib.update_pkl
         resources.lib.update_pkl.main()
 
     # get content type
