@@ -537,7 +537,7 @@ msgid "Use TV show artwork if episode thumb is unavailable"
 msgstr ""
 
 msgctxt "#32130"
-msgid "Testing"
+msgid "DEVELOPMENT"
 msgstr ""
 
 msgctxt "#32131"
