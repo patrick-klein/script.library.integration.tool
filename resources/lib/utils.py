@@ -13,19 +13,12 @@ STR_ADDON_NAME = addon.getAddonInfo('name')
 STR_ADDON_VER = addon.getAddonInfo('version')
 MANAGED_FOLDER = addon.getSetting('managed_folder')
 
-def utf8_encode(s):
-    ''' returns string (re)encoded as utf-8 '''
-    try:
-        return s.encode('utf-8')
-    except (UnicodeEncodeError, UnicodeDecodeError):
-        return s.decode('utf-8').encode('utf-8')
-
 def utf8_decorator(func):
-    ''' decorator for calling utf8_encode on all string arguments '''
+    ''' decorator for encoding utf8 on all unicode arguments '''
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
-        new_args = (utf8_encode(x) if isinstance(x, basestring) else x for x in args)
-        new_kwargs = {k: utf8_encode(v) if isinstance(v, basestring) else v \
+        new_args = (x.encode('utf-8') if isinstance(x, unicode) else x for x in args)
+        new_kwargs = {k: v.encode('utf-8') if isinstance(v, unicode) else v \
             for k, v in kwargs.iteritems()}
         return func(*new_args, **new_kwargs)
     return wrapper
