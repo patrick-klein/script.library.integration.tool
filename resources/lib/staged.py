@@ -28,6 +28,7 @@ class StagedMovies(object):
     and tools for manipulating the objects and managed file
     '''
     #TODO: don't commit sql changes for "... all" until end
+    #TODO: decorator for "...all" commands
 
     def __init__(self, mainmenu):
         self.addon = xbmcaddon.Addon()
@@ -40,6 +41,7 @@ class StagedMovies(object):
         displays all staged movies, which are selectable and lead to options.
         also provides additional options at bottom of menu
         '''
+        #TODO: add option to remove generated metadata for unstaged/unmanaged items
         STR_NO_STAGED_MOVIES = self.addon.getLocalizedString(32037)
         STR_ADD_ALL_MOVIES = self.addon.getLocalizedString(32038)
         STR_ADD_ALL_MOVIES_WITH_METADATA = self.addon.getLocalizedString(32039)
@@ -52,8 +54,6 @@ class StagedMovies(object):
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_STAGED_MOVIES)
             return self.mainmenu.view()
         lines = [str(x) for x in staged_movies]
-        lines, staged_movies = (list(t) for t in zip(*sorted(zip(lines, staged_movies),
-                                                             key=lambda x: x[0].lower())))
         lines += [STR_ADD_ALL_MOVIES, STR_ADD_ALL_MOVIES_WITH_METADATA,
                   STR_REMOVE_ALL_MOVIES, STR_GENERATE_ALL_METADATA_ITEMS, STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(
@@ -64,10 +64,10 @@ class StagedMovies(object):
                     if ret == i:
                         return self.options(item)
             elif lines[ret] == STR_ADD_ALL_MOVIES:
-                self.add_all()
+                self.add_all(staged_movies)
                 return self.mainmenu.view()
             elif lines[ret] == STR_ADD_ALL_MOVIES_WITH_METADATA:
-                self.add_all_with_metadata()
+                self.add_all_with_metadata(staged_movies)
                 return self.view_all()
             elif lines[ret] == STR_REMOVE_ALL_MOVIES:
                 self.remove_all()
@@ -79,27 +79,25 @@ class StagedMovies(object):
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
-    def add_all(self):
+    def add_all(self, items):
         ''' adds all staged movies to library '''
         STR_ADDING_ALL_MOVIES = self.addon.getLocalizedString(32042)
         STR_ALL_MOVIES_ADDED = self.addon.getLocalizedString(32043)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_MOVIES)
-        staged_movies = self.dbh.get_content_items(status='staged', mediatype='movie')
-        for item in staged_movies:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.add_to_library()
         pDialog.close()
         notification(STR_ALL_MOVIES_ADDED)
 
-    def add_all_with_metadata(self):
+    def add_all_with_metadata(self, items):
         ''' adds all movies with nfo files to the library '''
         STR_ADDING_ALL_MOVIES_WITH_METADATA = self.addon.getLocalizedString(32044)
         STR_ALL_MOVIES_WITH_METADTA_ADDED = self.addon.getLocalizedString(32045)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_MOVIES_WITH_METADATA)
-        staged_movies = self.dbh.get_content_items(status='staged', mediatype='movie')
-        for item in staged_movies:
+        for item in items:
             safe_title = clean_name(item.get_title())
             metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
             nfo_path = os.path.join(metadata_dir, safe_title + '.nfo')
@@ -120,14 +118,13 @@ class StagedMovies(object):
         pDialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
 
-    def generate_all_metadata(self):
+    def generate_all_metadata(self, items):
         ''' generates metadata items for all staged movies '''
         STR_GENERATING_ALL_MOVIE_METADATA = self.addon.getLocalizedString(32046)
         STR_ALL_MOVIE_METADTA_CREATED = self.addon.getLocalizedString(32047)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
-        staged_movies = self.dbh.get_content_items(status='staged', mediatype='movie')
-        for item in staged_movies:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.create_metadata_item()
         pDialog.close()
@@ -201,21 +198,19 @@ class StagedTV(object):
         STR_GENERATE_ALL_METADATA_ITEMS = self.addon.getLocalizedString(32040)
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_STAGED_TV_SHOWS = self.addon.getLocalizedString(32058)
-        staged_tv_items = self.dbh.get_content_items(status='staged', mediatype='tvshow')
-        staged_tv_titles = [x.get_show_title() for x in staged_tv_items]
-        if not staged_tv_titles:
+        staged_tvshows = self.dbh.get_all_shows('staged')
+        if not staged_tvshows:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_STAGED_TV_SHOWS)
             return self.mainmenu.view()
-        staged_tv_titles = sorted(list(set(staged_tv_titles)), key=str.lower)
-        lines = ['[B]%s[/B]' % x for x in staged_tv_titles]
+        lines = ['[B]%s[/B]' % x for x in staged_tvshows]
         lines += [STR_ADD_ALL_TV_SHOWS, STR_ADD_ALL_ITEMS_WITH_METADTA,
                   STR_REMOVE_ALL_TV_SHOWS, STR_GENERATE_ALL_METADATA_ITEMS, STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(
             self.STR_ADDON_NAME, STR_STAGED_TV_SHOWS), lines)
         if not ret < 0:
-            if ret < len(staged_tv_titles):   # staged item
-                for show_title in staged_tv_titles:
-                    if staged_tv_titles[ret] == show_title:
+            if ret < len(staged_tvshows):   # staged item
+                for show_title in staged_tvshows:
+                    if staged_tvshows[ret] == show_title:
                         return self.view_episodes(show_title)
             elif lines[ret] == STR_ADD_ALL_TV_SHOWS:
                 self.add_all_shows()
@@ -308,8 +303,6 @@ class StagedTV(object):
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_STAGED_x_EPISODES)
             return self.view_shows()
         lines = [str(x) for x in staged_episodes]
-        lines, staged_episodes = (list(t) for t in zip(*sorted(zip(lines, staged_episodes),
-                                                               key=lambda x: x[0].lower())))
         lines += [STR_ADD_ALL_EPISODES, STR_ADD_ALL_EPISODES_WITH_METADATA,
                   STR_REMOVE_ALL_EPISODES, STR_REMOVE_AND_BLOCK_TV_SHOW,
                   STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA,
@@ -322,10 +315,10 @@ class StagedTV(object):
                     if ret == i:
                         return self.episode_options(item)
             elif lines[ret] == STR_ADD_ALL_EPISODES:
-                self.add_all_episodes(show_title)
+                self.add_all_episodes(staged_episodes)
                 return self.view_shows()
             elif lines[ret] == STR_ADD_ALL_EPISODES_WITH_METADATA:
-                self.add_all_episodes_with_metadata(show_title)
+                self.add_all_episodes_with_metadata(staged_episodes)
                 return self.view_episodes(show_title)
             elif lines[ret] == STR_REMOVE_ALL_EPISODES:
                 self.remove_all_episodes(show_title)
@@ -334,36 +327,34 @@ class StagedTV(object):
                 self.remove_and_block_show(show_title)
                 return self.view_shows()
             elif lines[ret] == STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA:
-                self.rename_episodes_using_metadata(show_title)
+                self.rename_episodes_using_metadata(staged_episodes)
                 return self.view_episodes(show_title)
             elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
-                self.generate_all_episodes_metadata(show_title)
+                self.generate_all_episodes_metadata(staged_episodes)
                 return self.view_episodes(show_title)
             elif lines[ret] == STR_BACK:
                 return self.view_shows()
         return self.view_shows()
 
-    def add_all_episodes(self, show_title):
+    def add_all_episodes(self, items):
         ''' adds all episodes from specified show to library '''
         STR_ADDING_ALL_x_EPISODES = self.addon.getLocalizedString(32071) % show_title
         STR_ALL_x_EPISODES_ADDED = self.addon.getLocalizedString(32072) % show_title
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_x_EPISODES)
-        staged_episodes = self.dbh.get_show_episodes('staged', show_title)
-        for item in staged_episodes:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.add_to_library()
         pDialog.close()
         notification(STR_ALL_x_EPISODES_ADDED)
 
-    def add_all_episodes_with_metadata(self, show_title):
+    def add_all_episodes_with_metadata(self, items):
         ''' adds all episodes in the specified show with metadata to the library '''
         STR_ADDING_ALL_x_EPISODES_WITH_METADATA = self.addon.getLocalizedString(32073) % show_title
         STR_ALL_x_EPISODES_WITH_METADATA_ADDED = self.addon.getLocalizedString(32074) % show_title
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_x_EPISODES_WITH_METADATA)
-        staged_episodes = self.dbh.get_show_episodes('staged', show_title)
-        for item in staged_episodes:
+        for item in items:
             safe_title = clean_name(item.get_title())
             safe_showtitle = clean_name(show_title)
             metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
@@ -399,27 +390,25 @@ class StagedTV(object):
         # add show title to blocked
         self.dbh.add_blocked_item(show_title, 'tvshow')
 
-    def rename_episodes_using_metadata(self, show_title):
+    def rename_episodes_using_metadata(self, items):
         ''' automatically renames all episodes in show using nfo files '''
         STR_RENAMING_x_EPISODES_USING_METADATA = self.addon.getLocalizedString(32075) % show_title
         STR_x_EPISODES_RENAMED_USING_METADATA = self.addon.getLocalizedString(32076) % show_title
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_RENAMING_x_EPISODES_USING_METADATA)
-        staged_episodes = self.dbh.get_show_episodes('staged', show_title)
-        for item in staged_episodes:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.rename_using_metadata()
         pDialog.close()
         notification(STR_x_EPISODES_RENAMED_USING_METADATA)
 
-    def generate_all_episodes_metadata(self, show_title):
+    def generate_all_episodes_metadata(self, items):
         ''' generates metadata items for all episodes in show '''
         STR_GENERATING_ALL_x_METADATA = self.addon.getLocalizedString(32077) % show_title
         STR_ALL_x_METADATA_CREATED = self.addon.getLocalizedString(32078) % show_title
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_GENERATING_ALL_x_METADATA)
-        staged_episodes = self.dbh.get_show_episodes('staged', show_title)
-        for item in staged_episodes:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.create_metadata_item()
         pDialog.close()

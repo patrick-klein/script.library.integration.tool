@@ -38,10 +38,8 @@ class Blocked(object):
         if not blocked_items:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_BLOCKED_ITEMS)
             return self.mainmenu.view()
-        lines = ['{0} - [B]{1}[/B]'.format(self.localize_type(x['type']), x['value']) \
-            for x in blocked_items]
-        lines, blocked_items = (list(t) for t in zip(*sorted(zip(lines, blocked_items),
-                                                             key=lambda x: x[0].lower())))
+        lines = ['{0} - [B]{1}[/B]'.format( \
+            self.localize_type(x['type']), x['value']) for x in blocked_items]
         lines += [STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(
             self.STR_ADDON_NAME, STR_BLOCKED_ITEMS), lines)

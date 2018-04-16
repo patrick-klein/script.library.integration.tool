@@ -40,48 +40,45 @@ class ManagedMovies(object):
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_MANAGED_MOVIES)
             return self.mainmenu.view()
         lines = [str(x) for x in managed_movies]
-        lines, managed_movies = (list(t) for t in zip(*sorted(zip(lines, managed_movies),
-                                                              key=lambda x: x[0].lower())))
         lines += [STR_REMOVE_ALL_MOVIES, STR_MOVE_ALL_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(
             self.STR_ADDON_NAME, STR_MANAGED_MOVIES), lines)
         if not ret < 0:
-            if ret < len(managed_movies):   # managed item
+            if ret < len(managed_movies):
                 for i, item in enumerate(managed_movies):
                     if ret == i:
                         return self.options(item)
             elif lines[ret] == STR_REMOVE_ALL_MOVIES:
-                self.remove_all()
+                self.remove_all(managed_movies)
                 return self.mainmenu.view()
             elif lines[ret] == STR_MOVE_ALL_BACK_TO_STAGED:
-                self.move_all_to_staged()
+                self.move_all_to_staged(managed_movies)
                 return self.mainmenu.view()
             elif lines[ret] == STR_BACK:
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
-    def remove_all(self):
+    def remove_all(self, items):
         ''' removes all managed movies from library '''
+        #TODO: get managed_movies from previous call
         STR_REMOVING_ALL_MOVIES = self.addon.getLocalizedString(32013)
         STR_ALL_MOVIES_REMOVED = self.addon.getLocalizedString(32014)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_REMOVING_ALL_MOVIES)
-        managed_movies = self.dbh.get_content_items(status='managed', mediatype='movie')
-        for item in managed_movies:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.remove_from_library()
             item.delete()
         pDialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
 
-    def move_all_to_staged(self):
+    def move_all_to_staged(self, items):
         ''' removes all managed movies from library, and adds them to staged '''
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = self.addon.getLocalizedString(32015)
         STR_ALL_MOVIES_MOVED_TO_STAGED = self.addon.getLocalizedString(32016)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
-        managed_movies = self.dbh.get_content_items(status='managed', mediatype='movie')
-        for item in managed_movies:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.remove_from_library()
             item.set_as_staged()
@@ -134,12 +131,10 @@ class ManagedTV(object):
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = self.addon.getLocalizedString(32022)
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_MANAGED_TV_SHOWS = self.addon.getLocalizedString(32023)
-        managed_tv_items = self.dbh.get_content_items(status='managed', mediatype='tvshow')
-        managed_tvshows = [x.get_show_title() for x in managed_tv_items]
+        managed_tvshows = self.dbh.get_all_shows('managed')
         if not managed_tvshows:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_MANAGED_TV_SHOWS)
             return self.mainmenu.view()
-        managed_tvshows = sorted(list(set(managed_tvshows)), key=str.lower)
         lines = ['[B]%s[/B]' % x for x in managed_tvshows]
         lines += [STR_REMOVE_ALL_TV_SHOWS, STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(
@@ -203,8 +198,6 @@ class ManagedTV(object):
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_MANAGED_x_EPISODES)
             return self.view_shows()
         lines = [str(x) for x in managed_episodes]
-        lines, managed_episodes = (list(t) for t in zip(*sorted(zip(lines, managed_episodes),
-                                                                key=lambda x: x[0].lower())))
         lines += [STR_REMOVE_ALL_EPISODES, STR_MOVE_ALL_EPISODES_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select('{0} - {1}'.format(
             self.STR_ADDON_NAME, STR_MANAGED_x_EPISODES), lines)
@@ -214,37 +207,35 @@ class ManagedTV(object):
                     if ret == i:
                         return self.episode_options(item)
             elif lines[ret] == STR_REMOVE_ALL_EPISODES:
-                self.remove_episodes(show_title)
+                self.remove_episodes(managed_episodes)
                 return self.view_shows()
             elif lines[ret] == STR_MOVE_ALL_EPISODES_BACK_TO_STAGED:
-                self.move_episodes_to_staged(show_title)
+                self.move_episodes_to_staged(managed_episodes)
                 return self.view_shows()
             elif lines[ret] == STR_BACK:
                 return self.view_shows()
         return self.view_shows()
 
-    def remove_episodes(self, show_title):
+    def remove_episodes(self, items):
         ''' removes all episodes in specified show from library '''
         STR_REMOVING_ALL_x_EPISODES = self.addon.getLocalizedString(32032) % show_title
         STR_ALL_x_EPISODES_REMOVED = self.addon.getLocalizedString(32033) % show_title
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_REMOVING_ALL_x_EPISODES)
-        managed_episodes = self.dbh.get_show_episodes('managed', show_title)
-        for item in managed_episodes:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.remove_from_library()
             item.delete()
         pDialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED)
 
-    def move_episodes_to_staged(self, show_title):
+    def move_episodes_to_staged(self, items):
         ''' removes all managed episodes in specified show from library, and adds them to staged '''
         STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = self.addon.getLocalizedString(32034) % show_title
         STR_ALL_x_EPISODES_MOVED_TO_STAGED = self.addon.getLocalizedString(32035) % show_title
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED)
-        managed_episodes = self.dbh.get_show_episodes('managed', show_title)
-        for item in managed_episodes:
+        for item in items:
             pDialog.update(0, line2=item.get_title())
             item.remove_from_library()
             item.set_as_staged()
