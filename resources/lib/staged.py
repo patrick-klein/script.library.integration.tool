@@ -73,7 +73,7 @@ class StagedMovies(object):
                 self.remove_all()
                 return self.mainmenu.view()
             elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
-                self.generate_all_metadata()
+                self.generate_all_metadata(staged_movies)
                 return self.view_all()
             elif lines[ret] == STR_BACK:
                 return self.mainmenu.view()
