@@ -9,6 +9,7 @@ import xbmcgui
 import xbmcaddon
 
 from database_handler import DB_Handler
+from utils import log_decorator
 
 class Blocked(object):
     '''
@@ -22,6 +23,7 @@ class Blocked(object):
         self.mainmenu = mainmenu
         self.dbh = DB_Handler()
 
+    @log_decorator
     def view(self):
         '''
         displays all blocked items, which are selectable and lead to options.
@@ -52,6 +54,7 @@ class Blocked(object):
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
+    @log_decorator
     def options(self, item):
         ''' provides options for a single blocked item in a dialog window '''
         STR_REMOVE = self.addon.getLocalizedString(32017)

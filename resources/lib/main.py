@@ -15,7 +15,7 @@ from managed import ManagedMovies, ManagedTV
 from staged import StagedMovies, StagedTV
 from synced import Synced
 from blocked import Blocked
-from utils import log_msg, notification
+from utils import log_msg, log_decorator, notification
 
 # get tools depending on platform
 if os.name == 'posix':
@@ -77,6 +77,7 @@ class Main(object):
         # Open main menu
         self.view()
 
+    @log_decorator
     def view(self):
         ''' displays main menu and leads to other modules '''
         #TODO: fix update library to only update path

@@ -11,7 +11,7 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 
-from utils import notification, log_msg
+from utils import log_decorator, notification
 from database_handler import DB_Handler
 
 class Synced(object):
@@ -32,8 +32,6 @@ class Synced(object):
         also provides additional options at bottom of menu
         '''
         #TODO: update only movies or tvshows
-        #TODO: sort
-        #TODO: show title for single movie or tvshow
         STR_UPDATE_ALL = self.addon.getLocalizedString(32081)
         STR_REMOVE_ALL = self.addon.getLocalizedString(32082)
         STR_BACK = self.addon.getLocalizedString(32011)
@@ -254,7 +252,6 @@ class Synced(object):
                 for path in paths_to_remove:
                     item = self.dbh.load_item(path)
                     pDialog.update(0, line2=item.get_title())
-                    log_msg('Removing from library: %s' % item.get_title(), xbmc.LOGNOTICE)
                     item.remove_from_library()
                     item.delete()
                     pDialog.update(0, line2=' ')

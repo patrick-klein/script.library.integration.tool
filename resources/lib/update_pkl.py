@@ -9,13 +9,14 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 
-from utils import log_msg
+from utils import log_decorator
 from database_handler import DB_Handler
 
 addon = xbmcaddon.Addon()
 STR_ADDON_NAME = addon.getAddonInfo('name')
 MANAGED_FOLDER = addon.getSetting('managed_folder')
 
+@log_decorator
 def update_managed():
     ''' Converts managed.pkl items to SQLite entries '''
     managed_file = os.path.join(MANAGED_FOLDER, 'managed.pkl')
@@ -31,6 +32,7 @@ def update_managed():
             dbh.update_content_status(item.get_path(), 'managed')
         os.remove(managed_file)
 
+@log_decorator
 def update_staged():
     ''' Converts staged.pkl items to SQLite entries '''
     staged_file = os.path.join(MANAGED_FOLDER, 'staged.pkl')
@@ -45,6 +47,7 @@ def update_staged():
                     item.get_show_title())
         os.remove(staged_file)
 
+@log_decorator
 def update_synced():
     ''' Converts managed.pkl items to SQLite entries '''
     synced_file = os.path.join(MANAGED_FOLDER, 'synced.pkl')
@@ -55,6 +58,7 @@ def update_synced():
             dbh.add_synced_dir('NULL', item['dir'], item['mediatype'])
         os.remove(synced_file)
 
+@log_decorator
 def update_blocked():
     ''' Converts blocked.pkl items to SQLite entries '''
     blocked_file = os.path.join(MANAGED_FOLDER, 'blocked.pkl')
@@ -66,29 +70,25 @@ def update_blocked():
                 dbh.add_blocked_item(item['label'], item['type'])
         os.remove(blocked_file)
 
+@log_decorator
 def main():
     ''' main entrypoint for module
     updates log and progress, and calls all other functions '''
 
     STR_UPDATING = addon.getLocalizedString(32133)
-    log_msg('Updating .pkl files...', xbmc.LOGNOTICE)
     pDialog = xbmcgui.DialogProgress()
     pDialog.create(STR_ADDON_NAME, STR_UPDATING)
 
     pDialog.update(0, line2='managed.pkl')
     update_managed()
-    log_msg('managed.pkl updated.', xbmc.LOGNOTICE)
 
     pDialog.update(25, line2='staged.pkl')
     update_staged()
-    log_msg('staged.pkl updated.', xbmc.LOGNOTICE)
 
     pDialog.update(50, line2='synced.pkl')
     update_synced()
-    log_msg('synced.pkl updated.', xbmc.LOGNOTICE)
 
     pDialog.update(75, line2='blocked.pkl')
     update_blocked()
-    log_msg('blocked.pkl updated.', xbmc.LOGNOTICE)
 
     pDialog.close()

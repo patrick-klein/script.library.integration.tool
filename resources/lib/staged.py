@@ -10,8 +10,8 @@ import os
 import xbmcgui
 import xbmcaddon
 
-from utils import clean_name, notification
 from database_handler import DB_Handler
+from utils import log_decorator, clean_name, notification
 
 # get tools depending on platform
 if os.name == 'posix':
@@ -36,6 +36,7 @@ class StagedMovies(object):
         self.mainmenu = mainmenu
         self.dbh = DB_Handler()
 
+    @log_decorator
     def view_all(self):
         '''
         displays all staged movies, which are selectable and lead to options.
@@ -79,6 +80,7 @@ class StagedMovies(object):
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
+    @log_decorator
     def add_all(self, items):
         ''' adds all staged movies to library '''
         STR_ADDING_ALL_MOVIES = self.addon.getLocalizedString(32042)
@@ -91,6 +93,7 @@ class StagedMovies(object):
         pDialog.close()
         notification(STR_ALL_MOVIES_ADDED)
 
+    @log_decorator
     def add_all_with_metadata(self, items):
         ''' adds all movies with nfo files to the library '''
         STR_ADDING_ALL_MOVIES_WITH_METADATA = self.addon.getLocalizedString(32044)
@@ -108,6 +111,7 @@ class StagedMovies(object):
         pDialog.close()
         notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
+    @log_decorator
     def remove_all(self):
         ''' removes all staged movies '''
         STR_REMOVING_ALL_MOVIES = self.addon.getLocalizedString(32013)
@@ -118,6 +122,7 @@ class StagedMovies(object):
         pDialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
 
+    @log_decorator
     def generate_all_metadata(self, items):
         ''' generates metadata items for all staged movies '''
         STR_GENERATING_ALL_MOVIE_METADATA = self.addon.getLocalizedString(32046)
@@ -130,6 +135,7 @@ class StagedMovies(object):
         pDialog.close()
         notification(STR_ALL_MOVIE_METADTA_CREATED)
 
+    @log_decorator
     def options(self, item):
         ''' provides options for a single staged movie in a dialog window '''
         #TODO: add a back button
@@ -186,6 +192,7 @@ class StagedTV(object):
         self.mainmenu = mainmenu
         self.dbh = DB_Handler()
 
+    @log_decorator
     def view_shows(self):
         '''
         displays all managed tvshows, which are selectable and lead to options.
@@ -228,6 +235,7 @@ class StagedTV(object):
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
+    @log_decorator
     def add_all_shows(self):
         ''' adds all tvshow items to library '''
         STR_ADDING_ALL_TV_SHOWS = self.addon.getLocalizedString(32059)
@@ -241,6 +249,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_TV_SHOWS_ADDED)
 
+    @log_decorator
     def add_all_with_metadata(self):
         ''' adds all tvshow items with nfo file to library'''
         STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA = self.addon.getLocalizedString(32061)
@@ -260,6 +269,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED)
 
+    @log_decorator
     def remove_all(self):
         ''' removes all staged tvshow items '''
         STR_REMOVING_ALL_TV_SHOWS = self.addon.getLocalizedString(32024)
@@ -270,6 +280,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_TV_SHOW_REMOVED)
 
+    @log_decorator
     def generate_all_metadata(self):
         ''' creates metadata for all staged tvshow items '''
         STR_GENERATING_ALL_TV_SHOW_METADATA = self.addon.getLocalizedString(32063)
@@ -283,6 +294,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_TV_SHOW_METADATA_CREATED)
 
+    @log_decorator
     def view_episodes(self, show_title):
         '''
         displays all staged episodes in the specified show,
@@ -336,6 +348,7 @@ class StagedTV(object):
                 return self.view_shows()
         return self.view_shows()
 
+    @log_decorator
     def add_all_episodes(self, items):
         ''' adds all episodes from specified show to library '''
         STR_ADDING_ALL_x_EPISODES = self.addon.getLocalizedString(32071) % show_title
@@ -348,6 +361,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_x_EPISODES_ADDED)
 
+    @log_decorator
     def add_all_episodes_with_metadata(self, items):
         ''' adds all episodes in the specified show with metadata to the library '''
         STR_ADDING_ALL_x_EPISODES_WITH_METADATA = self.addon.getLocalizedString(32073) % show_title
@@ -366,6 +380,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED)
 
+    @log_decorator
     def remove_all_episodes(self, show_title):
         ''' removes all episodes from the specified show '''
         STR_REMOVING_ALL_x_EPISODES = self.addon.getLocalizedString(32032) % show_title
@@ -376,6 +391,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED)
 
+    @log_decorator
     def remove_and_block_show(self, show_title):
         '''
         removes all episodes from specified show from the library,
@@ -390,6 +406,7 @@ class StagedTV(object):
         # add show title to blocked
         self.dbh.add_blocked_item(show_title, 'tvshow')
 
+    @log_decorator
     def rename_episodes_using_metadata(self, items):
         ''' automatically renames all episodes in show using nfo files '''
         STR_RENAMING_x_EPISODES_USING_METADATA = self.addon.getLocalizedString(32075) % show_title
@@ -402,6 +419,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_x_EPISODES_RENAMED_USING_METADATA)
 
+    @log_decorator
     def generate_all_episodes_metadata(self, items):
         ''' generates metadata items for all episodes in show '''
         STR_GENERATING_ALL_x_METADATA = self.addon.getLocalizedString(32077) % show_title
@@ -414,6 +432,7 @@ class StagedTV(object):
         pDialog.close()
         notification(STR_ALL_x_METADATA_CREATED)
 
+    @log_decorator
     def episode_options(self, item):
         ''' provides options for a single staged episode in a dialog window '''
         #TODO: rename associated metadata when renaming

@@ -15,7 +15,7 @@ import xbmc
 import xbmcaddon
 
 import database_handler as db
-from utils import clean_name, log_msg
+from utils import log_msg, log_decorator, clean_name
 
 # get tools depending on platform
 if os.name == 'posix':
@@ -103,6 +103,7 @@ class MovieItem(ContentItem):
     def __init__(self, path, title, mediatype):
         super(MovieItem, self).__init__(path, title, mediatype)
 
+    @log_decorator
     def add_to_library(self):
         # parse and fix file/dir names
         safe_title = clean_name(self.title)
@@ -119,11 +120,13 @@ class MovieItem(ContentItem):
         fs.create_stream_file(self.path, filepath)
         db.DB_Handler().update_content_status(self.path, 'managed')
 
+    @log_decorator
     def remove_from_library(self):
         safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'ManagedMovies', safe_title)
         fs.remove_dir(movie_dir)
 
+    @log_decorator
     def remove_and_block(self):
         dbh = db.DB_Handler()
         # add title to blocked
@@ -135,6 +138,7 @@ class MovieItem(ContentItem):
         # remove from db
         dbh.remove_content_item(self.path)
 
+    @log_decorator
     def create_metadata_item(self):
         safe_title = clean_name(self.title)
         movie_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'Movies', safe_title)
@@ -156,6 +160,7 @@ class EpisodeItem(ContentItem):
     def __str__(self):
         return '[B]%s[/B] - [I]%s[/I]' % (self.title, self.path)
 
+    @log_decorator
     def add_to_library(self):
         #TODO: add a return value so Staged will know if episode wasn't added
         #       and can display a relevant notification
@@ -209,6 +214,7 @@ class EpisodeItem(ContentItem):
                     fs.softlink_file(fanart_path, managed_thumb_path)
         db.DB_Handler().update_content_status(self.path, 'managed')
 
+    @log_decorator
     def remove_from_library(self):
         # delete stream & episode metadata
         safe_title = clean_name(self.title)
@@ -223,6 +229,7 @@ class EpisodeItem(ContentItem):
         else:
             fs.remove_dir(show_dir)
 
+    @log_decorator
     def remove_and_block(self):
         dbh = db.DB_Handler()
         # add episode title to blocked
@@ -235,6 +242,7 @@ class EpisodeItem(ContentItem):
         # remove from db
         dbh.remove_content_item(self.path)
 
+    @log_decorator
     def create_metadata_item(self):
         #TODO: automatically call this when staging
         #TODO: actually create basic nfo file with name and episode number, and thumb if possible
@@ -271,6 +279,7 @@ class EpisodeItem(ContentItem):
                 self.title = new_title
                 db.DB_Handler().update_content_title(self.path, self.title)
 
+    @log_decorator
     def rename(self, name):
         # rename files if they exist
         safe_showtitle = clean_name(self.show_title)
@@ -288,6 +297,7 @@ class EpisodeItem(ContentItem):
         self.title = name
         db.DB_Handler().update_content_title(self.path, self.title)
 
+    @log_decorator
     def rename_using_metadata(self):
         #TODO?: rename show_title too
         #TODO: recognize old episodes with epid like create_metadata_item

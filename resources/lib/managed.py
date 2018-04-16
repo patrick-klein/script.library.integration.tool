@@ -10,7 +10,7 @@ import xbmcgui
 import xbmcaddon
 
 from database_handler import DB_Handler
-from utils import notification
+from utils import log_decorator, notification
 
 class ManagedMovies(object):
     '''
@@ -25,6 +25,7 @@ class ManagedMovies(object):
         self.mainmenu = mainmenu
         self.dbh = DB_Handler()
 
+    @log_decorator
     def view_all(self):
         '''
         displays all managed movies, which are selectable and lead to options.
@@ -58,9 +59,9 @@ class ManagedMovies(object):
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
+    @log_decorator
     def remove_all(self, items):
         ''' removes all managed movies from library '''
-        #TODO: get managed_movies from previous call
         STR_REMOVING_ALL_MOVIES = self.addon.getLocalizedString(32013)
         STR_ALL_MOVIES_REMOVED = self.addon.getLocalizedString(32014)
         pDialog = xbmcgui.DialogProgress()
@@ -72,6 +73,7 @@ class ManagedMovies(object):
         pDialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
 
+    @log_decorator
     def move_all_to_staged(self, items):
         ''' removes all managed movies from library, and adds them to staged '''
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = self.addon.getLocalizedString(32015)
@@ -85,6 +87,7 @@ class ManagedMovies(object):
         pDialog.close()
         notification(STR_ALL_MOVIES_MOVED_TO_STAGED)
 
+    @log_decorator
     def options(self, item):
         ''' provides options for a single managed movie in a dialog window '''
         # TODO: add rename option
@@ -121,6 +124,7 @@ class ManagedTV(object):
         self.mainmenu = mainmenu
         self.dbh = DB_Handler()
 
+    @log_decorator
     def view_shows(self):
         '''
         displays all managed tvshows, which are selectable and lead to options.
@@ -154,6 +158,7 @@ class ManagedTV(object):
                 return self.mainmenu.view()
         return self.mainmenu.view()
 
+    @log_decorator
     def remove_all(self):
         ''' removes all managed tvshow items from library '''
         STR_REMOVING_ALL_TV_SHOWS = self.addon.getLocalizedString(32024)
@@ -168,6 +173,7 @@ class ManagedTV(object):
         pDialog.close()
         notification(STR_ALL_TV_SHOWS_REMOVED)
 
+    @log_decorator
     def move_all_to_staged(self):
         ''' removes all managed tvshow items from library, and adds them to staged '''
         STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = self.addon.getLocalizedString(32026)
@@ -182,6 +188,7 @@ class ManagedTV(object):
         pDialog.close()
         notification(STR_ALL_TV_SHOWS_MOVED_TO_STAGED)
 
+    @log_decorator
     def view_episodes(self, show_title):
         '''
         displays all managed episodes in the specified show,
@@ -216,6 +223,7 @@ class ManagedTV(object):
                 return self.view_shows()
         return self.view_shows()
 
+    @log_decorator
     def remove_episodes(self, items):
         ''' removes all episodes in specified show from library '''
         STR_REMOVING_ALL_x_EPISODES = self.addon.getLocalizedString(32032) % show_title
@@ -229,6 +237,7 @@ class ManagedTV(object):
         pDialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED)
 
+    @log_decorator
     def move_episodes_to_staged(self, items):
         ''' removes all managed episodes in specified show from library, and adds them to staged '''
         STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = self.addon.getLocalizedString(32034) % show_title
@@ -242,6 +251,7 @@ class ManagedTV(object):
         pDialog.close()
         notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED)
 
+    @log_decorator
     def episode_options(self, item):
         ''' provides options for a single managed episode in a dialog window '''
         STR_REMOVE = self.addon.getLocalizedString(32017)
