@@ -36,7 +36,7 @@ def log_decorator(func):
         # call the function and get the return value
         ret = func(*args, **kwargs)
         # define the string for the function call (include class name for methods)
-        is_method = hasattr(args[0].__class__, func.__name__)
+        is_method = args and hasattr(args[0].__class__, func.__name__)
         parent = args[0].__class__.__name__ if is_method \
             else func.__module__.replace('resources.lib.', '')
         func_str = '{0}.{1}'.format(parent, func.__name__)
