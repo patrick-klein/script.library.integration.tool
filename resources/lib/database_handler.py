@@ -31,13 +31,13 @@ class DB_Handler(object):
         # create tables if they doesn't exist
         self.c.execute(
             "CREATE TABLE IF NOT EXISTS Content \
-                (Directory TEXT PRIMARY KEY, Title TEXT, Mediatype TEXT, Status TEXT, Show_Title TEXT)")
+            (Directory TEXT PRIMARY KEY, Title TEXT, Mediatype TEXT, Status TEXT, Show_Title TEXT)")
         self.c.execute(
             "CREATE TABLE IF NOT EXISTS Synced \
-                (Directory TEXT PRIMARY KEY, Label TEXT, Type TEXT)")
+            (Directory TEXT PRIMARY KEY, Label TEXT, Type TEXT)")
         self.c.execute(
             "CREATE TABLE IF NOT EXISTS Blocked \
-                (Value TEXT NOT NULL, Type TEXT NOT NULL)")
+            (Value TEXT NOT NULL, Type TEXT NOT NULL)")
         self.db.commit()
 
     def __del__(self):
@@ -206,7 +206,7 @@ class DB_Handler(object):
     def add_synced_dir(self, label, path, mediatype):
         ''' Create an entry in Synced with specified values '''
         self.c.execute(
-            "INSERT OR IGNORE INTO Synced (Directory, Label, Type) VALUES (?, ?, ?)",
+            "INSERT OR REPLACE INTO Synced (Directory, Label, Type) VALUES (?, ?, ?)",
             (path, label, mediatype))
         self.db.commit()
 
