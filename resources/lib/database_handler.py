@@ -52,12 +52,14 @@ class DB_Handler(object):
         if mediatype:
             self.c.execute(
                 "SELECT * FROM Content WHERE Status=? AND Mediatype=? \
-                ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) ELSE Title END)",
+                ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) \
+                ELSE Title END) COLLATE NOCASE",
                 (status, mediatype))
         else:
             self.c.execute(
                 "SELECT * FROM Content WHERE Status=? \
-                ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) ELSE Title END)",
+                ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) \
+                ELSE Title END) COLLATE NOCASE",
                 (status,))
         # get results and return items as objects
         rows = self.c.fetchall()
@@ -70,7 +72,8 @@ class DB_Handler(object):
         # query database
         self.c.execute(
             "SELECT DISTINCT Show_Title FROM Content WHERE Status=? \
-            ORDER BY (CASE WHEN Show_Title LIKE 'the %' THEN substr(Show_Title,5) ELSE Show_Title END)",
+            ORDER BY (CASE WHEN Show_Title LIKE 'the %' THEN substr(Show_Title,5) \
+            ELSE Show_Title END) COLLATE NOCASE",
             (status,))
         # get results and return items as list
         rows = self.c.fetchall()
@@ -83,7 +86,8 @@ class DB_Handler(object):
         # query database
         self.c.execute(
             "SELECT * FROM Content WHERE Status=? AND Show_Title=?\
-            ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) ELSE Title END)",
+            ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) \
+            ELSE Title END) COLLATE NOCASE",
             (status, show_title))
         # get results and return items as objects
         rows = self.c.fetchall()
@@ -196,7 +200,8 @@ class DB_Handler(object):
         # query database
         self.c.execute(
             "SELECT * FROM Synced \
-            ORDER BY (CASE WHEN Label LIKE 'the %' THEN substr(Label,5) ELSE Label END)")
+            ORDER BY (CASE WHEN Label LIKE 'the %' THEN substr(Label,5) \
+            ELSE Label END) COLLATE NOCASE")
         # get results and return as list of dicts
         rows = self.c.fetchall()
         return [self.synced_item_dict(x) for x in rows]
@@ -232,7 +237,7 @@ class DB_Handler(object):
     def get_blocked_items(self):
         ''' Returns all items in Blocked as a list of dicts '''
         self.c.execute(
-            "SELECT * FROM Blocked ORDER BY Value, Type")
+            "SELECT * FROM Blocked ORDER BY Type, Value")
         rows = self.c.fetchall()
         return [self.blocked_item_dict(x) for x in rows]
 
