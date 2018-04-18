@@ -364,21 +364,22 @@ class StagedTV(object):
     @log_decorator
     def add_all_episodes_with_metadata(self, items):
         ''' adds all episodes in the specified show with metadata to the library '''
-        STR_ADDING_ALL_x_EPISODES_WITH_METADATA = self.addon.getLocalizedString(32073) % show_title
-        STR_ALL_x_EPISODES_WITH_METADATA_ADDED = self.addon.getLocalizedString(32074) % show_title
+        STR_ADDING_ALL_x_EPISODES_WITH_METADATA = self.addon.getLocalizedString(32073)
+        STR_ALL_x_EPISODES_WITH_METADATA_ADDED = self.addon.getLocalizedString(32074)
+        show_title = items[0].get_show_title()
+        safe_showtitle = clean_name(show_title)
+        metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
         pDialog = xbmcgui.DialogProgress()
-        pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_x_EPISODES_WITH_METADATA)
+        pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_x_EPISODES_WITH_METADATA % show_title)
         for item in items:
             safe_title = clean_name(item.get_title())
-            safe_showtitle = clean_name(show_title)
-            metadata_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
             nfo_path = os.path.join(metadata_dir, safe_title + '.nfo')
             if os.path.exists(nfo_path):
                 pDialog.update(0, line2=item.get_title())
                 item.add_to_library()
             pDialog.update(0, line2=' ')
         pDialog.close()
-        notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED)
+        notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED % show_title)
 
     @log_decorator
     def remove_all_episodes(self, show_title):
