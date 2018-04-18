@@ -513,7 +513,7 @@ msgid "Choose managed folder in settings"
 msgstr ""
 
 msgctxt "#32124"
-msgid "Updating synced file..."
+msgid "Updating synced directory list..."
 msgstr ""
 
 msgctxt "#32125"
@@ -550,4 +550,8 @@ msgstr ""
 
 msgctxt "#32133"
 msgid "Updating managed files..."
+msgstr ""
+
+msgctxt "#32134"
+msgid "Add-on updated.  See change log for details."
 msgstr ""

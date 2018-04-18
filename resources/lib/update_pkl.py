@@ -49,6 +49,7 @@ def update_staged():
 @log_decorator
 def update_synced():
     ''' Converts managed.pkl items to SQLite entries '''
+    #TODO: actually load paths and try to get new label
     synced_file = os.path.join(MANAGED_FOLDER, 'synced.pkl')
     if os.path.exists(synced_file):
         dbh = DB_Handler()
@@ -75,6 +76,8 @@ def main():
     updates log and progress, and calls all other functions '''
 
     STR_UPDATING = addon.getLocalizedString(32133)
+    STR_UPDATED = addon.getLocalizedString(32134)
+
     pDialog = xbmcgui.DialogProgress()
     pDialog.create(STR_ADDON_NAME, STR_UPDATING)
 
@@ -91,3 +94,4 @@ def main():
     update_blocked()
 
     pDialog.close()
+    xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_UPDATED)
