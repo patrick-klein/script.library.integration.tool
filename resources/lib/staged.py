@@ -351,15 +351,16 @@ class StagedTV(object):
     @log_decorator
     def add_all_episodes(self, items):
         ''' adds all episodes from specified show to library '''
-        STR_ADDING_ALL_x_EPISODES = self.addon.getLocalizedString(32071) % show_title
-        STR_ALL_x_EPISODES_ADDED = self.addon.getLocalizedString(32072) % show_title
+        STR_ADDING_ALL_x_EPISODES = self.addon.getLocalizedString(32071)
+        STR_ALL_x_EPISODES_ADDED = self.addon.getLocalizedString(32072)
+        show_title = items[0].get_show_title()
         pDialog = xbmcgui.DialogProgress()
-        pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_x_EPISODES)
+        pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_x_EPISODES % show_title)
         for item in items:
             pDialog.update(0, line2=item.get_title())
             item.add_to_library()
         pDialog.close()
-        notification(STR_ALL_x_EPISODES_ADDED)
+        notification(STR_ALL_x_EPISODES_ADDED % show_title)
 
     @log_decorator
     def add_all_episodes_with_metadata(self, items):
@@ -410,28 +411,30 @@ class StagedTV(object):
     @log_decorator
     def rename_episodes_using_metadata(self, items):
         ''' automatically renames all episodes in show using nfo files '''
-        STR_RENAMING_x_EPISODES_USING_METADATA = self.addon.getLocalizedString(32075) % show_title
-        STR_x_EPISODES_RENAMED_USING_METADATA = self.addon.getLocalizedString(32076) % show_title
+        STR_RENAMING_x_EPISODES_USING_METADATA = self.addon.getLocalizedString(32075)
+        STR_x_EPISODES_RENAMED_USING_METADATA = self.addon.getLocalizedString(32076)
+        show_title = items[0].get_show_title()
         pDialog = xbmcgui.DialogProgress()
-        pDialog.create(self.STR_ADDON_NAME, STR_RENAMING_x_EPISODES_USING_METADATA)
+        pDialog.create(self.STR_ADDON_NAME, STR_RENAMING_x_EPISODES_USING_METADATA % show_title)
         for item in items:
             pDialog.update(0, line2=item.get_title())
             item.rename_using_metadata()
         pDialog.close()
-        notification(STR_x_EPISODES_RENAMED_USING_METADATA)
+        notification(STR_x_EPISODES_RENAMED_USING_METADATA % show_title)
 
     @log_decorator
     def generate_all_episodes_metadata(self, items):
         ''' generates metadata items for all episodes in show '''
-        STR_GENERATING_ALL_x_METADATA = self.addon.getLocalizedString(32077) % show_title
-        STR_ALL_x_METADATA_CREATED = self.addon.getLocalizedString(32078) % show_title
+        STR_GENERATING_ALL_x_METADATA = self.addon.getLocalizedString(32077)
+        STR_ALL_x_METADATA_CREATED = self.addon.getLocalizedString(32078)
+        show_title = items[0].get_show_title()
         pDialog = xbmcgui.DialogProgress()
-        pDialog.create(self.STR_ADDON_NAME, STR_GENERATING_ALL_x_METADATA)
+        pDialog.create(self.STR_ADDON_NAME, STR_GENERATING_ALL_x_METADATA % show_title)
         for item in items:
             pDialog.update(0, line2=item.get_title())
             item.create_metadata_item()
         pDialog.close()
-        notification(STR_ALL_x_METADATA_CREATED)
+        notification(STR_ALL_x_METADATA_CREATED % show_title)
 
     @log_decorator
     def episode_options(self, item):
