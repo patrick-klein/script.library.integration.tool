@@ -70,7 +70,7 @@ class DB_Handler(object):
         # query database
         self.c.execute(
             "SELECT DISTINCT Show_Title FROM Content WHERE Status=? \
-            ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) ELSE Title END)",
+            ORDER BY (CASE WHEN Show_Title LIKE 'the %' THEN substr(Show_Title,5) ELSE Show_Title END)",
             (status,))
         # get results and return items as list
         rows = self.c.fetchall()
