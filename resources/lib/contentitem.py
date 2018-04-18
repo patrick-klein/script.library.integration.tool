@@ -7,7 +7,7 @@ in addition to the parent class ContentItem
 '''
 
 import os
-from fnmatch import fnmatch
+import re
 from glob import glob
 from bs4 import BeautifulSoup
 
@@ -168,10 +168,9 @@ class EpisodeItem(ContentItem):
         self.rename_using_metadata()
         # don't add episodes that don't have episode id in name
         safe_title = clean_name(self.title)
-        if not (fnmatch(safe_title, '*[0-9]x[0-9]*')\
-            or fnmatch(safe_title, '*[Ss][0-9]*[Ee][0-9]*')):
-            log_msg('No episode number detected for {0}. Not adding to library...'.format(
-                safe_title), xbmc.LOGWARNING)
+        if not re.match('.*[0-9]x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', safe_title):
+            log_msg('No episode number detected for {0}. Not adding to library...'\
+                .format(safe_title), xbmc.LOGNOTICE)
             return
         # check if tvshow folder already exists
         safe_showtitle = clean_name(self.show_title)
@@ -184,8 +183,7 @@ class EpisodeItem(ContentItem):
                 # link tvshow.nfo and artwork now, if metadata_dir exists
                 files = os.listdir(metadata_dir)
                 for fname in files:
-                    if not (fnmatch(fname, '*[0-9]x[0-9]*') \
-                        or fnmatch(fname, '*[Ss][0-9]*[Ee][0-9]*') \
+                    if not (re.match('.*[0-9]x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', safe_title)
                         or '.strm' in fname):
                         fs.softlink_file(
                             os.path.join(metadata_dir, fname),
@@ -231,6 +229,7 @@ class EpisodeItem(ContentItem):
 
     @log_decorator
     def remove_and_block(self):
+        #TODO: need to add remove metadata for all other items that match blocked
         dbh = db.DB_Handler()
         # add episode title to blocked
         dbh.add_blocked_item(self.title.replace('-0x0', ''), 'episode')
@@ -244,7 +243,7 @@ class EpisodeItem(ContentItem):
 
     @log_decorator
     def create_metadata_item(self):
-        #TODO: automatically call this when staging
+        #TODO?: automatically call this when staging
         #TODO: actually create basic nfo file with name and episode number, and thumb if possible
         #TODO?: could probably just rename based on existing strm file instead of nfo file
         # create show_dir in Metadata/TV if it doesn't already exist
@@ -265,9 +264,8 @@ class EpisodeItem(ContentItem):
                 # prepend title with epid if so
                 epid = old_renamed[0].split('/')[-1].replace(safe_title_no_0x0+'.nfo', '')
                 new_title = epid + self.title.replace('-0x0', '')
-            elif not (fnmatch(safe_title, '*[0-9]x[0-9]*') or \
-                fnmatch(safe_title, '*[Ss][0-9]*[Ee][0-9]*')):
-                # otherwise, append -0x0 if title doesn't already have episode id
+            elif not re.match('.*[0-9]x[0-9].*|.*[Ss][0-9]+[Ee][0-9].*', safe_title):
+                # otherwise, append -0x0 if title doesn't already have valid episode id
                 new_title = self.title + '-0x0'
             else:
                 new_title = self.title
