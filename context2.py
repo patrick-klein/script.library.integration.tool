@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # Display an error is user hasn't configured managed folder yet
     if not (MANAGED_FOLDER and os.path.isdir(MANAGED_FOLDER)):
         notification(STR_CHOOSE_FOLDER)
-        log_msg('No managed folder!', xbmc.LOGERROR)
+        log_msg('No managed folder!', xbmc.LOGWARNING)
         sys.exit()
 
     # update .pkl files if present
@@ -54,6 +54,7 @@ if __name__ == '__main__':
         # check if contents are movie
         content_type = "movie"
     else:
+        #TODO: check if path is already in Synced, and get content type there
         # ask user otherwise
         is_show = xbmcgui.Dialog().yesno(
             STR_ADDON_NAME, STR_CHOOSE_CONTENT_TYPE,
@@ -70,7 +71,6 @@ if __name__ == '__main__':
     dbh = DB_Handler()
 
     # add synced directory to database
-    #TODO: verify dir_label is correct
     pDialog.update(0, line1=STR_UPDATING_SYNCED_FILE)
     dir_path = xbmc.getInfoLabel('Container.FolderPath')
     dir_label = xbmc.getInfoLabel('Container.FolderName')
@@ -82,6 +82,10 @@ if __name__ == '__main__':
     results = json.loads(xbmc.executeJSONRPC(
         '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
         "params": {"directory":"%s"}, "id": 1}' % dir_path))
+    # halt if results don't load
+    if not (result.has_key('result') and result["result"].has_key('files')):
+        #TODO: add notification that directory was added but no items
+        sys.exit()
     dir_items = results["result"]["files"]
 
     if content_type == 'movie':
