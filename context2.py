@@ -18,7 +18,6 @@ from resources.lib.database_handler import DB_Handler
 
 if __name__ == '__main__':
     #TODO: add recursive option
-    #TODO: fix for empty directories
     #TODO: let user name/rename directory label
 
     addon = xbmcaddon.Addon()
@@ -83,7 +82,7 @@ if __name__ == '__main__':
         '{"jsonrpc": "2.0", "method": "Files.GetDirectory", \
         "params": {"directory":"%s"}, "id": 1}' % dir_path))
     # halt if results don't load
-    if not (result.has_key('result') and result["result"].has_key('files')):
+    if not (results.has_key('result') and results["result"].has_key('files')):
         #TODO: add notification that directory was added but no items
         sys.exit()
     dir_items = results["result"]["files"]
