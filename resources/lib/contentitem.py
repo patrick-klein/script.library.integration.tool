@@ -152,6 +152,7 @@ class EpisodeItem(ContentItem):
     keeps track of a tvshow episode item from a plugin,
     and manages its content in managed/staged files and folders
     '''
+    #TODO: use season folders in metadata/managed dir
 
     def __init__(self, path, title, mediatype, show_title):
         self.show_title = show_title
@@ -183,7 +184,7 @@ class EpisodeItem(ContentItem):
                 # link tvshow.nfo and artwork now, if metadata_dir exists
                 files = os.listdir(metadata_dir)
                 for fname in files:
-                    if not (re.match('.*[0-9]x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', safe_title)
+                    if not (re.match('.*[0-9]x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', fname)
                         or '.strm' in fname):
                         fs.softlink_file(
                             os.path.join(metadata_dir, fname),
@@ -243,9 +244,9 @@ class EpisodeItem(ContentItem):
 
     @log_decorator
     def create_metadata_item(self):
-        #TODO?: automatically call this when staging
-        #TODO: actually create basic nfo file with name and episode number, and thumb if possible
-        #TODO?: could probably just rename based on existing strm file instead of nfo file
+        #IDEA: automatically call this when staging
+        #IDEA: actually create basic nfo file with name and episode number, and thumb if possible
+        #IDEA: could probably just rename based on existing strm file instead of nfo file
         # create show_dir in Metadata/TV if it doesn't already exist
         safe_showtitle = clean_name(self.show_title)
         show_dir = os.path.join(MANAGED_FOLDER, 'Metadata', 'TV', safe_showtitle)
