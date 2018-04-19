@@ -18,6 +18,8 @@ class ManagedMovies(object):
     and tools for manipulating the objects and managed file
     '''
     #TODO: pass around a "previous_view" function handle
+    #TODO: context menu for managed items in library
+    #TODO: synced watched status with plugin item
 
     def __init__(self, mainmenu):
         self.addon = xbmcaddon.Addon()
@@ -226,30 +228,32 @@ class ManagedTV(object):
     @log_decorator
     def remove_episodes(self, items):
         ''' removes all episodes in specified show from library '''
-        STR_REMOVING_ALL_x_EPISODES = self.addon.getLocalizedString(32032) % show_title
-        STR_ALL_x_EPISODES_REMOVED = self.addon.getLocalizedString(32033) % show_title
+        STR_REMOVING_ALL_x_EPISODES = self.addon.getLocalizedString(32032)
+        STR_ALL_x_EPISODES_REMOVED = self.addon.getLocalizedString(32033)
+        show_title = items[0].get_show_title()
         pDialog = xbmcgui.DialogProgress()
-        pDialog.create(self.STR_ADDON_NAME, STR_REMOVING_ALL_x_EPISODES)
+        pDialog.create(self.STR_ADDON_NAME, STR_REMOVING_ALL_x_EPISODES % show_title)
         for item in items:
             pDialog.update(0, line2=item.get_title())
             item.remove_from_library()
             item.delete()
         pDialog.close()
-        notification(STR_ALL_x_EPISODES_REMOVED)
+        notification(STR_ALL_x_EPISODES_REMOVED % show_title)
 
     @log_decorator
     def move_episodes_to_staged(self, items):
         ''' removes all managed episodes in specified show from library, and adds them to staged '''
-        STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = self.addon.getLocalizedString(32034) % show_title
-        STR_ALL_x_EPISODES_MOVED_TO_STAGED = self.addon.getLocalizedString(32035) % show_title
+        STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = self.addon.getLocalizedString(32034)
+        STR_ALL_x_EPISODES_MOVED_TO_STAGED = self.addon.getLocalizedString(32035)
+        show_title = items[0].get_show_title()
         pDialog = xbmcgui.DialogProgress()
-        pDialog.create(self.STR_ADDON_NAME, STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED)
+        pDialog.create(self.STR_ADDON_NAME, STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED % show_title)
         for item in items:
             pDialog.update(0, line2=item.get_title())
             item.remove_from_library()
             item.set_as_staged()
         pDialog.close()
-        notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED)
+        notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED % show_title)
 
     @log_decorator
     def episode_options(self, item):
