@@ -19,6 +19,7 @@ class Synced(object):
     provides windows for displaying synced directories,
     and tools for managing them and updating their contents
     '''
+    #IDEA: new "find all directories" context item that finds and consolidates directories
 
     def __init__(self, mainmenu):
         self.addon = xbmcaddon.Addon()
@@ -115,9 +116,9 @@ class Synced(object):
         #TODO: wait until after confirmation to remove staged items also
         #TODO: bugfix: single-movies won't actually get removed if they become unavailable
         #       maybe load parent dir and check for path or label?  it would be slower though
-        #TODO: bugfix: unicode error when comparing some blocked titles
         #TODO: option to only update specified or managed items
         #TODO: option to add update frequencies for specific directories (i.e. weekly/monthly/etc.)
+        #TODO: better error handling when plugins dont load during update (make it similar to clean)
         STR_GETTING_ALL_ITEMS_FROM_SYNCED_DIRS = self.addon.getLocalizedString(32089)
         STR_FINDING_ITEMS_TO_REMOVE_FROM_MANAGED = self.addon.getLocalizedString(32090)
         STR_REMOVING_ITEMS_FROM_STAGED = self.addon.getLocalizedString(32091)
@@ -209,7 +210,7 @@ class Synced(object):
 
         # find managed paths not in dir_items, and prepare to remove
         pDialog.update(0, line1=STR_FINDING_ITEMS_TO_REMOVE_FROM_MANAGED)
-        managed_items = self.dbh.get_content_items('managed')
+        managed_items = self.dbh.get_content_items(status='managed')
         dir_paths = [x['file'] for x in dir_items]
         paths_to_remove = []
         for item in managed_items:
@@ -220,7 +221,7 @@ class Synced(object):
 
         # remove them from staged also (can do that immediately)
         pDialog.update(0, line1=STR_REMOVING_ITEMS_FROM_STAGED)
-        staged_items = self.dbh.get_content_items('staged')
+        staged_items = self.dbh.get_content_items(status='staged')
         for item in staged_items:
             if item.get_path() not in dir_paths:
                 pDialog.update(0, line2=item.get_title())

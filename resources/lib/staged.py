@@ -50,7 +50,8 @@ class StagedMovies(object):
         STR_GENERATE_ALL_METADATA_ITEMS = self.addon.getLocalizedString(32040)
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_STAGED_MOVIES = self.addon.getLocalizedString(32041)
-        staged_movies = self.dbh.get_content_items(status='staged', mediatype='movie')
+        staged_movies = self.dbh.get_content_items(status='staged', mediatype='movie',
+                                                   order='Title')
         if not staged_movies:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_STAGED_MOVIES)
             return self.mainmenu.view()
@@ -175,7 +176,7 @@ class StagedMovies(object):
     @staticmethod
     def rename_dialog(item):
         ''' prompts input for new name, and renames if non-empty string '''
-        #TODO: move to utils so it's not duplicated
+        #TODO: move to utils or parent class so it's not duplicated
         input_ret = xbmcgui.Dialog().input("Title", defaultt=item.title)
         if input_ret:
             item.rename(input_ret)
@@ -242,7 +243,8 @@ class StagedTV(object):
         STR_ALL_TV_SHOWS_ADDED = self.addon.getLocalizedString(32060)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_TV_SHOWS)
-        staged_tv_items = self.dbh.get_content_items(status='staged', mediatype='tvshow')
+        staged_tv_items = self.dbh.get_content_items(status='staged', mediatype='tvshow',
+                                                     order='Show_Title')
         for item in staged_tv_items:
             pDialog.update(0, line2=item.get_title())
             item.add_to_library()
@@ -256,7 +258,8 @@ class StagedTV(object):
         STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED = self.addon.getLocalizedString(32062)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA)
-        staged_tv_items = self.dbh.get_content_items(status='staged', mediatype='tvshow')
+        staged_tv_items = self.dbh.get_content_items(status='staged', mediatype='tvshow',
+                                                     order='Show_Title')
         for item in staged_tv_items:
             safe_title = clean_name(item.get_title())
             safe_showtitle = clean_name(item.get_show_title())
@@ -287,7 +290,8 @@ class StagedTV(object):
         STR_ALL_TV_SHOW_METADATA_CREATED = self.addon.getLocalizedString(32064)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_GENERATING_ALL_TV_SHOW_METADATA)
-        staged_tv_items = self.dbh.get_content_items(status='staged', mediatype='tvshow')
+        staged_tv_items = self.dbh.get_content_items(status='staged', mediatype='tvshow',
+                                                     order='Show_Title')
         for item in staged_tv_items:
             pDialog.update(0, line2=item.get_show_title(), line3=item.get_title())
             item.create_metadata_item()
@@ -310,7 +314,8 @@ class StagedTV(object):
         STR_GENERATE_ALL_METADATA_ITEMS = self.addon.getLocalizedString(32040)
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_STAGED_x_EPISODES = self.addon.getLocalizedString(32070) % show_title
-        staged_episodes = self.dbh.get_show_episodes('staged', show_title)
+        staged_episodes = self.dbh.get_content_items(status='staged', show_title=show_title,
+                                                     order='Title')
         if not staged_episodes:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_STAGED_x_EPISODES)
             return self.view_shows()

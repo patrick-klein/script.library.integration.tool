@@ -45,23 +45,40 @@ class DB_Handler(object):
         self.db.close()
 
     @log_decorator
-    def get_content_items(self, status, mediatype=None):
-        ''' Queries Content table for sorted items with status and mediatype (optional)
-        and casts results as ContentItem subclass '''
-        # query database, add Mediatype constraint if parameter is provided
-        if mediatype:
-            self.c.execute(
-                "SELECT * FROM Content WHERE Status=? AND Mediatype=? \
-                ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) \
-                ELSE Title END) COLLATE NOCASE",
-                (status, mediatype))
-        else:
-            self.c.execute(
-                "SELECT * FROM Content WHERE Status=? \
-                ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) \
-                ELSE Title END) COLLATE NOCASE",
-                (status,))
-        # get results and return items as objects
+    def get_content_items(self, **kwargs):
+        ''' Queries Content table for sorted items with given constaints
+            and casts results as ContentItem subclass
+
+            keyword arguments:
+                mediatype = string, 'movie' or 'tvshow'
+                status = string, 'managed' or 'staged'
+                show_title = string, any show title
+                order= string, any single column
+        '''
+        # define template for this sql command
+        sql_templ = "SELECT * FROM Content{c}{o}"
+        # define constraint and/or order string usings kwargs
+        c_list = []
+        o = ''
+        params = tuple()
+        for k, v in kwargs.iteritems():
+            if k == 'status':
+                c_list.append('Status=?')
+                params += (v,)
+            elif k == 'mediatype':
+                c_list.append('Mediatype=?')
+                params += (v,)
+            elif k == 'show_title':
+                c_list.append('Show_Title=?')
+                params += (v,)
+            elif k == 'order':
+                o = " ORDER BY (CASE WHEN {0} LIKE 'the %' THEN substr({0},5) \
+                    ELSE {0} END) COLLATE NOCASE".format(v)
+        c = ' WHERE ' + ' AND '.join(c_list) if c_list else ''
+        # format and execute sql command
+        sql_comm = sql_templ.format(c=c, o=o)
+        self.c.execute(sql_comm, params)
+        # get results and return items as content items
         rows = self.c.fetchall()
         return [self.content_item_from_db(x) for x in rows]
 
@@ -78,20 +95,6 @@ class DB_Handler(object):
         # get results and return items as list
         rows = self.c.fetchall()
         return [x[0] for x in rows if x[0] is not None]
-
-    @log_decorator
-    def get_show_episodes(self, status, show_title):
-        ''' Queries Content table for tvshow items with show_title
-        and casts results as EpisodeItem '''
-        # query database
-        self.c.execute(
-            "SELECT * FROM Content WHERE Status=? AND Show_Title=?\
-            ORDER BY (CASE WHEN Title LIKE 'the %' THEN substr(Title,5) \
-            ELSE Title END) COLLATE NOCASE",
-            (status, show_title))
-        # get results and return items as objects
-        rows = self.c.fetchall()
-        return [self.content_item_from_db(x) for x in rows]
 
     @utf8_decorator
     @log_decorator
@@ -112,15 +115,13 @@ class DB_Handler(object):
         #TODO: consider adding mediatype as optional parameter
         #       might speed-up by adding additional constraint
         #TODO: test speed against a set from "get_content_paths"
-        # query database, add Status constraint if parameter is provided
+        # build sql command and parameters, adding status if provided
+        sql_comm = 'SELECT (Directory) FROM Content WHERE Directory=?'
+        params = (path,)
         if status:
-            self.c.execute(
-                'SELECT (Directory) FROM Content WHERE Directory=? AND Status=?',
-                (path, status))
-        else:
-            self.c.execute(
-                'SELECT (Directory) FROM Content WHERE Directory=?',
-                (path,))
+            sql_comm += 'AND Status=?'
+            params += (status,)
+        self.c.execute(sql_comm, params)
         # get result and return True if result is found
         res = self.c.fetchone()
         return bool(res)
@@ -129,19 +130,19 @@ class DB_Handler(object):
     @log_decorator
     def add_content_item(self, path, title, mediatype, show_title=None):
         ''' Adds item to Content with given parameters '''
-        # log and insert row according to mediatype
-        if mediatype == 'movie':
-            self.c.execute(
-                "INSERT OR IGNORE INTO Content \
-                    (Directory, Title, Mediatype, Status, Show_Title) \
-                    VALUES (?, ?, ?, 'staged', NULL)",
-                (path, title, mediatype))
-        elif mediatype == 'tvshow':
-            self.c.execute(
-                "INSERT OR IGNORE INTO Content \
-                (Directory, Title, Mediatype, Status, Show_Title) \
-                VALUES (?, ?, ?, 'staged', ?)",
-                (path, title, mediatype, show_title))
+        # define sql command string
+        sql_comm = "INSERT OR IGNORE INTO Content \
+            (Directory, Title, Mediatype, Status, Show_Title) \
+            VALUES (?, ?, ?, 'staged', {0})"
+        params = (path, title, mediatype)
+        # format comamnd & params depending on movie or tvshow
+        if mediatype == 'tvshow':
+            sql_comm = sql_comm.format('?')
+            params += (show_title,)
+        else:
+            sql_comm = sql_comm.format('NULL')
+        # execute and commit sql command
+        self.c.execute(sql_comm, params)
         self.db.commit()
 
     @utf8_decorator

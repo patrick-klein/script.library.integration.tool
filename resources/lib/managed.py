@@ -38,7 +38,8 @@ class ManagedMovies(object):
         STR_MOVE_ALL_BACK_TO_STAGED = self.addon.getLocalizedString(32010)
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_MANAGED_MOVIES = self.addon.getLocalizedString(32012)
-        managed_movies = self.dbh.get_content_items(status='managed', mediatype='movie')
+        managed_movies = self.dbh.get_content_items(status='managed', mediatype='movie',
+                                                    order='Title')
         if not managed_movies:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_MANAGED_MOVIES)
             return self.mainmenu.view()
@@ -167,7 +168,8 @@ class ManagedTV(object):
         STR_ALL_TV_SHOWS_REMOVED = self.addon.getLocalizedString(32025)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
-        managed_tv_items = self.dbh.get_content_items(status='managed', mediatype='tvshow')
+        managed_tv_items = self.dbh.get_content_items(status='managed', mediatype='tvshow',
+                                                      order='Show_Title')
         for item in managed_tv_items:
             pDialog.update(0, line2=item.get_show_title(), line3=item.get_title())
             item.remove_from_library()
@@ -182,7 +184,8 @@ class ManagedTV(object):
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = self.addon.getLocalizedString(32027)
         pDialog = xbmcgui.DialogProgress()
         pDialog.create(self.STR_ADDON_NAME, STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED)
-        managed_tv_items = self.dbh.get_content_items(status='managed', mediatype='tvshow')
+        managed_tv_items = self.dbh.get_content_items(status='managed', mediatype='tvshow',
+                                                      order='Show_Title')
         for item in managed_tv_items:
             pDialog.update(0, line2=item.get_show_title(), line3=item.get_title())
             item.remove_from_library()
@@ -202,7 +205,8 @@ class ManagedTV(object):
         STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = self.addon.getLocalizedString(32030)
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_MANAGED_x_EPISODES = self.addon.getLocalizedString(32031) % show_title
-        managed_episodes = self.dbh.get_show_episodes('managed', show_title)
+        managed_episodes = self.dbh.get_content_items(status='managed', show_title=show_title,
+                                                      order='Title')
         if not managed_episodes:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_MANAGED_x_EPISODES)
             return self.view_shows()
