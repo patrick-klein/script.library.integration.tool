@@ -147,22 +147,19 @@ class DB_Handler(object):
 
     @utf8_decorator
     @log_decorator
-    def update_content_status(self, path, status):
-        ''' Updates Status for item in Content with specified path '''
+    def update_content(self, path, **kwargs):
+        ''' Updates a single field for item in Content with specified path '''
+        #TODO: verify there's only one entry in kwargs
+        sql_comm = "UPDATE Content SET {0}=(?) WHERE Directory=?"
+        params = (path,)
+        for k, v in kwargs.iteritems():
+            if k == 'status':
+                sql_comm = sql_comm.format('Status')
+            elif k == 'title':
+                sql_comm = sql_comm.format('Title')
+            params = (v,) + params
         # update item
-        self.c.execute(
-            "UPDATE Content SET Status=(?) WHERE Directory=?",
-            (status, path))
-        self.db.commit()
-
-    @utf8_decorator
-    @log_decorator
-    def update_content_title(self, path, title):
-        ''' Updates title for item in Content with specified path '''
-        # update item
-        self.c.execute(
-            "UPDATE Content SET Title=(?) WHERE Directory=?",
-            (title, path))
+        self.c.execute(sql_comm, params)
         self.db.commit()
 
     @utf8_decorator

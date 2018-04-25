@@ -78,7 +78,7 @@ class ContentItem(object):
 
     def set_as_staged(self):
         ''' sets the item status as staged in database '''
-        db.DB_Handler().update_content_status(self.path, 'staged')
+        db.DB_Handler().update_content(self.path, status='staged')
 
     def get_title(self):
         ''' returns title of video as string '''
@@ -118,7 +118,7 @@ class MovieItem(ContentItem):
             fs.rm_strm_in_dir(movie_dir)
         # add stream file to movie_dir
         fs.create_stream_file(self.path, filepath)
-        db.DB_Handler().update_content_status(self.path, 'managed')
+        db.DB_Handler().update_content(self.path, status='managed')
 
     @log_decorator
     def remove_from_library(self):
@@ -211,7 +211,7 @@ class EpisodeItem(ContentItem):
                     fs.softlink_file(landscape_path, managed_thumb_path)
                 elif os.path.exists(fanart_path):
                     fs.softlink_file(fanart_path, managed_thumb_path)
-        db.DB_Handler().update_content_status(self.path, 'managed')
+        db.DB_Handler().update_content(self.path, status='managed')
 
     @log_decorator
     def remove_from_library(self):
@@ -276,7 +276,7 @@ class EpisodeItem(ContentItem):
             # refresh item in staged file if name changed
             if new_title != self.title:
                 self.title = new_title
-                db.DB_Handler().update_content_title(self.path, self.title)
+                db.DB_Handler().update_content(self.path, title=self.title)
 
     @log_decorator
     def rename(self, name):
@@ -294,7 +294,7 @@ class EpisodeItem(ContentItem):
             fs.mv_with_type(title_path, '-thumb.jpg', new_title_path)
         # rename property and refresh in staged file
         self.title = name
-        db.DB_Handler().update_content_title(self.path, self.title)
+        db.DB_Handler().update_content(self.path, title=self.title)
 
     @log_decorator
     def rename_using_metadata(self):

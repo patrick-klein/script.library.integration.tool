@@ -28,7 +28,7 @@ def update_managed():
             elif item.get_mediatype() == 'tvshow':
                 dbh.add_content_item(item.get_path(), item.get_title(), 'tvshow', \
                     item.get_show_title())
-            dbh.update_content_status(item.get_path(), 'managed')
+            dbh.update_content(item.get_path(), status='managed')
         os.remove(managed_file)
 
 @log_decorator
