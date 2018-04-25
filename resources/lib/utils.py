@@ -4,6 +4,7 @@
 '''
 This module contains various helper functions used thoughout the addon
 '''
+#TODO: create a global IN_DEVELOPMENT variable to enable/disable various features
 
 import xbmc
 import xbmcaddon
@@ -23,7 +24,7 @@ def utf8_decorator(func):
         return func(*new_args, **new_kwargs)
     return wrapper
 
-def log_msg(msg, loglevel=xbmc.LOGNOTICE):
+def log_msg(msg, loglevel=xbmc.LOGDEBUG):
     ''' log message with addon name and version to kodi log '''
     if isinstance(msg, unicode):
         msg = msg.encode('utf-8')
@@ -31,6 +32,8 @@ def log_msg(msg, loglevel=xbmc.LOGNOTICE):
 
 def log_decorator(func):
     ''' decorator for logging function call and return values '''
+    #TODO: option to have "pre-" and "post-" logging
+    #TODO: fix iterating output when string (Synced.localize_type)
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
         # call the function and get the return value
