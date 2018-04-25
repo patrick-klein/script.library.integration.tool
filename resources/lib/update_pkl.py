@@ -94,4 +94,4 @@ def main():
     update_blocked()
 
     pDialog.close()
-    xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_UPDATED)
+    xbmcgui.Dialog().ok(STR_ADDON_NAME, STR_UPDATED)

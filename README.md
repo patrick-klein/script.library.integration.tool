@@ -1,7 +1,7 @@
 <img src="./resources/logo.png" width=512>
 
 
-[![Version](https://img.shields.io/badge/latest%20version-0.2.2-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
+[![Version](https://img.shields.io/badge/latest%20version-0.3.0-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
 [![GitHub last commit](https://img.shields.io/github/last-commit/patrick-klein/script.library.integration.tool.svg)](https://github.com/patrick-klein/script.library.integration.tool/commits/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
 [![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
@@ -30,7 +30,7 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 7. From Kodi Settings, go to Media Settings --> Library --> Videos... --> and navigate to your Managed Folder.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  Recommended to use "Local information only" if you want to use your own metadata.
 
-DISCLAIMER:  You should NEVER edit the contents of ManagedMovies, ManagedTV, or the .pkl lists.  This will break your addon.  If you do break the addon, you can delete ManagedMovies, ManagedTV, and the .pkl lists, and Library Integration Tool will automatically generate new, blank ones the next time you run it.
+DISCLAIMER:  Do not directly edit the contents of ManagedMovies, ManagedTV, or managed.db; you need to use the Library Integration Tool menu to edit these items.
 
 ## User Guide
 
@@ -84,11 +84,9 @@ After the directories are updated, you can review and add your staged items.  An
 
 After updating, you may notice that you already have a local copy of one of the new staged movies.  Rather than just removing it from staged movies, you should consider blocking it.  If you block an item, it will not be automatically re-staged when updating directories again.
 
-From "View Staged Movies", select the movie you already have.  Choose the option "Remove and block".  That simple!  You can block episodes and entire TV shows as well.  Keep in mind that any metadata files you've generated for items you block will be deleted from the Metadata folder.
+From "View Staged Movies", select the movie you already have.  Choose the option "Remove and block". You can block episodes and entire TV shows as well.  Keep in mind that any metadata files you've generated for items you block will be deleted from the Metadata folder.
 
-Sometimes when you sync a directory, items may show up that aren't actually videos.  For example, Popcornflix includes items called "<span style="color:red">Next Page</span>", which will also be added to staged movies.  You can block these like you would for normal content, or you can add a blocked keyword.  Any movie, episode, or TV show that contains a blocked keyword in the title won't be automatically staged.  You can add blocked keywords by going to "View Blocked Items" from the main menu, then choose "Add keyword" at the bottom.  A few common keywords you might want to add are "next page" and "coming soon".
-
-And if you change your mind later, you can select any blocked item from the list and choose "Remove".
+Sometimes when you sync a directory, items may show up that aren't actually videos.  For example, Popcornflix includes items called "<span style="color:red">Next Page</span>", which will also be added to staged movies.  You can block these like you would for normal content.  And if you change your mind later, you can select any blocked item from the list and choose "Remove".
 
 ## Recommended Addons
 
@@ -97,14 +95,16 @@ And if you change your mind later, you can select any blocked item from the list
 * **ABC Family** by t1m
 * **Classic Cinema** by Jonathan Beluch (jbel)
 * **Cooking Channel** by t1m
+* **Comedy Central** by Lunatixz - *Great content and all videos have correct episode numbers*
 * **Crackle** by eracknaphobia
 * **DIY Network** by t1m
 * **Food Network** by t1m
 * **HGTV** by t1m
+* **Pluto.tv** by Lunatixz - *Add individual OnDemand movie channels as directories*
 * **Popcornflix** by t1m - *Lots of content, but most have low ratings and the lists constantly change*
-* **Top Documentary Films** by Damon Toumbourou - *Most items won't be automatically scraped*
 * **Travel Channel** by t1m
 * **TV Land** by Lunatixz - *Double check episode numbers before scraping*
+* **WABC Programs** by t1m - *Do not sync entire directory due to infinite load times for some items, but works well with individual TV shows*
 * **WNBC Programs** by t1m - *Huge amount of content, but slow to update*
 
 ### Other Addons
@@ -115,14 +115,16 @@ And if you change your mind later, you can select any blocked item from the list
 
 ## Contributing
 
-The most important way to contribute right now is to use the addon and post a full debug log if there are any issues.  This is an early release and still likely to undergo drastic changes as I receive feedback.
+The most important way to contribute right now is to use the addon and post a full debug log in the forums or on GitHub if there are any issues.  I would also appreciate general feedback on performance, user-friendliness, and any feature requests.
 
-This addon also includes full localization support, so you are welcome to submit and update translated string files.
+This addon includes full localization support, so you are welcome to submit and update translated string files.
 
 For all known bugs and planned feature development, refer to inline TODO tags.  And thank you for considering improving this project!  Full credit for your contributions will be given in the release notes and here in the README.
 
 ## Known Issues
 
-* .strm files aren't automatically marked as watched by Kodi
-* Manually added single movies aren't automatically removed if they become unavailable
-* Kodi sorts episodes according to episode number in file name, not .nfo file.
+* .strm files aren't automatically marked as watched by Kodi when played
+* Manually added single movies aren't removed when updating synced directories if they become unavailable
+* Kodi sorts episodes according to episode number in file name, not .nfo file
+* Items with episode numbers that include spaces (i.e. S1 E1) may be added to the library, but are not recognized when generating metadata items (this is intentional to match MediaElch's behavior)
+* Directories are not added recursively... yet

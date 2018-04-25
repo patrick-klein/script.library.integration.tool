@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.2.2" provider-name="patrick-klein">
+<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.3.0" provider-name="patrick-klein">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -39,7 +39,7 @@ See the README for a full tutorial.
     <language></language>
     <platform>all</platform>
     <license>GPL v2.0</license>
-    <forum></forum>
+    <forum>https://forum.kodi.tv/showthread.php?tid=327514</forum>
     <website></website>
     <source>https://github.com/patrick-klein/script.library.integration.tool</source>
     <assets>
@@ -49,7 +49,18 @@ See the README for a full tutorial.
       <screenshot>resources/screenshot-02.jpg</screenshot>
       <screenshot>resources/screenshot-03.jpg</screenshot>
     </assets>
-    <news>v0.2.2 (2018-1-28)
+    <news>v0.3.0 (2018-4-25)
+- moved to SQLite database for performance improvements
+    - .pkl files will be converted first time you run the program
+- better handling of text encoding and pattern matching
+- added labels to synced directories in menu
+    - old directories without labels still function normally
+    - re-adding synced directories will update the label
+- all lists are sorted and ignore "the"
+- depreceated use of blocked type "keyword"
+- many more bug fixes and performance improvements
+
+v0.2.2 (2018-1-28)
 - add setting to use tvshow artwork when episode thumb is unavailable
 - better file name handling when "Part #" is in episode name
 - use universal fs module when on unrecognized platform
@@ -57,12 +68,6 @@ See the README for a full tutorial.
 v0.2.1 (2018-1-25)
 - fix for items with quotes in name
 - fix for renaming thumbnails for episodes
-
-v0.2.0 (2018-1-24)
-- Windows support
-- new icon
-- check if managed directory exists when first called
-- various improvements
     </news>
   </extension>
 
