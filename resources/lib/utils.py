@@ -6,6 +6,7 @@ This module contains various helper functions used thoughout the addon
 '''
 #TODO: create a global IN_DEVELOPMENT variable to enable/disable various features
 
+import os
 import xbmc
 import xbmcaddon
 
@@ -33,7 +34,8 @@ def log_msg(msg, loglevel=xbmc.LOGDEBUG):
 def log_decorator(func):
     ''' decorator for logging function call and return values '''
     #TODO: option to have "pre-" and "post-" logging
-    #TODO: fix iterating output when string (Synced.localize_type)
+    #BUG: fix iterating output when string (Synced.localize_type)
+    #TODO: accept log level as input, with a special "LOGDEV" that only logs if IN_DEVELOPMENT
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
         # call the function and get the return value
@@ -67,23 +69,34 @@ def log_decorator(func):
     return wrapper
 
 def clean_name(s):
-    ''' this function removes/replaces problematic characters/substrings from strings for filenames '''
-    #TODO?: replace in title directly, not just filename
-    c = {'.': '',
-         ':': '',
-         '/': '',
-         '"': '',
-         '$': '',
-         ' [cc]': '',
-         'é': 'e',
-         'Part 1': 'Part One',
-         'Part 2': 'Part Two',
-         'Part 3': 'Part Three',
-         'Part 4': 'Part Four',
-         'Part 5': 'Part Five',
-         'Part 6': 'Part Six',
-        }
-    for k, v in c.iteritems():
+    ''' this function removes/replaces problematic characters/substrings for filenames '''
+    #IDEA: replace in title directly, not just filename
+    #TODO: efficient algorithm that removes/replaces in a single pass
+    #TODO: move c out of function so it isn't constantly being re-declared
+    c = [('.', ''),
+         (':', ''),
+         ('/', ''),
+         ('"', ''),
+         ('$', ''),
+         ('é', 'e'),
+         (' [cc]', ''),
+         ('Part 1', 'Part One'),
+         ('Part 2', 'Part Two'),
+         ('Part 3', 'Part Three'),
+         ('Part 4', 'Part Four'),
+         ('Part 5', 'Part Five'),
+         ('Part 6', 'Part Six'),
+        ]
+    if os.name == 'nt':
+        c.append( [('?', ''),
+                   ('<', ''),
+                   ('>', ''),
+                   ('\\', ''),
+                   ('*', ''),
+                   ('|', ''),
+                   #('+', ''), (',', ''), (';', ''), ('=', ''), ('[', ''), (']', ''),
+                   ] )
+    for k, v in c:
         s = s.replace(k, v)
     return s
 
