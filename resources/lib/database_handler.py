@@ -21,7 +21,7 @@ class DB_Handler(object):
     SQLite connection is closed when object is deleted.
     '''
     #TODO: reimplement blocked keywords
-    #TODO: use **kwargs to dynamically add constraints
+    #TODO: combine remove_content_item functions using **kwargs
 
     def __init__(self):
         # connect to database
@@ -50,17 +50,17 @@ class DB_Handler(object):
             and casts results as ContentItem subclass
 
             keyword arguments:
-                mediatype = string, 'movie' or 'tvshow'
-                status = string, 'managed' or 'staged'
-                show_title = string, any show title
-                order= string, any single column
+                mediatype: string, 'movie' or 'tvshow'
+                status: string, 'managed' or 'staged'
+                show_title: string, any show title
+                order: string, any single column
         '''
         # define template for this sql command
         sql_templ = "SELECT * FROM Content{c}{o}"
         # define constraint and/or order string usings kwargs
         c_list = []
+        params = ()
         o = ''
-        params = tuple()
         for k, v in kwargs.iteritems():
             if k == 'status':
                 c_list.append('Status=?')
@@ -119,7 +119,7 @@ class DB_Handler(object):
         sql_comm = 'SELECT (Directory) FROM Content WHERE Directory=?'
         params = (path,)
         if status:
-            sql_comm += 'AND Status=?'
+            sql_comm += ' AND Status=?'
             params += (status,)
         self.c.execute(sql_comm, params)
         # get result and return True if result is found
