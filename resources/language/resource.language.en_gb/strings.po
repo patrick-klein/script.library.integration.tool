@@ -555,3 +555,11 @@ msgstr ""
 msgctxt "#32134"
 msgid "Add-on updated.  See change log for details."
 msgstr ""
+
+msgctxt "#32135"
+msgid "Remove stale metadata"
+msgstr ""
+
+msgctxt "#32136"
+msgid "All stale metadata removed for movies"
+msgstr ""
