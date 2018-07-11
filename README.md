@@ -18,7 +18,7 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 ## Installation
 
-1. Download this zip for the [LibraryTools repository](repository.librarytools/repository.librarytools/repository.librarytools-1.0.0.zip)
+1. Download this zip for the [LibraryTools repository](https://github.com/patrick-klein/repository.librarytools/raw/master/repository.librarytools/repository.librarytools-1.0.0.zip)
 
 2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.  After installing the repo, "Library Tools repository" will be available in Kodi.
 
