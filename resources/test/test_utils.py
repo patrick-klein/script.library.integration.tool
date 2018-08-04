@@ -10,6 +10,7 @@ import resources.lib.utils as utils
 
 MANAGED_FOLDER = utils.MANAGED_FOLDER
 
+
 class UtilsTest(unittest.TestCase):
     ''' Class that contains test cases for testing utils module '''
 
@@ -28,21 +29,21 @@ class UtilsTest(unittest.TestCase):
 
     def test_clean_name(self):
         ''' test all keywords in clean_name '''
-        test_names = {'test1.':'test1',
-                      'test2:':'test2',
-                      'test3/':'test3',
-                      'test4"':'test4',
-                      'test5 Part 1':'test5 Part One',
-                      'test6 Part 2':'test6 Part Two',
-                      'test7 Part 3':'test7 Part Three',
-                      'test8 Part 4':'test8 Part Four',
-                      'test9 Part 5':'test9 Part Five',
-                      'test10 Part 6':'test10 Part Six',
-                      'test11 [cc]':'test11',
-                      'test12.:/"Part 1Part 5Part 6 [cc]':
-                      'test12Part OnePart FivePart Six',
-                      'test13é': 'test13e',
-                      'test14$': 'test14',
-                     }
+        test_names = {
+            'test1.': 'test1',
+            'test2:': 'test2',
+            'test3/': 'test3',
+            'test4"': 'test4',
+            'test5 Part 1': 'test5 Part One',
+            'test6 Part 2': 'test6 Part Two',
+            'test7 Part 3': 'test7 Part Three',
+            'test8 Part 4': 'test8 Part Four',
+            'test9 Part 5': 'test9 Part Five',
+            'test10 Part 6': 'test10 Part Six',
+            'test11 [cc]': 'test11',
+            'test12.:/"Part 1Part 5Part 6 [cc]': 'test12Part OnePart FivePart Six',
+            'test13é': 'test13e',
+            'test14$': 'test14',
+        }
         for key, value in test_names.iteritems():
             self.assertEqual(utils.clean_name(key), value)

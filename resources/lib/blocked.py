@@ -5,11 +5,20 @@ This module contains the class Blocked,
 which provide dialog windows and tools for manged blocked items
 '''
 
-import xbmcgui
 import xbmcaddon
+import xbmcgui
 
-from database_handler import DB_Handler
-from utils import log_decorator
+import database_handler as db
+import resources.lib.utils as utils
+
+class BlockedItem(dict):
+    '''  '''
+
+    def __init__(self, value, blocked_type):
+        super(BlockedItem, self).__init__()
+        self['value'] = value
+        self['type'] = blocked_type
+
 
 class Blocked(object):
     '''
@@ -17,53 +26,56 @@ class Blocked(object):
     and tools for managing them
     '''
 
-    def __init__(self, mainmenu):
+    def __init__(self):
         self.addon = xbmcaddon.Addon()
         self.STR_ADDON_NAME = self.addon.getAddonInfo('name')
-        self.mainmenu = mainmenu
-        self.dbh = DB_Handler()
+        self.dbh = db.DatabaseHandler()
 
-    @log_decorator
+    @utils.log_decorator
     def view(self):
         '''
         displays all blocked items, which are selectable and lead to options.
         also provides additional options at bottom of menu
         '''
-        #TODO?: change movie/episode to just path
-        #TODO?: make blocked episode match on both episode AND show
-        #TODO: add types: plugin, path
-        #TODO: add keywords, let you choose type
+        # TODO?: change blocked movie/episode to just blocked path
+        # TODO?: make blocked episode match on both episode AND show
+        # TODO: add blocked types: plugin, path
+        # TODO: add blocked keywords, let you choose type
+        # TODO: intialize blocked list with known bad items
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_BLOCKED_ITEMS = self.addon.getLocalizedString(32098)
         STR_NO_BLOCKED_ITEMS = self.addon.getLocalizedString(32119)
         blocked_items = self.dbh.get_blocked_items()
         if not blocked_items:
             xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_BLOCKED_ITEMS)
-            return self.mainmenu.view()
+            return
         lines = ['{0} - [B]{1}[/B]'.format( \
             self.localize_type(x['type']), x['value']) for x in blocked_items]
         lines += [STR_BACK]
-        ret = xbmcgui.Dialog().select('{0} - {1}'.format(
-            self.STR_ADDON_NAME, STR_BLOCKED_ITEMS), lines)
-        if not ret < 0:
-            if ret < len(blocked_items):   # managed item
-                for i, x in enumerate(blocked_items):
-                    if ret == i:
-                        return self.options(x)
+        ret = xbmcgui.Dialog().select(
+            '{0} - {1}'.format(self.STR_ADDON_NAME, STR_BLOCKED_ITEMS), lines
+        )
+        if ret >= 0:
+            if ret < len(blocked_items):  # managed item
+                for index, item in enumerate(blocked_items):
+                    if ret == index:
+                        self.options(item)
+                        break
             elif lines[ret] == STR_BACK:
-                return self.mainmenu.view()
-        return self.mainmenu.view()
+                return
 
-    @log_decorator
+    @utils.log_decorator
     def options(self, item):
         ''' provides options for a single blocked item in a dialog window '''
         STR_REMOVE = self.addon.getLocalizedString(32017)
         STR_BACK = self.addon.getLocalizedString(32011)
         STR_BLOCKED_ITEM_OPTIONS = self.addon.getLocalizedString(32099)
         lines = [STR_REMOVE, STR_BACK]
-        ret = xbmcgui.Dialog().select('{0} - {1} - {2}'.format(
-            self.STR_ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item['value']), lines)
-        if not ret < 0:
+        ret = xbmcgui.Dialog().select(
+            '{0} - {1} - {2}'.format(self.STR_ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item['value']),
+            lines
+        )
+        if ret >= 0:
             if lines[ret] == STR_REMOVE:
                 self.dbh.remove_blocked(item['value'], item['type'])
                 return self.view()
@@ -73,9 +85,9 @@ class Blocked(object):
 
     def localize_type(self, mediatype):
         ''' localizes tages used for identifying mediatype '''
-        if mediatype == 'movie':      # Movie
+        if mediatype == 'movie':  # Movie
             return self.addon.getLocalizedString(32102)
-        elif mediatype == 'tvshow':   # TV Show
+        elif mediatype == 'tvshow':  # TV Show
             return self.addon.getLocalizedString(32101)
         elif mediatype == 'keyword':  # Keyword
             return self.addon.getLocalizedString(32113)

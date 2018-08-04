@@ -49,23 +49,20 @@ See the README for a full tutorial.
       <screenshot>resources/screenshot-02.jpg</screenshot>
       <screenshot>resources/screenshot-03.jpg</screenshot>
     </assets>
-    <news>v0.3.2 (2018-6-28)
+    <news>v0.4.0 (2018-7-29)
+- Allow directories to be added recursively
+- Added recursion limit in settings
+- Updating synced directories moved to background
+- Option to update only movies or tv shows
+- Option to remove unused movie metadata stubs
+- Improved and refactored codebase
+
+v0.3.2 (2018-6-28)
 - Fix crash on Windows
 
 v0.3.1 (2018-4-28)
 - remove Windows illegal characters from filename
 - bugfix for incorrect sql formatting
-
-v0.3.0 (2018-4-25)
-- moved to SQLite database for performance improvements
-    - .pkl files will be converted first time you run the program
-- better handling of text encoding and pattern matching
-- added labels to synced directories in menu
-    - old directories without labels still function normally
-    - re-adding synced directories will update the label
-- all lists are sorted and ignore "the"
-- depreceated use of blocked type "keyword"
-- many more bug fixes and performance improvements
     </news>
   </extension>
 

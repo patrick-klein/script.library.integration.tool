@@ -377,11 +377,7 @@ msgid "Getting all items from synced directories..."
 msgstr ""
 
 msgctxt "#32090"
-msgid "Finding items to remove from managed..."
-msgstr ""
-
-msgctxt "#32091"
-msgid "Removing items from staged..."
+msgid "Finding items to remove..."
 msgstr ""
 
 msgctxt "#32092"
@@ -537,7 +533,7 @@ msgid "Use TV show artwork if episode thumb is unavailable"
 msgstr ""
 
 msgctxt "#32130"
-msgid "DEVELOPMENT"
+msgid "Development"
 msgstr ""
 
 msgctxt "#32131"
@@ -557,9 +553,21 @@ msgid "Add-on updated.  See change log for details."
 msgstr ""
 
 msgctxt "#32135"
-msgid "Remove stale metadata"
+msgid "Clean up movie metadata"
 msgstr ""
 
 msgctxt "#32136"
-msgid "All stale metadata removed for movies"
+msgid "All metadata for movies cleaned"
+msgstr ""
+
+msgctxt "#32137"
+msgid "Update TV shows"
+msgstr ""
+
+msgctxt "#32138"
+msgid "Update movies"
+msgstr ""
+
+msgctxt "#32139"
+msgid "Max recursion when finding videos (0 for unlimited)"
 msgstr ""

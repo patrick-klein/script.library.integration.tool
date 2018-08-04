@@ -11,12 +11,14 @@ import xbmc
 from resources.lib.utils import log_msg
 import resources.test.fuzz_utils
 
-def Main():
-    ''' get and call all fuzz modules '''
+
+def Fuzz():
+    ''' Get and call all fuzz modules '''
 
     # get test directory in addon folder
     test_path = xbmc.translatePath(
-        'special://home/addons/script.library.integration.tool/resources/test/')
+        'special://home/addons/script.library.integration.tool/resources/test/'
+    )
 
     # add all test modules to fuzz suite
     loader = unittest.TestLoader()

@@ -86,13 +86,13 @@ After updating, you may notice that you already have a local copy of one of the 
 
 From "View Staged Movies", select the movie you already have.  Choose the option "Remove and block". You can block episodes and entire TV shows as well.  Keep in mind that any metadata files you've generated for items you block will be deleted from the Metadata folder.
 
-Sometimes when you sync a directory, items may show up that aren't actually videos.  For example, Popcornflix includes items called "<span style="color:red">Next Page</span>", which will also be added to staged movies.  You can block these like you would for normal content.  And if you change your mind later, you can select any blocked item from the list and choose "Remove".
+If you change your mind later, you can select any blocked item from the list and choose "Remove".
 
 ## Recommended Addons
 
 ### Video Plugins
 
-* **ABC Family** by t1m
+* ~~**ABC Family** by t1m~~ - *Seems to be broken at the moment*
 * **Classic Cinema** by Jonathan Beluch (jbel)
 * **Cooking Channel** by t1m
 * **Comedy Central** by Lunatixz - *Great content and all videos have correct episode numbers*
@@ -100,7 +100,6 @@ Sometimes when you sync a directory, items may show up that aren't actually vide
 * **DIY Network** by t1m
 * **Food Network** by t1m
 * **HGTV** by t1m
-* **Pluto.tv** by Lunatixz - *Add individual OnDemand movie channels as directories*
 * **Popcornflix** by t1m - *Lots of content, but most have low ratings and the lists constantly change*
 * **Travel Channel** by t1m
 * **TV Land** by Lunatixz - *Double check episode numbers before scraping*
@@ -127,4 +126,3 @@ For all known bugs and planned feature development, refer to inline TODO tags.  
 * Manually added single movies aren't removed when updating synced directories if they become unavailable
 * Kodi sorts episodes according to episode number in file name, not .nfo file
 * Items with episode numbers that include spaces (i.e. S1 E1) may be added to the library, but are not recognized when generating metadata items (this is intentional to match MediaElch's behavior)
-* Directories are not added recursively... yet

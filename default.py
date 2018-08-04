@@ -1,19 +1,28 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-''' main entry point for addon '''
+''' Main entry point for addon '''
 
 import sys
 
-if __name__ == '__main__':
+import resources.lib.utils as utils
+
+
+@utils.entrypoint
+def main():
+    ''' Main entry point for addon '''
 
     if len(sys.argv) == 1:
-        import resources.lib.main as main
-        main.Main()
+        from resources.lib.main import Main
+        Main()
 
     elif sys.argv[1] == 'test':
-        import resources.test.test as test
-        test.Main()
+        from resources.test.test import Test
+        Test()
 
     elif sys.argv[1] == 'fuzz':
-        import resources.test.fuzz as fuzz
-        fuzz.Main()
+        from resources.test.fuzz import Fuzz
+        Fuzz()
+
+
+if __name__ == '__main__':
+    main()

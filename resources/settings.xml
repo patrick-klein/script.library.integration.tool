@@ -3,6 +3,7 @@
     <category label="32117">
         <setting label="32118" type="folder" id="managed_folder" source="auto" option="writeable"/>
         <setting label="32129" type="bool" id="use_show_artwork" default="false"/>
+        <setting label="32139" type="number" id="recursion_limit" default="10"/>
     </category>
     <category label="32130">
       <setting label="32131" type="action" action="RunScript(script.library.integration.tool, test)"/>
