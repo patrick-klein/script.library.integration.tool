@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
-This module contains os-independent commands for handling files
+OS-independent commands for handling files
 '''
 
 import os
@@ -22,13 +22,13 @@ def create_stream_file(plugin_path, filepath):
 
 def softlink_file(src, dst):
     ''' Copy file at src to dst '''
-    # can only symlink on unix, just copy file
+    # Can only symlink on unix, just copy file
     shutil.copyfile(src, dst)
 
 
 def softlink_files_in_dir(src_dir, dst_dir):
     ''' Symlink all files in src_dir using wildcard to dst_dir '''
-    # can only symlink on unix, just copy files
+    # Can only symlink on unix, just copy files
     for fname in os.listdir(src_dir):
         shutil.copyfile(os.path.join(src_dir, fname), os.path.join(dst_dir, fname))
 

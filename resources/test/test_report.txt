@@ -1,17 +1,10 @@
-test_append_item (resources.test.test_utils.UtilsTest)
-append item to pickle file ... ok
-test_clean_name (resources.test.test_utils.UtilsTest)
-test all keywords in clean_name ... ok
-test_constants (resources.test.test_utils.UtilsTest)
-checks values returned by utils constants ... ok
-test_get_items_no_file (resources.test.test_utils.UtilsTest)
-try to load non-existent pickle file ... ok
-test_remove_item (resources.test.test_utils.UtilsTest)
-remove item from pickle file ... ok
-test_save_and_get_items (resources.test.test_utils.UtilsTest)
-save and load a simple list as a pickle file ... ok
+test_clean_name (test_utils.TestUtils)
+Test keywords in clean_name ... ok
+test_constants (test_utils.TestUtils)
+Check values returned by constants in utils ... ok
+test_version_comparison (test_utils.TestUtils) ... ok
 
 ----------------------------------------------------------------------
-Ran 6 tests in 0.005s
+Ran 3 tests in 0.002s
 
 OK

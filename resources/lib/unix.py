@@ -1,21 +1,21 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
-This module contains system commands for posix/unix systems
+System commands for posix/unix systems
 '''
 
-# TODO: get rid of this module
+# TODO: Get rid of this module
 
 import os
 
 
 def create_empty_file(filepath):
-    ''' Creates empty file at filepath '''
+    ''' Create empty file at filepath '''
     os.system('echo "" > "{0}"'.format(filepath))
 
 
 def create_stream_file(plugin_path, filepath):
-    ''' Creates stream file with plugin_path at filepath '''
+    ''' Create stream file with plugin_path at filepath '''
     os.system('echo "{0}" > "{1}"'.format(plugin_path, filepath))
 
 

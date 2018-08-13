@@ -521,7 +521,7 @@ msgid "Getting all items in %s..."
 msgstr ""
 
 msgctxt "#32127"
-msgid "Configured managed folder.  Remember to set ManagedTV and ManagedMovies as video sources!"
+msgid "Configured managed folder"
 msgstr ""
 
 msgctxt "#32128"
@@ -545,7 +545,7 @@ msgid "Run Fuzzer"
 msgstr ""
 
 msgctxt "#32133"
-msgid "Updating managed files..."
+msgid "Updating addon settings..."
 msgstr ""
 
 msgctxt "#32134"
@@ -570,4 +570,60 @@ msgstr ""
 
 msgctxt "#32139"
 msgid "Max recursion when finding videos (0 for unlimited)"
+msgstr ""
+
+msgctxt "#32140"
+msgid "Use custom managed folder"
+msgstr ""
+
+msgctxt "#32141"
+msgid "Select managed folder"
+msgstr ""
+
+msgctxt "#32142"
+msgid "Use custom metadata folder"
+msgstr ""
+
+msgctxt "#32143"
+msgid "Select metadata folder"
+msgstr ""
+
+msgctxt "#32144"
+msgid "Enable development options"
+msgstr ""
+
+msgctxt "#32145"
+msgid "Reading all TV show metadata..."
+msgstr ""
+
+msgctxt "#32146"
+msgid "All TV show metadata read"
+msgstr ""
+
+msgctxt "#32147"
+msgid "Read all TV show metadata"
+msgstr ""
+
+msgctxt "#32148"
+msgid "Never"
+msgstr ""
+
+msgctxt "#32149"
+msgid "Always"
+msgstr ""
+
+msgctxt "#32150"
+msgid "Only items with metadata"
+msgstr ""
+
+msgctxt "#32151"
+msgid "Only items with episode ID"
+msgstr ""
+
+msgctxt "#32152"
+msgid "Add movies without staging"
+msgstr ""
+
+msgctxt "#32153"
+msgid "Add TV show items without staging"
 msgstr ""

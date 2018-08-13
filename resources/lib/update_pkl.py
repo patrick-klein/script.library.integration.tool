@@ -1,59 +1,56 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-''' This is a post-update script that converts the .pkl files to a SQLite database '''
+'''
+Script that converts old-style .pkl files to a SQLite database
+'''
 
 import os
+
 import cPickle as pickle
+import xbmc
 
-import xbmcaddon
-import xbmcgui
-
-from resources.lib.utils import log_decorator
+import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
 
-ADDON = xbmcaddon.Addon()
-STR_ADDON_NAME = ADDON.getAddonInfo('name')
-MANAGED_FOLDER = ADDON.getSetting('managed_folder')
 
-
-@log_decorator
+@utils.logged_function
 def update_managed():
-    ''' Converts managed.pkl items to SQLite entries '''
-    managed_file = os.path.join(MANAGED_FOLDER, 'managed.pkl')
+    ''' Convert managed.pkl items to SQLite entries '''
+    managed_file = os.path.join(utils.MANAGED_FOLDER, 'managed.pkl')
     if os.path.exists(managed_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(managed_file, 'rb'))
         for item in items:
-            if item.get_mediatype() == 'movie':
-                dbh.add_content_item(item.get_path(), item.get_title(), 'movie')
-            elif item.get_mediatype() == 'tvshow':
-                dbh.add_content_item(item.get_path(), item.get_title(), 'tvshow', \
-                    item.get_show_title())
-            dbh.update_content(item.get_path(), status='managed')
+            if item.mediatype == 'movie':
+                dbh.add_content_item(item.path, item.title, 'movie')
+            elif item.mediatype == 'tvshow':
+                dbh.add_content_item(item.path, item.title, 'tvshow', \
+                    item.show_title)
+            dbh.update_content(item.path, status='managed')
         os.remove(managed_file)
 
 
-@log_decorator
+@utils.logged_function
 def update_staged():
-    ''' Converts staged.pkl items to SQLite entries '''
-    staged_file = os.path.join(MANAGED_FOLDER, 'staged.pkl')
+    ''' Convert staged.pkl items to SQLite entries '''
+    staged_file = os.path.join(utils.MANAGED_FOLDER, 'staged.pkl')
     if os.path.exists(staged_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(staged_file, 'rb'))
         for item in items:
-            if item.get_mediatype() == 'movie':
-                dbh.add_content_item(item.get_path(), item.get_title(), 'movie')
-            elif item.get_mediatype() == 'tvshow':
-                dbh.add_content_item(item.get_path(), item.get_title(), 'tvshow', \
-                    item.get_show_title())
+            if item.mediatype == 'movie':
+                dbh.add_content_item(item.path, item.title, 'movie')
+            elif item.mediatype == 'tvshow':
+                dbh.add_content_item(item.path, item.title, 'tvshow', \
+                    item.show_title)
         os.remove(staged_file)
 
 
-@log_decorator
+@utils.logged_function
 def update_synced():
-    ''' Converts managed.pkl items to SQLite entries '''
-    #TODO: actually load paths and try to get new label
-    synced_file = os.path.join(MANAGED_FOLDER, 'synced.pkl')
+    ''' Convert managed.pkl items to SQLite entries '''
+    #TODO: Actually load paths and try to get new label
+    synced_file = os.path.join(utils.MANAGED_FOLDER, 'synced.pkl')
     if os.path.exists(synced_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(synced_file, 'rb'))
@@ -62,10 +59,10 @@ def update_synced():
         os.remove(synced_file)
 
 
-@log_decorator
+@utils.logged_function
 def update_blocked():
-    ''' Converts blocked.pkl items to SQLite entries '''
-    blocked_file = os.path.join(MANAGED_FOLDER, 'blocked.pkl')
+    ''' Convert blocked.pkl items to SQLite entries '''
+    blocked_file = os.path.join(utils.MANAGED_FOLDER, 'blocked.pkl')
     if os.path.exists(blocked_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(blocked_file, 'rb'))
@@ -75,28 +72,13 @@ def update_blocked():
         os.remove(blocked_file)
 
 
-@log_decorator
+@utils.logged_function
 def main():
-    ''' main entrypoint for module
-    updates log and progress, and calls all other functions '''
-
-    STR_UPDATING = ADDON.getLocalizedString(32133)
-    STR_UPDATED = ADDON.getLocalizedString(32134)
-
-    progress_dialog = xbmcgui.DialogProgress()
-    progress_dialog.create(STR_ADDON_NAME, STR_UPDATING)
-
-    progress_dialog.update(0, line2='managed.pkl')
+    ''' Main entrypoint for module.
+    Update log and call other functions to update files '''
+    utils.log_msg('Updating pickle files...', xbmc.LOGNOTICE)
     update_managed()
-
-    progress_dialog.update(25, line2='staged.pkl')
     update_staged()
-
-    progress_dialog.update(50, line2='synced.pkl')
     update_synced()
-
-    progress_dialog.update(75, line2='blocked.pkl')
     update_blocked()
-
-    progress_dialog.close()
-    xbmcgui.Dialog().ok(STR_ADDON_NAME, STR_UPDATED)
+    utils.log_msg('Pickle files updated.', xbmc.LOGNOTICE)

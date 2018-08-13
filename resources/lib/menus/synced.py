@@ -1,50 +1,34 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 '''
-This module contains the class Synced,
-which provide dialog windows and tools for manged synced directories
+Defines the SyncedMenu class
 '''
+# TODO: Different notifications depending on whether items were staged vs. automatically added
 
 import sys
 
-import xbmc
 import xbmcgui
-import xbmcaddon
 
-import database_handler as db
 import resources.lib.utils as utils
+from resources.lib.database_handler import DatabaseHandler
 
 
-class SyncedItem(dict):
-    '''  '''
+class SyncedMenu(object):
+    ''' Provides windows for displaying synced directories,
+    and tools for managing them and updating their contents '''
 
-    def __init__(self, directory, label, synced_type):
-        super(SyncedItem, self).__init__()
-        self['dir'] = directory
-        self['label'] = label
-        self['type'] = synced_type
-
-
-class Synced(object):
-    '''
-    Provides windows for displaying synced directories,
-    and tools for managing them and updating their contents
-    '''
-
-    #IDEA: new "find all directories" context item that finds and consolidates directories
+    # IDEA: new "find all directories" context item that finds and consolidates directories
 
     def __init__(self):
-        self.addon = xbmcaddon.Addon()
-        self.STR_ADDON_NAME = self.addon.getAddonInfo('name')
-        self.dbh = db.DatabaseHandler()
+        self.dbh = DatabaseHandler()
 
     def filter_blocked_items(self, items, mediatype):
-        '''  '''
+        ''' Filters out all blocked items in the list '''
         return [x for x in items if not self.dbh.check_blocked(x['label'], mediatype)]
 
-    @utils.log_decorator
+    @utils.logged_function
     def find_items_to_stage(self, all_items):
-        '''  '''
+        ''' Find items in the list not present in database '''
         items_to_stage = []
         for dir_item in all_items:
             path = dir_item['file']
@@ -60,15 +44,15 @@ class Synced(object):
             items_to_stage.append(item)
         return items_to_stage
 
-    @utils.log_decorator
+    @utils.logged_function
     def find_paths_to_remove(self, all_paths, **kwargs):
-        '''  '''
+        ''' Find paths in database no longer available '''
         managed_items = self.dbh.get_content_items(**kwargs)
-        return [x.get_path() for x in managed_items if x.get_path() not in all_paths]
+        return [x.path for x in managed_items if x.path not in all_paths]
 
-    @utils.log_decorator
+    @utils.logged_function
     def get_movies_in_directory(self, directory):
-        '''  '''
+        ''' Get all movies in the directory and tags them '''
         dir_items = self.filter_blocked_items(
             utils.load_directory_items(directory, recursive=True), 'movie'
         )
@@ -77,9 +61,9 @@ class Synced(object):
             item['mediatype'] = 'movie'
         return dir_items
 
-    @utils.log_decorator
+    @utils.logged_function
     def get_single_tvshow(self, directory, show_title):
-        ''' '''
+        ''' Get the single TV show in the directory, and tag the items'''
         show_items = self.filter_blocked_items(
             utils.load_directory_items(directory, recursive=True), 'episode'
         )
@@ -89,9 +73,9 @@ class Synced(object):
             item['show_title'] = show_title
         return show_items
 
-    @utils.log_decorator
+    @utils.logged_function
     def get_tvshows_in_directory(self, directory):
-        '''  '''
+        ''' Get all TV shows in the directory, and tag the items '''
         dir_items = self.filter_blocked_items(
             utils.load_directory_items(directory, allow_directories=True), 'tvshow'
         )
@@ -111,29 +95,16 @@ class Synced(object):
             all_items += show_items
         return all_items
 
-    def localize_type(self, mediatype):
-        ''' Localizes tags used for identifying mediatype '''
-        if mediatype == 'movie':  # Movies
-            return self.addon.getLocalizedString(32109)
-        elif mediatype == 'tvshow':  # TV Shows
-            return self.addon.getLocalizedString(32108)
-        elif mediatype == 'single-movie':  # Single Movie
-            return self.addon.getLocalizedString(32116)
-        elif mediatype == 'single-tvshow':  # Single TV Show
-            return self.addon.getLocalizedString(32115)
-        return mediatype
-
     def options(self, item):
-        ''' Provides options for a single synced directory in a dialog window '''
-        #TODO: remove all from plugin
-        #TODO: rename label
-        STR_REMOVE = self.addon.getLocalizedString(32017)
-        STR_SYNCED_DIR_OPTIONS = self.addon.getLocalizedString(32085)
-        STR_BACK = self.addon.getLocalizedString(32011)
+        ''' Provide options for a single synced directory in a dialog window '''
+        # TODO: Remove all from plugin
+        # TODO: Rename label
+        STR_REMOVE = utils.ADDON.getLocalizedString(32017)
+        STR_SYNCED_DIR_OPTIONS = utils.ADDON.getLocalizedString(32085)
+        STR_BACK = utils.ADDON.getLocalizedString(32011)
         lines = [STR_REMOVE, STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(self.STR_ADDON_NAME, STR_SYNCED_DIR_OPTIONS, item['label']),
-            lines
+            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_SYNCED_DIR_OPTIONS, item['label']), lines
         )
         if ret >= 0:
             if lines[ret] == STR_REMOVE:
@@ -143,68 +114,69 @@ class Synced(object):
         self.view()
 
     def remove_all(self):
-        ''' Removes all synced directories '''
-        STR_REMOVE_ALL_SYNCED_DIRS = self.addon.getLocalizedString(32086)
-        STR_ALL_SYNCED_DIRS_REMOVED = self.addon.getLocalizedString(32087)
-        STR_ARE_YOU_SURE = self.addon.getLocalizedString(32088)
-        if xbmcgui.Dialog().yesno('{0} - {1}'.format(self.STR_ADDON_NAME,
-                                                     STR_REMOVE_ALL_SYNCED_DIRS), STR_ARE_YOU_SURE):
+        ''' Remove all synced directories '''
+        STR_REMOVE_ALL_SYNCED_DIRS = utils.ADDON.getLocalizedString(32086)
+        STR_ALL_SYNCED_DIRS_REMOVED = utils.ADDON.getLocalizedString(32087)
+        STR_ARE_YOU_SURE = utils.ADDON.getLocalizedString(32088)
+        if xbmcgui.Dialog().yesno('{0} - {1}'.format(utils.ADDON_NAME, STR_REMOVE_ALL_SYNCED_DIRS),
+                                  STR_ARE_YOU_SURE):
             self.dbh.remove_all_synced_dirs()
             utils.notification(STR_ALL_SYNCED_DIRS_REMOVED)
 
     def remove_paths(self, paths_to_remove):
-        '''  '''
+        ''' Remove and delete all items with the given paths '''
         for path in paths_to_remove:
             item = self.dbh.load_item(path)
             item.remove_from_library()
             item.delete()
 
     def stage_items(self, items_to_stage):
-        '''  '''
+        ''' Stage all items in the list '''
         for item in items_to_stage:
             self.dbh.add_content_item(*item)
 
-    @utils.log_decorator
+    @utils.logged_function
     def sync_movie_directory(self, dir_label, dir_path):
-        ''' '''
-        STR_GETTING_ITEMS_IN_DIR = self.addon.getLocalizedString(32125)
-        STR_i_MOVIES_STAGED = self.addon.getLocalizedString(32111)
+        ''' Sync movie directory and stage items '''
+        STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
+        STR_i_MOVIES_STAGED = utils.ADDON.getLocalizedString(32111)
 
         p_dialog = xbmcgui.DialogProgress()
-        p_dialog.create(self.STR_ADDON_NAME)
+        p_dialog.create(utils.ADDON_NAME)
 
         try:
-            # add synced directory to database
+            # Add synced directory to database
             self.dbh.add_synced_dir(dir_label, dir_path, 'movie')
 
-            # query json-rpc to get files in directory
+            # Query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
             dir_items = utils.load_directory_items(dir_path, recursive=True)
 
-            # loop through all items and get titles and paths and stage them
+            # Loop through all items and get titles and paths and stage them
             items_to_stage = 0
-            for dir_item in dir_items:
-                # get label & path for item
+            for index, dir_item in enumerate(dir_items):
+                # Get label & path for item
                 item_label = dir_item['label']
                 item_path = dir_item['file']
                 if self.dbh.path_exists(item_path) or self.dbh.check_blocked(item_label, 'movie'):
                     continue
-                # update progress
-                p_dialog.update(0, line2=item_label)
-                # add item to database
+                # Update progress
+                percent = 100 * index / len(dir_items)
+                p_dialog.update(percent, line2=item_label)
+                # Add item to database
                 self.dbh.add_content_item(item_path, item_label, 'movie')
                 items_to_stage += 1
-                p_dialog.update(0, line2=' ')
+                p_dialog.update(percent, line2=' ')
             utils.notification(STR_i_MOVIES_STAGED % items_to_stage)
         finally:
             p_dialog.close()
 
-    @utils.log_decorator
+    @utils.logged_function
     def sync_single_movie(self, label, path):
-        ''' '''
-        STR_ITEM_IS_ALREADY_STAGED = self.addon.getLocalizedString(32103)
-        STR_ITEM_IS_ALREADY_MANAGED = self.addon.getLocalizedString(32104)
-        STR_MOVIE_STAGED = self.addon.getLocalizedString(32105)
+        ''' Sync single movie path and stage item '''
+        STR_ITEM_IS_ALREADY_STAGED = utils.ADDON.getLocalizedString(32103)
+        STR_ITEM_IS_ALREADY_MANAGED = utils.ADDON.getLocalizedString(32104)
+        STR_MOVIE_STAGED = utils.ADDON.getLocalizedString(32105)
         # Add synced directory to database
         self.dbh.add_synced_dir(label, path, 'single-movie')
         # Check for duplicate in database
@@ -217,11 +189,11 @@ class Synced(object):
             self.dbh.add_content_item(path, label, 'movie')
             utils.notification(STR_MOVIE_STAGED)
 
-    @utils.log_decorator
+    @utils.logged_function
     def sync_single_tvshow(self, show_label, show_path):
-        ''' '''
-        STR_i_NEW_i_STAGED_i_MANAGED = self.addon.getLocalizedString(32106)
-        STR_i_NEW = self.addon.getLocalizedString(32107)
+        ''' Sync single tvshow directory and stage items '''
+        STR_i_NEW_i_STAGED_i_MANAGED = utils.ADDON.getLocalizedString(32106)
+        STR_i_NEW = utils.ADDON.getLocalizedString(32107)
         # Add synced directory to database
         self.dbh.add_synced_dir(show_label, show_path, 'single-tvshow')
         # Get everything inside tvshow path
@@ -251,15 +223,15 @@ class Synced(object):
         else:
             utils.notification(STR_i_NEW % items_to_stage)
 
-    @utils.log_decorator
+    @utils.logged_function
     def sync_tvshow_directory(self, dir_label, dir_path):
-        ''' '''
-        STR_GETTING_ITEMS_IN_DIR = self.addon.getLocalizedString(32125)
-        STR_GETTING_ITEMS_IN_x = self.addon.getLocalizedString(32126)
-        STR_i_EPISODES_STAGED = self.addon.getLocalizedString(32112)
+        ''' Sync all TV shows in directory and stage items'''
+        STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
+        STR_GETTING_ITEMS_IN_x = utils.ADDON.getLocalizedString(32126)
+        STR_i_EPISODES_STAGED = utils.ADDON.getLocalizedString(32112)
 
         p_dialog = xbmcgui.DialogProgress()
-        p_dialog.create(self.STR_ADDON_NAME)
+        p_dialog.create(utils.ADDON_NAME)
 
         try:
             # add synced directory to database
@@ -276,10 +248,8 @@ class Synced(object):
                 if self.dbh.check_blocked(tvshow_label, 'tvshow'):
                     continue
                 # Update progress
-                p_dialog.update(
-                    int(100. * index / len(dir_items)),
-                    line1=(STR_GETTING_ITEMS_IN_x % tvshow_label)
-                )
+                percent = 100 * index / len(dir_items)
+                p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % tvshow_label))
                 # Get everything inside tvshow path
                 tvshow_path = dir_item['file']
                 show_items = utils.load_directory_items(tvshow_path, recursive=True)
@@ -290,40 +260,36 @@ class Synced(object):
                             show_item['label'], 'episode'):
                         continue
                     # Update progress
-                    p_dialog.update(0, line2=show_item['label'])
+                    p_dialog.update(percent, line2=show_item['label'])
                     self.dbh.add_content_item(
                         show_item['file'], show_item['label'], 'tvshow', tvshow_label
                     )
                     items_to_stage += 1
-                    p_dialog.update(0, line2=' ')
-                p_dialog.update(0, line1=' ')
+                    p_dialog.update(percent, line2=' ')
+                p_dialog.update(percent, line1=' ')
             utils.notification(STR_i_EPISODES_STAGED % items_to_stage)
         finally:
             p_dialog.close()
 
     def update_all(self):
-        '''
-        Gets all items from synced directories,
-        then finds unavailable items to remove from managed,
-        and new items to stage
-        '''
-        #TODO: wait until after confirmation to remove staged items also
-        #TODO: bugfix: single-movies won't actually get removed if they become unavailable
+        ''' Get all items from synced directories, and
+        find unavailable items to remove from managed,
+        and new items to stage '''
+        # TODO: bugfix: single-movies won't actually get removed if they become unavailable
         #       maybe load parent dir and check for path or label?  it would be slower though
-        #TODO: option to only update specified or managed items
-        #TODO: option to add update frequencies for specific directories (i.e. weekly/monthly/etc.)
-        #TODO: better error handling when plugins dont load during update (make it similar to clean)
-        #TODO: show synced label in progress bar if available instead of path
-        STR_FINDING_ITEMS_TO_REMOVE = self.addon.getLocalizedString(32090)
-        STR_FINDING_ITEMS_TO_ADD = self.addon.getLocalizedString(32092)
-        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = self.addon.getLocalizedString(32093)
-        STR_REMOVING_ITEMS = self.addon.getLocalizedString(32094)
-        STR_STAGING_ITEMS = self.addon.getLocalizedString(32095)
-        STR_ALL_ITEMS_UPTODATE = self.addon.getLocalizedString(32121)
-        STR_SUCCESS = self.addon.getLocalizedString(32122)
+        # TODO: option to only update specified or managed items
+        # TODO: option to add update frequencies for specific directories (i.e. weekly/monthly/etc.)
+        # TODO: better error handling when plugins dont load during update
+        STR_FINDING_ITEMS_TO_REMOVE = utils.ADDON.getLocalizedString(32090)
+        STR_FINDING_ITEMS_TO_ADD = utils.ADDON.getLocalizedString(32092)
+        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = utils.ADDON.getLocalizedString(32093)
+        STR_REMOVING_ITEMS = utils.ADDON.getLocalizedString(32094)
+        STR_STAGING_ITEMS = utils.ADDON.getLocalizedString(32095)
+        STR_ALL_ITEMS_UPTODATE = utils.ADDON.getLocalizedString(32121)
+        STR_SUCCESS = utils.ADDON.getLocalizedString(32122)
 
         p_dialog = xbmcgui.DialogProgressBG()
-        p_dialog.create(self.STR_ADDON_NAME)
+        p_dialog.create(utils.ADDON_NAME)
 
         try:
             # Get current items in all directories
@@ -331,7 +297,10 @@ class Synced(object):
             all_items = []
             for index, synced_dir in enumerate(synced_dirs):
                 p_dialog.update(
-                    percent=int(99. * index / len(synced_dirs)), message=synced_dir['label']
+                    percent=99 * index / len(synced_dirs),
+                    message='{label} - {type}'.format(
+                        label=synced_dir['label'], type=synced_dir.localize_type()
+                    )
                 )
                 if synced_dir['type'] == 'single-movie':
                     # Directory is just a path to a single movie
@@ -361,7 +330,7 @@ class Synced(object):
 
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
-                if xbmcgui.Dialog().yesno(self.STR_ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
+                if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
                                           (len(paths_to_remove), len(items_to_stage))):
                     if paths_to_remove:
                         p_dialog.update(percent=99, message=STR_REMOVING_ITEMS)
@@ -369,24 +338,25 @@ class Synced(object):
                     if items_to_stage:
                         p_dialog.update(percent=99, message=STR_STAGING_ITEMS)
                         self.stage_items(items_to_stage)
-                    xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_SUCCESS)
+                    # TODO: update/clean managed folder
+                    xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_SUCCESS)
             else:
-                xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_ALL_ITEMS_UPTODATE)
+                xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_ALL_ITEMS_UPTODATE)
         finally:
             p_dialog.close()
 
     def update_movies(self):
-        '''  '''
-        STR_FINDING_ITEMS_TO_REMOVE = self.addon.getLocalizedString(32090)
-        STR_FINDING_ITEMS_TO_ADD = self.addon.getLocalizedString(32092)
-        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = self.addon.getLocalizedString(32093)
-        STR_REMOVING_ITEMS = self.addon.getLocalizedString(32094)
-        STR_STAGING_ITEMS = self.addon.getLocalizedString(32095)
-        STR_ALL_ITEMS_UPTODATE = self.addon.getLocalizedString(32121)
-        STR_SUCCESS = self.addon.getLocalizedString(32122)
+        ''' Update all synced movie directories '''
+        STR_FINDING_ITEMS_TO_REMOVE = utils.ADDON.getLocalizedString(32090)
+        STR_FINDING_ITEMS_TO_ADD = utils.ADDON.getLocalizedString(32092)
+        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = utils.ADDON.getLocalizedString(32093)
+        STR_REMOVING_ITEMS = utils.ADDON.getLocalizedString(32094)
+        STR_STAGING_ITEMS = utils.ADDON.getLocalizedString(32095)
+        STR_ALL_ITEMS_UPTODATE = utils.ADDON.getLocalizedString(32121)
+        STR_SUCCESS = utils.ADDON.getLocalizedString(32122)
 
         p_dialog = xbmcgui.DialogProgressBG()
-        p_dialog.create(self.STR_ADDON_NAME)
+        p_dialog.create(utils.ADDON_NAME)
 
         try:
             all_items = []
@@ -395,14 +365,12 @@ class Synced(object):
             total_num_dirs = len(movie_dirs + single_movie_dirs)
 
             for index, synced_dir in enumerate(movie_dirs):
-                p_dialog.update(
-                    percent=int(99. * index / total_num_dirs), message=synced_dir['label']
-                )
+                p_dialog.update(percent=99 * index / total_num_dirs, message=synced_dir['label'])
                 all_items += self.get_movies_in_directory(synced_dir['dir'])
 
             for index, synced_dir in enumerate(single_movie_dirs):
                 p_dialog.update(
-                    percent=int(99. * (index + len(movie_dirs)) / total_num_dirs),
+                    percent=99 * (index + len(movie_dirs)) / total_num_dirs,
                     message=synced_dir['label']
                 )
                 all_items.append({
@@ -422,7 +390,7 @@ class Synced(object):
 
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
-                if xbmcgui.Dialog().yesno(self.STR_ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
+                if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
                                           (len(paths_to_remove), len(items_to_stage))):
                     if paths_to_remove:
                         p_dialog.update(percent=99, message=STR_REMOVING_ITEMS)
@@ -430,24 +398,25 @@ class Synced(object):
                     if items_to_stage:
                         p_dialog.update(percent=99, message=STR_STAGING_ITEMS)
                         self.stage_items(items_to_stage)
-                    xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_SUCCESS)
+                    # TODO: update/clean managed folder
+                    xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_SUCCESS)
             else:
-                xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_ALL_ITEMS_UPTODATE)
+                xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_ALL_ITEMS_UPTODATE)
         finally:
             p_dialog.close()
 
     def update_tvshows(self):
-        '''  '''
-        STR_FINDING_ITEMS_TO_REMOVE = self.addon.getLocalizedString(32090)
-        STR_FINDING_ITEMS_TO_ADD = self.addon.getLocalizedString(32092)
-        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = self.addon.getLocalizedString(32093)
-        STR_REMOVING_ITEMS = self.addon.getLocalizedString(32094)
-        STR_STAGING_ITEMS = self.addon.getLocalizedString(32095)
-        STR_ALL_ITEMS_UPTODATE = self.addon.getLocalizedString(32121)
-        STR_SUCCESS = self.addon.getLocalizedString(32122)
+        ''' Update all TV show directories '''
+        STR_FINDING_ITEMS_TO_REMOVE = utils.ADDON.getLocalizedString(32090)
+        STR_FINDING_ITEMS_TO_ADD = utils.ADDON.getLocalizedString(32092)
+        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = utils.ADDON.getLocalizedString(32093)
+        STR_REMOVING_ITEMS = utils.ADDON.getLocalizedString(32094)
+        STR_STAGING_ITEMS = utils.ADDON.getLocalizedString(32095)
+        STR_ALL_ITEMS_UPTODATE = utils.ADDON.getLocalizedString(32121)
+        STR_SUCCESS = utils.ADDON.getLocalizedString(32122)
 
         p_dialog = xbmcgui.DialogProgressBG()
-        p_dialog.create(self.STR_ADDON_NAME)
+        p_dialog.create(utils.ADDON_NAME)
 
         try:
             all_items = []
@@ -456,14 +425,12 @@ class Synced(object):
             total_num_dirs = len(show_dirs + single_show_dirs)
 
             for index, synced_dir in enumerate(show_dirs):
-                p_dialog.update(
-                    percent=int(99. * index / total_num_dirs), message=synced_dir['label']
-                )
+                p_dialog.update(percent=99 * index / total_num_dirs, message=synced_dir['label'])
                 all_items += self.get_tvshows_in_directory(synced_dir['dir'])
 
             for index, synced_dir in enumerate(single_show_dirs):
                 p_dialog.update(
-                    percent=int(99. * (index + len(show_dirs)) / total_num_dirs),
+                    percent=99. * (index + len(show_dirs)) / total_num_dirs,
                     message=synced_dir['label']
                 )
                 all_items += self.get_single_tvshow(synced_dir['dir'], synced_dir['label'])
@@ -479,7 +446,7 @@ class Synced(object):
 
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
-                if xbmcgui.Dialog().yesno(self.STR_ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
+                if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
                                           (len(paths_to_remove), len(items_to_stage))):
                     if paths_to_remove:
                         p_dialog.update(percent=99, message=STR_REMOVING_ITEMS)
@@ -487,37 +454,35 @@ class Synced(object):
                     if items_to_stage:
                         p_dialog.update(percent=99, message=STR_STAGING_ITEMS)
                         self.stage_items(items_to_stage)
-                    xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_SUCCESS)
+                    # TODO: update/clean managed folder
+                    xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_SUCCESS)
             else:
-                xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_ALL_ITEMS_UPTODATE)
+                xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_ALL_ITEMS_UPTODATE)
         finally:
             p_dialog.close()
 
-    @utils.log_decorator
+    @utils.logged_function
     def view(self):
-        '''
-        Displays all synced directories, which are selectable and lead to options.
-        Also provides additional options at bottom of menu.
-        '''
-        #TODO: update only movies or tvshows
-        STR_UPDATE_ALL = self.addon.getLocalizedString(32081)
-        STR_UPDATE_TV_SHOWS = self.addon.getLocalizedString(32137)
-        STR_UPDATE_MOVIES = self.addon.getLocalizedString(32138)
-        STR_REMOVE_ALL = self.addon.getLocalizedString(32082)
-        STR_BACK = self.addon.getLocalizedString(32011)
-        STR_SYNCED_DIRECTORIES = self.addon.getLocalizedString(32128)
-        STR_NO_SYNCED_DIRS = self.addon.getLocalizedString(32120)
+        ''' Display all synced directories, which are selectable and lead to options.
+        Also provides additional options at bottom of menu '''
+        STR_UPDATE_ALL = utils.ADDON.getLocalizedString(32081)
+        STR_UPDATE_TV_SHOWS = utils.ADDON.getLocalizedString(32137)
+        STR_UPDATE_MOVIES = utils.ADDON.getLocalizedString(32138)
+        STR_REMOVE_ALL = utils.ADDON.getLocalizedString(32082)
+        STR_BACK = utils.ADDON.getLocalizedString(32011)
+        STR_SYNCED_DIRECTORIES = utils.ADDON.getLocalizedString(32128)
+        STR_NO_SYNCED_DIRS = utils.ADDON.getLocalizedString(32120)
         synced_dirs = self.dbh.get_synced_dirs()
         if not synced_dirs:
-            xbmcgui.Dialog().ok(self.STR_ADDON_NAME, STR_NO_SYNCED_DIRS)
+            xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_SYNCED_DIRS)
             return
         lines = [
-            '[B]%s[/B] - %s - [I]%s[/I]' % (x['label'], self.localize_type(x['type']), x['dir'])
+            '[B]%s[/B] - %s - [I]%s[/I]' % (x['label'], x.localize_type(), x['dir'])
             for x in synced_dirs
         ]
         lines += [STR_UPDATE_ALL, STR_UPDATE_MOVIES, STR_UPDATE_TV_SHOWS, STR_REMOVE_ALL, STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1}'.format(self.STR_ADDON_NAME, STR_SYNCED_DIRECTORIES), lines
+            '{0} - {1}'.format(utils.ADDON_NAME, STR_SYNCED_DIRECTORIES), lines
         )
         if ret >= 0:
             if ret < len(synced_dirs):

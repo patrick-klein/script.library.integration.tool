@@ -1,41 +1,32 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-''' This modules provides a class that interfaces with the SQLite database '''
+'''
+Defines the DatabaseHandler class
+'''
 
-import os
 import sqlite3
 
-import xbmcaddon
-
 import resources.lib.utils as utils
-import blocked
-import contentitem
-import synced
-
-MANAGED_FOLDER = xbmcaddon.Addon().getSetting('managed_folder')
-DB_FILE = os.path.join(MANAGED_FOLDER, 'managed.db')
+from resources.lib.items.blocked import BlockedItem
+from resources.lib.items.episode import EpisodeItem
+from resources.lib.items.movie import MovieItem
+from resources.lib.items.synced import SyncedItem
 
 
 class DatabaseHandler(object):
-    '''
-    This class initializes a connection with the SQLite file
+    ''' Opens a connection with the SQLite file
     and provides methods for interfacing with database.
-    SQLite connection is closed when object is deleted.
-    '''
+    SQLite connection is closed when object is deleted '''
 
-    #TODO: reimplement blocked keywords
-    #TODO: combine remove_content_item functions using **kwargs
-
-    def __del__(self):
-        ''' Close connection when deleted '''
-        self.conn.close()
+    #TODO: Reimplement blocked keywords
+    #TODO: Combine remove_content_item functions using **kwargs
 
     def __init__(self):
-        # connect to database
-        self.conn = sqlite3.connect(DB_FILE)
+        # Connect to database
+        self.conn = sqlite3.connect(utils.DATABASE_FILE)
         self.conn.text_factory = str
         self.cur = self.conn.cursor()
-        # create tables if they doesn't exist
+        # Create tables if they doesn't exist
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS Content
             (Directory TEXT PRIMARY KEY, Title TEXT,
@@ -51,38 +42,61 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    def __del__(self):
+        # Close connection when deleted
+        self.conn.close()
+
+    @staticmethod
+    def content_item_from_db(item):
+        ''' Static method that converts Content query output to ContentItem subclass '''
+        if item[2] == 'movie':
+            return MovieItem(item[0], item[1], 'movie')
+        elif item[2] == 'tvshow':
+            return EpisodeItem(item[0], item[1], 'tvshow', item[4])
+        raise ValueError('Unrecognized Mediatype in Content query')
+
+    @utils.utf8_args
+    @utils.logged_function
     def add_blocked_item(self, value, mediatype):
-        ''' Adds an item to Blocked with the specified valeus '''
-        # ignore if already in table
+        ''' Add an item to Blocked with the specified values '''
+        # Ignore if already in table
         if not self.check_blocked(value, mediatype):
-            # insert into table
+            # Insert into table
             self.cur.execute("INSERT INTO Blocked (Value, Type) VALUES (?, ?)", (value, mediatype))
             self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def add_content_item(self, path, title, mediatype, show_title=None):
-        ''' Adds item to Content with given parameters '''
-        # define sql command string
+        ''' Add item to Content with given parameters '''
+        # Define sql command string
         sql_comm = '''INSERT OR IGNORE INTO Content
             (Directory, Title, Mediatype, Status, Show_Title)
             VALUES (?, ?, ?, 'staged', {0})'''
-
         params = (path, title, mediatype)
-        # format comamnd & params depending on movie or tvshow
+        # Format comamnd & params depending on movie or tvshow
         if mediatype == 'tvshow':
             sql_comm = sql_comm.format('?')
             params += (show_title, )
         else:
             sql_comm = sql_comm.format('NULL')
-        # execute and commit sql command
+        # Execute and commit sql command
         self.cur.execute(sql_comm, params)
         self.conn.commit()
+        # Optionally add item to directory, depending on settings and metadata items
+        if mediatype == 'movie' and utils.AUTO_ADD_MOVIES != utils.NEVER:
+            if utils.AUTO_ADD_MOVIES == utils.ALWAYS:
+                MovieItem(path, title, 'movie').add_to_library()
+            elif utils.AUTO_ADD_MOVIES == utils.WITH_METADATA:
+                MovieItem(path, title, 'movie').add_to_library_if_metadata()
+        elif mediatype == 'tvshow' and utils.AUTO_ADD_TVSHOWS != utils.NEVER:
+            if utils.AUTO_ADD_TVSHOWS == utils.WITH_EPID:
+                EpisodeItem(path, title, 'tvshow', show_title).add_to_library()
+            elif utils.AUTO_ADD_TVSHOWS == utils.WITH_METADATA:
+                EpisodeItem(path, title, 'tvshow', show_title).add_to_library_if_metadata()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def add_synced_dir(self, label, path, mediatype):
         ''' Create an entry in Synced with specified values '''
         self.cur.execute(
@@ -91,18 +105,18 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def check_blocked(self, value, mediatype):
-        ''' Returns True if the given entry is in Blocked '''
+        ''' Return True if the given entry is in Blocked '''
         self.cur.execute('SELECT (Value) FROM Blocked WHERE Value=? AND Type=?', (value, mediatype))
         res = self.cur.fetchone()
         return bool(res)
 
-    @utils.log_decorator
+    @utils.logged_function
     def get_all_shows(self, status):
-        ''' Queries Content table for all (not null) distinct show_titles
-        and casts results as list of strings '''
+        ''' Query Content table for all (not null) distinct show_titles
+        and cast results as list of strings '''
         # Query database
         self.cur.execute(
             '''SELECT DISTINCT Show_Title FROM Content WHERE Status=?
@@ -113,24 +127,23 @@ class DatabaseHandler(object):
         rows = self.cur.fetchall()
         return [x[0] for x in rows if x[0] is not None]
 
-    @utils.log_decorator
+    @utils.logged_function
     def get_blocked_items(self):
-        ''' Returns all items in Blocked as a list of dicts '''
+        ''' Return all items in Blocked as a list of BlockedItem objects '''
         self.cur.execute("SELECT * FROM Blocked ORDER BY Type, Value")
         rows = self.cur.fetchall()
-        return [blocked.BlockedItem(*x) for x in rows]
+        return [BlockedItem(*x) for x in rows]
 
-    @utils.log_decorator
+    @utils.logged_function
     def get_content_items(self, **kwargs):
-        ''' Queries Content table for sorted items with given constaints
-            and casts results as ContentItem subclass
+        ''' Query Content table for sorted items with given constaints
+        and casts results as ContentItem subclass
 
-            keyword arguments:
-                mediatype: string, 'movie' or 'tvshow'
-                status: string, 'managed' or 'staged'
-                show_title: string, any show title
-                order: string, any single column
-        '''
+        keyword arguments:
+            mediatype: string, 'movie' or 'tvshow'
+            status: string, 'managed' or 'staged'
+            show_title: string, any show title
+            order: string, any single column '''
         # Define template for this sql command
         sql_templ = 'SELECT * FROM Content{c}{o}'
         # Define constraint and/or order string usings kwargs
@@ -158,10 +171,10 @@ class DatabaseHandler(object):
         rows = self.cur.fetchall()
         return [self.content_item_from_db(x) for x in rows]
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def get_synced_dirs(self, synced_type=None):
-        ''' Gets all items in Synced cast as a list of dicts '''
+        ''' Get all items in Synced cast as a list of dicts '''
         # Define template for this sql command
         sql_templ = 'SELECT * FROM Synced'
         params = ()
@@ -174,22 +187,22 @@ class DatabaseHandler(object):
         self.cur.execute(sql_templ, params)
         # get results and return as list of dicts
         rows = self.cur.fetchall()
-        return [synced.SyncedItem(*x) for x in rows]
+        return [SyncedItem(*x) for x in rows]
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def load_item(self, path):
-        ''' Queries a single item with path and casts result as ContentItem subclass '''
+        ''' Query a single item with path and casts result as ContentItem subclass '''
         # query database
         self.cur.execute('SELECT * FROM Content WHERE Directory=?', (path, ))
         # get results and return items as object
         item = self.cur.fetchone()
         return self.content_item_from_db(item)
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def path_exists(self, path, status=None, mediatype=None):
-        ''' Returns True if path is already in database (with given status) '''
+        ''' Return True if path is already in database (with given status) '''
         #TODO: consider adding mediatype as optional parameter
         #       might speed-up by adding additional constraint
         #TODO: test speed against a set from "get_content_paths"
@@ -207,17 +220,17 @@ class DatabaseHandler(object):
         res = self.cur.fetchone()
         return bool(res)
 
-    @utils.log_decorator
+    @utils.logged_function
     def remove_all_content_items(self, status, mediatype):
-        ''' Removes all items from Content with status and mediatype '''
+        ''' Remove all items from Content with status and mediatype '''
         # delete from table
         self.cur.execute("DELETE FROM Content WHERE Status=? AND Mediatype=?", (status, mediatype))
         self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def remove_all_show_episodes(self, status, show_title):
-        ''' Removes all tvshow items from Content with status and show_title '''
+        ''' Remove all tvshow items from Content with status and show_title '''
         # delete from table
         self.cur.execute(
             "DELETE FROM Content WHERE Status=? AND Show_Title=?",
@@ -225,41 +238,41 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
-    @utils.log_decorator
+    @utils.logged_function
     def remove_all_synced_dirs(self):
-        ''' Deletes all entries in Synced '''
+        ''' Delete all entries in Synced '''
         # remove all rows
         self.cur.execute('DELETE FROM Synced')
         self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def remove_blocked(self, value, mediatype):
-        ''' Removes the item in Blocked with the specified parameters '''
+        ''' Remove the item in Blocked with the specified parameters '''
         self.cur.execute('DELETE FROM Blocked WHERE Value=? AND Type=?', (value, mediatype))
         self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def remove_content_item(self, path):
-        ''' Removes the item in Content with specified path '''
+        ''' Remove the item in Content with specified path '''
         # delete from table
         self.cur.execute("DELETE FROM Content WHERE Directory=?", (path, ))
         self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def remove_synced_dir(self, path):
-        ''' Removes the entry in Synced with the specified Directory '''
+        ''' Remove the entry in Synced with the specified Directory '''
         # remove entry
         self.cur.execute("DELETE FROM Synced WHERE Directory=?", (path, ))
         self.conn.commit()
 
-    @utils.utf8_decorator
-    @utils.log_decorator
+    @utils.utf8_args
+    @utils.logged_function
     def update_content(self, path, **kwargs):
-        ''' Updates a single field for item in Content with specified path '''
-        #TODO: verify there's only one entry in kwargs
+        ''' Update a single field for item in Content with specified path '''
+        #TODO: Verify there's only one entry in kwargs
         sql_comm = "UPDATE Content SET {0}=(?) WHERE Directory=?"
         params = (path, )
         for key, val in kwargs.iteritems():
@@ -271,12 +284,3 @@ class DatabaseHandler(object):
         # update item
         self.cur.execute(sql_comm, params)
         self.conn.commit()
-
-    @staticmethod
-    def content_item_from_db(item):
-        ''' Static method that converts Content query output to ContentItem subclass '''
-        if item[2] == 'movie':
-            return contentitem.MovieItem(item[0], item[1], 'movie')
-        elif item[2] == 'tvshow':
-            return contentitem.EpisodeItem(item[0], item[1], 'tvshow', item[4])
-        raise ValueError('Unrecognized Mediatype in Content query')

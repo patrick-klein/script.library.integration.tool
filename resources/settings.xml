@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
+    <!-- General -->
     <category label="32117">
-        <setting label="32118" type="folder" id="managed_folder" source="auto" option="writeable"/>
-        <setting label="32129" type="bool" id="use_show_artwork" default="false"/>
-        <setting label="32139" type="number" id="recursion_limit" default="10"/>
+        <setting id="custom_managed_folder" label="32140" type="bool"
+            default="false" />
+        <setting id="managed_folder" label="32141" type="folder"
+            enable="eq(-1,true)" source="video" option="writeable" />
+        <setting id="custom_metadata_folder" label="32142" type="bool"
+            default="false" />
+        <setting id="metadata_folder" label="32143" type="folder"
+            enable="eq(-1,true)" source="video" option="writeable" />
+        <setting id="recursion_limit" label="32139" type="number"
+            default="10" />
     </category>
+    <!-- Movies -->
+    <category label="32109">
+        <setting id="auto_add_movies" label="32152" type="enum"
+            lvalues="32148|32149|32150"/>
+        <!-- TODO: Automatically create movie metadata -->
+    </category>
+    <!-- TV -->
+    <category label="32108">
+        <setting id="auto_add_tvshows" label="32153" type="enum"
+            lvalues="32148|32151|32150"/>
+        <!-- TODO: Automatically read TV show metadata -->
+        <!-- TODO: Automatically create TV show metadata -->
+        <setting id="use_show_artwork" label="32129" type="bool"
+            default="false" />
+    </category>
+    <!-- Development -->
     <category label="32130">
-      <setting label="32131" type="action" action="RunScript(script.library.integration.tool, test)"/>
-      <setting label="32132" type="action" action="RunScript(script.library.integration.tool, fuzz)"/>
+        <setting label="32144" id="in_development" type="bool"
+            default="false" />
+        <setting label="32131" type="action"
+            visible="eq(-1,true)" action="RunScript(script.library.integration.tool, test)" />
+        <setting label="32132" type="action"
+            visible="eq(-2,true)" action="RunScript(script.library.integration.tool, fuzz)" />
     </category>
 </settings>

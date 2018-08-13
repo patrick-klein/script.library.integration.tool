@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-''' Defines class for fuzzing utils module '''
+'''
+Defines class for fuzzing utils module
+'''
 
 import string
 import random
@@ -13,7 +15,7 @@ class UtilsTest(unittest.TestCase):
     ''' Class that contains test cases for fuzzing utils module '''
 
     def test_clean_name(self):
-        ''' runs randomly generated strings through utils.clean_name '''
+        ''' Run randomly generated strings through utils.clean_name '''
         keywords = [x[0] for x in utils.MAPPED_STRINGS]
         num_keywords = len(keywords)
         for _ in range(100):

@@ -1,4 +1,4 @@
-test_clean_name (resources.test.fuzz_utils.UtilsTest)
+test_clean_name (fuzz_utils.UtilsTest)
 runs randomly generated strings through utils.clean_name ... ok
 
 ----------------------------------------------------------------------

@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-''' Defines class for testing utils module '''
+'''
+Defines class for testing utils module
+'''
 
 import unittest
 
@@ -8,27 +10,20 @@ import xbmcaddon
 
 import resources.lib.utils as utils
 
-MANAGED_FOLDER = utils.MANAGED_FOLDER
 
-
-class UtilsTest(unittest.TestCase):
-    ''' Class that contains test cases for testing utils module '''
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
+class TestUtils(unittest.TestCase):
+    ''' Test cases for utils module '''
 
     def test_constants(self):
-        ''' check values returned by utils constants '''
+        ''' Check values returned by constants in utils '''
         addon = xbmcaddon.Addon(id='script.library.integration.tool')
-        self.assertEqual(utils.STR_ADDON_NAME, addon.getAddonInfo('name'))
-        self.assertEqual(utils.STR_ADDON_VER, addon.getAddonInfo('version'))
-        self.assertEqual(utils.MANAGED_FOLDER, addon.getSetting('managed_folder'))
+        self.assertEqual(utils.ADDON_NAME, addon.getAddonInfo('name'))
+        self.assertEqual(utils.ADDON_VERSION, addon.getAddonInfo('version'))
+        # TODO: test all contants, including type
 
     def test_clean_name(self):
-        ''' test all keywords in clean_name '''
+        ''' Test keywords in clean_name '''
+        # TODO: Use MAPPED_STRINGS here
         test_names = {
             'test1.': 'test1',
             'test2:': 'test2',
@@ -47,3 +42,15 @@ class UtilsTest(unittest.TestCase):
         }
         for key, value in test_names.iteritems():
             self.assertEqual(utils.clean_name(key), value)
+
+    def test_version_comparison(self):
+        ''' Test the comparison operators for the Version class '''
+        reference = utils.Version('1.2.3')
+        self.assertEqual(reference, '1.2.3')
+        self.assertNotEqual(reference, '3.2.1')
+        self.assertGreater(reference, '0.10.0')
+        self.assertLess(reference, '1.10.0')
+        self.assertGreaterEqual(reference, '1.2.3')
+        self.assertGreaterEqual(reference, '1.2.2')
+        self.assertLessEqual(reference, '1.2.3')
+        self.assertLessEqual(reference, '1.2.4')

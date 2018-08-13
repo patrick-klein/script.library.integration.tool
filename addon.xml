@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.3.2" provider-name="patrick-klein">
+<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.4.0" provider-name="patrick-klein">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -29,13 +29,13 @@
     <description lang="en">
 Provides options in the context menu that lets you add any movie or TV show from video plugins into your library.  These videos will show up in your library and play just like any other local file.
 
-You can also sync all of the videos from plugins with a single click, so new videos are automatically available to your library, and old videos videos are removed.
+You can also sync all of the videos from plugins with a single click, so new videos are automatically available to your library, and old videos are removed.
 
 This tool gives you complete control over any custom metadata you want to use for your videos added from plugins.
 
 See the README for a full tutorial.
     </description>
-    <disclaimer lang="en">Must choose a Managed Folder in settings before running</disclaimer>
+    <disclaimer lang="en">Must run addon after version updates</disclaimer>
     <language></language>
     <platform>all</platform>
     <license>GPL v2.0</license>
@@ -45,24 +45,22 @@ See the README for a full tutorial.
     <assets>
       <icon>icon.png</icon>
       <fanart>fanart.jpg</fanart>
-      <screenshot>resources/screenshot-01.jpg</screenshot>
-      <screenshot>resources/screenshot-02.jpg</screenshot>
-      <screenshot>resources/screenshot-03.jpg</screenshot>
+      <screenshot>resources/media/screenshot-01.jpg</screenshot>
+      <screenshot>resources/media/screenshot-02.jpg</screenshot>
+      <screenshot>resources/media/screenshot-03.jpg</screenshot>
     </assets>
-    <news>v0.4.0 (2018-7-29)
-- Allow directories to be added recursively
+    <news>v0.4.0 (2018-8-12)
+- Allow directories to be loaded recursively
 - Added recursion limit in settings
 - Updating synced directories moved to background
+- Added percentage to all progress windows
 - Option to update only movies or tv shows
 - Option to remove unused movie metadata stubs
-- Improved and refactored codebase
-
-v0.3.2 (2018-6-28)
-- Fix crash on Windows
-
-v0.3.1 (2018-4-28)
-- remove Windows illegal characters from filename
-- bugfix for incorrect sql formatting
+- Option to read metadata to get episode id
+- Option to skip staging for items
+- Use addon folder as default managed folder
+- Added setting to use custom metadata folder
+- Cleaned and refactored project
     </news>
   </extension>
 
