@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.4.0" provider-name="patrick-klein">
+<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.4.1" provider-name="patrick-klein">
   <requires>
     <import addon="xbmc.python" version="2.24.0"/>
     <import addon="xbmc.addon" version="12.0.0"/>
@@ -49,7 +49,10 @@ See the README for a full tutorial.
       <screenshot>resources/media/screenshot-02.jpg</screenshot>
       <screenshot>resources/media/screenshot-03.jpg</screenshot>
     </assets>
-    <news>v0.4.0 (2018-8-12)
+    <news>v0.4.1 (2018-8-12)
+- Fix xml parsing issue
+
+v0.4.0 (2018-8-12)
 - Allow directories to be loaded recursively
 - Added recursion limit in settings
 - Updating synced directories moved to background

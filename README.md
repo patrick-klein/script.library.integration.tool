@@ -1,7 +1,7 @@
 <img src="./resources/media/logo.png" width=512>
 
 
-[![Version](https://img.shields.io/badge/latest%20version-0.4.0-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
+[![Version](https://img.shields.io/badge/latest%20version-0.4.1-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
 [![GitHub last commit](https://img.shields.io/github/last-commit/patrick-klein/script.library.integration.tool.svg)](https://github.com/patrick-klein/script.library.integration.tool/commits/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
 [![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
@@ -22,13 +22,13 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.  After installing the repo, "Library Tools repository" will be available in Kodi.
 
-4. While in Add-ons, go to Install from repository --> Library Tools repository --> Program add-ons --> Select Library Integration Tool
+3. While in Add-ons, go to Install from repository --> Library Tools repository --> Program add-ons --> Select Library Integration Tool
 
-5. By default, the managed folder is in the addon userdata folder.  You may open the settings for Library Integration Tool if you want to choose a custom managed folder instead.
+4. By default, the managed folder is in the addon userdata folder.  You may open the settings for Library Integration Tool if you want to choose a custom managed folder instead.
 
-6. Run Library Integration Tool for the first time.  You will get a message letting you know the managed folder was configured.
+5. Run Library Integration Tool for the first time.  You will get a message letting you know the managed folder was configured.
 
-7. From Kodi Settings, go to Media Settings --> Library --> Videos....  If you are using a custom managed folder, add it as a source here, otherwise add `special://userdata/addon_data/script.library.integration.tool/`.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  If you plan on using your own metadata, you may want to select "Local information only".
+6. From Kodi Settings, go to Media Settings --> Library --> Videos....  If you are using a custom managed folder, add it as a source here, otherwise add `special://userdata/addon_data/script.library.integration.tool/`.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  If you plan on using your own metadata, you may want to select "Local information only".
 
 DISCLAIMER:  Do not directly edit the contents of ManagedMovies, ManagedTV, or managed.db; you need to use the Library Integration Tool menu to edit these items.
 
@@ -89,26 +89,26 @@ From "View Staged Movies", select the movie you already have.  Choose the option
 If you change your mind later, you can select any blocked item from the list and choose "Remove".
 
 
-### Tutorial - Settings
+## Settings
 
 You can customize the behavior of this addon from the settings.  The following options can be changed:
 
-#### General
+### General
 **Use custom managed folder** - Lets you select a custom managed folder instead of the default addon userdata folder.  This folder may be used by multiple Kodi instances. Sharing a managed folder between Windows and non-Windows computers is not recommended.
 
 **Use custom metadata folder** - Lets you select a custom metadata folder, instead of creating a Metadata subfolder in the managed folder.  This folder may be used by multiple Kodi instances. Sharing a metadata folder between Windows and non-Windows computers is not recommended.
 
 **Max recursion when finding videos** - Some plugins have content spread across multiple pages.  This setting specifies how many pages should be loaded before stopping.  Use a value of 0 to load all pages.
 
-#### Movies
+### Movies
 **Add movies without staging** - By default, all new synced movies will be moved to staging.  This option allows you to automatically add movies directly to the library.  There is also an option to only automatically add movies that already have metadata.
 
-#### TV Shows
+### TV Shows
 **Add TV show items without staging** - By default, all new synced TV show items will be moved to staging.  This option allows TV show items with properly formatted episode IDs to be automatically added to the library.  There is also an option to only add automatically TV show items that already have metadata.
 
 **Use TV show artwork if episode thumb is unavailable** - Kodi can't create thumbnails from stream files, so this option will allow the addon to attempt copying the TV show thumb/fanart instead if an episode thumb isn't available.
 
-#### Development
+### Development
 **Enable development options** - Keep this option disabled, as it may slow down the addon.
 
 ## Recommended Addons

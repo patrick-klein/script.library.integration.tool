@@ -217,7 +217,7 @@ class EpisodeItem(ContentItem):
         if os.path.exists(nfo_path):
             # Open nfo file and get xml soup
             with open(nfo_path) as nfo_file:
-                soup = BeautifulSoup(nfo_file, 'xml')
+                soup = BeautifulSoup(nfo_file)
             # Check for season & episode tags
             season = int(soup.find('season').get_text())
             episode = int(soup.find('episode').get_text())
