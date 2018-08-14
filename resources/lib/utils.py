@@ -52,7 +52,7 @@ DATABASE_FILE = os.path.join(MANAGED_FOLDER, 'managed.db')
 # TODO: Use combined list on all platforms.  Would need to be combined with version check
 #       to re-add all managed items
 MAPPED_STRINGS = [
-    ('.', ''),
+    ('.', ' '),
     (':', ''),
     ('/', ''),
     ('"', ''),
