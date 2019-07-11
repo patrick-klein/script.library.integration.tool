@@ -55,7 +55,7 @@ class EpisodeItem(ContentItem):
         # Rename episode if metadata is available
         self.rename_using_metadata()
         # Don't add episodes that don't have episode id in name
-        if not re.match('.*[0-9]x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', self.clean_title):
+        if not re.match('.*[0-9]+x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', self.clean_title):
             utils.log_msg('No episode number detected for {0}. Not adding to library...'\
                 .format(self.clean_title), xbmc.LOGNOTICE)
             return
@@ -67,7 +67,7 @@ class EpisodeItem(ContentItem):
                 # Link tvshow.nfo and artwork now, if self.metadata_dir exists
                 files = os.listdir(self.metadata_dir)
                 for fname in files:
-                    if not (re.match('.*[0-9]x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', fname)
+                    if not (re.match('.*[0-9]+x[0-9].*|.*[Ss][0-9].*[Ee][0-9].*', fname)
                             or '.strm' in fname):
                         utils.fs.softlink_file(
                             os.path.join(self.metadata_dir, fname),
@@ -120,13 +120,13 @@ class EpisodeItem(ContentItem):
         if not os.path.exists(strm_path):
             # Rename file if old nfo file has episode id
             old_renamed = glob(
-                os.path.join(show_dir, '*[0-9]x[0-9]* - {0}.nfo'.format(clean_title_no_0x0))
+                os.path.join(show_dir, '*[0-9]+x[0-9]* - {0}.nfo'.format(clean_title_no_0x0))
             )
             if old_renamed:
                 # Prepend title with epid if so
                 epid = old_renamed[0].split('/')[-1].replace(clean_title_no_0x0 + '.nfo', '')
                 new_title = epid + self.title.replace('-0x0', '')
-            elif not re.match('.*[0-9]x[0-9].*|.*[Ss][0-9]+[Ee][0-9].*', self.clean_title):
+            elif not re.match('.*[0-9]+x[0-9].*|.*[Ss][0-9]+[Ee][0-9].*', self.clean_title):
                 # Otherwise, append -0x0 if title doesn't already have valid episode id
                 new_title = self.title + '-0x0'
             else:
@@ -152,7 +152,7 @@ class EpisodeItem(ContentItem):
         if os.path.isdir(show_dir):
             # Rename item if old nfo file has episode id
             old_renamed = glob(
-                os.path.join(show_dir, '*[0-9]x[0-9]* - {0}.nfo'.format(clean_title_no_0x0))
+                os.path.join(show_dir, '*[0-9]+x[0-9]* - {0}.nfo'.format(clean_title_no_0x0))
             )
             if old_renamed:
                 # Prepend title with epid if so
