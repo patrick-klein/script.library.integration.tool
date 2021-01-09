@@ -477,7 +477,7 @@ class SyncedMenu(object):
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_SYNCED_DIRS)
             return
         lines = [
-            '[B]%s[/B] - %s - [I]%s[/I]' % (x['label'], x.localize_type(), x['dir'])
+            '[B]%s[/B] - %s - [I]%s[/I]' % (x['label'].decode('utf-8'), x.localize_type(), x['dir'])
             for x in synced_dirs
         ]
         lines += [STR_UPDATE_ALL, STR_UPDATE_MOVIES, STR_UPDATE_TV_SHOWS, STR_REMOVE_ALL, STR_BACK]
