@@ -257,11 +257,7 @@ class StagedTVMenu(object):
         ''' Display all staged episodes in the specified show,
         which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        try:
-            show_title = show_title.decode('utf-8')
-        except Exception as e:
-            print(e)
-            pass
+        show_title = show_title.decode('utf-8')
         STR_NO_STAGED_x_EPISODES = (utils.ADDON.getLocalizedString(32065) % show_title).encode('utf-8')
         STR_ADD_ALL_EPISODES = utils.ADDON.getLocalizedString(32066)
         STR_ADD_ALL_EPISODES_WITH_METADATA = utils.ADDON.getLocalizedString(32067)
