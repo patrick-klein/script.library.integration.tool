@@ -158,6 +158,7 @@ class StagedTVMenu(object):
             '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_STAGED_EPISODE_OPTIONS, item.title),
             lines
         )
+        
         if ret >= 0:
             if lines[ret] == STR_ADD:
                 item.add_to_library()
@@ -256,7 +257,12 @@ class StagedTVMenu(object):
         ''' Display all staged episodes in the specified show,
         which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        STR_NO_STAGED_x_EPISODES = utils.ADDON.getLocalizedString(32065) % show_title
+        try:
+            show_title = show_title.decode('utf-8')
+        except Exception as e:
+            print(e)
+            pass
+        STR_NO_STAGED_x_EPISODES = (utils.ADDON.getLocalizedString(32065) % show_title).encode('utf-8')
         STR_ADD_ALL_EPISODES = utils.ADDON.getLocalizedString(32066)
         STR_ADD_ALL_EPISODES_WITH_METADATA = utils.ADDON.getLocalizedString(32067)
         STR_REMOVE_ALL_EPISODES = utils.ADDON.getLocalizedString(32029)
@@ -264,7 +270,7 @@ class StagedTVMenu(object):
         STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA = utils.ADDON.getLocalizedString(32069)
         STR_GENERATE_ALL_METADATA_ITEMS = utils.ADDON.getLocalizedString(32040)
         STR_BACK = utils.ADDON.getLocalizedString(32011)
-        STR_STAGED_x_EPISODES = utils.ADDON.getLocalizedString(32070) % show_title
+        STR_STAGED_x_EPISODES = (utils.ADDON.getLocalizedString(32070) % show_title).encode('utf-8')
         staged_episodes = self.dbh.get_content_items(
             status='staged', show_title=show_title, order='Title'
         )
