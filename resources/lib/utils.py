@@ -287,38 +287,124 @@ def execute_json_rpc(method, **params):
         )
     )
 
+def index_items(listofitems, limits):
+    # "season": "Season 1",
+    # "showtitle": "Pose",
+    # "type": "episode"
+
+    # "limits": {
+    #     "end": 6,
+    #     "start": 0,
+    #     "total": 6
+    # }        
+
+    numbereditems = []
+
+    start = limits['start']
+    end = limits['end']
+
+    for num, item in zip(range(start, end), listofitems):
+        item['number'] = start + 1
+        numbereditems.append(item)
+        start += 1
+    return numbereditems
 
 @logged_function
-def load_directory_items(dir_path, recursive=False, allow_directories=False, depth=1):
+def load_directory_items(dir_path, recursive=False, allow_directories=False, depth=1, showtitle=False, season=False):
     ''' Load items in a directory using the JSON-RPC interface '''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         return []
     # Send command to load results
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
+    # save limits to use in future
+    limits = results['result']['limits']
+    # all itens, movies and epsodes will be stored in this list
+    files = []
+
     # Return nothing if results do not load
     if not (results.has_key('result') and results['result'].has_key('files')):
         return []
-    # Get files from results
-    items = results['result']['files']
+
     if not allow_directories:
         files = [x for x in items if x['filetype'] == 'file']
+    # 
+    try:
+        # try to get ['result']['files'] and index_items() 
+        listofitems = index_items(results['result']['files'], limits)
+    except KeyError:
+        # if ['result']['files'] not exist, return a list with nothing 
+        # ATENTION: it need be tested to check if don't create errors in future
+        listofitems = []
+
+    # in first moment, all show directories wiil be stored here
+    directories = []
+    for item in listofitems:
+        # if show title is not False, set item['showtitle'] as showtitle passed from func argumet
+        if showtitle != False:
+            item['showtitle'] = showtitle
+            pass
+
+        # if show season is not False, set item['season'] as showtitle passed from func argumet
+        if season != False:
+            item['season'] = season
+            pass
+        # this part determine what will be made with all items 
+        # 
+        if item['filetype'] == 'file' and item['type'] == 'episode':
+            # if is a epsode the label is changed to ['eptitle'] in dict
+            item['eptitle'] = item['label']
+            del item['label']
+            # episode is added to item list
+            files.append(item)
+        elif item['filetype'] == 'file' and item['type'] == 'movie':
+            # if is a movie is added to directly to list
+            files.append(item)
+        elif item['filetype'] == 'directory' and item['type'] == 'tvshow':
+            # if is a epsode the label is changed to ['eptitle'] in dict
+            item['showtitle'] = item['label']
+            del item['label']
+            # if is a show item is added to directories list to use in future
+            directories.append(item)
+        elif item['filetype'] == 'directory' and item['type'] == 'unknown':
+            # kodi return seasons as a 'directory' and type is unknown
+            # ATENTION: it need to be more tested, but now, i don't seed any othe item with this structure
+            item['season'] = item['number']
+            del item['label']            
+            # if is a show item is added to directories list to use in future
+            directories.append(item)
+
     if recursive:
-        # Load subdirectories and add items
-        directories = [x for x in items if x['filetype'] == 'directory']
-        new_items = []
-        for directory in directories:
-            new_items += load_directory_items(
-                directory['file'],
+        # load all items recursive based in all dirs
+        for _dir in directories:
+            try:
+                # if _dir has the key showtitle will be defined as title
+                title = _dir['showtitle']
+                # and the loop will continue
+                recursive = True
+            except Exception as e:
+                title = False
+                pass
+
+            try:
+                # if _dir has the key season will be defined as season
+                season = _dir['season']
+                # and the loop will continue
+                recursive = True
+            except Exception as e:
+                season = False
+                pass
+
+            # here, the items will be loaded from directories and stored in new_items
+            # if title and season is present, we will pass them to use in future
+            load_directory_items(
+                _dir['file'],
                 recursive=recursive,
                 allow_directories=allow_directories,
-                depth=depth + 1
+                depth=depth + 1,
+                showtitle=title,
+                season=season
             )
-        if allow_directories:
-            items += new_items
-        else:
-            files += new_items
-    return items if allow_directories else files
-
+    return files
 
 @logged_function
 def notification(message):
