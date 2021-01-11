@@ -56,6 +56,7 @@ class SyncedMenu(object):
         dir_items = self.filter_blocked_items(
             utils.load_directory_items(directory, recursive=True), 'movie'
         )
+
         for item in dir_items:
             # Add tag to items
             item['mediatype'] = 'movie'
@@ -77,7 +78,7 @@ class SyncedMenu(object):
     def get_tvshows_in_directory(self, directory):
         ''' Get all TV shows in the directory, and tag the items '''
         dir_items = self.filter_blocked_items(
-            utils.load_directory_items(directory, allow_directories=True), 'tvshow'
+            utils.load_directory_items(directory, allow_directories=True, recursive=True), 'tvshow'
         )
         all_items = []
         # Check every tvshow in list
@@ -86,7 +87,7 @@ class SyncedMenu(object):
             # Load results if show isn't blocked
             show_path = dir_item['file']
             show_items = self.filter_blocked_items(
-                utils.load_directory_items(show_path, recursive=True), 'episode'
+                utils.load_directory_items(show_path, recursive=True, recursive=True), 'episode'
             )
             for show_item in show_items:
                 # Add formatted item
@@ -239,7 +240,7 @@ class SyncedMenu(object):
 
             # query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-            dir_items = utils.load_directory_items(dir_path, allow_directories=True)
+            dir_items = utils.load_directory_items(dir_path, allow_directories=True, recursive=True)
 
             items_to_stage = 0
             for index, dir_item in enumerate(dir_items):
