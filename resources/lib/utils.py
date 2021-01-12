@@ -326,8 +326,8 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
         return []
 
     if not allow_directories:
-        files = [x for x in items if x['filetype'] == 'file']
-    # 
+        files = [x for x in results if x['filetype'] == 'file']
+    
     try:
         # try to get ['result']['files'] and index_items() 
         listofitems = index_items(results['result']['files'], limits)
@@ -354,7 +354,6 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
             # if is a epsode the label is changed to ['eptitle'] in dict
             item['eptitle'] = item['label']
             del item['label']
-            # episode is added to item list
             files.append(item)
         elif item['filetype'] == 'file' and item['type'] == 'movie':
             # if is a movie is added to directly to list
@@ -396,7 +395,7 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
 
             # here, the items will be loaded from directories and stored in new_items
             # if title and season is present, we will pass them to use in future
-            load_directory_items(
+            new_items = load_directory_items(
                 _dir['file'],
                 recursive=recursive,
                 allow_directories=allow_directories,
@@ -404,6 +403,10 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
                 showtitle=title,
                 season=season
             )
+            # store all new_items in files
+            for new in new_items:
+                files.append(new)
+                pass
     return files
 
 @logged_function
