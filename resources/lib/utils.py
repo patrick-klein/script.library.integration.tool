@@ -348,12 +348,6 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
             item['season'] = season
             pass
         # this part determine what will be made with all items 
-        # 
-        # "file": "plugin://plugin.video.amazon-test/pv/browse/root/Watchlist/TV/amzn1.dv.gti.4eb411df-8f9c-373a-4541-11d62b511878/amzn1.dv.gti.f8b411df-c6ea-0862-b6a4-6b5f8ef98f90",
-        # "filetype": "directory",
-        # "label": "Dororo",
-        # "type": "unknown"
-
         if 'amazon' in item['file'] and item['filetype'] == 'directory' and not 'Season' in item['label'] and not item['type'] == 'episode':
             # amazon animes came two possible informations, tvshow or unknown
             item['type'] = 'tvshow'
