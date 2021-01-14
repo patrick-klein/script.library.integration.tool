@@ -12,7 +12,6 @@ import xbmcgui
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
 
-
 class SyncedMenu(object):
     ''' Provides windows for displaying synced directories,
     and tools for managing them and updating their contents '''
@@ -87,7 +86,7 @@ class SyncedMenu(object):
             # Load results if show isn't blocked
             show_path = dir_item['file']
             show_items = self.filter_blocked_items(
-                utils.load_directory_items(show_path, recursive=True, recursive=True), 'episode'
+                utils.load_directory_items(show_path, recursive=True), 'episode'
             )
             for show_item in show_items:
                 # Add formatted item
@@ -240,34 +239,35 @@ class SyncedMenu(object):
 
             # query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-            dir_items = utils.load_directory_items(dir_path, allow_directories=True, recursive=True)
+            # Get all items to stage in show
+            files_list = utils.load_directory_items(dir_path, allow_directories=True, recursive=True)
 
             items_to_stage = 0
-            for index, dir_item in enumerate(dir_items):
-                # Get name of show and skip if blocked
-                tvshow_label = dir_item['label']
-                if self.dbh.check_blocked(tvshow_label, 'tvshow'):
-                    continue
-                # Update progress
-                percent = 100 * index / len(dir_items)
-                p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % tvshow_label))
-                # Get everything inside tvshow path
-                tvshow_path = dir_item['file']
-                show_items = utils.load_directory_items(tvshow_path, recursive=True)
-                # Get all items to stage in show
-                for show_item in show_items:
-                    # Check for duplicate paths and blocked items
-                    if self.dbh.path_exists(show_item['file']) or self.dbh.check_blocked(
-                            show_item['label'], 'episode'):
+            for index, showfile in enumerate(files_list):
+                if 'showtitle' in showfile:
+                    # Get name of show and skip if blocked
+                    tvshow_label = showfile['showtitle']
+                    if self.dbh.check_blocked(tvshow_label, 'tvshow'):
                         continue
                     # Update progress
-                    p_dialog.update(percent, line2=show_item['label'])
+                    percent = 100 * index / len(files_list)
+                    p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % tvshow_label))
+                    # Get everything inside tvshow path
+                    tvshow_path = showfile['file']
+                    # # # # # # # # showfiles = utils.load_directory_items(tvshow_path, recursive=True)
+                    # Check for duplicate paths and blocked items
+                    if self.dbh.path_exists(showfile['file']) or self.dbh.check_blocked(
+                            tvshow_label, 'episode'):
+                        continue
+                    # Update progress
+                    p_dialog.update(percent, line2=tvshow_label)
                     self.dbh.add_content_item(
-                        show_item['file'], show_item['label'], 'tvshow', tvshow_label
+                        showfile['file'], tvshow_label, 'tvshow', tvshow_label
                     )
                     items_to_stage += 1
                     p_dialog.update(percent, line2=' ')
-                p_dialog.update(percent, line1=' ')
+                    pass
+
             utils.notification(STR_i_EPISODES_STAGED % items_to_stage)
         finally:
             p_dialog.close()
