@@ -13,6 +13,7 @@ import simplejson as json
 import xbmc
 import xbmcaddon
 
+from resources.lib.saveasjson import saveAsJson
 # Get file system tools depending on platform
 if os.name == 'posix':
     import resources.lib.unix as fs
@@ -316,11 +317,11 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
         return []
     # Send command to load results
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
+    saveAsJson(results, 'results')
     # save limits to use in future
     limits = results['result']['limits']
     # all itens, movies and epsodes will be stored in this list
     files = []
-
     # Return nothing if results do not load
     if not (results.has_key('result') and results['result'].has_key('files')):
         return []
@@ -350,13 +351,22 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
             pass
         # this part determine what will be made with all items 
         # 
-        if item['filetype'] == 'file' and item['type'] == 'episode':
+        if 'amazon' in item['file'] and item['filetype'] == 'directory' and item['type'] == 'unknown' and not item['type'] == 'episode':
+            # amazon animes came two possible informations, tvshow or unknown
+            item['type'] = 'tvshow'
+            item['showtitle'] = item['label']
+            del item['label']
+            # if is a show item is added to directories list to use in future
+            directories.append(item)            
+        elif item['filetype'] == 'file' and item['type'] == 'episode':
             # if is a epsode the label is changed to ['eptitle'] in dict
             item['eptitle'] = item['label']
             del item['label']
             files.append(item)
         elif item['filetype'] == 'file' and item['type'] == 'movie':
             # if is a movie is added to directly to list
+            item['movietitle'] = item['label']
+            del item['label']
             files.append(item)
         elif item['filetype'] == 'directory' and item['type'] == 'tvshow':
             # if is a epsode the label is changed to ['eptitle'] in dict
