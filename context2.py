@@ -34,6 +34,7 @@ def main():
         )
         content_type = 'tvshow' if is_show else 'movie'
 
+    from resources.lib.saveasjson import saveAsJson
     # Call corresponding method
     if content_type == 'movie':
         SyncedMenu().sync_movie_directory(dir_label, dir_path)
