@@ -8,7 +8,7 @@ Defines the SyncedMenu class
 import sys
 
 import xbmcgui
-
+import xbmc
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
 
@@ -223,6 +223,27 @@ class SyncedMenu(object):
         else:
             utils.notification(STR_i_NEW % items_to_stage)
 
+    # the names of epsodes will follow this model:
+    # Euphoria (US) - S01E01 - Pilot.mkv
+    # kodi/tinyMediaManager can detect this format without problems
+    def new_epsode_name(self, showtitle, number, season=1, eptitle=None, full=None, half=None):
+        # "eptitle": "Preaching Out Loud",
+        # "number": 1,
+        # "season": 1,
+        # "showtitle": "Queer Eye",
+
+        if number >= 100:
+            epid = ('S0%sE%s' % (number, season))
+        else:
+            epid = ('S0%sE0%s' % (number, season))
+            pass
+
+        if full == True:
+            return ('%s - %s - %s' % (showtitle, epid, eptitle))
+        elif half == True:
+            return ('%s - %s' % (epid, eptitle))
+            pass
+
     @utils.logged_function
     def sync_tvshow_directory(self, dir_label, dir_path):
         ''' Sync all TV shows in directory and stage items'''
@@ -239,35 +260,41 @@ class SyncedMenu(object):
 
             # query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-            # Get all items to stage in show
             files_list = utils.load_directory_items(dir_path, allow_directories=True, recursive=True)
 
             items_to_stage = 0
             for index, showfile in enumerate(files_list):
                 if 'showtitle' in showfile:
                     # Get name of show and skip if blocked
-                    tvshow_label = showfile['showtitle']
-                    if self.dbh.check_blocked(tvshow_label, 'tvshow'):
+                    # Get everything inside tvshow path
+                    filepath = showfile['file']
+                    showtitle = showfile['showtitle']
+                    try:
+                        season = showfile['season']
+                    except Exception as e:
+                        season = 1
+                    epnumber = showfile['number']
+                    eptitle = showfile['eptitle']
+                    newfilename = self.new_epsode_name(showtitle, season, epnumber, eptitle, full=True)
+                    if self.dbh.check_blocked(showtitle, 'tvshow'):
                         continue
                     # Update progress
                     percent = 100 * index / len(files_list)
-                    p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % tvshow_label))
-                    # Get everything inside tvshow path
-                    tvshow_path = showfile['file']
-                    # # # # # # # # showfiles = utils.load_directory_items(tvshow_path, recursive=True)
+                    p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % showtitle))
                     # Check for duplicate paths and blocked items
                     if self.dbh.path_exists(showfile['file']) or self.dbh.check_blocked(
-                            tvshow_label, 'episode'):
+                            showtitle, 'episode'):
                         continue
                     # Update progress
-                    p_dialog.update(percent, line2=tvshow_label)
+                    p_dialog.update(percent, line2=showtitle)
+                    p_dialog.update(percent, line2=newfilename)
                     self.dbh.add_content_item(
-                        showfile['file'], tvshow_label, 'tvshow', tvshow_label
+                        showfile['file'], self.new_epsode_name(showtitle, season, epnumber, eptitle, half=True), 'tvshow', showtitle
                     )
                     items_to_stage += 1
-                    p_dialog.update(percent, line2=' ')
+                    # p_dialog.update(percent, line1=' ')
+                    xbmc.sleep(150)
                     pass
-
             utils.notification(STR_i_EPISODES_STAGED % items_to_stage)
         finally:
             p_dialog.close()
