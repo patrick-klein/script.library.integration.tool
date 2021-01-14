@@ -13,7 +13,6 @@ import simplejson as json
 import xbmc
 import xbmcaddon
 
-from resources.lib.saveasjson import saveAsJson
 # Get file system tools depending on platform
 if os.name == 'posix':
     import resources.lib.unix as fs
@@ -317,7 +316,6 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
         return []
     # Send command to load results
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
-    saveAsJson(results, 'results')
     # save limits to use in future
     limits = results['result']['limits']
     # all itens, movies and epsodes will be stored in this list
@@ -351,14 +349,19 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
             pass
         # this part determine what will be made with all items 
         # 
-        if 'amazon' in item['file'] and item['filetype'] == 'directory' and item['type'] == 'unknown' and not item['type'] == 'episode':
+        # "file": "plugin://plugin.video.amazon-test/pv/browse/root/Watchlist/TV/amzn1.dv.gti.4eb411df-8f9c-373a-4541-11d62b511878/amzn1.dv.gti.f8b411df-c6ea-0862-b6a4-6b5f8ef98f90",
+        # "filetype": "directory",
+        # "label": "Dororo",
+        # "type": "unknown"
+
+        if 'amazon' in item['file'] and item['filetype'] == 'directory' and not 'Season' in item['label'] and not item['type'] == 'episode':
             # amazon animes came two possible informations, tvshow or unknown
             item['type'] = 'tvshow'
             item['showtitle'] = item['label']
             del item['label']
             # if is a show item is added to directories list to use in future
-            directories.append(item)            
-        elif item['filetype'] == 'file' and item['type'] == 'episode':
+            directories.append(item)
+        if item['filetype'] == 'file' and item['type'] == 'episode':
             # if is a epsode the label is changed to ['eptitle'] in dict
             item['eptitle'] = item['label']
             del item['label']
@@ -370,11 +373,14 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
             files.append(item)
         elif item['filetype'] == 'directory' and item['type'] == 'tvshow':
             # if is a epsode the label is changed to ['eptitle'] in dict
-            item['showtitle'] = item['label']
-            del item['label']
+            try:
+                item['showtitle'] = item['label']
+                del item['label']
+            except KeyError as e:
+                pass
             # if is a show item is added to directories list to use in future
             directories.append(item)
-        elif item['filetype'] == 'directory' and item['type'] == 'unknown':
+        elif item['filetype'] == 'directory' and item['type'] == 'unknown' and 'Season' in item['label']:
             # kodi return seasons as a 'directory' and type is unknown
             # ATENTION: it need to be more tested, but now, i don't seed any othe item with this structure
             item['season'] = item['number']
