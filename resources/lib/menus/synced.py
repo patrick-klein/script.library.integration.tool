@@ -261,9 +261,11 @@ class SyncedMenu(object):
             # query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
             files_list = utils.load_directory_items(dir_path, allow_directories=True, recursive=True)
-
+            from resources.lib.saveasjson import saveAsJson
+            saveAsJson(files_list, 'files_list')
             items_to_stage = 0
             for index, showfile in enumerate(files_list):
+
                 if 'showtitle' in showfile:
                     # Get name of show and skip if blocked
                     # Get everything inside tvshow path
