@@ -197,23 +197,31 @@ class SyncedMenu(object):
         # Add synced directory to database
         self.dbh.add_synced_dir(show_label, show_path, 'single-tvshow')
         # Get everything inside tvshow path
-        dir_items = utils.load_directory_items(show_path, recursive=True)
+        files_list = utils.load_directory_items(show_path, recursive=True)
         # Get all items to stage
         items_to_stage = 0
         num_already_staged = 0
         num_already_managed = 0
-        for dir_item in dir_items:
-            item_label = dir_item['label']
-            item_path = dir_item['file']
-            if self.dbh.path_exists(item_path, 'staged'):
+        for showfile in files_list:
+            filepath = showfile['file']
+            showtitle = show_label
+            try:
+                season = showfile['season']
+            except Exception as e:
+                season = 1
+            epnumber = showfile['number']
+            eptitle = showfile['eptitle']
+            newfilename = self.new_epsode_name(showtitle, season, epnumber, eptitle, full=True)
+
+            if self.dbh.path_exists(filepath, 'staged'):
                 num_already_staged += 1
                 continue
-            elif self.dbh.path_exists(item_path, 'managed'):
+            elif self.dbh.path_exists(filepath, 'managed'):
                 num_already_managed += 1
                 continue
-            elif self.dbh.check_blocked(item_label, 'episode'):
+            elif self.dbh.check_blocked(showtitle, 'episode'):
                 continue
-            self.dbh.add_content_item(item_path, item_label, 'tvshow', show_label)
+            self.dbh.add_content_item(filepath, newfilename, 'tvshow', showtitle)
             items_to_stage += 1
         if num_already_staged > 0 or num_already_managed > 0:
             utils.notification(
@@ -261,8 +269,6 @@ class SyncedMenu(object):
             # query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
             files_list = utils.load_directory_items(dir_path, allow_directories=True, recursive=True)
-            from resources.lib.saveasjson import saveAsJson
-            saveAsJson(files_list, 'files_list')
             items_to_stage = 0
             for index, showfile in enumerate(files_list):
 
@@ -291,7 +297,7 @@ class SyncedMenu(object):
                     p_dialog.update(percent, line2=showtitle)
                     p_dialog.update(percent, line2=newfilename)
                     self.dbh.add_content_item(
-                        showfile['file'], self.new_epsode_name(showtitle, season, epnumber, eptitle, half=True), 'tvshow', showtitle
+                        showfile['file'], self.new_epsode_name(showtitle, season, epnumber, eptitle, full=True), 'tvshow', showtitle
                     )
                     items_to_stage += 1
                     # p_dialog.update(percent, line1=' ')
