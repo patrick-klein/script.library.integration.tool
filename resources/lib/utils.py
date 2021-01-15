@@ -191,7 +191,6 @@ def entrypoint(func):
         check_managed_folder()
         check_subfolders()
         return func(*args, **kwargs)
-
     return wrapper
 
 
@@ -288,16 +287,6 @@ def execute_json_rpc(method, **params):
     )
 
 def index_items(listofitems, limits):
-    # "season": "Season 1",
-    # "showtitle": "Pose",
-    # "type": "episode"
-
-    # "limits": {
-    #     "end": 6,
-    #     "start": 0,
-    #     "total": 6
-    # }        
-
     numbereditems = []
 
     start = limits['start']
@@ -316,6 +305,10 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
         return []
     # Send command to load results
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
+    try:
+        items = results['result']['files']
+    except KeyError as e:
+        pass
     # save limits to use in future
     limits = results['result']['limits']
     # all itens, movies and epsodes will be stored in this list
@@ -325,11 +318,11 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
         return []
 
     if not allow_directories:
-        files = [x for x in results if x['filetype'] == 'file']
+        files = [item for item in items if item['filetype'] == 'file']
     
     try:
         # try to get ['result']['files'] and index_items() 
-        listofitems = index_items(results['result']['files'], limits)
+        listofitems = index_items(items, limits)
     except KeyError:
         # if ['result']['files'] not exist, return a list with nothing 
         # ATENTION: it need be tested to check if don't create errors in future
