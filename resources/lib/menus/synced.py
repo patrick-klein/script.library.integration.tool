@@ -194,6 +194,14 @@ class SyncedMenu(object):
         ''' Sync single tvshow directory and stage items '''
         STR_i_NEW_i_STAGED_i_MANAGED = utils.ADDON.getLocalizedString(32106)
         STR_i_NEW = utils.ADDON.getLocalizedString(32107)
+
+        STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
+        STR_GETTING_ITEMS_IN_x = utils.ADDON.getLocalizedString(32126)
+        STR_i_EPISODES_STAGED = utils.ADDON.getLocalizedString(32112)
+
+        p_dialog = xbmcgui.DialogProgress()
+        p_dialog.create(utils.ADDON_NAME)
+
         # Add synced directory to database
         self.dbh.add_synced_dir(show_label, show_path, 'single-tvshow')
         # Get everything inside tvshow path
@@ -202,16 +210,24 @@ class SyncedMenu(object):
         items_to_stage = 0
         num_already_staged = 0
         num_already_managed = 0
-        for showfile in files_list:
+
+        p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
+
+        for index, showfile in enumerate(files_list):
             filepath = showfile['file']
             showtitle = show_label
+
             try:
                 season = showfile['season']
             except Exception as e:
                 season = 1
+
             epnumber = showfile['number']
             eptitle = showfile['eptitle']
             newfilename = self.new_epsode_name(showtitle, season, epnumber, eptitle, full=True)
+            # Update progress
+            percent = 100 * index / len(files_list)
+            p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % showtitle))
 
             if self.dbh.path_exists(filepath, 'staged'):
                 num_already_staged += 1
@@ -221,8 +237,15 @@ class SyncedMenu(object):
                 continue
             elif self.dbh.check_blocked(showtitle, 'episode'):
                 continue
+
+            # Update progress
+            p_dialog.update(percent, line2=showtitle)
+            p_dialog.update(percent, line2=newfilename)
+            
             self.dbh.add_content_item(filepath, newfilename, 'tvshow', showtitle)
+
             items_to_stage += 1
+            xbmc.sleep(150)
         if num_already_staged > 0 or num_already_managed > 0:
             utils.notification(
                 STR_i_NEW_i_STAGED_i_MANAGED %
@@ -235,11 +258,6 @@ class SyncedMenu(object):
     # Euphoria (US) - S01E01 - Pilot.mkv
     # kodi/tinyMediaManager can detect this format without problems
     def new_epsode_name(self, showtitle, number, season=1, eptitle=None, full=None, half=None):
-        # "eptitle": "Preaching Out Loud",
-        # "number": 1,
-        # "season": 1,
-        # "showtitle": "Queer Eye",
-
         if number >= 100:
             epid = ('S0%sE%s' % (number, season))
         else:
@@ -300,7 +318,6 @@ class SyncedMenu(object):
                         showfile['file'], self.new_epsode_name(showtitle, season, epnumber, eptitle, full=True), 'tvshow', showtitle
                     )
                     items_to_stage += 1
-                    # p_dialog.update(percent, line1=' ')
                     xbmc.sleep(150)
                     pass
             utils.notification(STR_i_EPISODES_STAGED % items_to_stage)
