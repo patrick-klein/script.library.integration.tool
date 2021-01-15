@@ -17,17 +17,25 @@ from resources.lib.menus.synced import SyncedMenu
 @utils.entrypoint
 def main():
     ''' Main entrypoint for context menu item '''
-
-    container_type = xbmc.getInfoLabel('Container.Content')
-    label = sys.listitem.getLabel()  # pylint: disable=E1101
+    # container_type = xbmc.getInfoLabel('Container.Content')
+    # label = sys.listitem.getLabel()  # pylint: disable=E1101
     path = sys.listitem.getPath()  # pylint: disable=E1101
+    # 
+    year = xbmc.getInfoLabel('ListItem.Year')
+    # 
+    # this method works, if is a show or a movie will be not empty
+    tvshowtitle = xbmc.getInfoLabel('ListItem.TVShowTitle')
+    movietitle = xbmc.getInfoLabel('ListItem.Title')
 
     # Get content type
-    # TODO: Check if item is a directory to determine type
-    if container_type == 'tvshows':
+    # ATENTION: the inclusion of year is a test, Netflix and Amazon VOD works in tests to give year for shows and movies
+    # but can not work in all contents
+    if len(tvshowtitle) > 0:
         content_type = 'tvshow'
-    elif container_type == 'movies':
+        label = ('%s (%s)' % (tvshowtitle, year))
+    elif len(movietitle) > 0:
         content_type = 'movie'
+        label = ('%s (%s)' % (movietitle, year))
     else:
         STR_CHOOSE_CONTENT_TYPE = utils.ADDON.getLocalizedString(32100)
         STR_MOVIE = utils.ADDON.getLocalizedString(32102)
