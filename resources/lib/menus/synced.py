@@ -53,7 +53,7 @@ class SyncedMenu(object):
     def get_movies_in_directory(self, directory):
         ''' Get all movies in the directory and tags them '''
         dir_items = self.filter_blocked_items(
-            utils.load_directory_items(directory, recursive=True), 'movie'
+            list(utils.load_directory_items(directory, recursive=True), 'movie')
         )
 
         for item in dir_items:
@@ -65,7 +65,7 @@ class SyncedMenu(object):
     def get_single_tvshow(self, directory, show_title):
         ''' Get the single TV show in the directory, and tag the items'''
         show_items = self.filter_blocked_items(
-            utils.load_directory_items(directory, recursive=True), 'episode'
+            list(utils.load_directory_items(directory, recursive=True), 'episode')
         )
         for item in show_items:
             # Add tag to items
@@ -77,7 +77,7 @@ class SyncedMenu(object):
     def get_tvshows_in_directory(self, directory):
         ''' Get all TV shows in the directory, and tag the items '''
         dir_items = self.filter_blocked_items(
-            utils.load_directory_items(directory, allow_directories=True, recursive=True), 'tvshow'
+            list(utils.load_directory_items(directory, allow_directories=True, recursive=True), 'tvshow')
         )
         all_items = []
         # Check every tvshow in list
@@ -86,7 +86,7 @@ class SyncedMenu(object):
             # Load results if show isn't blocked
             show_path = dir_item['file']
             show_items = self.filter_blocked_items(
-                utils.load_directory_items(show_path, recursive=True), 'episode'
+                list(utils.load_directory_items(show_path, recursive=True), 'episode')
             )
             for show_item in show_items:
                 # Add formatted item
@@ -135,41 +135,41 @@ class SyncedMenu(object):
         for item in items_to_stage:
             self.dbh.add_content_item(*item)
 
-    @utils.logged_function
-    def sync_movie_directory(self, dir_label, dir_path):
-        ''' Sync movie directory and stage items '''
-        STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
-        STR_i_MOVIES_STAGED = utils.ADDON.getLocalizedString(32111)
+    # @utils.logged_function
+    # def sync_movie_directory(self, dir_label, dir_path):
+    #     ''' Sync movie directory and stage items '''
+    #     STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
+    #     STR_i_MOVIES_STAGED = utils.ADDON.getLocalizedString(32111)
 
-        p_dialog = xbmcgui.DialogProgress()
-        p_dialog.create(utils.ADDON_NAME)
+    #     p_dialog = xbmcgui.DialogProgress()
+    #     p_dialog.create(utils.ADDON_NAME)
 
-        try:
-            # Add synced directory to database
-            self.dbh.add_synced_dir(dir_label, dir_path, 'movie')
+    #     try:
+    #         # Add synced directory to database
+    #         self.dbh.add_synced_dir(dir_label, dir_path, 'movie')
 
-            # Query json-rpc to get files in directory
-            p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-            dir_items = utils.load_directory_items(dir_path, recursive=True)
+    #         # Query json-rpc to get files in directory
+    #         p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
+    #         dir_items = utils.load_directory_items(dir_path, recursive=True)
 
-            # Loop through all items and get titles and paths and stage them
-            items_to_stage = 0
-            for index, dir_item in enumerate(dir_items):
-                # Get label & path for item
-                item_label = dir_item['label']
-                item_path = dir_item['file']
-                if self.dbh.path_exists(item_path) or self.dbh.check_blocked(item_label, 'movie'):
-                    continue
-                # Update progress
-                percent = 100 * index / len(dir_items)
-                p_dialog.update(percent, line2=item_label)
-                # Add item to database
-                self.dbh.add_content_item(item_path, item_label, 'movie')
-                items_to_stage += 1
-                p_dialog.update(percent, line2=' ')
-            utils.notification(STR_i_MOVIES_STAGED % items_to_stage)
-        finally:
-            p_dialog.close()
+    #         # Loop through all items and get titles and paths and stage them
+    #         items_to_stage = 0
+    #         for index, dir_item in enumerate(dir_items):
+    #             # Get label & path for item
+    #             item_label = dir_item['label']
+    #             item_path = dir_item['file']
+    #             if self.dbh.path_exists(item_path) or self.dbh.check_blocked(item_label, 'movie'):
+    #                 continue
+    #             # Update progress
+    #             percent = 100 * index / len(dir_items)
+    #             p_dialog.update(percent, line2=item_label)
+    #             # Add item to database
+    #             self.dbh.add_content_item(item_path, item_label, 'movie')
+    #             items_to_stage += 1
+    #             p_dialog.update(percent, line2=' ')
+    #         utils.notification(STR_i_MOVIES_STAGED % items_to_stage)
+    #     finally:
+    #         p_dialog.close()
 
     @utils.logged_function
     def sync_single_movie(self, label, path):
@@ -187,7 +187,7 @@ class SyncedMenu(object):
         else:
             # Add item to database
             self.dbh.add_content_item(path, label, 'movie')
-            utils.notification(STR_MOVIE_STAGED)
+            utils.notification('%s: %s' % (STR_MOVIE_STAGED, label))
 
     @utils.logged_function
     def sync_single_tvshow(self, show_label, show_path):
@@ -197,7 +197,6 @@ class SyncedMenu(object):
 
         STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
         STR_GETTING_ITEMS_IN_x = utils.ADDON.getLocalizedString(32126)
-        STR_i_EPISODES_STAGED = utils.ADDON.getLocalizedString(32112)
 
         p_dialog = xbmcgui.DialogProgress()
         p_dialog.create(utils.ADDON_NAME)
@@ -205,7 +204,7 @@ class SyncedMenu(object):
         # Add synced directory to database
         self.dbh.add_synced_dir(show_label, show_path, 'single-tvshow')
         # Get everything inside tvshow path
-        files_list = utils.load_directory_items(show_path, recursive=True)
+        files_list = list(utils.load_directory_items(show_path, allow_directories=True, recursive=True))
         # Get all items to stage
         items_to_stage = 0
         num_already_staged = 0
@@ -215,7 +214,10 @@ class SyncedMenu(object):
 
         for index, showfile in enumerate(files_list):
             filepath = showfile['file']
-            showtitle = show_label
+            try:
+                showtitle = show_label.decode('utf-8')
+            except UnicodeEncodeError:
+                showtitle = show_label
 
             try:
                 season = showfile['season']
@@ -271,8 +273,10 @@ class SyncedMenu(object):
             pass
 
     @utils.logged_function
-    def sync_tvshow_directory(self, dir_label, dir_path):
-        ''' Sync all TV shows in directory and stage items'''
+    def sync_all_items_in_directory(self, sync_type, dir_label, dir_path):
+        ''' Synchronize all items in a directory (movies/series or all), based on the user's choice and stage items '''
+        # TODO: new notification label to show movies, TV shows and epsodes that have been added
+
         STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
         STR_GETTING_ITEMS_IN_x = utils.ADDON.getLocalizedString(32126)
         STR_i_EPISODES_STAGED = utils.ADDON.getLocalizedString(32112)
@@ -282,44 +286,73 @@ class SyncedMenu(object):
 
         try:
             # add synced directory to database
-            self.dbh.add_synced_dir(dir_label, dir_path, 'tvshow')
+            # check it in future
+            # self.dbh.add_synced_dir(dir_label, dir_path, 'tvshow')
 
             # query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-            files_list = utils.load_directory_items(dir_path, allow_directories=True, recursive=True)
-            items_to_stage = 0
-            for index, showfile in enumerate(files_list):
+            files_list = list(utils.load_directory_items(dir_path, allow_directories=True, recursive=True))
 
-                if 'showtitle' in showfile:
-                    # Get name of show and skip if blocked
-                    # Get everything inside tvshow path
-                    filepath = showfile['file']
-                    showtitle = showfile['showtitle']
-                    try:
-                        season = showfile['season']
-                    except Exception as e:
-                        season = 1
-                    epnumber = showfile['number']
-                    eptitle = showfile['eptitle']
-                    newfilename = self.new_epsode_name(showtitle, season, epnumber, eptitle, full=True)
-                    if self.dbh.check_blocked(showtitle, 'tvshow'):
-                        continue
-                    # Update progress
-                    percent = 100 * index / len(files_list)
-                    p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % showtitle))
-                    # Check for duplicate paths and blocked items
-                    if self.dbh.path_exists(showfile['file']) or self.dbh.check_blocked(
-                            showtitle, 'episode'):
-                        continue
-                    # Update progress
-                    p_dialog.update(percent, line2=showtitle)
-                    p_dialog.update(percent, line2=newfilename)
+            items_to_stage = 0
+            sync_type_bak = sync_type
+            for index, content_file in enumerate(files_list):
+                filepath = content_file['file']
+
+                if sync_type == 'all_items':
+                    if content_file['type'] == 'movie':
+                        sync_type = 'movies'
+                    elif content_file['type'] == 'episode':
+                        sync_type = 'tvshow'
+                        pass
+                # 
+                if sync_type == 'movies':
+                    if content_file['type'] == 'movie':
+                        content_title = content_file['movietitle']
+                elif sync_type == 'tvshow':
+                    if content_file['type'] == 'episode':
+                        content_title = content_file['showtitle']
+                        try:
+                            season = content_file['season']
+                        except Exception as e:
+                            season = 1
+
+                        epnumber = content_file['number']
+                        eptitle = content_file['eptitle']
+                        newfulltitle = self.new_epsode_name(content_title, season, epnumber, eptitle, full=True)
+
+                # Get name of show and skip if blocked
+                # Get everything inside tvshow path
+                if self.dbh.check_blocked(content_title, 'tvshow'):
+                    continue
+                    
+                if self.dbh.check_blocked(content_title, 'movie'):
+                    continue
+
+                # Update progress
+                percent = 100 * index / len(files_list)
+                # Check for duplicate paths and blocked items
+                if self.dbh.path_exists(content_file['file']) or self.dbh.check_blocked(
+                        content_title, 'episode'):
+                    continue
+
+                try:
+                    p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % content_title))
+                    p_dialog.update(percent, line2=newfulltitle)
                     self.dbh.add_content_item(
-                        showfile['file'], self.new_epsode_name(showtitle, season, epnumber, eptitle, full=True), 'tvshow', showtitle
+                        content_file['file'], newfulltitle, 'tvshow', content_title
                     )
-                    items_to_stage += 1
                     xbmc.sleep(150)
-                    pass
+                except Exception as e:
+                    p_dialog.update(percent, line1=('Staged Movie:'))
+                    self.dbh.add_content_item(
+                        content_file['file'], content_title, 'movie', content_title
+                    )
+                    p_dialog.update(percent, line2=content_title)                    
+                    xbmc.sleep(500)
+
+                sync_type = sync_type_bak                
+                items_to_stage += 1
+                pass
             utils.notification(STR_i_EPISODES_STAGED % items_to_stage)
         finally:
             p_dialog.close()
