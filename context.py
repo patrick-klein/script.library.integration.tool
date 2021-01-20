@@ -21,24 +21,37 @@ def label_with_year(title, year):
         return ('%s' % title)
         pass
 
+def get_type_from_dir(current_dir, selected_path):
+    # this is not my favorite path, but in testing it works in all cases
+    results = utils.execute_json_rpc('Files.GetDirectory', directory=current_dir)
+
+    for item in results['result']['files']:
+        if item['file'] == selected_path:
+            return item['type']
+
 @utils.entrypoint
 def main():
     ''' Main entrypoint for context menu item '''
-    label = sys.listitem.getLabel()  # pylint: disable=E1101
-    path = sys.listitem.getPath()  # pylint: disable=E1101
+    # kodi 19, the index of item maybe cam be usefull to get info
+    # current_index_item = xbmc.getInfoLabel('ListItem.CurrentItem')
     # 
+    label = sys.listitem.getLabel().decode('utf-8')  # pylint: disable=E1101
     year = xbmc.getInfoLabel('ListItem.Year')
-    container_type = xbmc.getInfoLabel('Container.Content')
 
+    current_dir = xbmc.getInfoLabel('Container.FolderPath')
+    selected_path = sys.listitem.getPath()  # pylint: disable=E1101
+    container_type = get_type_from_dir(current_dir, selected_path)
+        
     # Get content type
     # ATENTION: the inclusion of year is a test, Netflix and Amazon VOD works in tests to give year for shows and movies
     # but can not work in all contents
+
     # UPDATE: not all shows from amazon return year, now will be staged with year if exist
-    # NOTE: iterate over items in execute_json_rpc can be a option to identify the type of content
-    if container_type == 'movies':
+
+    if container_type == 'movie':
         typeofcontent = 0
         label = label_with_year(title=label, year=year)
-    elif container_type == 'tvshows':
+    elif container_type == 'tvshow':
         typeofcontent = 1
         label = label_with_year(title=label, year=year)
     else:
@@ -51,9 +64,9 @@ def main():
 
     # Call corresponding method
     if typeofcontent == 0:
-        SyncedMenu().sync_single_movie(label, path)
+        SyncedMenu().sync_single_movie(label, selected_path)
     elif typeofcontent == 1:
-        SyncedMenu().sync_single_tvshow(label, path)
+        SyncedMenu().sync_single_tvshow(label, selected_path)
     elif typeofcontent == -1 or 2:
         xbmc.sleep(200)
         utils.notification('Type of content not selected, Try again.')
