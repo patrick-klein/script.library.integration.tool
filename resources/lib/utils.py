@@ -294,7 +294,7 @@ def index_items(listofitems, limits):
         yield []
     else:
         for num, item in zip(range(start, end), listofitems):
-            if not re.search(r'\#\d{1,5}\.\d{1,5}', item['label']):
+            if not re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']):
                 item['number'] = start + 1
                 yield item
                 start += 1
@@ -303,7 +303,7 @@ def index_items(listofitems, limits):
 def _filter(_list):
     stored = []
     for item in _list:
-        if not item['label'] in ['Suggested', 'Extras']:
+        if not item['label'] in ['Suggested', 'Extras', 'Next page\u2026']:
             stored.append(item)
     return stored
 
@@ -313,17 +313,18 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
     # A process bar will be useful for this stage of the process, especially in relation to crunchyroll
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
+
     # Send command to load results
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
 
     try:
         items = _filter(results['result']['files'])
-    except KeyError as e:
+    except KeyError:
         items = []
 
     try:
         numberofitems = results['result']['limits']
-    except Exception as e:
+    except KeyError:
         numberofitems = []
 
     try:
@@ -356,13 +357,12 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
         # all disturb the normal structure and have to be treated differently 
         
         # One Peace will be a future problem, the folder does not follow a logical sequence for anything, 
-        # at least it seems that all eps have marking the abusoluta sequence, and this can be useful
+        # at least it seems that all eps have marking the abusolut sequence, and this can be useful
         if 'crunchyroll' in item['file']:
             if 'status=' in item['file'] and item['filetype'] == 'directory' and item['type'] == 'unknown':
                 # amazon animes came two possible informations, tvshow or unknown
                 item['type'] = 'tvshow'
                 item['showtitle'] = item['label']
-                # directories.append(item)
 
             if item['filetype'] == 'directory' and item['type'] == 'tvshow' and 'showtitle' in item:
                 item['season'] = item['number']
@@ -377,9 +377,6 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
                 if item['type'] == 'unknown':
                     item['type'] = 'tvshow'
 
-        # TODO: Amazon has a 'Next Page' item within its directories, 
-        # it can take a very long time to collect the items within the recursion, like Disney+, 
-        # that item needs to be skipped in the process
         if 'amazon' in item['file'] in item['file'] and item['filetype'] == 'directory' and not 'Season' in item['label'] and not item['type'] == 'episode':
             # amazon animes came two possible informations, tvshow or unknown
             item['type'] = 'tvshow'
@@ -403,8 +400,6 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
                 pass
             directories.append(item)            
         elif item['filetype'] == 'directory' and item['type'] == 'unknown' and 'Season' in item['label']:
-            # kodi return seasons as a 'directory' and type is unknown
-            # ATENTION: it need to be more tested, but now, i don't seed any othe item with this structure
             item['season'] = item['number']
             del item['label']            
             directories.append(item)
