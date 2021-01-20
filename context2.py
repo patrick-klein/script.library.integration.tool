@@ -15,31 +15,30 @@ from resources.lib.menus.synced import SyncedMenu
 @utils.entrypoint
 def main():
     ''' Main entrypoint for context menu item '''
-
     container_type = xbmc.getInfoLabel('Container.Content')
     dir_path = xbmc.getInfoLabel('Container.FolderPath')
     dir_label = xbmc.getInfoLabel('Container.FolderName')
-
     # Get content type
-    if container_type == 'tvshows':
-        content_type = "tvshow"
-    elif container_type == 'movies':
-        content_type = "movie"
-    else:
-        STR_CHOOSE_CONTENT_TYPE = utils.ADDON.getLocalizedString(32100)
-        STR_MOVIE = utils.ADDON.getLocalizedString(32102)
-        STR_TV_SHOW = utils.ADDON.getLocalizedString(32101)
-        is_show = xbmcgui.Dialog().yesno(
-            utils.ADDON_NAME, STR_CHOOSE_CONTENT_TYPE, yeslabel=STR_TV_SHOW, nolabel=STR_MOVIE
-        )
-        content_type = 'tvshow' if is_show else 'movie'
+    STR_CHOOSE_CONTENT_TYPE = utils.ADDON.getLocalizedString(32100)
+    STR_MOVIE = utils.ADDON.getLocalizedString(32102)
+    STR_TV_SHOW = utils.ADDON.getLocalizedString(32101)
+    typeofcontent = xbmcgui.Dialog().select(STR_CHOOSE_CONTENT_TYPE, ['Sync All Items', 'Sync Only Movies', 'Sync Only Shows', '[COLOR red][B]Cancel[/B][/COLOR]'])
 
-    from resources.lib.saveasjson import saveAsJson
     # Call corresponding method
-    if content_type == 'movie':
-        SyncedMenu().sync_movie_directory(dir_label, dir_path)
-    elif content_type == 'tvshow':
-        SyncedMenu().sync_tvshow_directory(dir_label, dir_path)
+    if typeofcontent == 0:
+        sync_type = 'all_items'
+    elif typeofcontent == 1:
+        sync_type = 'movies'
+    elif typeofcontent == 2:
+        sync_type = 'tvshow'
+    elif typeofcontent == -1 or 3:
+        xbmc.sleep(200)
+        utils.notification('Type of content not selected, Try again.')
+
+    try:
+        SyncedMenu().sync_all_items_in_directory(sync_type, dir_label, dir_path)
+    except Exception:
+        pass
 
 
 if __name__ == '__main__':
