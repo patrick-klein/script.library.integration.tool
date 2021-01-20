@@ -8,7 +8,7 @@ Contains various constants and utility functions used thoughout the addon
 
 import os
 import sys
-
+import re
 import simplejson as json
 import xbmc
 import xbmcaddon
@@ -287,132 +287,157 @@ def execute_json_rpc(method, **params):
     )
 
 def index_items(listofitems, limits):
-    numbereditems = []
-
     start = limits['start']
     end = limits['end']
 
-    for num, item in zip(range(start, end), listofitems):
-        item['number'] = start + 1
-        numbereditems.append(item)
-        start += 1
-    return numbereditems
+    if len(listofitems) == 0:
+        yield []
+    else:
+        for num, item in zip(range(start, end), listofitems):
+            if not re.search(r'\#\d{1,5}\.\d{1,5}', item['label']):
+                item['number'] = start + 1
+                yield item
+                start += 1
+                pass
+
+def _filter(_list):
+    stored = []
+    for item in _list:
+        if not item['label'] in ['Suggested', 'Extras']:
+            stored.append(item)
+    return stored
 
 @logged_function
 def load_directory_items(dir_path, recursive=False, allow_directories=False, depth=1, showtitle=False, season=False):
     ''' Load items in a directory using the JSON-RPC interface '''
+    # A process bar will be useful for this stage of the process, especially in relation to crunchyroll
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
-        return []
+        yield []
     # Send command to load results
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
-    try:
-        items = results['result']['files']
-    except KeyError as e:
-        pass
-    # save limits to use in future
-    limits = results['result']['limits']
-    # all itens, movies and epsodes will be stored in this list
-    files = []
-    # Return nothing if results do not load
-    if not (results.has_key('result') and results['result'].has_key('files')):
-        return []
 
-    if not allow_directories:
-        files = [item for item in items if item['filetype'] == 'file']
-    
     try:
-        # try to get ['result']['files'] and index_items() 
-        listofitems = index_items(items, limits)
+        items = _filter(results['result']['files'])
+    except KeyError as e:
+        items = []
+
+    try:
+        numberofitems = results['result']['limits']
+    except Exception as e:
+        numberofitems = []
+
+    try:
+        listofitems = index_items(items, numberofitems)
     except KeyError:
-        # if ['result']['files'] not exist, return a list with nothing 
-        # ATENTION: it need be tested to check if don't create errors in future
         listofitems = []
 
-    # in first moment, all show directories wiil be stored here
+    if not (results.has_key('result') and results['result'].has_key('files')):
+        yield []
+
+    if not allow_directories:
+        files = [item for item in items if item['filetype'] == 'file']    
+
     directories = []
     for item in listofitems:
-        # if show title is not False, set item['showtitle'] as showtitle passed from func argumet
         if showtitle != False:
             item['showtitle'] = showtitle
             pass
 
-        # if show season is not False, set item['season'] as showtitle passed from func argumet
         if season != False:
             item['season'] = season
-            pass
-        # this part determine what will be made with all items 
-        if 'amazon' in item['file'] and item['filetype'] == 'directory' and not 'Season' in item['label'] and not item['type'] == 'episode':
+            pass       
+
+        # The crunchyroll works, but not for all cases
+        
+        # TODO: crunchyroll is the service with more specificities, 
+        # many directories with structures that deviate from the normal season standard JUJUTSU KAISEM is an example, 
+        # having a folder for each dubbing, or other folder structures.
+        # There are also epsodios recap with format # 13.5 or special #SP, 
+        # all disturb the normal structure and have to be treated differently 
+        
+        # One Peace will be a future problem, the folder does not follow a logical sequence for anything, 
+        # at least it seems that all eps have marking the abusoluta sequence, and this can be useful
+        if 'crunchyroll' in item['file']:
+            if 'status=' in item['file'] and item['filetype'] == 'directory' and item['type'] == 'unknown':
+                # amazon animes came two possible informations, tvshow or unknown
+                item['type'] = 'tvshow'
+                item['showtitle'] = item['label']
+                # directories.append(item)
+
+            if item['filetype'] == 'directory' and item['type'] == 'tvshow' and 'showtitle' in item:
+                item['season'] = item['number']
+                del item['number']
+                directories.append(item)
+
+            if item['filetype'] == 'file' and item['type'] == 'unknown':
+                item['type'] = 'episode'
+
+        if 'disney' in item['file']:
+            if 'series' in item['file'] and item['filetype'] == 'directory':
+                if item['type'] == 'unknown':
+                    item['type'] = 'tvshow'
+
+        # TODO: Amazon has a 'Next Page' item within its directories, 
+        # it can take a very long time to collect the items within the recursion, like Disney+, 
+        # that item needs to be skipped in the process
+        if 'amazon' in item['file'] in item['file'] and item['filetype'] == 'directory' and not 'Season' in item['label'] and not item['type'] == 'episode':
             # amazon animes came two possible informations, tvshow or unknown
             item['type'] = 'tvshow'
             item['showtitle'] = item['label']
             del item['label']
-            # if is a show item is added to directories list to use in future
             directories.append(item)
+
         if item['filetype'] == 'file' and item['type'] == 'episode':
-            # if is a epsode the label is changed to ['eptitle'] in dict
             item['eptitle'] = item['label']
             del item['label']
-            files.append(item)
+            yield item
         elif item['filetype'] == 'file' and item['type'] == 'movie':
-            # if is a movie is added to directly to list
             item['movietitle'] = item['label']
             del item['label']
-            files.append(item)
+            yield item
         elif item['filetype'] == 'directory' and item['type'] == 'tvshow':
-            # if is a epsode the label is changed to ['eptitle'] in dict
             try:
                 item['showtitle'] = item['label']
                 del item['label']
             except KeyError as e:
                 pass
-            # if is a show item is added to directories list to use in future
-            directories.append(item)
+            directories.append(item)            
         elif item['filetype'] == 'directory' and item['type'] == 'unknown' and 'Season' in item['label']:
             # kodi return seasons as a 'directory' and type is unknown
             # ATENTION: it need to be more tested, but now, i don't seed any othe item with this structure
             item['season'] = item['number']
             del item['label']            
-            # if is a show item is added to directories list to use in future
             directories.append(item)
 
+
     if recursive:
-        # load all items recursive based in all dirs
         for _dir in directories:
             try:
-                # if _dir has the key showtitle will be defined as title
                 title = _dir['showtitle']
-                # and the loop will continue
                 recursive = True
             except Exception as e:
                 title = False
-                pass
 
             try:
-                # if _dir has the key season will be defined as season
                 season = _dir['season']
-                # and the loop will continue
                 recursive = True
             except Exception as e:
                 season = False
-                pass
 
-            # here, the items will be loaded from directories and stored in new_items
-            # if title and season is present, we will pass them to use in future
-            new_items = load_directory_items(
-                _dir['file'],
-                recursive=recursive,
-                allow_directories=allow_directories,
-                depth=depth + 1,
-                showtitle=title,
-                season=season
-            )
-            # store all new_items in files
+            new_items = list(load_directory_items(
+                            _dir['file'],
+                            recursive=recursive,
+                            allow_directories=allow_directories,
+                            depth=depth + 1,
+                            showtitle=title,
+                            season=season
+                            ))
+
             for new in new_items:
-                files.append(new)
-                pass
-    return files
+                yield new
+
 
 @logged_function
 def notification(message):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
-    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(ADDON_NAME, message))
+    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(ADDON_NAME, message.encode('utf-8')))
