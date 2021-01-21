@@ -135,42 +135,6 @@ class SyncedMenu(object):
         for item in items_to_stage:
             self.dbh.add_content_item(*item)
 
-    # @utils.logged_function
-    # def sync_movie_directory(self, dir_label, dir_path):
-    #     ''' Sync movie directory and stage items '''
-    #     STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
-    #     STR_i_MOVIES_STAGED = utils.ADDON.getLocalizedString(32111)
-
-    #     p_dialog = xbmcgui.DialogProgress()
-    #     p_dialog.create(utils.ADDON_NAME)
-
-    #     try:
-    #         # Add synced directory to database
-    #         self.dbh.add_synced_dir(dir_label, dir_path, 'movie')
-
-    #         # Query json-rpc to get files in directory
-    #         p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-    #         dir_items = utils.load_directory_items(dir_path, recursive=True)
-
-    #         # Loop through all items and get titles and paths and stage them
-    #         items_to_stage = 0
-    #         for index, dir_item in enumerate(dir_items):
-    #             # Get label & path for item
-    #             item_label = dir_item['label']
-    #             item_path = dir_item['file']
-    #             if self.dbh.path_exists(item_path) or self.dbh.check_blocked(item_label, 'movie'):
-    #                 continue
-    #             # Update progress
-    #             percent = 100 * index / len(dir_items)
-    #             p_dialog.update(percent, line2=item_label)
-    #             # Add item to database
-    #             self.dbh.add_content_item(item_path, item_label, 'movie')
-    #             items_to_stage += 1
-    #             p_dialog.update(percent, line2=' ')
-    #         utils.notification(STR_i_MOVIES_STAGED % items_to_stage)
-    #     finally:
-    #         p_dialog.close()
-
     @utils.logged_function
     def sync_single_movie(self, label, path):
         ''' Sync single movie path and stage item '''
@@ -244,7 +208,7 @@ class SyncedMenu(object):
             p_dialog.update(percent, line2=showtitle)
             p_dialog.update(percent, line2=newfilename)
             
-            self.dbh.add_content_item(filepath, newfilename, 'tvshow', showtitle)
+            self.dbh.add_content_item(filepath, newfilename, 'tvshow', showtitle, season, epnumber)
 
             items_to_stage += 1
             xbmc.sleep(150)
@@ -287,7 +251,7 @@ class SyncedMenu(object):
         try:
             # add synced directory to database
             # check it in future
-            # self.dbh.add_synced_dir(dir_label, dir_path, 'tvshow')
+            self.dbh.add_synced_dir(dir_label, dir_path, 'tvshow')
 
             # query json-rpc to get files in directory
             p_dialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
@@ -339,7 +303,7 @@ class SyncedMenu(object):
                     p_dialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % content_title))
                     p_dialog.update(percent, line2=newfulltitle)
                     self.dbh.add_content_item(
-                        content_file['file'], newfulltitle, 'tvshow', content_title
+                        content_file['file'], newfulltitle, 'tvshow', content_title, season, epnumber
                     )
                     xbmc.sleep(150)
                 except Exception as e:

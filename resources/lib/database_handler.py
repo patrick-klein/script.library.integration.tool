@@ -30,7 +30,7 @@ class DatabaseHandler(object):
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS Content
             (Directory TEXT PRIMARY KEY, Title TEXT,
-            Mediatype TEXT, Status TEXT, Show_Title TEXT)'''
+            Mediatype TEXT, Status TEXT, Show_Title TEXT, Season TEXT, Epnumber TEXT)'''
         )
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS Synced
@@ -67,19 +67,24 @@ class DatabaseHandler(object):
 
     @utils.utf8_args
     @utils.logged_function
-    def add_content_item(self, path, title, mediatype, show_title=None):
+    def add_content_item(self, path, title, mediatype, show_title=None, season=None, epnumber=None):
+        from resources.lib.saveasjson import saveAsJson
+        saveAsJson({'title': title, 'season': season, 'epnumber': epnumber}, 'DATA')
         ''' Add item to Content with given parameters '''
         # Define sql command string
         sql_comm = '''INSERT OR IGNORE INTO Content
-            (Directory, Title, Mediatype, Status, Show_Title)
+            (Directory, Title, Mediatype, Status, Show_Title, Season, Epnumber)
             VALUES (?, ?, ?, 'staged', {0})'''
+
         params = (path, title, mediatype)
+
         # Format comamnd & params depending on movie or tvshow
         if mediatype == 'tvshow':
-            sql_comm = sql_comm.format('?')
-            params += (show_title, )
+            sql_comm = sql_comm.format('?,?,?')
+            params += (show_title, season, epnumber, )
         else:
             sql_comm = sql_comm.format('NULL')
+
         # Execute and commit sql command
         self.cur.execute(sql_comm, params)
         self.conn.commit()
