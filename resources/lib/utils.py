@@ -263,6 +263,7 @@ def logged_function(func):
 
 
 def clean_name(name):
+    name = name.encode('utf-8')
     ''' Remove/replace problematic characters/substrings for filenames '''
     # IDEA: Replace in title directly, not just filename
     # TODO: Efficient algorithm that removes/replaces in a single pass
@@ -272,63 +273,131 @@ def clean_name(name):
 
 
 @logged_function
-def execute_json_rpc(method, **params):
+def execute_json_rpc(method, directory):
     ''' Execute a JSON-RPC command with specified method and params (as keyword arguments)
-    See https://kodi.wiki/view/JSON-RPC_API/v8#Methods for methods and params '''
+    See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params '''
     return json.loads(
         xbmc.executeJSONRPC(
             json.dumps({
                 'jsonrpc': '2.0',
                 "method": method,
-                "params": params,
+                "params": {
+                        'directory': directory,
+                        'properties': [
+                                        'duration'      ,
+                                        'season'        ,
+                                        'title'         ,
+                                        'file'          ,
+                                        'showtitle'     ,
+                                        'year'          ,
+                                        'episode'       ,
+                                        ],
+                    },
                 'id': 1
             })
         )
     )
 
-def index_items(listofitems, limits):
-    start = limits['start']
-    end = limits['end']
+def list_reorder(seasonjson):
+    regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
+    # regex_epsode = r'(?i)(?:episode(?:\s{1,4}|\=|\+))(\d{1,4})'
 
-    if len(listofitems) == 0:
-        yield []
-    else:
-        for num, item in zip(range(start, end), listofitems):
-            if not re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']):
-                item['number'] = start + 1
-                yield item
-                start += 1
+    reordered = [''] * len(seasonjson)
+    years = []
+
+    for index, item in enumerate(seasonjson):
+        if not re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or not item['label'] in ['Suggested', 'Extras', 'Next page\u2026']:
+            item['number'] = index + 1
+
+            if str(item['year']) == '1601':
+                del item['year']
                 pass
 
-def _filter(_list):
-    stored = []
-    for item in _list:
-        if not item['label'] in ['Suggested', 'Extras', 'Next page\u2026']:
-            stored.append(item)
-    return stored
+            from resources.lib.saveasjson import saveAsJson
+            saveAsJson(item, 'results')                
+
+            #AMAZON: tenta identificar oque é uma pasta de serie
+            if 'amazon' in item['file'] and item['filetype'] == 'directory' and item['type'] in ['tvshow', 'unknown'] and str(item['episode']) == '-1' and not 'Season' in item['label']:
+                item['type'] = 'tvshow'
+
+                # if item['showtitle'] != item['label']:
+                    # item['showtitle'] = item['label']
+
+                del item['episode']
+                del item['season']
+
+                reordered[item['number'] - 1] = item
+
+            # NETFLIX: tenta identificar oque é uma pasta de serie, items da netflix devem passar por aqui
+            elif 'netflix' in item['file'] and item['filetype'] == 'directory' and item['type'] in 'tvshow':
+                # if item['label'] == item['showtitle'] == item['title']:
+                    # del item['label']
+                    # del item['title']
+                
+                del item['episode']
+                del item['season']
+
+                reordered[item['number'] - 1] = item
+
+            # GENERICO: tenta identificar se é uma pasta de serie
+            elif item['filetype'] == 'directory' and item['type'] in 'tvshow':
+                # item['showtitle'] = item['title']
+
+                del item['episode']
+                del item['season']
+                # del item['label']
+                # del item['title']
+
+                reordered[item['number'] - 1] = item
+
+            # GENERICO: tenta identificar oque é uma temporada
+            if item['filetype'] == 'directory' and item['type'] == 'unknown' and 'Season' in item['label']:
+                del item['episode']
+
+                item['type'] = 'season'
+
+                try:
+                    years.append(item['year'])
+                except Exception as e:
+                    pass
+
+                reordered[item['season'] - 1] = item
+
+            # GENERICO: tenta identificar oque é um episodio
+            if item['filetype'] == 'file' and item['type'] == 'episode':
+                try:
+                    years.append(item['year'])
+                except Exception:
+                    pass
+        
+                reordered[item['episode'] - 1] = item
+
+    for item in reordered:
+        try:
+            loweryear = min(years)
+            item['year'] = loweryear
+        except Exception as e:
+            pass
+        if not item == "":
+            yield item
+
+
 
 @logged_function
-def load_directory_items(dir_path, recursive=False, allow_directories=False, depth=1, showtitle=False, season=False):
+def load_directory_items(progressdialog, dir_path, recursive=False, allow_directories=False, depth=1, showtitle=False, season=False, year=False):
     ''' Load items in a directory using the JSON-RPC interface '''
-    # A process bar will be useful for this stage of the process, especially in relation to crunchyroll
+
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
 
-    # Send command to load results
-    results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
-
+    results = execute_json_rpc('Files.GetDirectory', directory=dir_path)    
     try:
-        items = _filter(results['result']['files'])
+        items = results['result']['files']
     except KeyError:
         items = []
 
     try:
-        numberofitems = results['result']['limits']
-    except KeyError:
-        numberofitems = []
-
-    try:
-        listofitems = index_items(items, numberofitems)
+        listofitems = list(list_reorder(items))
     except KeyError:
         listofitems = []
 
@@ -340,73 +409,32 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
 
     directories = []
     for item in listofitems:
-        if showtitle != False:
-            item['showtitle'] = showtitle
-            pass
-
         if season != False:
             item['season'] = season
-            pass       
+            pass        
 
-        # The crunchyroll works, but not for all cases
-        
-        # TODO: crunchyroll is the service with more specificities, 
-        # many directories with structures that deviate from the normal season standard JUJUTSU KAISEM is an example, 
-        # having a folder for each dubbing, or other folder structures.
-        # There are also epsodios recap with format # 13.5 or special #SP, 
-        # all disturb the normal structure and have to be treated differently 
-        
-        # One Peace will be a future problem, the folder does not follow a logical sequence for anything, 
-        # at least it seems that all eps have marking the abusolut sequence, and this can be useful
-        if 'crunchyroll' in item['file']:
-            if 'status=' in item['file'] and item['filetype'] == 'directory' and item['type'] == 'unknown':
-                # amazon animes came two possible informations, tvshow or unknown
-                item['type'] = 'tvshow'
-                item['showtitle'] = item['label']
+        if year != False:
+            item['year'] = year
+            pass        
 
-            if item['filetype'] == 'directory' and item['type'] == 'tvshow' and 'showtitle' in item:
-                item['season'] = item['number']
-                del item['number']
-                directories.append(item)
-
-            if item['filetype'] == 'file' and item['type'] == 'unknown':
-                item['type'] = 'episode'
-
-        if 'disney' in item['file']:
-            if 'series' in item['file'] and item['filetype'] == 'directory':
-                if item['type'] == 'unknown':
-                    item['type'] = 'tvshow'
-
-        if 'amazon' in item['file'] in item['file'] and item['filetype'] == 'directory' and not 'Season' in item['label'] and not item['type'] == 'episode':
-            # amazon animes came two possible informations, tvshow or unknown
-            item['type'] = 'tvshow'
-            item['showtitle'] = item['label']
-            del item['label']
+        # se for um diretorio ele é adicionado a lista directories
+        if item['filetype'] == 'directory' and item['type'] == 'tvshow' or item['type'] == 'season':
+            showtitle = item['showtitle']
             directories.append(item)
 
-        if item['filetype'] == 'file' and item['type'] == 'episode':
-            item['eptitle'] = item['label']
-            del item['label']
+        # se for um epsodio, usa o yield para guardar o item
+        if item['type'] == 'episode':
+            del item['number']
             yield item
-        elif item['filetype'] == 'file' and item['type'] == 'movie':
-            item['movietitle'] = item['label']
-            del item['label']
-            yield item
-        elif item['filetype'] == 'directory' and item['type'] == 'tvshow':
-            try:
-                item['showtitle'] = item['label']
-                del item['label']
-            except KeyError as e:
-                pass
-            directories.append(item)            
-        elif item['filetype'] == 'directory' and item['type'] == 'unknown' and 'Season' in item['label']:
-            item['season'] = item['number']
-            del item['label']            
-            directories.append(item)
 
 
     if recursive:
         for _dir in directories:
+            # close the progress bar during JSONRPC process
+            if progressdialog.iscanceled() == True:
+                progressdialog.close()
+                break
+
             try:
                 title = _dir['showtitle']
                 recursive = True
@@ -419,16 +447,31 @@ def load_directory_items(dir_path, recursive=False, allow_directories=False, dep
             except Exception as e:
                 season = False
 
+            try:
+                year = _dir['year']
+                recursive = True
+            except Exception as e:
+                year = False
+
             new_items = list(load_directory_items(
-                            _dir['file'],
+                            progressdialog=progressdialog,
+                            dir_path=_dir['file'],
                             recursive=recursive,
                             allow_directories=allow_directories,
                             depth=depth + 1,
                             showtitle=title,
-                            season=season
+                            season=season,
+                            year=year
                             ))
 
             for new in new_items:
+                # update json to create absoluteepisode from crunchyroll and episode by index_items
+                if 'crunchyroll' in new['file']:
+                    if new.has_key('episode') and new.has_key('number') and new['episode']:
+                        if new['episode'] != new['number']:
+                            new['absoluteepisode'] = new['episode']
+                            new['episode'] = new['number']
+                            del new['number']
                 yield new
 
 
