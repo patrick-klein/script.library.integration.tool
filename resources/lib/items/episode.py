@@ -20,82 +20,93 @@ class EpisodeItem(ContentItem):
     ''' Contains information about a TV show episode from the database,
     and has necessary functions for managing item '''
 
-    def __init__(self, path, eptitle, mediatype, show_title, season=None, epnumber=None, year=None):
-        super(EpisodeItem, self).__init__(path, eptitle, mediatype)
-        self.link_stream_path = path
-        self.show_title = str(show_title)
-        if season == None:
-            self.season = 1
-        else:
-            self.season = int(season)
-
-        self.epnumber = int(epnumber)
-        self.episode_title = eptitle.encode('utf-8')
-        self.year = year
-        self._clean_show_title = None
+    def __init__(self, link_stream_path, eptitle, mediatype, show_title, season=None, epnumber=None, year=None):
+        super(EpisodeItem, self).__init__(link_stream_path, eptitle, mediatype, show_title, season, epnumber, year)
+        self._link_stream_path = link_stream_path
+        self._episode_title = eptitle
+        # mediatype
+        self._show_title = show_title
+        self._season = season
+        self._epsode_number = epnumber
+        self._year = year
+        
 
     @property
+    def link_stream_path(self):
+        return self._link_stream_path
+
+    @property
+    def epsode_title(self):
+        return utils.clean_name(self._episode_title).encode('utf-8')
+    
+    @property
+    def show_title(self):
+        ''' Show title with problematic characters removed '''
+        return str(utils.clean_name(self._show_title))
+
+    @property
+    def season_number(self):
+        ''' Show title with problematic characters removed '''
+        if self._season == None:
+            return 1
+        else:
+            return int(self._season)
+
+    @property
+    def epsode_number(self):
+        ''' Show title with problematic characters removed '''
+        if self._epsode_number == None:
+            return  1
+        else:
+            return int(self._epsode_number)
+
+    @property
+    def year(self):
+        ''' Show title with problematic characters removed '''
+        return self._year
+    # 
+    # # 
+    @property
     def seasondir(self):
-        return ('Season %s' % (self.season))
+        return ('Season %s' % (self.season_number))
 
     @property
     def epsodeid(self):
-        if self.season <= 9:
-            season = ('S0%s' % self.season)
+        if self.season_number <= 9:
+            season = ('S0%s' % self.season_number)
         else:
-            season = ('S%s' % self.season)
+            season = ('S%s' % self.season_number)
 
-        if self.epnumber <= 9:
-            ep = ('E0%s' % self.epnumber)
+        if self.epsode_number <= 9:
+            ep = ('E0%s' % self.epsode_number)
         else:
-            ep = ('E%s' % self.epnumber)
+            ep = ('E%s' % self.epsode_number)
         return ('%s%s' % (season, ep))
-
-    @property
-    def clean_show_title(self):
-        ''' Show title with problematic characters removed '''
-        if not self._clean_show_title:
-            self._clean_show_title = utils.clean_name(self.show_title)
-        return self._clean_show_title
 
     @property
     def managed_show_dir(self):
         if not self._managed_dir:
             self._managed_dir = os.path.join(
-                utils.MANAGED_FOLDER, 'ManagedTV', self.clean_show_title
+                utils.MANAGED_FOLDER, 'ManagedTV', self.show_title
             )
         return self._managed_dir
 
     @property
     def metadata_show_dir(self):
         if not self._metadata_show_dir:
-            self._metadata_show_dir = os.path.join(utils.METADATA_FOLDER, 'TV', self.clean_show_title)
+            self._metadata_show_dir = os.path.join(utils.METADATA_FOLDER, 'TV', self.show_title)
         return self._metadata_show_dir
-    # json exemple
-    # {
-    #     "episode_title": "Filmed Before a Live Studio Audience",
-    #     "episode_title_with_id": "S01E01 - Filmed Before a Live Studio Audience",
-    #     "episodenum": 1,
-    #     "epsodeid": "S01E01",
-    #     "link_stream_path": "plugin://slyguy.disney.plus/?_=play&_play=1&content_id=964f19ae-0a75-4b53-b23a-e8f8ea0186fe&profile_id=0e96b0c7-8ffc-4447-bbc6-882d6b0098ec&sync=1",
-    #     "metadata_show_dir": "/media/luiz/HD/MIDIA/managed/Metadata/TV/WandaVision",
-    #     "seasondir": "Season 1",
-    #     "seasonnum": 1,
-    #     "managed_show_dir": "/media/luiz/HD/MIDIA/managed/ManagedTV/WandaVision",
-    #     "show_title": "WandaVision",
-    #     "year": "2021"
-    # }
 
     @utils.logged_function
     def returasjson(self):
         try:
             return {
                 'link_stream_path': self.link_stream_path,
-                'show_title': self.clean_show_title,
-                'episode_title_with_id': ' - '.join([self.epsodeid, self.clean_eptitle]),
-                'episode_title': self.clean_eptitle,
-                'seasonnum': self.season,
-                'episodenum': self.epnumber,
+                'show_title': self.show_title,
+                'episode_title_with_id': ' - '.join([self.epsodeid, self.epsode_title]),
+                'episode_title': self.epsode_title,
+                'seasonnum': self.season_number,
+                'episodenum': self.epsode_number,
                 'epsodeid': self.epsodeid,
                 'seasondir': self.seasondir,
                 'managed_show_dir': self.managed_show_dir,
