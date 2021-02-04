@@ -5,9 +5,8 @@ Defines the StagedTVMenu class
 '''
 
 import os.path
-
 import xbmcgui
-
+import xbmc
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
 
@@ -26,12 +25,16 @@ class StagedTVMenu(object):
         STR_ADDING_ALL_x_EPISODES = utils.ADDON.getLocalizedString(32071)
         STR_ALL_x_EPISODES_ADDED = utils.ADDON.getLocalizedString(32072)
         show_title = items[0].show_title
+
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_ADDING_ALL_x_EPISODES % show_title)
+
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+            xbmc.sleep(200)
             item.add_to_library()
+        
         progress_dialog.close()
         utils.notification(STR_ALL_x_EPISODES_ADDED % show_title)
 
@@ -50,11 +53,12 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            nfo_path = os.path.join(metadata_dir, item.clean_title + '.nfo')
-            if os.path.exists(nfo_path):
-                progress_dialog.update(percent, line2=item.title)
+            # nfo_path = os.path.join(metadata_dir, item.clean_title + '.nfo')
+            if os.path.exists(item.episode_nfo[0]):
+                progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+                xbmc.sleep(200)
                 item.add_to_library()
-            progress_dialog.update(percent, line2=' ')
+            progress_dialog.update(percent, line2=' ', line3=' ')
         progress_dialog.close()
         utils.notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED % show_title)
 
@@ -69,7 +73,8 @@ class StagedTVMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_GENERATING_ALL_x_METADATA % show_title)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+            xbmc.sleep(200)
             item.create_metadata_item()
         progress_dialog.close()
         utils.notification(STR_ALL_x_METADATA_CREATED % show_title)
@@ -77,7 +82,7 @@ class StagedTVMenu(object):
     @staticmethod
     def rename_dialog(item):
         ''' Prompt input for new name, and rename if non-empty string '''
-        input_ret = xbmcgui.Dialog().input("Title", defaultt=item.title)
+        input_ret = xbmcgui.Dialog().input("Title", defaultt=item.show_title)
         if input_ret:
             item.rename(input_ret)
 
@@ -94,7 +99,8 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+            xbmc.sleep(200)
             item.rename_using_metadata()
         progress_dialog.close()
         utils.notification(STR_x_EPISODES_RENAMED_USING_METADATA % show_title)
@@ -111,7 +117,8 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+            xbmc.sleep(200)
             item.add_to_library()
         progress_dialog.close()
         utils.notification(STR_ALL_TV_SHOWS_ADDED)
@@ -123,14 +130,17 @@ class StagedTVMenu(object):
         STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED = utils.ADDON.getLocalizedString(32062)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA)
+
         staged_tv_items = self.dbh.get_content_items(
             status='staged', mediatype='tvshow', order='Show_Title'
         )
+        # content menaget precisa retornar episode_nfo[0]
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-            nfo_path = os.path.join(item.metadata_dir, item.clean_title + '.nfo')
-            if os.path.exists(nfo_path):
-                progress_dialog.update(percent, line2=item.show_title, line3=item.title)
+        
+            if os.path.exists(item.episode_nfo[0]):
+                progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+                xbmc.sleep(200)
                 item.add_to_library()
             progress_dialog.update(percent, line2=' ', line3=' ')
         progress_dialog.close()
@@ -155,7 +165,7 @@ class StagedTVMenu(object):
             STR_AUTOMATICALLY_RENAME_USING_METADTA, STR_GENERATE_METADATA_ITEM, STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_STAGED_EPISODE_OPTIONS, item.title),
+            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_STAGED_EPISODE_OPTIONS, item.show_title),
             lines
         )
         
@@ -195,7 +205,8 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-            progress_dialog.update(percent, line2=item.show_title, line3=item.title)
+            progress_dialog.update(percent, line2=item.show_title)
+            xbmc.sleep(200)
             item.create_metadata_item()
         progress_dialog.close()
         utils.notification(STR_ALL_TV_SHOW_METADATA_CREATED)
@@ -212,8 +223,9 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-            progress_dialog.update(percent, line2=item.show_title, line3=item.title)
-            item.read_metadata_item()
+            progress_dialog.update(percent, line2=item.show_title)
+            xbmc.sleep(200)
+            # item.read_metadata_item()
         progress_dialog.close()
         utils.notification(STR_ALL_TV_SHOW_METADATA_READ)
 
