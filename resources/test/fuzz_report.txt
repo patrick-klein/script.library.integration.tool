@@ -1,7 +1,0 @@
-test_clean_name (fuzz_utils.UtilsTest)
-runs randomly generated strings through utils.clean_name ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.008s
-
-OK

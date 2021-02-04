@@ -6,7 +6,7 @@ Defines class for testing utils module
 
 import unittest
 
-import xbmcaddon
+# import xbmcaddon
 
 import resources.lib.utils as utils
 
@@ -16,7 +16,7 @@ class TestUtils(unittest.TestCase):
 
     def test_constants(self):
         ''' Check values returned by constants in utils '''
-        addon = xbmcaddon.Addon(id='script.library.integration.tool')
+        # addon = xbmcaddon.Addon(id='script.library.integration.tool')
         self.assertEqual(utils.ADDON_NAME, addon.getAddonInfo('name'))
         self.assertEqual(utils.ADDON_VERSION, addon.getAddonInfo('version'))
         # TODO: test all contants, including type
