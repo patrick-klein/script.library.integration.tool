@@ -13,6 +13,7 @@ import simplejson as json
 import xbmc
 import xbmcaddon
 
+from os.path import expanduser, join
 # Get file system tools depending on platform
 if os.name == 'posix':
     import resources.lib.unix as fs
@@ -298,7 +299,8 @@ def execute_json_rpc(method, directory):
         )
     )
 
-def list_reorder(seasonjson):
+
+def list_reorder(seasonjson, nextpage):
     regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
     # regex_epsode = r'(?i)(?:episode(?:\s{1,4}|\=|\+))(\d{1,4})'
 
@@ -306,22 +308,29 @@ def list_reorder(seasonjson):
     years = []
 
     for index, item in enumerate(seasonjson):
-        if not re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or not item['label'] in ['Suggested', 'Extras', 'Next page\u2026']:
+        if re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or item['label'] in ['Suggested', 'Extras', 'Next page\u2026', 'Pr\u00f3xima P\u00e1gina']:
+            pass
+        else:
             item['number'] = index + 1
-
+            # 1601 é o ano que aparece quando a informação de ano correta não existe
             if str(item['year']) == '1601':
                 del item['year']
                 pass
 
-            from resources.lib.saveasjson import saveAsJson
-            saveAsJson(item, 'results')                
+            # # CRUNCHYROLL: tenta identificar oque é uma pasta de serie
+            if 'crunchyroll' in item['file'] and item['filetype'] == 'directory' and item['type'] in 'unknown' and not re.search(r'\/\?status=Continuing|\/\?status=Completed', item['file']) and re.search(r'\&mode=series', item['file']):
+                item['type'] = 'tvshow'
+                del item['episode']
+                del item['season']
+                del item['title']
+
+                reordered[item['number'] - 1] = item
 
             #AMAZON: tenta identificar oque é uma pasta de serie
-            if 'amazon' in item['file'] and item['filetype'] == 'directory' and item['type'] in ['tvshow', 'unknown'] and str(item['episode']) == '-1' and not 'Season' in item['label']:
+            elif 'amazon' in item['file'] and item['filetype'] == 'directory' and item['type'] in ['tvshow', 'unknown'] and str(item['episode']) == '-1' and not 'Season' in item['label']:
                 item['type'] = 'tvshow'
 
-                # if item['showtitle'] != item['label']:
-                    # item['showtitle'] = item['label']
+                item['showtitle'] = item['label']
 
                 del item['episode']
                 del item['season']
@@ -330,23 +339,30 @@ def list_reorder(seasonjson):
 
             # NETFLIX: tenta identificar oque é uma pasta de serie, items da netflix devem passar por aqui
             elif 'netflix' in item['file'] and item['filetype'] == 'directory' and item['type'] in 'tvshow':
-                # if item['label'] == item['showtitle'] == item['title']:
-                    # del item['label']
-                    # del item['title']
-                
                 del item['episode']
                 del item['season']
-
                 reordered[item['number'] - 1] = item
 
             # GENERICO: tenta identificar se é uma pasta de serie
             elif item['filetype'] == 'directory' and item['type'] in 'tvshow':
-                # item['showtitle'] = item['title']
-
+                item['showtitle'] = item['title']
                 del item['episode']
                 del item['season']
-                # del item['label']
-                # del item['title']
+                reordered[item['number'] - 1] = item
+
+            # CRUNCHYROLL: tenta identificar oque é uma temporada
+            if 'crunchyroll' in item['file'] and item['filetype'] == 'directory' and item['type'] == 'unknown' and 'season=' in item['file']:
+                del item['episode']
+                item['type'] = 'season'
+
+                if str(item['season']) == '0':
+                    item['season'] = 1
+                    pass
+
+                try:
+                    years.append(item['year'])
+                except Exception as e:
+                    pass
 
                 reordered[item['number'] - 1] = item
 
@@ -360,7 +376,7 @@ def list_reorder(seasonjson):
                     years.append(item['year'])
                 except Exception as e:
                     pass
-
+                
                 reordered[item['season'] - 1] = item
 
             # GENERICO: tenta identificar oque é um episodio
@@ -371,6 +387,25 @@ def list_reorder(seasonjson):
                     pass
         
                 reordered[item['episode'] - 1] = item
+
+            # CRUNCHYROLL: tenta identificar oque é um episodio
+            if 'crunchyroll' in item['file'] and 'episode=' in item['file'] and item['filetype'] == 'file':
+                item['type'] = 'episode'
+
+                try:
+                    years.append(item['year'])
+                except Exception:
+                    pass
+
+                # update json to create absoluteepisode from crunchyroll and episode by index_items
+                if item.has_key('episode') and item.has_key('number'):
+                    if nextpage == True:
+                        item['absoluteepisode'] = item['episode']
+                        item['episode'] = item['episode']
+                    else:
+                        item['absoluteepisode'] = item['episode']
+                        item['episode'] = item['number']
+                reordered[item['number'] - 1] = item
 
     for item in reordered:
         try:
@@ -384,31 +419,32 @@ def list_reorder(seasonjson):
 
 
 @logged_function
-def load_directory_items(progressdialog, dir_path, recursive=False, allow_directories=False, depth=1, showtitle=False, season=False, year=False):
+def load_directory_items(progressdialog, dir_path, recursive=False, allow_directories=False, depth=1, showtitle=False, season=False, year=False, nextpage=False):
     ''' Load items in a directory using the JSON-RPC interface '''
-
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
 
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)    
-    try:
-        items = results['result']['files']
-    except KeyError:
-        items = []
 
     try:
-        listofitems = list(list_reorder(items))
+        listofitems = list(list_reorder(results['result']['files'], nextpage))
     except KeyError:
         listofitems = []
-
+                
     if not (results.has_key('result') and results['result'].has_key('files')):
         yield []
 
     if not allow_directories:
-        files = [item for item in items if item['filetype'] == 'file']    
+        files = [item for item in listofitems if item['filetype'] == 'file']    
 
     directories = []
-    for item in listofitems:
+    for index, item in enumerate(listofitems):
+        if progressdialog.iscanceled() == True:
+            progressdialog.close()
+            break
+            
+        percent = 100 * index / len(listofitems)
+
         if season != False:
             item['season'] = season
             pass        
@@ -417,23 +453,32 @@ def load_directory_items(progressdialog, dir_path, recursive=False, allow_direct
             item['year'] = year
             pass        
 
+        if item['label'] or item['title'] in ['Next page\u2026', 'Pr\u00f3xima P\u00e1gina']:
+            item['nextpage'] = True
+            pass
+
         # se for um diretorio ele é adicionado a lista directories
         if item['filetype'] == 'directory' and item['type'] == 'tvshow' or item['type'] == 'season':
             showtitle = item['showtitle']
+            # progressdialog.update(percent, line1=('Processando diretorio:'))
+            progressdialog.update(0, line1='Coletando itens no diretorio!')
+            progressdialog.update(percent, line2=('%s' % item['label']))
+            xbmc.sleep(200)
             directories.append(item)
 
         # se for um epsodio, usa o yield para guardar o item
         if item['type'] == 'episode':
-            del item['number']
+            progressdialog.update(percent, line1=('Processando items:'))
+            progressdialog.update(percent, line2=('%s' % item['label']))
+            xbmc.sleep(100)
+            item['nextpage'] = nextpage
+            item['showtitle'] = showtitle
             yield item
 
 
     if recursive:
         for _dir in directories:
             # close the progress bar during JSONRPC process
-            if progressdialog.iscanceled() == True:
-                progressdialog.close()
-                break
 
             try:
                 title = _dir['showtitle']
@@ -453,6 +498,12 @@ def load_directory_items(progressdialog, dir_path, recursive=False, allow_direct
             except Exception as e:
                 year = False
 
+            try:
+                nextpage = _dir['nextpage']
+                recursive = True
+            except Exception as e:
+                nextpage = False
+
             new_items = list(load_directory_items(
                             progressdialog=progressdialog,
                             dir_path=_dir['file'],
@@ -461,17 +512,11 @@ def load_directory_items(progressdialog, dir_path, recursive=False, allow_direct
                             depth=depth + 1,
                             showtitle=title,
                             season=season,
-                            year=year
+                            year=year,
+                            nextpage=nextpage
                             ))
 
             for new in new_items:
-                # update json to create absoluteepisode from crunchyroll and episode by index_items
-                if 'crunchyroll' in new['file']:
-                    if new.has_key('episode') and new.has_key('number') and new['episode']:
-                        if new['episode'] != new['number']:
-                            new['absoluteepisode'] = new['episode']
-                            new['episode'] = new['number']
-                            del new['number']
                 yield new
 
 
@@ -479,3 +524,10 @@ def load_directory_items(progressdialog, dir_path, recursive=False, allow_direct
 def notification(message):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
     xbmc.executebuiltin('Notification("{0}", "{1}")'.format(ADDON_NAME, message.encode('utf-8')))
+
+@logged_function
+def tojs(data, filename):
+    with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
+        f.write(str(json.dumps(data, indent=4, sort_keys=True)))
+        f.close()
+    pass
