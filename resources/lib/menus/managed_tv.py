@@ -5,7 +5,7 @@ Defines the ManagedTVMenu class
 '''
 
 import xbmcgui
-
+import xbmc
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
 
@@ -30,7 +30,9 @@ class ManagedTVMenu(object):
         )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+
+            xbmc.sleep(1000)
             item.remove_from_library()
             item.set_as_staged()
         progress_dialog.close()
@@ -47,7 +49,8 @@ class ManagedTVMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_x_EPISODES % show_title)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+
             item.remove_from_library()
             item.delete()
         progress_dialog.close()
@@ -62,7 +65,7 @@ class ManagedTVMenu(object):
         STR_MANAGED_EPISODE_OPTIONS = utils.ADDON.getLocalizedString(32036)
         lines = [STR_REMOVE, STR_MOVE_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_MANAGED_EPISODE_OPTIONS, item.title),
+            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_MANAGED_EPISODE_OPTIONS, item.episode_title_with_id),
             lines
         )
         if ret >= 0:
@@ -90,7 +93,9 @@ class ManagedTVMenu(object):
         )
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
-            progress_dialog.update(percent, line2=item.show_title, line3=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+
+            xbmc.sleep(1000)
             item.remove_from_library()
             item.set_as_staged()
         progress_dialog.close()
@@ -108,7 +113,8 @@ class ManagedTVMenu(object):
         )
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
-            progress_dialog.update(percent, line2=item.show_title, line3=item.title)
+            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+
             item.remove_from_library()
             item.delete()
         progress_dialog.close()
