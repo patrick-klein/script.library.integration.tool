@@ -299,6 +299,22 @@ def execute_json_rpc(method, directory):
         )
     )
 
+@logged_function
+def VideoLibrary(method):
+    if method == 'scan':
+        method = 'VideoLibrary.Scan'
+    elif method == 'clean':
+        method = 'VideoLibrary.Clean'
+        pass
+
+    return xbmc.executeJSONRPC(
+            json.dumps({
+                'jsonrpc': '2.0',
+                "method": method,
+                'id': 1
+            })
+        )
+
 
 def list_reorder(seasonjson, nextpage):
     regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
