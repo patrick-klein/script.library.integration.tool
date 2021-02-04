@@ -20,10 +20,10 @@ class EpisodeItem(ContentItem):
     ''' Contains information about a TV show episode from the database,
     and has necessary functions for managing item '''
 
-    def __init__(self, link_stream_path, eptitle, mediatype, show_title, season=None, epnumber=None, year=None):
-        super(EpisodeItem, self).__init__(link_stream_path, eptitle, mediatype, show_title, season, epnumber, year)
+    def __init__(self, link_stream_path, title, mediatype, show_title=None, season=None, epnumber=None, year=None):
+        super(EpisodeItem, self).__init__(link_stream_path, title, mediatype, show_title, season, epnumber, year)
         self._link_stream_path = link_stream_path
-        self._episode_title = eptitle
+        self._episode_title = title.decode('utf-8')
         # mediatype
         self._show_title = show_title
         self._season = season
