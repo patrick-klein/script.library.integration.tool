@@ -29,7 +29,6 @@ def main():
     
     # Using the Dialog().select method is better as it allows the user to cancel if they want, and we can add more options if needed.
     typeofcontent = xbmcgui.Dialog().select(STR_CHOOSE_CONTENT_TYPE, ['It is a Movie', 'It is a Show', '[COLOR red][B]Cancel[/B][/COLOR]'])
-
     # Call corresponding method
     if typeofcontent == 0:
         SyncedMenu().sync_single_movie(label, year, selected_path)
