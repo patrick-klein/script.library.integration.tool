@@ -32,7 +32,7 @@ class ManagedTVMenu(object):
             percent = 100 * index / len(items)
             progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
 
-            xbmc.sleep(1000)
+            xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
         progress_dialog.close()
@@ -95,7 +95,7 @@ class ManagedTVMenu(object):
             percent = 100 * index / len(managed_tv_items)
             progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
 
-            xbmc.sleep(1000)
+            xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
         progress_dialog.close()
