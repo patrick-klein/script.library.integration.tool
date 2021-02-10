@@ -88,9 +88,11 @@ class ManagedTVMenu(object):
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = utils.ADDON.getLocalizedString(32027)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED)
+
         managed_tv_items = self.dbh.get_content_items(
             status='managed', mediatype='tvshow', order='Show_Title'
         )
+        
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
             progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
@@ -165,15 +167,20 @@ class ManagedTVMenu(object):
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32022)
         STR_BACK = utils.ADDON.getLocalizedString(32011)
         STR_MANAGED_TV_SHOWS = utils.ADDON.getLocalizedString(32023)
+
         managed_tvshows = self.dbh.get_all_shows('managed')
+
         if not managed_tvshows:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_MANAGED_TV_SHOWS)
             return
+
         lines = ['[B]%s[/B]' % x for x in managed_tvshows]
         lines += [STR_REMOVE_ALL_TV_SHOWS, STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED, STR_BACK]
+
         ret = xbmcgui.Dialog().select(
             '{0} - {1}'.format(utils.ADDON_NAME, STR_MANAGED_TV_SHOWS), lines
         )
+
         if ret >= 0:
             if ret < len(managed_tvshows):
                 for show_title in managed_tvshows:
