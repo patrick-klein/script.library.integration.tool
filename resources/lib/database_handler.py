@@ -9,9 +9,11 @@ import sqlite3
 import resources.lib.utils as utils
 from resources.lib.items.blocked import BlockedItem
 from resources.lib.items.episode import EpisodeItem
+
 from resources.lib.items.movie import MovieItem
 from resources.lib.items.synced import SyncedItem
 
+from resources.lib.items.contentmanager import ContentManShows, ContentManMovies
 
 class DatabaseHandler(object):
     ''' Opens a connection with the SQLite file
@@ -28,10 +30,30 @@ class DatabaseHandler(object):
         self.cur = self.conn.cursor()
         # Create tables if they doesn't exist
         self.cur.execute(
-            '''CREATE TABLE IF NOT EXISTS Content
-            (Directory TEXT PRIMARY KEY, Title TEXT,
-            Mediatype TEXT, Status TEXT, Show_Title TEXT, Season TEXT, Epnumber TEXT)'''
+            '''CREATE TABLE IF NOT EXISTS Movies
+            (
+                Directory TEXT PRIMARY KEY,
+                Title TEXT,
+                Mediatype TEXT,
+                Status TEXT,
+                Year TEXT
+            )'''
         )
+
+        self.cur.execute(
+            '''CREATE TABLE IF NOT EXISTS Tvshows
+            (
+                Directory TEXT PRIMARY KEY,
+                Title TEXT,
+                Mediatype TEXT,
+                Status TEXT,
+                Year TEXT,
+                Show_Title TEXT,
+                Season TEXT,
+                Epnumber TEXT
+            )'''
+        )
+        # FUTURE: Add a music table, for stage and add musics
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS Synced
             (Directory TEXT PRIMARY KEY, Label TEXT, Type TEXT)'''
@@ -48,11 +70,29 @@ class DatabaseHandler(object):
 
     @staticmethod
     def content_item_from_db(item):
-        ''' Static method that converts Content query output to ContentItem subclass '''
+        ''' Static method that converts Content query output to ContentItem subclasses '''
         if item[2] == 'movie':
-            return MovieItem(item[0], item[1], 'movie')
+            # MovieItem.returasjson create a json and it is passed to ContentManMovies
+            return ContentManMovies(MovieItem(
+                                    link_stream_path=item[0],
+                                    title=item[1],
+                                    mediatype='movie',
+                                    year=item[4],
+                                ).returasjson()
+                            )
         elif item[2] == 'tvshow':
-            return EpisodeItem(item[0], item[1], 'tvshow', item[4])
+            # EpisodeItem.returasjson create a json and it is passed to ContentManShows
+            return ContentManShows(EpisodeItem(
+                                    link_stream_path=item[0],
+                                    title=item[1],
+                                    mediatype='tvshow',
+                                    # staged
+                                    year=item[4],
+                                    show_title=item[5],
+                                    season=item[6],
+                                    epnumber=item[7]
+                                ).returasjson()
+                            )
         raise ValueError('Unrecognized Mediatype in Content query')
 
     @utils.utf8_args
@@ -67,23 +107,57 @@ class DatabaseHandler(object):
 
     @utils.utf8_args
     @utils.logged_function
-    def add_content_item(self, path, title, mediatype, show_title=None, season=None, epnumber=None):
-        from resources.lib.saveasjson import saveAsJson
-        saveAsJson({'title': title, 'season': season, 'epnumber': epnumber}, 'DATA')
-        ''' Add item to Content with given parameters '''
-        # Define sql command string
-        sql_comm = '''INSERT OR IGNORE INTO Content
-            (Directory, Title, Mediatype, Status, Show_Title, Season, Epnumber)
-            VALUES (?, ?, ?, 'staged', {0})'''
+    def add_content_item(self, jsondata, mediatype):
+        '''Add content to library'''
+        query_defs = ''
+        params = ''
+        if mediatype == 'tvshow':
+            # try set params for tvshow episode
+            params = (
+                jsondata['link_stream_path'],
+                jsondata['episode_title'],
+                mediatype,
+                jsondata['year'],
+                jsondata['show_title'],
+                jsondata['seasonnum'],
+                jsondata['episodenum'],
+            )
 
-        params = (path, title, mediatype)
+
+            query_defs = (
+                "Tvshows",
+                "(Directory, Title, Mediatype, Status, Year, Show_Title, Season, Epnumber)",
+                "(?, ?, ?, 'staged', ?, ?, ?, ?)"
+            )
+        elif mediatype == 'movie':
+            # try set params for movie
+            params = (
+                jsondata['link_stream_path'],
+                jsondata['movietitle'],
+                mediatype,
+                jsondata['year'],
+            )
+            query_defs = (
+                "Movies",
+                "(Directory, Title, Mediatype, Status, Year)",
+                "(?, ?, ?, 'staged', ?)"
+            )
+        elif mediatype == 'music':
+            # TODO: Music params
+            raise NotImplementedError(
+                'Not detected type!'
+            )
+
+
+        # ''' Add item to Content with given parameters '''
+        # Define sql command string
+        sql_comm = ('''INSERT OR IGNORE INTO %s %s VALUES %s''' % query_defs)
 
         # Format comamnd & params depending on movie or tvshow
-        if mediatype == 'tvshow':
-            sql_comm = sql_comm.format('?,?,?')
-            params += (show_title, season, epnumber, )
-        else:
-            sql_comm = sql_comm.format('NULL')
+        # sql_comm = sql_comm.format('?, ?, ?')
+
+        # else:
+        #     sql_comm = sql_comm.format('NULL')
 
         # Execute and commit sql command
         self.cur.execute(sql_comm, params)
@@ -91,14 +165,14 @@ class DatabaseHandler(object):
         # Optionally add item to directory, depending on settings and metadata items
         if mediatype == 'movie' and utils.AUTO_ADD_MOVIES != utils.NEVER:
             if utils.AUTO_ADD_MOVIES == utils.ALWAYS:
-                MovieItem(path, title, 'movie').add_to_library()
+                ContentManMovies(jsondata).add_to_library()
             elif utils.AUTO_ADD_MOVIES == utils.WITH_METADATA:
-                MovieItem(path, title, 'movie').add_to_library_if_metadata()
+                ContentManMovies(jsondata).add_to_library_if_metadata()
         elif mediatype == 'tvshow' and utils.AUTO_ADD_TVSHOWS != utils.NEVER:
             if utils.AUTO_ADD_TVSHOWS == utils.WITH_EPID:
-                EpisodeItem(path, title, 'tvshow', show_title).add_to_library()
+                ContentManShows(jsondata).add_to_library()
             elif utils.AUTO_ADD_TVSHOWS == utils.WITH_METADATA:
-                EpisodeItem(path, title, 'tvshow', show_title).add_to_library_if_metadata()
+                ContentManShows(jsondata).add_to_library_if_metadata()
 
     @utils.utf8_args
     @utils.logged_function
@@ -124,7 +198,7 @@ class DatabaseHandler(object):
         and cast results as list of strings '''
         # Query database
         self.cur.execute(
-            '''SELECT DISTINCT Show_Title FROM Content WHERE Status=?
+            '''SELECT DISTINCT Show_Title FROM Tvshows WHERE Status=?
             ORDER BY (CASE WHEN Show_Title LIKE 'the %' THEN substr(Show_Title,5)
             ELSE Show_Title END) COLLATE NOCASE''', (status, )
         )
@@ -142,15 +216,23 @@ class DatabaseHandler(object):
     @utils.logged_function
     def get_content_items(self, **kwargs):
         ''' Query Content table for sorted items with given constaints
-        and casts results as ContentItem subclass
-
+        and casts results as ContentItem subclasses
         keyword arguments:
             mediatype: string, 'movie' or 'tvshow'
             status: string, 'managed' or 'staged'
             show_title: string, any show title
             order: string, any single column '''
+
+        if kwargs.get('mediatype') == 'movie':
+            table_name = 'Movies'
+        elif kwargs.get('mediatype') == 'tvshow':
+            table_name = 'Tvshows'
+        else:
+            # FUTURE: check if is music
+            raise 'Type not detected'
+
         # Define template for this sql command
-        sql_templ = 'SELECT * FROM Content{c}{o}'
+        sql_templ = ('SELECT * FROM %s{c}{o}' % table_name)
         # Define constraint and/or order string usings kwargs
         c_list = []
         params = ()
@@ -159,11 +241,14 @@ class DatabaseHandler(object):
             if key == 'status':
                 c_list.append('Status=?')
                 params += (val, )
-            elif key == 'mediatype':
-                c_list.append('Mediatype=?')
-                params += (val, )
+            # elif key == 'mediatype':
+            #     c_list.append('Mediatype=?')
+            #     params += (val, )
             elif key == 'show_title':
                 c_list.append('Show_Title=?')
+                params += (val, )
+            elif key == 'Title':
+                c_list.append('Title=?')
                 params += (val, )
             elif key == 'order':
                 order = ''' ORDER BY (CASE WHEN {0} LIKE 'the %' THEN substr({0},5)
@@ -197,7 +282,7 @@ class DatabaseHandler(object):
     @utils.utf8_args
     @utils.logged_function
     def load_item(self, path):
-        ''' Query a single item with path and casts result as ContentItem subclass '''
+        ''' Query a single item with path and casts result as ContentItem subclasses '''
         # query database
         self.cur.execute('SELECT * FROM Content WHERE Directory=?', (path, ))
         # get results and return items as object
@@ -212,36 +297,85 @@ class DatabaseHandler(object):
         #       might speed-up by adding additional constraint
         #TODO: test speed against a set from "get_content_paths"
         # Build sql command and parameters, adding status if provided
-        sql_comm = 'SELECT (Directory) FROM Content WHERE Directory=?'
+        if mediatype == 'movie':
+            table_name = 'Movies'
+        elif mediatype == 'tvshow':
+            table_name = 'Tvshows'
+        else:
+            # FUTURE: check if is music
+            raise 'Type not detected'
+
+        sql_comm = (
+            'SELECT (Directory) FROM %s WHERE Directory=?' % table_name)
+
         params = (path, )
+
         if status:
             sql_comm += ' AND Status=?'
             params += (status, )
         if mediatype:
             sql_comm += ' AND Mediatype=?'
             params += (mediatype, )
+
         self.cur.execute(sql_comm, params)
         # Get result and return True if result is found
         res = self.cur.fetchone()
         return bool(res)
 
-    @utils.logged_function
-    def remove_all_content_items(self, status, mediatype):
-        ''' Remove all items from Content with status and mediatype '''
-        # delete from table
-        self.cur.execute("DELETE FROM Content WHERE Status=? AND Mediatype=?", (status, mediatype))
-        self.conn.commit()
+    # @utils.logged_function
+    # def remove_all_content_items(self, status, mediatype):
+    #     ''' Remove all items from Content with status and mediatype '''
+    #     # delete from table
+    #     self.cur.execute("DELETE FROM Content WHERE Status=? AND Mediatype=?", (status, mediatype))
+    #     self.conn.commit()
+
+    # @utils.utf8_args
+    # @utils.logged_function
+    # def remove_all_show_episodes(self, status, show_title):
+    #     ''' Remove all tvshow items from Content with status and show_title '''
+    #     # delete from table
+    #     self.cur.execute(
+    #         "DELETE FROM Content WHERE Status=? AND Show_Title=?",
+    #         (status, show_title)
+    #     )
+    #     self.conn.commit()
+
+    # @utils.utf8_args
+    # @utils.logged_function
+    # def remove_content_item(self, path):
+    #     ''' Remove the item in Content with specified path '''
+    #     # delete from table
+    #     self.conn.commit()
 
     @utils.utf8_args
     @utils.logged_function
-    def remove_all_show_episodes(self, status, show_title):
+    def remove_from(self, status=None, mediatype=None, show_title=None, directory=None):
+        ''' Remove all items with status, mediatype or show_title'''
         ''' Remove all tvshow items from Content with status and show_title '''
-        # delete from table
-        self.cur.execute(
-            "DELETE FROM Content WHERE Status=? AND Show_Title=?",
-            (status, show_title)
-        )
+
+        # merge functions:
+        # remove_all_content_items,
+        # remove_all_show_episodes,
+        # remove_content_item
+
+        if mediatype == 'movie':
+            table_name = 'Movies'
+        elif mediatype == 'tvshow':
+            table_name = 'Tvshows'
+        else:
+            # FUTURE: check if is music
+            raise 'Type not detected'
+
+        QUERY_STR = "DELETE FROM {0} WHERE Status=? AND %s".format(table_name)
+
+        if show_title is not None:
+            self.cur.execute(QUERY_STR % "Show_Title=?", (status, show_title))
+        elif show_title is None and directory is None:
+            self.cur.execute(QUERY_STR % "Mediatype=?", (status, mediatype))
+        elif directory is not None:
+            self.cur.execute(QUERY_STR % "Directory=?", (directory, ))
         self.conn.commit()
+
 
     @utils.logged_function
     def remove_all_synced_dirs(self):
@@ -259,14 +393,6 @@ class DatabaseHandler(object):
 
     @utils.utf8_args
     @utils.logged_function
-    def remove_content_item(self, path):
-        ''' Remove the item in Content with specified path '''
-        # delete from table
-        self.cur.execute("DELETE FROM Content WHERE Directory=?", (path, ))
-        self.conn.commit()
-
-    @utils.utf8_args
-    @utils.logged_function
     def remove_synced_dir(self, path):
         ''' Remove the entry in Synced with the specified Directory '''
         # remove entry
@@ -275,11 +401,20 @@ class DatabaseHandler(object):
 
     @utils.utf8_args
     @utils.logged_function
-    def update_content(self, path, **kwargs):
+    def update_content(self, path, mediatype, **kwargs):
         ''' Update a single field for item in Content with specified path '''
+        if mediatype == 'movie':
+            table_name = 'Movies'
+        elif mediatype == 'tvshow':
+            table_name = 'Tvshows'
+        else:
+            # FUTURE: check if is music
+            raise 'Type not detected'
+
         #TODO: Verify there's only one entry in kwargs
-        sql_comm = "UPDATE Content SET {0}=(?) WHERE Directory=?"
+        sql_comm = ('''UPDATE %s SET {0}=(?) WHERE Directory=?''' % table_name)
         params = (path, )
+
         for key, val in kwargs.iteritems():
             if key == 'status':
                 sql_comm = sql_comm.format('Status')
