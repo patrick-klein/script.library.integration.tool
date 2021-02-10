@@ -46,7 +46,7 @@ class StagedTVMenu(object):
         STR_ALL_x_EPISODES_WITH_METADATA_ADDED = utils.ADDON.getLocalizedString(32074)
         show_title = items[0].show_title
         clean_show_title = utils.clean_name(show_title)
-        metadata_dir = os.path.join(utils.METADATA_FOLDER, 'TV', clean_show_title)
+        # metadata_dir = os.path.join(utils.METADATA_FOLDER, 'TV', clean_show_title)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(
             utils.ADDON_NAME, STR_ADDING_ALL_x_EPISODES_WITH_METADATA % show_title
@@ -236,7 +236,7 @@ class StagedTVMenu(object):
         STR_ALL_TV_SHOW_REMOVED = utils.ADDON.getLocalizedString(32025)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
-        self.dbh.remove_all_content_items('staged', 'tvshow')
+        self.dbh.remove_from('staged', 'tvshow', show_title=None, directory=None)
         progress_dialog.close()
         utils.notification(STR_ALL_TV_SHOW_REMOVED)
 
@@ -247,7 +247,7 @@ class StagedTVMenu(object):
         STR_ALL_x_EPISODES_REMOVED = utils.ADDON.getLocalizedString(32033) % show_title
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_x_EPISODES)
-        self.dbh.remove_all_show_episodes('staged', show_title)
+        self.dbh.remove_from('staged', mediatype='tvshow', show_title=show_title, directory=None)
         progress_dialog.close()
         utils.notification(STR_ALL_x_EPISODES_REMOVED)
 
@@ -279,9 +279,11 @@ class StagedTVMenu(object):
         STR_GENERATE_ALL_METADATA_ITEMS = utils.ADDON.getLocalizedString(32040)
         STR_BACK = utils.ADDON.getLocalizedString(32011)
         STR_STAGED_x_EPISODES = (utils.ADDON.getLocalizedString(32070) % show_title).encode('utf-8')
+
         staged_episodes = self.dbh.get_content_items(
-            status='staged', show_title=show_title, order='Title'
+            status='staged', show_title=show_title, order='Title', mediatype='tvshow'
         )
+
         if not staged_episodes:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_STAGED_x_EPISODES)
             self.view_shows()
