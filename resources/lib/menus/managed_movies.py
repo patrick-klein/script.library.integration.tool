@@ -14,8 +14,8 @@ class ManagedMoviesMenu(object):
     ''' Provide windows for displaying managed movies,
     and tools for manipulating the objects and managed file '''
 
-    #TODO: context menu for managed items in library
-    #TODO: synced watched status with plugin item
+    # TODO: context menu for managed items in library
+    # TODO: synced watched status with plugin item
 
     def __init__(self):
         self.dbh = DatabaseHandler()
@@ -30,7 +30,7 @@ class ManagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.movie_title)
             item.remove_from_library()
             item.set_as_staged()
         progress_dialog.close()
@@ -46,7 +46,7 @@ class ManagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_MOVIES)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.movie_title)
             item.remove_from_library()
             item.delete()
         progress_dialog.close()
@@ -63,7 +63,10 @@ class ManagedMoviesMenu(object):
         STR_MANAGED_MOVIE_OPTIONS = utils.ADDON.getLocalizedString(32019)
         lines = [STR_REMOVE, STR_MOVE_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_MANAGED_MOVIE_OPTIONS, item.title), lines
+            '{0} - {1} - {2}'.format(
+                utils.ADDON_NAME, STR_MANAGED_MOVIE_OPTIONS,
+                item.movie_title
+            ), lines
         )
         if ret >= 0:
             if lines[ret] == STR_REMOVE:
@@ -86,12 +89,15 @@ class ManagedMoviesMenu(object):
         STR_MOVE_ALL_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32010)
         STR_BACK = utils.ADDON.getLocalizedString(32011)
         STR_MANAGED_MOVIES = utils.ADDON.getLocalizedString(32012)
+
         managed_movies = self.dbh.get_content_items(
             status='managed', mediatype='movie', order='Title'
         )
+
         if not managed_movies:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_MANAGED_MOVIES)
             return
+
         lines = [str(x) for x in managed_movies]
         lines += [STR_REMOVE_ALL_MOVIES, STR_MOVE_ALL_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select(
