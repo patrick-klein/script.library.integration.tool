@@ -25,7 +25,7 @@ class CreateNfo(object):
             self.indent()
         except Exception as e:
             raise e
-        
+
     def indent(self):
         with open(self.filepath, 'r') as nf:
             soup = BeautifulSoup(nf, 'html.parser')
@@ -117,12 +117,6 @@ class CreateNfo(object):
 
         nfo_tree = et.ElementTree(self.nfo)
         nfo_tree.write(self.filepath, xml_declaration=True, encoding='utf-8', method='xml')
-
-
-
-def create_empty_file(nfotype=None, filepath=None, jsondata=None):
-    ''' Create empty file at filepath '''
-    os.system('echo "" > "{0}"'.format(filepath))
 
 
 def create_stream_file(plugin_path, filepath):
