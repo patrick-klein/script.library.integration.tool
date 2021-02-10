@@ -78,11 +78,11 @@ class MainMenu(object):
                 BlockedMenu().view()
 
             elif lines[ret] == STR_UPDATE_LIBRARY:
-                utils.VideoLibrary('scan')
+                utils.videolibrary('scan')
                 sys.exit()
 
             elif lines[ret] == STR_CLEAN_LIBRARY:
-                utils.VideoLibrary('clean')
+                utils.videolibrary('clean')
                 sys.exit()
 
             self.view()
