@@ -112,10 +112,11 @@ class ContentManShows(ContentManagerShows):
         if utils.fs.create_stream_file(self.link_stream_path, self.managed_strm_path):            
             self.create_metadata_item()
             utils.fs.softlink_file(self.episode_nfo[0], self.episode_nfo[1])
-            resources.lib.database_handler.DatabaseHandler().update_content(self.link_stream_path,
-                                                                                status='managed',
-                                                                                mediatype='tvshow'
-                                                                            )
+            resources.lib.database_handler.DatabaseHandler().update_content(
+                self.link_stream_path,
+                status='managed',
+                mediatype='tvshow'
+            )
 
     @utils.logged_function
     def add_to_library_if_metadata(self):
@@ -186,7 +187,9 @@ class ContentManShows(ContentManagerShows):
  
 
         resources.lib.database_handler.DatabaseHandler().update_content(
-            self.link_stream_path, title=self.jsondata['episode_title'], mediatype='tvshow'
+            self.link_stream_path, 
+            title=self.jsondata['episode_title'], 
+            mediatype='tvshow'
         )
 
 
@@ -197,7 +200,9 @@ class ContentManShows(ContentManagerShows):
         # Check for existing nfo file
         if isdir(self.show_dir[1]):
             resources.lib.database_handler.DatabaseHandler().update_content(
-                self.link_stream_path, title=self.jsondata['episode_title'], mediatype='tvshow'
+                self.link_stream_path,
+                title=self.jsondata['episode_title'],
+                mediatype='tvshow'
             )
 
     @utils.logged_function
@@ -336,7 +341,9 @@ class ContentManMovies(ContentManagerMovies):
         utils.fs.create_stream_file(
             self.link_stream_path, self.managed_strm_path)
         resources.lib.database_handler.DatabaseHandler().update_content(
-                self.link_stream_path, status='managed', mediatype='movie'
+                self.link_stream_path,
+                status='managed',
+                mediatype='movie'
             )
 
     @utils.logged_function
@@ -348,7 +355,7 @@ class ContentManMovies(ContentManagerMovies):
 
         if not exists(self.movie_dir[0]):
             utils.fs.mkdir(self.movie_dir[0])
-
+        utils.tojs(self.jsondata, 'jsdata')
         # create a blank movie_title.nfo
         if not exists(self.movie_nfo[0]):
             utils.fs.CreateNfo(
@@ -363,7 +370,9 @@ class ContentManMovies(ContentManagerMovies):
 
         # Add metadata (optional)
         resources.lib.database_handler.DatabaseHandler().update_content(
-                self.link_stream_path, title=self.jsondata['movie_title'], mediatype='movie'
+                self.link_stream_path,
+                title=self.jsondata['movie_title'],
+                mediatype='movie'
             )
 
     @utils.logged_function
