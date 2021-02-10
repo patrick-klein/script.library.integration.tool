@@ -21,7 +21,6 @@ class ContentManShows(ContentManagerShows):
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
-        utils.tojs(jsondata, 'jsondata')
         # managed + show dir + season dir
         self.metadata_seasondir = join(self.show_dir[0], self.jsondata['seasondir'])
         self.managed_seasondir = join(self.show_dir[1], self.jsondata['seasondir'])
@@ -213,6 +212,7 @@ class ContentManShows(ContentManagerShows):
         # )
         utils.fs.rm_with_wildcard(splitext(self.episode_nfo[0])[0])
         # Remove from db
+        # TODO: FIX pass mediatype to this func
         dbh.DatabaseHandler().remove_from(
             status=None,
             mediatype=None,
@@ -288,7 +288,6 @@ class ContentManMovies(ContentManagerMovies):
     def __init__(self, jsondata):
         super(ContentManMovies, self).__init__(jsondata)
         self.jsondata = jsondata
-        utils.tojs(jsondata, 'jsondata')
 
         self.managed_strm_path = join(
                 self.movie_dir[1], ''.join([self.movie_title, '.strm'])
@@ -381,6 +380,7 @@ class ContentManMovies(ContentManagerMovies):
         # Delete metadata items
         utils.fs.remove_dir(self.movie_dir[0])
         # Remove from db
+        # TODO: FIX pass mediatype to this func
         dbh.DatabaseHandler().remove_from(
             status=None,
             mediatype=None,
