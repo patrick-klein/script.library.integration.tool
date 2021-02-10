@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# /usr/bin/python
 # -*- coding: utf-8 -*-
 '''
 Contains various constants and utility functions used thoughout the addon
@@ -9,11 +9,12 @@ Contains various constants and utility functions used thoughout the addon
 import os
 import sys
 import re
+from os.path import expanduser, join
+
 import simplejson as json
 import xbmc
 import xbmcaddon
 
-from os.path import expanduser, join
 # Get file system tools depending on platform
 if os.name == 'posix':
     import resources.lib.unix as fs
@@ -234,6 +235,7 @@ def logged_function(func):
             )
             func_str = '{0}.{1}'.format(parent, func.__name__)
             # Pretty formating for argument string
+            # TODO: fix UnicodeEncodeError: 'ascii', normaly with Amazon VOD
             arg_list = list()
             for arg in args[1 if is_method else 0:]:
                 arg_list.append("'{0}'".format(arg) if isinstance(arg, basestring) else str(arg))
@@ -262,12 +264,11 @@ def logged_function(func):
 
     return wrapper
 
-
 def clean_name(name):
-    name = name.encode('utf-8')
     ''' Remove/replace problematic characters/substrings for filenames '''
+    name = name.encode('utf-8')
     # IDEA: Replace in title directly, not just filename
-    # TODO: Efficient algorithm that removes/replaces in a single pass
+    # TODO: Efficient algorithm that removes/replaces in a single
     for key, val in MAPPED_STRINGS:
         name = name.replace(key, val)
     return name
@@ -300,12 +301,12 @@ def execute_json_rpc(method, directory):
     )
 
 @logged_function
-def VideoLibrary(method):
+def videolibrary(method):
+    ''' A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary.Clean '''
     if method == 'scan':
         method = 'VideoLibrary.Scan'
     elif method == 'clean':
         method = 'VideoLibrary.Clean'
-        pass
 
     return xbmc.executeJSONRPC(
             json.dumps({
@@ -317,24 +318,31 @@ def VideoLibrary(method):
 
 
 def list_reorder(seasonjson, nextpage):
-    regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
+    ''' Return a list of elements reordered by number id '''
+    # regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
     # regex_epsode = r'(?i)(?:episode(?:\s{1,4}|\=|\+))(\d{1,4})'
 
     reordered = [''] * len(seasonjson)
     years = []
 
     for index, item in enumerate(seasonjson):
-        if re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or item['label'] in ['Suggested', 'Extras', 'Next page\u2026', 'Pr\u00f3xima P\u00e1gina']:
+        if (re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or
+        item['label'] in ['Suggested', 'Extras', 'Next page\u2026', 'Pr\u00f3xima P\u00e1gina']):
+            # do nothing for this itens
             pass
         else:
             item['number'] = index + 1
             # 1601 é o ano que aparece quando a informação de ano correta não existe
             if str(item['year']) == '1601':
                 del item['year']
-                pass
 
             # # CRUNCHYROLL: tenta identificar oque é uma pasta de serie
-            if 'crunchyroll' in item['file'] and item['filetype'] == 'directory' and item['type'] in 'unknown' and not re.search(r'\/\?status=Continuing|\/\?status=Completed', item['file']) and re.search(r'\&mode=series', item['file']):
+            if ('crunchyroll' in item['file'] and
+            item['filetype'] == 'directory' and
+            item['type'] in 'unknown' and not
+            re.search(r'\/\?status=Continuing|\/\?status=Completed', item['file']) and
+            re.search(r'\&mode=series', item['file'])):
+                #
                 item['type'] = 'tvshow'
                 del item['episode']
                 del item['season']
@@ -343,7 +351,12 @@ def list_reorder(seasonjson, nextpage):
                 reordered[item['number'] - 1] = item
 
             #AMAZON: tenta identificar oque é uma pasta de serie
-            elif 'amazon' in item['file'] and item['filetype'] == 'directory' and item['type'] in ['tvshow', 'unknown'] and str(item['episode']) == '-1' and not 'Season' in item['label']:
+            elif ('amazon' in item['file'] and
+            item['filetype'] == 'directory' and
+            item['type'] in ['tvshow', 'unknown'] and
+            str(item['episode']) == '-1' and not
+            'Season' in item['label']):
+            #
                 item['type'] = 'tvshow'
 
                 item['showtitle'] = item['label']
@@ -353,8 +366,12 @@ def list_reorder(seasonjson, nextpage):
 
                 reordered[item['number'] - 1] = item
 
-            # NETFLIX: tenta identificar oque é uma pasta de serie, items da netflix devem passar por aqui
-            elif 'netflix' in item['file'] and item['filetype'] == 'directory' and item['type'] in 'tvshow':
+            # NETFLIX: tenta identificar oque é uma pasta de serie,
+            # items da netflix devem ar por aqui
+            elif ('netflix' in item['file'] and
+            item['filetype'] == 'directory' and
+            item['type'] in 'tvshow'):
+            #
                 del item['episode']
                 del item['season']
                 reordered[item['number'] - 1] = item
@@ -367,40 +384,44 @@ def list_reorder(seasonjson, nextpage):
                 reordered[item['number'] - 1] = item
 
             # CRUNCHYROLL: tenta identificar oque é uma temporada
-            if 'crunchyroll' in item['file'] and item['filetype'] == 'directory' and item['type'] == 'unknown' and 'season=' in item['file']:
+            if ('crunchyroll' in item['file'] and
+            item['filetype'] == 'directory' and
+            item['type'] == 'unknown' and 'season=' in item['file']):
+            #
                 del item['episode']
                 item['type'] = 'season'
 
                 if str(item['season']) == '0':
                     item['season'] = 1
-                    pass
 
                 try:
                     years.append(item['year'])
-                except Exception as e:
+                except KeyError:
                     pass
 
                 reordered[item['number'] - 1] = item
 
             # GENERICO: tenta identificar oque é uma temporada
-            if item['filetype'] == 'directory' and item['type'] == 'unknown' and 'Season' in item['label']:
+            if (item['filetype'] == 'directory' and
+            item['type'] == 'unknown' and
+            'Season' in item['label']):
+            #
                 del item['episode']
 
                 item['type'] = 'season'
 
                 try:
                     years.append(item['year'])
-                except Exception as e:
+                except KeyError:
                     pass
-                
                 reordered[item['season'] - 1] = item
 
             # GENERICO: tenta identificar oque é um episodio
             if item['filetype'] == 'file' and item['type'] == 'episode':
                 try:
                     years.append(item['year'])
-                except Exception:
-                    pass
+                except KeyError:
+                    pass            
         
                 reordered[item['episode'] - 1] = item
 
@@ -410,7 +431,7 @@ def list_reorder(seasonjson, nextpage):
 
                 try:
                     years.append(item['year'])
-                except Exception:
+                except KeyError:
                     pass
 
                 # update json to create absoluteepisode from crunchyroll and episode by index_items
@@ -422,20 +443,23 @@ def list_reorder(seasonjson, nextpage):
                         item['absoluteepisode'] = item['episode']
                         item['episode'] = item['number']
                 reordered[item['number'] - 1] = item
-
     for item in reordered:
-        try:
-            loweryear = min(years)
-            item['year'] = loweryear
-        except Exception as e:
-            pass
         if not item == "":
+            try:
+                loweryear = min(years)
+                item['year'] = loweryear
+            except KeyError:
+                pass
+
             yield item
 
 
 
 @logged_function
-def load_directory_items(progressdialog, dir_path, recursive=False, allow_directories=False, depth=1, showtitle=False, season=False, year=False, nextpage=False):
+def load_directory_items(progressdialog, dir_path, recursive=False, 
+                                                allow_directories=False, depth=1, 
+                                                showtitle=False, season=False,
+                                                year=False, nextpage=False):
     ''' Load items in a directory using the JSON-RPC interface '''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
@@ -451,27 +475,26 @@ def load_directory_items(progressdialog, dir_path, recursive=False, allow_direct
         yield []
 
     if not allow_directories:
-        files = [item for item in listofitems if item['filetype'] == 'file']    
+        for item in listofitems:
+            if item['filetype'] == 'file':
+                yield item
 
     directories = []
     for index, item in enumerate(listofitems):
-        if progressdialog.iscanceled() == True:
+        if progressdialog.iscanceled() is True:
             progressdialog.close()
             break
-            
+
         percent = 100 * index / len(listofitems)
 
-        if season != False:
+        if season is not False:
             item['season'] = season
-            pass        
 
-        if year != False:
+        if year is not False:
             item['year'] = year
-            pass        
 
         if item['label'] or item['title'] in ['Next page\u2026', 'Pr\u00f3xima P\u00e1gina']:
             item['nextpage'] = True
-            pass
 
         # se for um diretorio ele é adicionado a lista directories
         if item['filetype'] == 'directory' and item['type'] == 'tvshow' or item['type'] == 'season':
@@ -499,25 +522,25 @@ def load_directory_items(progressdialog, dir_path, recursive=False, allow_direct
             try:
                 title = _dir['showtitle']
                 recursive = True
-            except Exception as e:
+            except KeyError:
                 title = False
 
             try:
                 season = _dir['season']
                 recursive = True
-            except Exception as e:
+            except KeyError:
                 season = False
 
             try:
                 year = _dir['year']
                 recursive = True
-            except Exception as e:
+            except KeyError:
                 year = False
 
             try:
                 nextpage = _dir['nextpage']
                 recursive = True
-            except Exception as e:
+            except KeyError:
                 nextpage = False
 
             new_items = list(load_directory_items(
@@ -543,7 +566,7 @@ def notification(message):
 
 @logged_function
 def tojs(data, filename):
+    ''' Function to create a json file '''
     with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
         f.write(str(json.dumps(data, indent=4, sort_keys=True)))
         f.close()
-    pass
