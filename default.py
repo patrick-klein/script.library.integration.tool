@@ -5,7 +5,6 @@ This modules gets called by the main executable
 '''
 
 import sys
-
 import resources.lib.utils as utils
 
 
