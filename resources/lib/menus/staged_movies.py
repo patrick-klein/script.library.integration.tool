@@ -36,7 +36,7 @@ class StagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_ADDING_ALL_MOVIES)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.movie_title)
             item.add_to_library()
         progress_dialog.close()
         utils.notification(STR_ALL_MOVIES_ADDED)
@@ -48,13 +48,14 @@ class StagedMoviesMenu(object):
         # TODO: Remove code duplication with MovieItem.add_to_library_if_metadata
         STR_ADDING_ALL_MOVIES_WITH_METADATA = utils.ADDON.getLocalizedString(32044)
         STR_ALL_MOVIES_WITH_METADTA_ADDED = utils.ADDON.getLocalizedString(32045)
+
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_ADDING_ALL_MOVIES_WITH_METADATA)
+
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            nfo_path = os.path.join(item.metadata_dir, item.clean_title + '.nfo')
-            if os.path.exists(nfo_path):
-                progress_dialog.update(percent, line2=item.title)
+            if os.path.exists(item.movie_nfo[0]):
+                progress_dialog.update(percent, line2=item.movie_title)
                 item.add_to_library()
             progress_dialog.update(percent, line2=' ')
         progress_dialog.close()
@@ -87,7 +88,7 @@ class StagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.title)
+            progress_dialog.update(percent, line2=item.movie_title)
             item.create_metadata_item()
         progress_dialog.close()
         utils.notification(STR_ALL_MOVIE_METADTA_CREATED)
@@ -96,7 +97,7 @@ class StagedMoviesMenu(object):
     def rename_dialog(item):
         ''' Prompt input for new name, and rename if non-empty string '''
         #TODO: move to utils or parent class so it's not duplicated
-        input_ret = xbmcgui.Dialog().input("Title", defaultt=item.title)
+        input_ret = xbmcgui.Dialog().input("Title", defaultt=item.movie_title)
         if input_ret:
             item.rename(input_ret)
 
@@ -119,7 +120,11 @@ class StagedMoviesMenu(object):
             STR_GENERATE_METADATA_ITEM
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_STAGED_MOVIE_OPTIONS, item.title), lines
+            '{0} - {1} - {2}'.format(
+                utils.ADDON_NAME,
+                STR_STAGED_MOVIE_OPTIONS,
+                item.movie_title),
+                lines
         )
         if ret >= 0:
             if lines[ret] == STR_ADD:
@@ -150,7 +155,7 @@ class StagedMoviesMenu(object):
         STR_ALL_MOVIES_REMOVED = utils.ADDON.getLocalizedString(32014)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_MOVIES)
-        self.dbh.remove_all_content_items('staged', 'movie')
+        self.dbh.remove_from('staged', 'movie', show_title=None, directory=None)
         progress_dialog.close()
         utils.notification(STR_ALL_MOVIES_REMOVED)
 
