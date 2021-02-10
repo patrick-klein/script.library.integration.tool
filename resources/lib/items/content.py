@@ -189,10 +189,10 @@ class ContentManagerShows(object):
     def set_as_staged(self):
         ''' Set the item status as staged in database '''
         resources.lib.database_handler.DatabaseHandler().update_content(
-                self.link_stream_path,
-                status='staged',
-                mediatype='tvshow'
-            )
+            self.link_stream_path,
+            status='staged',
+            mediatype='tvshow'
+        )
 # # # #
 # # # #
 # # # #
@@ -297,5 +297,5 @@ class ContentManagerMovies(object):
         resources.lib.database_handler.DatabaseHandler().update_content(
             self.link_stream_path,
             status='staged',
-            mediatype='tvshow'            
+            mediatype='movie'            
         )
