@@ -236,7 +236,13 @@ class StagedTVMenu(object):
         STR_ALL_TV_SHOW_REMOVED = utils.ADDON.getLocalizedString(32025)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
-        self.dbh.remove_from('staged', 'tvshow', show_title=None, directory=None)
+        
+        self.dbh.remove_from(
+            status='staged',
+            mediatype='tvshow',
+            show_title=None,
+            directory=None
+        )
         progress_dialog.close()
         utils.notification(STR_ALL_TV_SHOW_REMOVED)
 
@@ -247,7 +253,12 @@ class StagedTVMenu(object):
         STR_ALL_x_EPISODES_REMOVED = utils.ADDON.getLocalizedString(32033) % show_title
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_x_EPISODES)
-        self.dbh.remove_from('staged', mediatype='tvshow', show_title=show_title, directory=None)
+        self.dbh.remove_from(
+            status='staged',
+            mediatype='tvshow',
+            show_title=show_title,
+            directory=None
+        )
         progress_dialog.close()
         utils.notification(STR_ALL_x_EPISODES_REMOVED)
 

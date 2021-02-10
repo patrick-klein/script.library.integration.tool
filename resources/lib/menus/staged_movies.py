@@ -155,7 +155,12 @@ class StagedMoviesMenu(object):
         STR_ALL_MOVIES_REMOVED = utils.ADDON.getLocalizedString(32014)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_MOVIES)
-        self.dbh.remove_from('staged', 'movie', show_title=None, directory=None)
+        self.dbh.remove_from(
+            status='staged',
+            mediatype='movie',
+            show_title=None,
+            directory=None
+        )
         progress_dialog.close()
         utils.notification(STR_ALL_MOVIES_REMOVED)
 
