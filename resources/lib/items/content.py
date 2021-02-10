@@ -181,7 +181,7 @@ class ContentManagerShows(object):
         ''' Remove the item from the database '''
         resources.lib.database_handler.DatabaseHandler().remove_from(
             status=None,
-            mediatype=None,
+            mediatype='tvshow',
             show_title=None,
             directory=self.link_stream_path
             )
@@ -287,7 +287,7 @@ class ContentManagerMovies(object):
         ''' Remove the item from the database '''
         resources.lib.database_handler.DatabaseHandler().remove_from(
             status=None,
-            mediatype=None,
+            mediatype='movie',
             show_title=None,
             directory=self.link_stream_path
             )
