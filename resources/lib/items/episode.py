@@ -4,26 +4,23 @@
 Defines the EpisodeItem class
 '''
 
-import os
-import re
-from glob import glob
-
-import xbmc
-from bs4 import BeautifulSoup
-
-import resources.lib.database_handler  # Need to do absolute import to avoid circular import error
+from os.path import join
 import resources.lib.utils as utils
-from .content import ContentItem
+from .content import ContentItemShow
 
 
-class EpisodeItem(ContentItem):
+class EpisodeItem(ContentItemShow):
     ''' Contains information about a TV show episode from the database,
     and has necessary functions for managing item '''
 
     def __init__(self, link_stream_path, title, mediatype, show_title=None, season=None, epnumber=None, year=None):
         super(EpisodeItem, self).__init__(link_stream_path, title, mediatype, show_title, season, epnumber, year)
         self._link_stream_path = link_stream_path
-        self._episode_title = title.decode('utf-8')
+        try:
+            self._episode_title = title.decode('utf-8')
+        except UnicodeEncodeError:
+            self._episode_title = title
+
         # mediatype
         self._show_title = show_title
         self._season = season
@@ -37,7 +34,7 @@ class EpisodeItem(ContentItem):
 
     @property
     def epsode_title(self):
-        return utils.clean_name(self._episode_title).encode('utf-8')
+        return utils.clean_name(self._episode_title)
     
     @property
     def show_title(self):
@@ -86,7 +83,7 @@ class EpisodeItem(ContentItem):
     @property
     def managed_show_dir(self):
         if not self._managed_dir:
-            self._managed_dir = os.path.join(
+            self._managed_dir = join(
                 utils.MANAGED_FOLDER, 'ManagedTV', self.show_title
             )
         return self._managed_dir
@@ -94,7 +91,7 @@ class EpisodeItem(ContentItem):
     @property
     def metadata_show_dir(self):
         if not self._metadata_show_dir:
-            self._metadata_show_dir = os.path.join(utils.METADATA_FOLDER, 'TV', self.show_title)
+            self._metadata_show_dir = join(utils.METADATA_FOLDER, 'TV', self.show_title)
         return self._metadata_show_dir
 
     @utils.logged_function
@@ -112,6 +109,7 @@ class EpisodeItem(ContentItem):
                 'managed_show_dir': self.managed_show_dir,
                 'metadata_show_dir': self.metadata_show_dir,
                 'year': self.year,
+                'type': 'tvshow'
             }
         except Exception as e:
             raise e
