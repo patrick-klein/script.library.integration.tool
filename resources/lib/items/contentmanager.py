@@ -145,12 +145,14 @@ class ContentManShows(ContentManagerShows):
 
         # Create basic tvshow.nfo
         if not exists(self.metadata_tvshow_nfo):
-            utils.fs.CreateNfo(
-                nfotype='tvshow',
-                filepath=self.metadata_tvshow_nfo,
-                jsondata=self.jsondata
-            )
-
+            try:
+                utils.fs.CreateNfo(
+                    nfotype='tvshow',
+                    filepath=self.metadata_tvshow_nfo,
+                    jsondata=self.jsondata
+                )
+            except Exception:
+                pass
         # Link tvshow.nfo and artwork now, if self.show_dir[0] exists
         for fname in listdir(self.show_dir[0]):
             if isfile(join(self.show_dir[0], fname)):
@@ -164,12 +166,14 @@ class ContentManShows(ContentManagerShows):
 
         # create a basic episode nfo
         if not exists(self.episode_nfo[0]):
-            utils.fs.CreateNfo(
-                nfotype='episodedetails',
-                filepath=self.episode_nfo[0],
-                jsondata=self.jsondata
-            )
-
+            try:
+                utils.fs.CreateNfo(
+                    nfotype='episodedetails',
+                    filepath=self.episode_nfo[0],
+                    jsondata=self.jsondata
+                )
+            except Exception:
+                pass
         # # Link metadata for episode if it exists
         # if utils.USE_SHOW_ARTWORK:
         #     # Try show landscape or fanart (since Kodi can't generate thumb for strm)
@@ -358,16 +362,18 @@ class ContentManMovies(ContentManagerMovies):
         utils.tojs(self.jsondata, 'jsdata')
         # create a blank movie_title.nfo
         if not exists(self.movie_nfo[0]):
-            utils.fs.CreateNfo(
-                nfotype='movie',
-                filepath=self.movie_nfo[0],
-                jsondata=self.jsondata
-            )
-            utils.fs.softlink_files_in_dir(
-                    self.movie_dir[0], self.movie_dir[1]
+            try:
+                utils.fs.CreateNfo(
+                    nfotype='movie',
+                    filepath=self.movie_nfo[0],
+                    jsondata=self.jsondata
                 )
-            # utils.fs.rm_strm_in_dir(self.movie_dir[1])
-
+                utils.fs.softlink_files_in_dir(
+                        self.movie_dir[0], self.movie_dir[1]
+                    )
+                # utils.fs.rm_strm_in_dir(self.movie_dir[1])
+            except Exception:
+                pass
         # Add metadata (optional)
         resources.lib.database_handler.DatabaseHandler().update_content(
                 self.link_stream_path,
