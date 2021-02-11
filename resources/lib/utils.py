@@ -296,7 +296,7 @@ def execute_json_rpc(method, directory):
                                         ],
                     },
                 'id': 1
-            })
+            }, ensure_ascii=False) # ensure_ascii ONLY scape charters in python3
         )
     )
 
@@ -313,7 +313,7 @@ def videolibrary(method):
                 'jsonrpc': '2.0',
                 "method": method,
                 'id': 1
-            })
+            }, ensure_ascii=False)
         )
 
 
