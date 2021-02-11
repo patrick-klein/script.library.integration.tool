@@ -214,7 +214,7 @@ class DatabaseHandler(object):
         return [BlockedItem(*x) for x in rows]
 
     @utils.logged_function
-    def get_content_items(self, **kwargs):
+    def get_content_items(self, status=None, mediatype=None, order=None):
         ''' Query Content table for sorted items with given constaints
         and casts results as ContentItem subclasses
         keyword arguments:
@@ -223,9 +223,9 @@ class DatabaseHandler(object):
             show_title: string, any show title
             order: string, any single column '''
 
-        if kwargs.get('mediatype') == 'movie':
+        if mediatype == 'movie':
             table_name = 'Movies'
-        elif kwargs.get('mediatype') == 'tvshow':
+        elif mediatype == 'tvshow':
             table_name = 'Tvshows'
         else:
             # FUTURE: check if is music
@@ -237,22 +237,23 @@ class DatabaseHandler(object):
         c_list = []
         params = ()
         order = ''
-        for key, val in kwargs.iteritems():
-            if key == 'status':
-                c_list.append('Status=?')
-                params += (val, )
-            # elif key == 'mediatype':
-            #     c_list.append('Mediatype=?')
-            #     params += (val, )
-            elif key == 'show_title':
-                c_list.append('Show_Title=?')
-                params += (val, )
-            elif key == 'Title':
-                c_list.append('Title=?')
-                params += (val, )
-            elif key == 'order':
-                order = ''' ORDER BY (CASE WHEN {0} LIKE 'the %' THEN substr({0},5)
-                    ELSE {0} END) COLLATE NOCASE'''.format(val)
+
+        if status is not None:
+            c_list.append('Status=?')
+            params += (status, )
+        # elif key == 'mediatype':
+        #     c_list.append('Mediatype=?')
+        #     params += (val, )
+        # elif key == 'show_title':
+        #     c_list.append('Show_Title=?')
+        #     params += (val, )
+        # elif key == 'Title':
+        #     c_list.append('Title=?')
+            # params += (val, )
+        elif order is not None:
+            order = ''' ORDER BY (CASE WHEN {0} LIKE 'the %' THEN substr({0},5)
+                ELSE {0} END) COLLATE NOCASE'''.format(order)
+
         command = ' WHERE ' + ' AND '.join(c_list) if c_list else ''
         # Format and execute sql command
         sql_comm = sql_templ.format(c=command, o=order)
@@ -366,14 +367,20 @@ class DatabaseHandler(object):
             # FUTURE: check if is music
             raise 'Type not detected'
 
-        QUERY_STR = "DELETE FROM {0} WHERE Status=? AND %s".format(table_name)
+        QUERY_STR = "DELETE FROM {0} %s".format(table_name)
 
         if show_title is not None:
-            self.cur.execute(QUERY_STR % "Show_Title=?", (status, show_title))
+            self.cur.execute(
+                (QUERY_STR % "WHERE Status=? AND Show_Title=?"), (status, show_title)
+            )
         elif show_title is None and directory is None:
-            self.cur.execute(QUERY_STR % "Mediatype=?", (status, mediatype))
+            self.cur.execute(
+                (QUERY_STR % "WHERE Status=? AND Mediatype=?"), (status, mediatype)
+            )
         elif directory is not None:
-            self.cur.execute(QUERY_STR % "Directory=?", (directory, ))
+            self.cur.execute(
+                (QUERY_STR % "WHERE Directory=?"), (directory, )
+            )
         self.conn.commit()
 
 
