@@ -21,6 +21,7 @@ class ContentManShows(ContentManagerShows):
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
+        utils.tojs(jsondata, 'jsondata')
         # managed + show dir + season dir
         self.metadata_seasondir = join(self.show_dir[0], self.jsondata['seasondir'])
         self.managed_seasondir = join(self.show_dir[1], self.jsondata['seasondir'])
@@ -151,8 +152,8 @@ class ContentManShows(ContentManagerShows):
                     filepath=self.metadata_tvshow_nfo,
                     jsondata=self.jsondata
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                raise e
         # Link tvshow.nfo and artwork now, if self.show_dir[0] exists
         for fname in listdir(self.show_dir[0]):
             if isfile(join(self.show_dir[0], fname)):
@@ -172,8 +173,8 @@ class ContentManShows(ContentManagerShows):
                     filepath=self.episode_nfo[0],
                     jsondata=self.jsondata
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                raise e
         # # Link metadata for episode if it exists
         # if utils.USE_SHOW_ARTWORK:
         #     # Try show landscape or fanart (since Kodi can't generate thumb for strm)
@@ -359,7 +360,6 @@ class ContentManMovies(ContentManagerMovies):
 
         if not exists(self.movie_dir[0]):
             utils.fs.mkdir(self.movie_dir[0])
-        utils.tojs(self.jsondata, 'jsdata')
         # create a blank movie_title.nfo
         if not exists(self.movie_nfo[0]):
             try:
@@ -372,8 +372,8 @@ class ContentManMovies(ContentManagerMovies):
                         self.movie_dir[0], self.movie_dir[1]
                     )
                 # utils.fs.rm_strm_in_dir(self.movie_dir[1])
-            except Exception:
-                pass
+            except Exception as e:
+                raise e
         # Add metadata (optional)
         resources.lib.database_handler.DatabaseHandler().update_content(
                 self.link_stream_path,
