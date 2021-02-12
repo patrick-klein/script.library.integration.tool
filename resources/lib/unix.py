@@ -8,116 +8,56 @@ System commands for posix/unix systems
 
 import os
 from os import listdir, symlink
-from os.path import join, isfile
+from os.path import join
 
-import xml.etree.ElementTree as et
-from bs4 import BeautifulSoup
 
 class CreateNfo(object):
+    ''' Module to create a .nfo file '''
+    # this module is necessary becouse xml.etree.ElementTree 
+    # return error with unicode charters
     def __init__(self, nfotype, filepath, jsondata):
-        self.nfo = et.Element(nfotype)
         self.nfotype = nfotype
         self.filepath = filepath
         self.jsondata = jsondata
 
         try:
             self.create()
-            self.indent()
         except Exception as e:
             raise e
 
-    def indent(self):
-        with open(self.filepath, 'r') as nf:
-            soup = BeautifulSoup(nf, 'html.parser')
-
-            w_file = open(self.filepath, 'w')
-            w_file.write(soup.prettify())
-            w_file.close()
-            print(soup.prettify(formatter="html"))
-            nf.close()
-
     def create(self):
-        if not isfile(self.filepath):
-            file = open(self.filepath, "w+")
-            file.close()
-
-        # movie             title
-        # tvshow            title, showtitle
-        # episodedetails    title, showtitle
+        file = open(self.filepath, "w+")
+        root = ''.join(['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n',
+                        '<{0}>\n%s</{1}>'.format(self.nfotype, self.nfotype)])
         # element root: movie, tvshow or episodedetails
+        # tvshow            title, showtitle
+        # movie             title
+        # episodedetails    title, showtitle
         if self.nfotype == 'tvshow':
-            title = et.Element('title')
-            title.text = self.jsondata['show_title']
-
-            show_title = et.Element('showtitle')
-            show_title.text = self.jsondata['show_title']
-
-            year = et.Element('year')
-            year.text = self.jsondata['year']
             # future possible new keys:
-            # title
-            # showtitle
-            # year
-            # runtime
-            # thumb aspect="poster"
-            # thumb aspect="poster" season="1" type="season"
-            # id
-            # imdbid
-            self.nfo.append(title)
-            self.nfo.append(show_title)
-            self.nfo.append(year)
+            # title, showtitle, year, runtime, thumb aspect="poster"
+            # thumb aspect="poster" season="1" type="season", id, imdbid
+            body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['show_title']),
+                            '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['show_title']),
+                            '\t<year>{0}</year>\n'.format(self.jsondata['year']),])
         elif self.nfotype == 'episodedetails':
-            title = et.Element('title')
-            title.text = self.jsondata['episode_title'].decode('utf-8')
-            
-            show_title = et.Element('showtitle')
-            show_title.text = self.jsondata['show_title'].decode('utf-8')
-
-            season = et.Element('season')
-            season.text = str(self.jsondata['seasonnum'])
-            
-            episode = et.Element('episode')
-            episode.text = str(self.jsondata['episodenum'])
-
-            year = et.Element('year')
-            year.text = self.jsondata['year']
-
-            original_filename = et.Element('original_filename')
-            original_filename.text = self.jsondata['link_stream_path']            
             # future possible new keys:
-            # id
-            # uniqueid default="true" type="tvdb"
-            # runtime
-            # thumb
-            self.nfo.append(title)
-            self.nfo.append(show_title)
-            self.nfo.append(season)
-            self.nfo.append(episode)
-            self.nfo.append(year)
-            self.nfo.append(original_filename)
+            # id, uniqueid default="true" type="tvdb", runtime, thumb
+            body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['episode_title']),
+                            '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['show_title']),
+                            '\t<season>{0}</season>\n'.format(self.jsondata['seasonnum']),
+                            '\t<episode>{0}</episodenum>\n'.format(self.jsondata['seasonnum']),
+                            '\t<year>{0}</year>\n'.format(self.jsondata['year']),
+                            '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['link_stream_path'])])
         elif self.nfotype == 'movie':
-            title = et.Element('title')
-            title.text = self.jsondata['movie_title']
-
-            year = et.Element('year')
-            year.text = self.jsondata['year']
-
-            original_filename = et.Element('original_filename')
-            original_filename.text = self.jsondata['link_stream_path']
             # future possible new keys:
-            # runtime
-            # thumb aspect="poster"
-            # fanart
-                # thumb
-            # id
-            # tmdbid
-            self.nfo.append(title)
-            self.nfo.append(year)
-            self.nfo.append(original_filename)
-
-        nfo_tree = et.ElementTree(self.nfo)
-        nfo_tree.write(self.filepath, xml_declaration=True, encoding='utf-8', method='xml')
-
+            # runtime, thumb aspect="poster", fanart, thumb, id, tmdbid
+            body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['movie_title']),
+                        '\t<year>{0}</year>\n'.format(self.jsondata['year']),
+                        '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['link_stream_path'])])
+        root = root % body
+        file.write(root)
+        file.close()
 
 def create_stream_file(plugin_path, filepath):
     ''' Create stream file with plugin_path at filepath '''
