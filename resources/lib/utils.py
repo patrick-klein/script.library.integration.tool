@@ -317,7 +317,7 @@ def videolibrary(method):
         )
 
 
-def list_reorder(seasonjson, nextpage):
+def list_reorder(seasonjson, nextpage, showtitle):
     ''' Return a list of elements reordered by number id '''
     # regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
     # regex_epsode = r'(?i)(?:episode(?:\s{1,4}|\=|\+))(\d{1,4})'
@@ -366,6 +366,22 @@ def list_reorder(seasonjson, nextpage):
 
                 reordered[item['number'] - 1] = item
 
+            #DISNEY: tenta identificar oque é uma pasta de serie
+            elif ('disney' in item['file'] and
+            item['filetype'] == 'directory' and
+            item['type'] in ['tvshow'] and
+            str(item['episode']) == '-1' and not
+            'Season' in item['label']):
+            #
+                item['type'] = 'tvshow'
+
+                item['showtitle'] = item['label']
+
+                del item['episode']
+                del item['season']
+
+                reordered[item['number'] - 1] = item
+
             # NETFLIX: tenta identificar oque é uma pasta de serie,
             # items da netflix devem ar por aqui
             elif ('netflix' in item['file'] and
@@ -391,6 +407,9 @@ def list_reorder(seasonjson, nextpage):
                 del item['episode']
                 item['type'] = 'season'
 
+                item['showtitle'] = showtitle
+
+
                 if str(item['season']) == '0':
                     item['season'] = 1
 
@@ -406,6 +425,7 @@ def list_reorder(seasonjson, nextpage):
             item['type'] == 'unknown' and
             'Season' in item['label']):
             #
+                item['showtitle'] = showtitle
                 del item['episode']
 
                 item['type'] = 'season'
@@ -448,7 +468,7 @@ def list_reorder(seasonjson, nextpage):
             try:
                 loweryear = min(years)
                 item['year'] = loweryear
-            except KeyError:
+            except Exception:
                 pass
 
             yield item
@@ -467,7 +487,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)    
 
     try:
-        listofitems = list(list_reorder(results['result']['files'], nextpage))
+        listofitems = list(list_reorder(results['result']['files'], nextpage, showtitle))
     except KeyError:
         listofitems = []
                 
@@ -511,7 +531,9 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
             progressdialog.update(percent, line2=('%s' % item['label']))
             xbmc.sleep(100)
             item['nextpage'] = nextpage
+            tojs(item, 'item0')
             item['showtitle'] = showtitle
+            tojs(item, 'item1')
             yield item
 
 
