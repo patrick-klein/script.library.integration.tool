@@ -292,12 +292,15 @@ class DatabaseHandler(object):
 
     @utils.utf8_args
     @utils.logged_function
-    def path_exists(self, path, status=None, mediatype=None):
+    def path_exists(self, path, mediatype, status=None):
         ''' Return True if path is already in database (with given status) '''
         #TODO: consider adding mediatype as optional parameter
         #       might speed-up by adding additional constraint
         #TODO: test speed against a set from "get_content_paths"
         # Build sql command and parameters, adding status if provided
+        entries = []
+
+        for item in ([status] if type(status) == str else status):
         if mediatype == 'movie':
             table_name = 'Movies'
         elif mediatype == 'tvshow':
@@ -307,21 +310,21 @@ class DatabaseHandler(object):
             raise 'Type not detected'
 
         sql_comm = (
-            'SELECT (Directory) FROM %s WHERE Directory=?' % table_name)
+                "SELECT (Directory) FROM {0} WHERE Directory = '{1}' AND Status = '{2}'".format(
+                                                                                            table_name,
+                                                                                            path,
+                                                                                            item
+                                                                                        )
+            )
+            ret = self.cur.execute(sql_comm).fetchone()
 
-        params = (path, )
+            if ret > 0:
+                entries += ret
 
-        if status:
-            sql_comm += ' AND Status=?'
-            params += (status, )
-        if mediatype:
-            sql_comm += ' AND Mediatype=?'
-            params += (mediatype, )
-
-        self.cur.execute(sql_comm, params)
-        # Get result and return True if result is found
-        res = self.cur.fetchone()
-        return bool(res)
+        if len(entries) > 0:
+            return True
+        else:
+            return False
 
     # @utils.logged_function
     # def remove_all_content_items(self, status, mediatype):
