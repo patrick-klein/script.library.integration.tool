@@ -31,9 +31,9 @@ def main():
     typeofcontent = xbmcgui.Dialog().select(STR_CHOOSE_CONTENT_TYPE, ['It is a Movie', 'It is a Show', '[COLOR red][B]Cancel[/B][/COLOR]'])
     # Call corresponding method
     if typeofcontent == 0:
-        SyncedMenu().sync_single_movie(label, year, selected_path)
+        SyncedMenu().sync_single_movie(title=label, year=year, link_stream_path=selected_path)
     elif typeofcontent == 1:
-        SyncedMenu().sync_single_tvshow(label, year, selected_path)
+        SyncedMenu().sync_single_tvshow(title=label, year=year, link_stream_path=selected_path)
     elif typeofcontent == -1 or 2:
         xbmc.sleep(200)
         utils.notification('Type of content not selected, Try again.')
