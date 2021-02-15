@@ -512,7 +512,6 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     except KeyError:
         listofitems = []
 
-    tojs(listofitems, 'listofitems')
     if not allow_directories:
         for item in listofitems:
             if item['filetype'] == 'file':
@@ -526,7 +525,6 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
         percent = 100 * index / len(listofitems)
 
         if item['type'] == 'movie':
-            tojs(item, 'item')
             progressdialog.update(percent, line1=('Processando items:'))
             progressdialog.update(percent, line2=('%s' % item['movietitle']))
             xbmc.sleep(200)
