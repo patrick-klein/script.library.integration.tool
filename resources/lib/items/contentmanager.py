@@ -353,7 +353,6 @@ class ContentManMovies(ContentManagerMovies):
     @utils.logged_function
     def create_metadata_item(self):
         # IDEA: automatically call this when staging
-        # IDEA: actually create basic nfo file with name and episode number, and thumb if possible
         # IDEA: could probably just rename based on existing strm file instead of nfo file
         # Create show_dir in Metadata/TV if it doesn't already exist
 
