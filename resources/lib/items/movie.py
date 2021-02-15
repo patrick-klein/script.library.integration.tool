@@ -6,7 +6,6 @@ Defines the MovieItem class
 
 from os.path import join, isdir
 
-import resources.lib.database_handler  # Need to do absolute import to avoid circular import error
 import resources.lib.utils as utils
 from .content import ContentItemMovies
 
