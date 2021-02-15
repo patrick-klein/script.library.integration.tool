@@ -3,7 +3,7 @@
 '''
 Contains various constants and utility functions used thoughout the addon
 '''
-
+# from __future__ import unicode_literals
 # TODO: Consider breaking up into more files (or Python package)
 
 import os
@@ -15,6 +15,7 @@ import simplejson as json
 import xbmc
 import xbmcaddon
 
+import six
 # Get file system tools depending on platform
 if os.name == 'posix':
     import resources.lib.unix as fs
@@ -28,7 +29,8 @@ ADDON_NAME = ADDON.getAddonInfo('name')
 ADDON_VERSION = ADDON.getAddonInfo('version')
 AUTO_ADD_MOVIES = ADDON.getSetting('auto_add_movies')
 AUTO_ADD_TVSHOWS = ADDON.getSetting('auto_add_tvshows')
-IN_DEVELOPMENT = ADDON.getSetting('in_development') == 'true'
+IN_DEVELOPMENT = 'true'
+# IN_DEVELOPMENT = ADDON.getSetting('in_development') == 'true'
 RECURSION_LIMIT = int(ADDON.getSetting('recursion_limit'))
 USE_SHOW_ARTWORK = ADDON.getSetting('use_show_artwork') == 'true'
 USING_CUSTOM_MANAGED_FOLDER = ADDON.getSetting('custom_managed_folder') == 'true'
@@ -316,16 +318,16 @@ def videolibrary(method):
             }, ensure_ascii=False)
         )
 
-
-def list_reorder(seasonjson, nextpage, showtitle):
+@logged_function
+def list_reorder(contets_json, nextpage, showtitle):
     ''' Return a list of elements reordered by number id '''
     # regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
     # regex_epsode = r'(?i)(?:episode(?:\s{1,4}|\=|\+))(\d{1,4})'
 
-    reordered = [''] * len(seasonjson)
+    reordered = [''] * len(contets_json)
     years = []
 
-    for index, item in enumerate(seasonjson):
+    for index, item in enumerate(contets_json):
         if (re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or
         item['label'] in ['Suggested', 'Extras', 'Next page\u2026', 'Pr\u00f3xima P\u00e1gina']):
             # do nothing for this itens
@@ -335,6 +337,24 @@ def list_reorder(seasonjson, nextpage, showtitle):
             # 1601 é o ano que aparece quando a informação de ano correta não existe
             if str(item['year']) == '1601':
                 del item['year']
+
+            # MOVIES: detect movies in dir
+            if item['filetype'] == 'file' and item['type'] == 'movie':
+                try:
+                    del item['episode']
+                    del item['season']
+                    del item['showtitle']
+                    if item['label'] == item['title']:
+                        del item['label']
+                    try:
+                        item['movietitle'] = item['title']
+                        del item['title']
+                    except Exception:
+                        pass
+                except Exception:
+                    pass
+                
+                reordered[item['number'] - 1] = item
 
             # # CRUNCHYROLL: tenta identificar oque é uma pasta de serie
             if ('crunchyroll' in item['file'] and
@@ -470,7 +490,6 @@ def list_reorder(seasonjson, nextpage, showtitle):
                 item['year'] = loweryear
             except Exception:
                 pass
-
             yield item
 
 
@@ -486,14 +505,14 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
 
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)    
 
-    try:
-        listofitems = list(list_reorder(results['result']['files'], nextpage, showtitle))
-    except KeyError:
-        listofitems = []
-                
     if not (results.has_key('result') and results['result'].has_key('files')):
         yield []
+    try:
+        listofitems = list(list_reorder(results['result']['files']), nextpage, showtitle)
+    except KeyError:
+        listofitems = []
 
+    tojs(listofitems, 'listofitems')
     if not allow_directories:
         for item in listofitems:
             if item['filetype'] == 'file':
@@ -504,40 +523,43 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
         if progressdialog.iscanceled() is True:
             progressdialog.close()
             break
-
         percent = 100 * index / len(listofitems)
 
-        if season is not False:
-            item['season'] = season
-
-        if year is not False:
-            item['year'] = year
-
-        if item['label'] or item['title'] in ['Next page\u2026', 'Pr\u00f3xima P\u00e1gina']:
-            item['nextpage'] = True
-
-        # se for um diretorio ele é adicionado a lista directories
-        if item['filetype'] == 'directory' and item['type'] == 'tvshow' or item['type'] == 'season':
-            showtitle = item['showtitle']
-            # progressdialog.update(percent, line1=('Processando diretorio:'))
-            progressdialog.update(0, line1='Coletando itens no diretorio!')
-            progressdialog.update(percent, line2=('%s' % item['label']))
-            xbmc.sleep(200)
-            directories.append(item)
-
-        # se for um epsodio, usa o yield para guardar o item
-        if item['type'] == 'episode':
+        if item['type'] == 'movie':
+            tojs(item, 'item')
             progressdialog.update(percent, line1=('Processando items:'))
-            progressdialog.update(percent, line2=('%s' % item['label']))
-            xbmc.sleep(100)
-            item['nextpage'] = nextpage
-            tojs(item, 'item0')
-            item['showtitle'] = showtitle
-            tojs(item, 'item1')
+            progressdialog.update(percent, line2=('%s' % item['movietitle']))
+            xbmc.sleep(200)
             yield item
+        else:
+            if season is not False:
+                item['season'] = season
 
+            if year is not False:
+                item['year'] = year
 
-    if recursive:
+            if item['label'] or item['title'] in ['Next page\u2026', 'Pr\u00f3xima P\u00e1gina']:
+                item['nextpage'] = True
+
+                # # se for um diretorio ele é adicionado a lista directories
+            if item['filetype'] == 'directory' and item['type'] == 'tvshow' or item['type'] == 'season':
+                showtitle = item['showtitle']
+                # progressdialog.update(percent, line1=('Processando diretorio:'))
+                progressdialog.update(0, line1='Coletando itens no diretorio!')
+                progressdialog.update(percent, line2=('%s' % item['label']))
+                xbmc.sleep(200)
+                directories.append(item)
+
+                # # se for um epsodio, usa o yield para guardar o item
+            if item['type'] == 'episode':
+                progressdialog.update(percent, line1=('Processando items:'))
+                progressdialog.update(percent, line2=('%s' % item['label']))
+                xbmc.sleep(100)
+                item['nextpage'] = nextpage
+                item['showtitle'] = showtitle
+                yield item
+
+    if recursive and len(directories) > 0:
         for _dir in directories:
             # close the progress bar during JSONRPC process
 
@@ -580,11 +602,10 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
             for new in new_items:
                 yield new
 
-
 @logged_function
 def notification(message):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
-    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(ADDON_NAME, message.encode('utf-8')))
+    xbmc.executebuiltin('Notification("{0}", "{1}")'.format(ADDON_NAME, message))
 
 @logged_function
 def tojs(data, filename):
@@ -592,3 +613,6 @@ def tojs(data, filename):
     with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
         f.write(str(json.dumps(data, indent=4, sort_keys=True)))
         f.close()
+
+def encode_str(_str):
+    return six.ensure_str(_str, encoding='utf-8', errors='strict')
