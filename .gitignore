@@ -3,3 +3,4 @@
 *.pyc
 resources/test/coverage/
 pylint
+.vscode
