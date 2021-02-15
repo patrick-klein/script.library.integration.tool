@@ -8,10 +8,10 @@ import sqlite3
 
 import resources.lib.utils as utils
 from resources.lib.items.blocked import BlockedItem
-from resources.lib.items.episode import EpisodeItem
+from resources.lib.items.synced import SyncedItem
 
 from resources.lib.items.movie import MovieItem
-from resources.lib.items.synced import SyncedItem
+from resources.lib.items.episode import EpisodeItem
 
 from resources.lib.items.contentmanager import ContentManShows, ContentManMovies
 
@@ -122,8 +122,6 @@ class DatabaseHandler(object):
                 jsondata['seasonnum'],
                 jsondata['episodenum'],
             )
-
-
             query_defs = (
                 "Tvshows",
                 "(Directory, Title, Mediatype, Status, Year, Show_Title, Season, Epnumber)",
@@ -301,15 +299,15 @@ class DatabaseHandler(object):
         entries = []
 
         for item in ([status] if type(status) == str else status):
-        if mediatype == 'movie':
-            table_name = 'Movies'
-        elif mediatype == 'tvshow':
-            table_name = 'Tvshows'
-        else:
-            # FUTURE: check if is music
-            raise 'Type not detected'
+            if mediatype == 'movie':
+                table_name = 'Movies'
+            elif mediatype == 'tvshow':
+                table_name = 'Tvshows'
+            else:
+                # FUTURE: check if is music
+                raise 'Type not detected'
 
-        sql_comm = (
+            sql_comm = (
                 "SELECT (Directory) FROM {0} WHERE Directory = '{1}' AND Status = '{2}'".format(
                                                                                             table_name,
                                                                                             path,
@@ -320,7 +318,7 @@ class DatabaseHandler(object):
 
             if ret > 0:
                 entries += ret
-
+            
         if len(entries) > 0:
             return True
         else:
