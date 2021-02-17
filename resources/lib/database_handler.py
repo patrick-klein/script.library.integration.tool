@@ -22,7 +22,9 @@ class DatabaseHandler(object):
 
     #TODO: Reimplement blocked keywords
     #TODO: Combine remove_content_item functions using **kwargs
-
+    #TODO: use movie, tvshow as a table_name,
+    #the __init__ method to create tables need be updated,
+    #the objective is reduce the if's in all plaves
     def __init__(self):
         # Connect to database
         self.conn = sqlite3.connect(utils.DATABASE_FILE)
