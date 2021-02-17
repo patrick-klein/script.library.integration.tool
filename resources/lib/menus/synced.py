@@ -273,17 +273,11 @@ class SyncedMenu(object):
                     progressdialog.close()
                     break                
 
-                if sync_type == 'all_items':
-                    if content_file['type'] == 'movie':
-                        sync_type = 'movie'
-                    elif content_file['type'] == 'episode':
-                        sync_type = 'tvshow'
-                # 
-                if sync_type == 'movie':
-                    content_title = content_file['movietitle']
+                try:
+                    content_title = content_file['movie_title']
                     contentdata = MovieItem(
                                     link_stream_path=content_file['file'],
-                                    title=content_file['movietitle'],
+                        title=content_file['movie_title'],
                                     mediatype='movie',
                                     year=content_file['year']
                                 ).returasjson()
