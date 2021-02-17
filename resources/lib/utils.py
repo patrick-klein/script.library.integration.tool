@@ -9,7 +9,8 @@ import sys
 import re
 from os.path import expanduser, join
 
-import simplejson as json
+from os import name, mkdir
+from os.path import expanduser, join, dirname, isdir, isfile
 import xbmc
 import xbmcaddon
 
@@ -175,8 +176,9 @@ def check_version_file():
             # Maintain previous settings if managed folder is already set
             if ADDON.getSetting('managed_folder'):
                 ADDON.setSetting('custom_managed_folder', 'true')
+        # Create addons dir if not exist
+        mkdir(dirname(version_file_path))
         # Update version file
-
         with open(version_file_path, 'w+') as version_file:
             version_file.write(ADDON_VERSION)
         notification(STR_UPDATED)
