@@ -188,6 +188,7 @@ class SyncedMenu(object):
             dir_path=link_stream_path,
             allow_directories=True,
             recursive=True,
+            showtitle=title,
             sync_type='tvshow'
             )
         )
@@ -248,7 +249,7 @@ class SyncedMenu(object):
     @utils.logged_function
     def sync_all_items_in_directory(self, sync_type, dir_label, dir_path):
         ''' Synchronize all items in a directory (movies/series or all), based on the user's choice and stage items '''
-        # TODO: new notification label to show movies, TV shows and epsodes that have been added
+        # TODO: new notification label to show movies, TV shows and episodes that have been added
         contentdata = None
         content_title = None
         STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
@@ -265,6 +266,8 @@ class SyncedMenu(object):
 
             # query json-rpc to get files in directory
             progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
+                progressdialog=progressdialog, dir_path=dir_path,
+                allow_directories=True, recursive=True, sync_type=sync_type
                 )
             )
             items_to_stage = 0
@@ -304,8 +307,7 @@ class SyncedMenu(object):
                 if self.dbh.path_exists(
                     path=contentdata['link_stream_path'],
                     status=['staged', 'managed'],
-                    mediatype=sync_type
-                ):
+                    mediatype=sync_type):
                     continue
 
                 # Update progress
