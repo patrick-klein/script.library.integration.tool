@@ -292,7 +292,7 @@ class StagedTVMenu(object):
         STR_STAGED_x_EPISODES = (utils.ADDON.getLocalizedString(32070) % show_title).encode('utf-8')
 
         staged_episodes = self.dbh.get_content_items(
-            status='staged', mediatype='tvshow', order='Title',
+            status='staged', mediatype='tvshow', order='Show_Title', show_title=show_title
         )
 
         if not staged_episodes:

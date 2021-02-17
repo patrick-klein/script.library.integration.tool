@@ -3,6 +3,7 @@
 '''
 Defines the DatabaseHandler class
 '''
+import six
 
 import sqlite3
 
@@ -86,11 +87,11 @@ class DatabaseHandler(object):
             # EpisodeItem.returasjson create a json and it is passed to ContentManShows
             return ContentManShows(EpisodeItem(
                                     link_stream_path=item[0],
-                                    title=item[1],
+                                    title=six.u(item[1]),
                                     mediatype='tvshow',
                                     # staged
                                     year=item[4],
-                                    show_title=item[5],
+                                    show_title=six.u(item[5]),
                                     season=item[6],
                                     epnumber=item[7]
                                 ).returasjson()
@@ -214,7 +215,7 @@ class DatabaseHandler(object):
         return [BlockedItem(*x) for x in rows]
 
     @utils.logged_function
-    def get_content_items(self, status=None, mediatype=None, order=None):
+    def get_content_items(self, status=None, mediatype=None, order=None, show_title=None):
         ''' Query Content table for sorted items with given constaints
         and casts results as ContentItem subclasses
         keyword arguments:
@@ -231,32 +232,18 @@ class DatabaseHandler(object):
             # FUTURE: check if is music
             raise 'Type not detected'
 
+        params = (status, )
         # Define template for this sql command
-        sql_templ = ('SELECT * FROM %s{c}{o}' % table_name)
-        # Define constraint and/or order string usings kwargs
-        c_list = []
-        params = ()
-        order = ''
+        sql_comm = ('SELECT * FROM %s WHERE Status=?' % table_name)
 
-        if status is not None:
-            c_list.append('Status=?')
-            params += (status, )
-        # elif key == 'mediatype':
-        #     c_list.append('Mediatype=?')
-        #     params += (val, )
-        # elif key == 'show_title':
-        #     c_list.append('Show_Title=?')
-        #     params += (val, )
-        # elif key == 'Title':
-        #     c_list.append('Title=?')
-            # params += (val, )
-        elif order is not None:
-            order = ''' ORDER BY (CASE WHEN {0} LIKE 'the %' THEN substr({0},5)
-                ELSE {0} END) COLLATE NOCASE'''.format(order)
+        if order == 'Show_Title' and show_title is not None:
+            params += (show_title, )
+            sql_comm += ' and Show_Title=? ORDER BY Season, Epnumber'
+        if order == 'Show_Title' and show_title is None:
+            sql_comm += ' ORDER BY Show_Title, Season, Epnumber'
+        elif order == 'Title':
+            sql_comm += ' ORDER BY Title'
 
-        command = ' WHERE ' + ' AND '.join(c_list) if c_list else ''
-        # Format and execute sql command
-        sql_comm = sql_templ.format(c=command, o=order)
         self.cur.execute(sql_comm, params)
         # Get results and return items as content items
         rows = self.cur.fetchall()

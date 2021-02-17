@@ -51,6 +51,7 @@ class SyncedMenu(object):
     @utils.logged_function
     def find_paths_to_remove(self, all_paths, **kwargs):
         ''' Find paths in database no longer available '''
+        #TODO: update this func in future, now
         managed_items = self.dbh.get_content_items(**kwargs)
         return [x.path for x in managed_items if x.path not in all_paths]
 

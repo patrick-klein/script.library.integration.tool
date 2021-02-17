@@ -133,7 +133,7 @@ class ManagedTVMenu(object):
         STR_BACK = utils.ADDON.getLocalizedString(32011)
         STR_MANAGED_x_EPISODES = utils.ADDON.getLocalizedString(32031) % show_title
         managed_episodes = self.dbh.get_content_items(
-            status='managed', mediatype='tvshow', order='Title'
+            status='managed', mediatype='tvshow', order='Show_Title', show_title=show_title
         )
         if not managed_episodes:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_MANAGED_x_EPISODES)
