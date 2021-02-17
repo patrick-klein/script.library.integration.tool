@@ -121,8 +121,8 @@ class DatabaseHandler(object):
                 mediatype,
                 jsondata['year'],
                 jsondata['show_title'],
-                jsondata['seasonnum'],
-                jsondata['episodenum'],
+                jsondata['season_number'],
+                jsondata['episode_number'],
             )
             query_defs = (
                 "Tvshows",
@@ -133,7 +133,7 @@ class DatabaseHandler(object):
             # try set params for movie
             params = (
                 jsondata['link_stream_path'],
-                jsondata['movietitle'],
+                jsondata['movie_title'],
                 mediatype,
                 jsondata['year'],
             )
