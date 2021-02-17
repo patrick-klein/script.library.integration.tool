@@ -5,7 +5,7 @@ Defines the SyncedMenu class
 '''
 # TODO: Different notifications depending on whether items were staged vs. automatically added
 import sys
-import six
+
 import xbmcgui
 import xbmc
 import resources.lib.utils as utils
@@ -255,10 +255,8 @@ class SyncedMenu(object):
         STR_GETTING_ITEMS_IN_DIR = utils.ADDON.getLocalizedString(32125)
         STR_GETTING_ITEMS_IN_x = utils.ADDON.getLocalizedString(32126)
         STR_i_EPISODES_STAGED = utils.ADDON.getLocalizedString(32112)
-
         progressdialog = xbmcgui.DialogProgress()
         progressdialog.create(utils.ADDON_NAME)
-
         try:
             # add synced directory to database
             # check it in future
@@ -266,6 +264,7 @@ class SyncedMenu(object):
 
             # query json-rpc to get files in directory
             progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
+            files_list = list(utils.load_directory_items(
                 progressdialog=progressdialog, dir_path=dir_path,
                 allow_directories=True, recursive=True, sync_type=sync_type
                 )
@@ -279,23 +278,23 @@ class SyncedMenu(object):
                 try:
                     content_title = content_file['movie_title']
                     contentdata = MovieItem(
-                                    link_stream_path=content_file['file'],
+                        link_stream_path=content_file['file'],
                         title=content_file['movie_title'],
-                                    mediatype='movie',
-                                    year=content_file['year']
-                                ).returasjson()
+                        mediatype='movie',
+                        year=content_file['year']
+                    ).returasjson()
                     sync_type = 'movie'
                 except Exception:
                     content_title = content_file['showtitle']
                     contentdata = EpisodeItem(
-                                    link_stream_path=content_file['file'],
-                                    title=content_file['title'],
-                                    mediatype='tvshow',
-                                    show_title=content_file['showtitle'],
-                                    season=content_file['season'],
-                                    epnumber=content_file['episode'],
-                                    year=content_file['year']
-                                ).returasjson()
+                        link_stream_path=content_file['file'],
+                        title=content_file['title'],
+                        mediatype='tvshow',
+                        show_title=content_file['showtitle'],
+                        season=content_file['season'],
+                        epnumber=content_file['episode'],
+                        year=content_file['year']
+                    ).returasjson()
                     sync_type = 'tvshow'
 
                 # Get name of show and skip if blocked
@@ -307,6 +306,7 @@ class SyncedMenu(object):
                 if self.dbh.path_exists(
                     path=contentdata['link_stream_path'],
                     status=['staged', 'managed'],
+                    #TODO: future dosen't use sync_type here
                     mediatype=sync_type):
                     continue
 
@@ -328,8 +328,6 @@ class SyncedMenu(object):
                     # try add movie
                     self.dbh.add_content_item(contentdata, 'movie')
                     xbmc.sleep(500)
-
-                sync_type = sync_type_bak                
                 items_to_stage += 1
                 pass
             utils.notification(STR_i_EPISODES_STAGED % items_to_stage)
