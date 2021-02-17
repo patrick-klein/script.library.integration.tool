@@ -3,9 +3,7 @@
 '''
 Contains various constants and utility functions used thoughout the addon
 '''
-# from __future__ import unicode_literals
 # TODO: Consider breaking up into more files (or Python package)
-
 import os
 import sys
 import re
