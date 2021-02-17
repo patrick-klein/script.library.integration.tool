@@ -58,7 +58,7 @@ class SyncedMenu(object):
     def get_movies_in_directory(self, directory):
         ''' Get all movies in the directory and tags them '''
         dir_items = self.filter_blocked_items(
-            list(utils.load_directory_items(progressdialog=None, dir_path=directory, recursive=True), 'movie')
+            list(utils.load_directory_items(progressdialog=None, dir_path=directory, recursive=True, sync_type='movie'), 'movie')
         )
 
         for item in dir_items:
@@ -70,7 +70,7 @@ class SyncedMenu(object):
     def get_single_tvshow(self, directory, show_title):
         ''' Get the single TV show in the directory, and tag the items'''
         show_items = self.filter_blocked_items(
-            list(utils.load_directory_items(progressdialog=None, dir_path=directory, recursive=True), 'episode')
+            list(utils.load_directory_items(progressdialog=None, dir_path=directory, recursive=True, sync_type='tvshow'), 'episode')
         )
         
         for item in show_items:
@@ -83,7 +83,7 @@ class SyncedMenu(object):
     def get_tvshows_in_directory(self, directory):
         ''' Get all TV shows in the directory, and tag the items '''
         dir_items = self.filter_blocked_items(
-            list(utils.load_directory_items(progressdialog=None, dir_path=directory, allow_directories=True, recursive=True), 'tvshow')
+            list(utils.load_directory_items(progressdialog=None, dir_path=directory, allow_directories=True, recursive=True, sync_type='tvshow'), 'tvshow')
         )
         all_items = []
         # Check every tvshow in list
@@ -92,7 +92,7 @@ class SyncedMenu(object):
             # Load results if show isn't blocked
             show_path = dir_item['file']
             show_items = self.filter_blocked_items(
-                list(utils.load_directory_items(progressdialog=None, dir_path=show_path, recursive=True), 'episode')
+                list(utils.load_directory_items(progressdialog=None, dir_path=show_path, recursive=True, sync_type='tvshow'), 'episode')
             )
             for show_item in show_items:
                 # Add formatted item
@@ -188,7 +188,7 @@ class SyncedMenu(object):
             dir_path=link_stream_path,
             allow_directories=True,
             recursive=True,
-            showtitle=title
+            sync_type='tvshow'
             )
         )
         # Get all items to stage
@@ -266,9 +266,9 @@ class SyncedMenu(object):
 
             # query json-rpc to get files in directory
             progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-            files_list = list(utils.load_directory_items(progressdialog=progressdialog, dir_path=dir_path, allow_directories=True, recursive=True))
+                )
+            )
             items_to_stage = 0
-            sync_type_bak = sync_type
             for index, content_file in enumerate(files_list):
                 if progressdialog.iscanceled() == True:
                     progressdialog.close()
@@ -288,7 +288,8 @@ class SyncedMenu(object):
                                     mediatype='movie',
                                     year=content_file['year']
                                 ).returasjson()
-                elif sync_type == 'tvshow':
+                    sync_type = 'movie'
+                except Exception:
                     content_title = content_file['showtitle']
                     contentdata = EpisodeItem(
                                     link_stream_path=content_file['file'],
@@ -299,6 +300,7 @@ class SyncedMenu(object):
                                     epnumber=content_file['episode'],
                                     year=content_file['year']
                                 ).returasjson()
+                    sync_type = 'tvshow'
 
                 # Get name of show and skip if blocked
                 # Get everything inside tvshow path
