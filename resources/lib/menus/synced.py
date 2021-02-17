@@ -204,40 +204,43 @@ class SyncedMenu(object):
             if progressdialog.iscanceled() == True:
                 progressdialog.close()
                 break
-            
-            contentdata = EpisodeItem(
-                # IDEA: in future, pass a json and not separeted values
-                link_stream_path=showfile['file'],
-                title=showfile['title'],
-                mediatype='tvshow',
-                show_title=title,
-                season=showfile['season'],
-                epnumber=showfile['episode'],
-                year=year if year else showfile['year']
-            ).returasjson()
-            # Update progress
-            percent = 100 * index / len(files_list)
-            progressdialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title']))
+            try:
+                contentdata = EpisodeItem(
+                    # IDEA: in future, pass a json and not separeted values
+                    link_stream_path=showfile['file'],
+                    title=showfile['title'],
+                    mediatype='tvshow',
+                    show_title=title,
+                    season=showfile['season'],
+                    epnumber=showfile['episode'],
+                    year=year if year else showfile['year']
+                ).returasjson()
+                # Update progress
+                percent = 100 * index / len(files_list)
+                progressdialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title']))
 
-            if self.dbh.path_exists(path=contentdata['link_stream_path'], status='staged', mediatype='tvshow'):
-                num_already_staged += 1
-                continue
+                if self.dbh.path_exists(path=contentdata['link_stream_path'], status='staged', mediatype='tvshow'):
+                    num_already_staged += 1
+                    continue
 
-            elif self.dbh.path_exists(path=contentdata['link_stream_path'], status='managed', mediatype='tvshow'):
-                num_already_managed += 1
-                continue
+                elif self.dbh.path_exists(path=contentdata['link_stream_path'], status='managed', mediatype='tvshow'):
+                    num_already_managed += 1
+                    continue
+                    
+                elif self.dbh.check_blocked(contentdata['show_title'], 'episode'):
+                    continue
+
+                # Update progress
+                progressdialog.update(percent, line2=contentdata['show_title'])
+                progressdialog.update(percent, line2=contentdata['episode_title_with_id'])
                 
-            elif self.dbh.check_blocked(contentdata['show_title'], 'episode'):
-                continue
-
-            # Update progress
-            progressdialog.update(percent, line2=contentdata['show_title'])
-            progressdialog.update(percent, line2=contentdata['episode_title_with_id'])
+                self.dbh.add_content_item(contentdata, 'tvshow')
+                # 
+                items_to_stage += 1
+                xbmc.sleep(300)
+            except TypeError:
+                utils.notification("Something went wrong, try again, maybe this isn't a Tvshow.")
             
-            self.dbh.add_content_item(contentdata, 'tvshow')
-            # 
-            items_to_stage += 1
-            xbmc.sleep(300)
         if num_already_staged > 0 or num_already_managed > 0:
             utils.notification(
                 STR_i_NEW_i_STAGED_i_MANAGED %
