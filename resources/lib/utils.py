@@ -176,7 +176,8 @@ def check_version_file():
             if ADDON.getSetting('managed_folder'):
                 ADDON.setSetting('custom_managed_folder', 'true')
         # Update version file
-        with open(version_file_path, 'w') as version_file:
+
+        with open(version_file_path, 'w+') as version_file:
             version_file.write(ADDON_VERSION)
         notification(STR_UPDATED)
         sys.exit()
@@ -618,6 +619,3 @@ def tojs(data, filename):
     with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
         f.write(str(json.dumps(data, indent=4, sort_keys=True)))
         f.close()
-
-def encode_str(_str):
-    return six.ensure_str(_str, encoding='utf-8', errors='strict')
