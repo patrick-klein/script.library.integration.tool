@@ -3,7 +3,6 @@
 '''
 Defines the EpisodeItem class
 '''
-import six
 from os.path import join
 import resources.lib.utils as utils
 from .content import ContentItemShow

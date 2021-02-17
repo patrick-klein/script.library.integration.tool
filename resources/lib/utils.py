@@ -13,7 +13,6 @@ import simplejson as json
 import xbmc
 import xbmcaddon
 
-import six
 # Get file system tools depending on platform
 if os.name == 'posix':
     import resources.lib.unix as fs
@@ -200,9 +199,9 @@ def utf8_args(func):
 
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
-        new_args = (x if isinstance(x, six.text_type) else x for x in args)
+        new_args = (x.encode('utf-8') if isinstance(x, unicode) else x for x in args)
         new_kwargs = {
-            k: v if isinstance(v, six.text_type) else v
+            k: v.encode('utf-8') if isinstance(v, unicode) else v
             for k, v in kwargs.iteritems()
         }
         return func(*new_args, **new_kwargs)
@@ -212,8 +211,8 @@ def utf8_args(func):
 
 def log_msg(msg, loglevel=DEFAULT_LOG_LEVEL):
     ''' Log message with addon name and version to kodi log '''
-    if isinstance(msg,  six.text_type):
-        msg = encode_str(msg)
+    if isinstance(msg, unicode):
+        msg = msg.encode('utf-8')
     xbmc.log("{0} v{1} --> {2}".format(ADDON_NAME, ADDON_VERSION, msg), level=loglevel)
 
 
@@ -237,14 +236,15 @@ def logged_function(func):
             # TODO: fix UnicodeEncodeError: 'ascii', normaly with Amazon VOD
             arg_list = list()
             for arg in args[1 if is_method else 0:]:
-                arg_list.append("'{0}'".format(encode_str(arg)) if isinstance(arg, six.string_types) else str(arg))
+                arg_list.append("'{0}'".format(arg) if isinstance(arg, basestring) else str(arg))
             for key, val in kwargs.iteritems():
                 arg_list.append(
-                    '{0}={1}'.format(key, "'{0}'".format(encode_str(val)) if isinstance(val, six.string_types) else str(val))
+                    '{0}={1}'
+                    .format(key, "'{0}'".format(val) if isinstance(val, basestring) else str(val))
                 )
             arg_str = '({0})'.format(', '.join(arg_list))
             # Add line breaks and limit output if ret value is iterable
-            if isinstance(ret,  six.string_types):
+            if isinstance(ret, basestring):
                 ret_str = "'{0}'".format(ret)
             else:
                 try:

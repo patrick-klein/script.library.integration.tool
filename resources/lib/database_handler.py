@@ -3,7 +3,6 @@
 '''
 Defines the DatabaseHandler class
 '''
-import six
 
 import sqlite3
 
@@ -87,11 +86,11 @@ class DatabaseHandler(object):
             # EpisodeItem.returasjson create a json and it is passed to ContentManShows
             return ContentManShows(EpisodeItem(
                                     link_stream_path=item[0],
-                                    title=six.u(item[1]),
+                                    title=item[1],
                                     mediatype='tvshow',
                                     # staged
                                     year=item[4],
-                                    show_title=six.u(item[5]),
+                                    show_title=item[5],
                                     season=item[6],
                                     epnumber=item[7]
                                 ).returasjson()
