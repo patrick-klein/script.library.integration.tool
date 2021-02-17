@@ -22,12 +22,12 @@ class ContentManShows(ContentManagerShows):
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
         # managed + show dir + season dir
-        self.metadata_seasondir = join(self.show_dir[0], self.jsondata['seasondir'])
-        self.managed_seasondir = join(self.show_dir[1], self.jsondata['seasondir'])
+        self.metadata_season_dir = join(self.show_dir[0], self.jsondata['season_dir'])
+        self.managed_season_dir = join(self.show_dir[1], self.jsondata['season_dir'])
 
-        # Full path of epsode without extension
-        self.managed_ep_path = join(self.managed_seasondir, self.complete_epsode_title)
-        self.metadata_ep_path = join(self.metadata_seasondir, self.complete_epsode_title)
+        # Full path of episode without extension
+        self.managed_ep_path = join(self.managed_season_dir, self.complete_episode_title)
+        self.metadata_ep_path = join(self.metadata_season_dir, self.complete_episode_title)
         # Full path of muitple files with extension
 
         self.metadata_thumb_path = ''.join([self.metadata_ep_path, '-thumb.jpg'])
@@ -60,7 +60,7 @@ class ContentManShows(ContentManagerShows):
         return '(%s)' % self.jsondata['year']
 
     @property
-    def complete_epsode_title(self):
+    def complete_episode_title(self):
         return '%s - %s' % (
             ' '.join([self.show_title, self.formedyear]),
             self.episode_title_with_id
@@ -100,13 +100,13 @@ class ContentManShows(ContentManagerShows):
             except Exception as e:
                 raise e
 
-        # create seasondir managed season dir
-        if not exists(self.managed_seasondir):
-            utils.fs.mkdir(self.managed_seasondir)
+        # create season_dir managed season dir
+        if not exists(self.managed_season_dir):
+            utils.fs.mkdir(self.managed_season_dir)
 
-        # create seasondir metadata season dir
-        if not exists(self.metadata_seasondir):
-            utils.fs.mkdir(self.metadata_seasondir)
+        # create season_dir metadata season dir
+        if not exists(self.metadata_season_dir):
+            utils.fs.mkdir(self.metadata_season_dir)
 
         # Create stream file
         if utils.fs.create_stream_file(self.link_stream_path, self.managed_strm_path):            
@@ -140,8 +140,8 @@ class ContentManShows(ContentManagerShows):
                 raise 
 
         # Create Metadata Season dir
-        if not exists(self.metadata_seasondir):
-            utils.fs.mkdir(self.metadata_seasondir)
+        if not exists(self.metadata_season_dir):
+            utils.fs.mkdir(self.metadata_season_dir)
 
         # Create basic tvshow.nfo
         if not exists(self.metadata_tvshow_nfo):
