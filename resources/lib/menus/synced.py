@@ -203,7 +203,7 @@ class SyncedMenu(object):
                 progressdialog.close()
                 break
             
-            contentdata = six.u(str(EpisodeItem(
+            contentdata = EpisodeItem(
                 # IDEA: in future, pass a json and not separeted values
                 link_stream_path=showfile['file'],
                 title=showfile['title'],
@@ -212,8 +212,7 @@ class SyncedMenu(object):
                 season=showfile['season'],
                 epnumber=showfile['episode'],
                 year=year if year else showfile['year']
-            ).returasjson()))
-            
+            ).returasjson()
             # Update progress
             percent = 100 * index / len(files_list)
             progressdialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title']))
