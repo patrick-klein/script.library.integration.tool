@@ -316,15 +316,25 @@ def videolibrary(method):
         )
 
 @logged_function
-def list_reorder(contets_json, nextpage, showtitle):
+def list_reorder(contets_json, nextpage, showtitle, sync_type=False):
     ''' Return a list of elements reordered by number id '''
-    # regex_season = r'(?i)(?:(?:S|Season(?:\s{1,4}|\=|\+))(\d{1,4}))'
-    # regex_epsode = r'(?i)(?:episode(?:\s{1,4}|\=|\+))(\d{1,4})'
-
     reordered = [''] * len(contets_json)
     years = []
 
     for index, item in enumerate(contets_json):
+        if sync_type == 'all_items':
+            pass
+        else:
+            if sync_type == 'movie' and item['type'] == 'movie':
+                pass
+            elif (sync_type == 'tvshow' and item['type']
+            in ['tvshow', 'season', 'episode', 'unknown', 'directory']):
+                pass
+            elif sync_type == 'music' and item['type'] == 'music':
+                pass
+            else:
+                continue
+
         if (re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or
         item['label'] in ['Suggested', 'Extras', 'Next page\u2026', 'Pr\u00f3xima P\u00e1gina']):
             # do nothing for this itens
@@ -344,7 +354,7 @@ def list_reorder(contets_json, nextpage, showtitle):
                     if item['label'] == item['title']:
                         del item['label']
                     try:
-                        item['movietitle'] = item['title']
+                        item['movie_title'] = item['title']
                         del item['title']
                     except Exception:
                         pass
@@ -495,7 +505,7 @@ def list_reorder(contets_json, nextpage, showtitle):
 def load_directory_items(progressdialog, dir_path, recursive=False, 
                                                 allow_directories=False, depth=1, 
                                                 showtitle=False, season=False,
-                                                year=False, nextpage=False):
+                                                year=False, nextpage=False, sync_type=False):
     ''' Load items in a directory using the JSON-RPC interface '''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
@@ -505,7 +515,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     if not (results.has_key('result') and results['result'].has_key('files')):
         yield []
     try:
-        listofitems = list(list_reorder(results['result']['files']), nextpage, showtitle)
+        listofitems = list(list_reorder(results['result']['files'], nextpage, showtitle, sync_type=sync_type))
     except KeyError:
         listofitems = []
 
@@ -523,7 +533,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
 
         if item['type'] == 'movie':
             progressdialog.update(percent, line1=('Processando items:'))
-            progressdialog.update(percent, line2=('%s' % item['movietitle']))
+            progressdialog.update(percent, line2=('%s' % item['movie_title']))
             xbmc.sleep(200)
             yield item
         else:
@@ -591,7 +601,8 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                             showtitle=title,
                             season=season,
                             year=year,
-                            nextpage=nextpage
+                            nextpage=nextpage,
+                            sync_type=sync_type
                             ))
 
             for new in new_items:
