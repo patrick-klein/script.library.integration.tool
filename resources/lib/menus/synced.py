@@ -148,6 +148,8 @@ class SyncedMenu(object):
         STR_ITEM_IS_ALREADY_STAGED = utils.ADDON.getLocalizedString(32103)
         STR_ITEM_IS_ALREADY_MANAGED = utils.ADDON.getLocalizedString(32104)
         STR_MOVIE_STAGED = utils.ADDON.getLocalizedString(32105)
+
+        if not 'directory' in link_stream_path:
         # Add synced directory to database
         self.dbh.add_synced_dir(title, link_stream_path, 'single-movie')
         # Check for duplicate in database
@@ -168,6 +170,8 @@ class SyncedMenu(object):
                 'movie'
             )
             utils.notification('%s: %s' % (STR_MOVIE_STAGED, title))
+        else:
+            utils.notification('%s (%s) - %s' % (title, year, 'not added, is realy a movie?'))
 
     @utils.logged_function
     def sync_single_tvshow(self, title, year, link_stream_path):
