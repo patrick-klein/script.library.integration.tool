@@ -238,15 +238,14 @@ def logged_function(func):
             # TODO: fix UnicodeEncodeError: 'ascii', normaly with Amazon VOD
             arg_list = list()
             for arg in args[1 if is_method else 0:]:
-                arg_list.append("'{0}'".format(arg) if isinstance(arg, basestring) else str(arg))
+                arg_list.append("'{0}'".format(encode_str(arg)) if isinstance(arg, six.string_types) else str(arg))
             for key, val in kwargs.iteritems():
                 arg_list.append(
-                    '{0}={1}'
-                    .format(key, "'{0}'".format(val) if isinstance(val, basestring) else str(val))
+                    '{0}={1}'.format(key, "'{0}'".format(encode_str(val)) if isinstance(val, six.string_types) else str(val))
                 )
             arg_str = '({0})'.format(', '.join(arg_list))
             # Add line breaks and limit output if ret value is iterable
-            if isinstance(ret, basestring):
+            if isinstance(ret,  six.string_types):
                 ret_str = "'{0}'".format(ret)
             else:
                 try:
