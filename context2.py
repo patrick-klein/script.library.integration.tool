@@ -28,7 +28,7 @@ def main():
     if typeofcontent == 0:
         sync_type = 'all_items'
     elif typeofcontent == 1:
-        sync_type = 'movies'
+        sync_type = 'movie'
     elif typeofcontent == 2:
         sync_type = 'tvshow'
     elif typeofcontent == -1 or 3:
