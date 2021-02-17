@@ -3,7 +3,7 @@
 '''
 Defines the EpisodeItem class
 '''
-
+import six
 from os.path import join
 import resources.lib.utils as utils
 from .content import ContentItemShow
@@ -21,10 +21,11 @@ class EpisodeItem(ContentItemShow):
         except UnicodeEncodeError:
             self._episode_title = title
 
+        self._episode_title = title
         # mediatype
         self._show_title = show_title
         self._season = season
-        self._epsode_number = epnumber
+        self._episode_number = epnumber
         self._year = year
         
 
@@ -33,7 +34,7 @@ class EpisodeItem(ContentItemShow):
         return self._link_stream_path
 
     @property
-    def epsode_title(self):
+    def episode_title(self):
         return utils.clean_name(self._episode_title)
     
     @property
@@ -50,12 +51,12 @@ class EpisodeItem(ContentItemShow):
             return int(self._season)
 
     @property
-    def epsode_number(self):
+    def episode_number(self):
         ''' Show title with problematic characters removed '''
-        if self._epsode_number == None:
+        if self._episode_number == None:
             return  1
         else:
-            return int(self._epsode_number)
+            return int(self._episode_number)
 
     @property
     def year(self):
@@ -64,20 +65,20 @@ class EpisodeItem(ContentItemShow):
     # 
     # # 
     @property
-    def seasondir(self):
+    def season_dir(self):
         return ('Season %s' % (self.season_number))
 
     @property
-    def epsodeid(self):
+    def episode_id(self):
         if self.season_number <= 9:
             season = ('S0%s' % self.season_number)
         else:
             season = ('S%s' % self.season_number)
 
-        if self.epsode_number <= 9:
-            ep = ('E0%s' % self.epsode_number)
+        if self.episode_number <= 9:
+            ep = ('E0%s' % self.episode_number)
         else:
-            ep = ('E%s' % self.epsode_number)
+            ep = ('E%s' % self.episode_number)
         return ('%s%s' % (season, ep))
 
     @property
@@ -100,12 +101,12 @@ class EpisodeItem(ContentItemShow):
             return {
                 'link_stream_path': self.link_stream_path,
                 'show_title': self.show_title,
-                'episode_title_with_id': ' - '.join([self.epsodeid, self.epsode_title]),
-                'episode_title': self.epsode_title,
-                'seasonnum': self.season_number,
-                'episodenum': self.epsode_number,
-                'epsodeid': self.epsodeid,
-                'seasondir': self.seasondir,
+                'episode_title_with_id': ' - '.join([self.episode_id, self.episode_title]),
+                'episode_title': self.episode_title,
+                'episode_number': self.episode_number,
+                'episode_id': self.episode_id,
+                'season_number': self.season_number,
+                'season_dir': self.season_dir,
                 'managed_show_dir': self.managed_show_dir,
                 'metadata_show_dir': self.metadata_show_dir,
                 'year': self.year,
