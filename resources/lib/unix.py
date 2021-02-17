@@ -45,8 +45,8 @@ class CreateNfo(object):
             # id, uniqueid default="true" type="tvdb", runtime, thumb
             body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['episode_title']),
                             '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['show_title']),
-                            '\t<season>{0}</season>\n'.format(self.jsondata['seasonnum']),
-                            '\t<episode>{0}</episodenum>\n'.format(self.jsondata['seasonnum']),
+                            '\t<season>{0}</season>\n'.format(self.jsondata['season_number']),
+                            '\t<episode>{0}</episode_number>\n'.format(self.jsondata['season_number']),
                             '\t<year>{0}</year>\n'.format(self.jsondata['year']),
                             '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['link_stream_path'])])
         elif self.nfotype == 'movie':
