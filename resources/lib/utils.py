@@ -4,18 +4,18 @@
 Contains various constants and utility functions used thoughout the addon
 '''
 # TODO: Consider breaking up into more files (or Python package)
-import os
-import sys
 import re
-from os.path import expanduser, join
+import sys
 
 from os import name, mkdir
 from os.path import expanduser, join, dirname, isdir, isfile
+
 import xbmc
 import xbmcaddon
 
+import simplejson as json
 # Get file system tools depending on platform
-if os.name == 'posix':
+if name == 'posix':
     import resources.lib.unix as fs
 else:
     import resources.lib.universal as fs
@@ -39,7 +39,7 @@ else:
 if USING_CUSTOM_METADATA_FOLDER:
     METADATA_FOLDER = ADDON.getSetting('metadata_folder')
 else:
-    METADATA_FOLDER = os.path.join(MANAGED_FOLDER, 'Metadata')
+    METADATA_FOLDER = join(MANAGED_FOLDER, 'Metadata')
 
 # Enum values in settings
 NEVER = '0'
@@ -49,7 +49,7 @@ WITH_METADATA = '2'
 
 # Define other constants
 DEFAULT_LOG_LEVEL = xbmc.LOGNOTICE if IN_DEVELOPMENT else xbmc.LOGDEBUG
-DATABASE_FILE = os.path.join(MANAGED_FOLDER, 'managed.db')
+DATABASE_FILE = join(MANAGED_FOLDER, 'managed.db')
 # TODO: Use combined list on all platforms.  Would need to be combined with version check
 #       to re-add all managed items
 MAPPED_STRINGS = [
@@ -67,7 +67,7 @@ MAPPED_STRINGS = [
     ('Part 5', 'Part Five'),
     ('Part 6', 'Part Six'),
 ]
-if os.name == 'nt':
+if name == 'nt':
     MAPPED_STRINGS += [
         ('?', ''),
         ('<', ''),
@@ -118,7 +118,7 @@ class Version(object):
 def check_managed_folder():
     ''' Checks if the managed folder is configured '''
     # Display an error is user hasn't configured managed folder yet
-    if not (MANAGED_FOLDER and os.path.isdir(MANAGED_FOLDER)):
+    if not (MANAGED_FOLDER and isdir(MANAGED_FOLDER)):
         # TODO: Open prompt to just set managed folder from here
         STR_CHOOSE_FOLDER = ADDON.getLocalizedString(32123)
         notification(STR_CHOOSE_FOLDER)
@@ -130,15 +130,15 @@ def check_subfolders():
     ''' Checks the subfolders in the Managed and Metadata folders '''
     # Create subfolders if they don't exist
     subfolders = [
-        os.path.join(MANAGED_FOLDER, 'ManagedMovies'),
-        os.path.join(MANAGED_FOLDER, 'ManagedTV')
-    ] + ([] if USING_CUSTOM_METADATA_FOLDER else [os.path.join(MANAGED_FOLDER, 'Metadata')]) + [
-        os.path.join(METADATA_FOLDER, 'Movies'),
-        os.path.join(METADATA_FOLDER, 'TV')
+        join(MANAGED_FOLDER, 'ManagedMovies'),
+        join(MANAGED_FOLDER, 'ManagedTV')
+    ] + ([] if USING_CUSTOM_METADATA_FOLDER else [join(MANAGED_FOLDER, 'Metadata')]) + [
+        join(METADATA_FOLDER, 'Movies'),
+        join(METADATA_FOLDER, 'TV')
     ]
     created_folders = False
     for folder in subfolders:
-        if not os.path.isdir(folder):
+        if not isdir(folder):
             log_msg('Creating subfolder {}'.format(folder), loglevel=xbmc.LOGNOTICE)
             fs.mkdir(folder)
             created_folders |= True
@@ -155,7 +155,7 @@ def check_version_file():
     version_file_path = xbmc.translatePath(
         'special://userdata/addon_data/{}/.version'.format(ADDON_ID)
     )
-    if os.path.isfile(version_file_path):
+    if isfile(version_file_path):
         with open(version_file_path, 'r') as version_file:
             version = Version(version_file.read())
     else:
