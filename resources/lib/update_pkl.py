@@ -24,8 +24,7 @@ def update_managed():
             if item.mediatype == 'movie':
                 dbh.add_content_item(item.path, item.title, 'movie')
             elif item.mediatype == 'tvshow':
-                dbh.add_content_item(item.path, item.title, 'tvshow', \
-                    item.show_title)
+                dbh.add_content_item(item.path, item.title, 'tvshow', item.show_title)
             dbh.update_content(item.path, status='managed')
         os.remove(managed_file)
 
