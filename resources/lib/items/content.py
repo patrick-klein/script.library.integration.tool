@@ -16,17 +16,17 @@ class ContentItemShow(object):
 
     def __init__(self, link_stream_path, title, mediatype, show_title=None, season=None, epnumber=None, year=None):
         self._managed_dir = None
-        self.movie_title = None
         self._metadata_show_dir = None
         self._metadata_movie_dir = None
+        self._episode_title_with_id = None
     # 
     @abc.abstractproperty
     def link_stream_path(self):
         ''' Create the link_stream_path str'''
 
     @abc.abstractproperty
-    def epsode_title(self):
-        ''' epsode_title with problematic characters removed '''
+    def episode_title(self):
+        ''' episode_title with problematic characters removed '''
 
     @abc.abstractproperty
     def show_title(self):
@@ -37,8 +37,8 @@ class ContentItemShow(object):
         ''' Create the season_number int '''
 
     @abc.abstractproperty
-    def epsode_number(self):
-        ''' Create the epsode_number int '''
+    def episode_number(self):
+        ''' Create the episode_number int '''
 
     @abc.abstractproperty
     def year(self):
@@ -46,11 +46,11 @@ class ContentItemShow(object):
     # 
     # # 
     @abc.abstractproperty
-    def seasondir(self):
+    def season_dir(self):
         ''' Create the Season dir '''
 
     @abc.abstractproperty
-    def epsodeid(self):
+    def episode_id(self):
         ''' Create the ep ID '''
 
     @abc.abstractproperty
@@ -61,9 +61,9 @@ class ContentItemShow(object):
     def metadata_show_dir(self):
         ''' Path to the metadata directory for the item '''
 
-    @abc.abstractmethod
-    def returasjson(self):
-        ''' Return all info as json '''
+    # @abc.abstractmethod
+    # def returasjson(self):
+    #     ''' Return all info as json '''
 
 class ContentItemMovies(object):
     ''' Abstract base class for MovieItem and EpisodeItem.
@@ -113,7 +113,7 @@ class ContentManagerShows(object):
         # mediatype
         self._show_title = None
         self._season = None
-        self._epsode_number = None
+        self._episode_number = None
         self._year = None
 
     def __str__(self):
@@ -132,8 +132,8 @@ class ContentManagerShows(object):
         ''' Path to the formedyear directory for the item '''
 
     @abc.abstractproperty
-    def complete_epsode_title(self):
-        ''' Path to the complete_epsode_title directory for the item '''
+    def complete_episode_title(self):
+        ''' Path to the complete_episode_title directory for the item '''
 
     @abc.abstractproperty
     def link_stream_path(self):
@@ -246,8 +246,8 @@ class ContentManagerMovies(object):
     #     ''' Path to the formedyear directory for the item '''
 
     # @abc.abstractproperty
-    # def complete_epsode_title(self):
-    #     ''' Path to the complete_epsode_title directory for the item '''
+    # def complete_episode_title(self):
+    #     ''' Path to the complete_episode_title directory for the item '''
 
     # @abc.abstractproperty
     # def episode_nfo(self):
