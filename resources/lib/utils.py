@@ -203,9 +203,9 @@ def utf8_args(func):
 
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
-        new_args = (x.encode('utf-8') if isinstance(x, unicode) else x for x in args)
+        new_args = (x if isinstance(x, six.text_type) else x for x in args)
         new_kwargs = {
-            k: v.encode('utf-8') if isinstance(v, unicode) else v
+            k: v if isinstance(v, six.text_type) else v
             for k, v in kwargs.iteritems()
         }
         return func(*new_args, **new_kwargs)
@@ -215,8 +215,8 @@ def utf8_args(func):
 
 def log_msg(msg, loglevel=DEFAULT_LOG_LEVEL):
     ''' Log message with addon name and version to kodi log '''
-    if isinstance(msg, unicode):
-        msg = msg.encode('utf-8')
+    if isinstance(msg,  six.text_type):
+        msg = encode_str(msg)
     xbmc.log("{0} v{1} --> {2}".format(ADDON_NAME, ADDON_VERSION, msg), level=loglevel)
 
 
