@@ -18,11 +18,11 @@ msgstr ""
 
 msgctxt "#32000"
 msgid "Add selected item to library"
-msgstr "Adicionar Item Selecionado À Biblioteca"
+msgstr "Adicionar item selecionado à Biblioteca"
 
 msgctxt "#32001"
 msgid "Sync directory to library"
-msgstr "Sincronizar Diretório Com A Biblioteca"
+msgstr "Sincronizar diretório com à Biblioteca"
 
 msgctxt "#32002"
 msgid "View Managed Movies"
@@ -38,7 +38,7 @@ msgstr "Ver Filmes Armazenados"
 
 msgctxt "#32005"
 msgid "View Staged TV Shows"
-msgstr "Ver Séries armazenados"
+msgstr "Ver Séries Armazenados"
 
 msgctxt "#32006"
 msgid "View Synced Directories"
@@ -58,7 +58,7 @@ msgstr "Remover Todos Os Filmes"
 
 msgctxt "#32010"
 msgid "Move all movies back to staged"
-msgstr "Mova Todos Os Filmes De Volta Para Armazenados"
+msgstr "Mover todos os Filmes de volta para Armazenados"
 
 msgctxt "#32011"
 msgid "Back..."
@@ -70,27 +70,23 @@ msgstr "Filmes Gerenciados"
 
 msgctxt "#32013"
 msgid "Removing all movies..."
-msgstr "Removendo Todos Os Filmes..."
+msgstr "Removendo todos os Filmes..."
 
 msgctxt "#32014"
 msgid "All movies removed"
-msgstr "Todos Os Filmes Removidos"
+msgstr "Todos os Filmes foram Removidos"
 
 msgctxt "#32015"
 msgid "Moving all movies back to staged..."
-msgstr ""
-
-msgctxt "#32016"
-msgid "Moving all movies back to staged..."
-msgstr ""
+msgstr "Movendo todos os Filmes para Armazenados..."
 
 msgctxt "#32017"
 msgid "Remove"
-msgstr ""
+msgstr "Remover"
 
 msgctxt "#32018"
 msgid "Move back to staged"
-msgstr ""
+msgstr "Mover para Armazenados"
 
 msgctxt "#32019"
 msgid "Managed Movie Options"
