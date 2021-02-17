@@ -238,9 +238,9 @@ class DatabaseHandler(object):
 
         if order == 'Show_Title' and show_title is not None:
             params += (show_title, )
-            sql_comm += ' and Show_Title=? ORDER BY Season, Epnumber'
+            sql_comm += ' and Show_Title=? ORDER BY CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
         if order == 'Show_Title' and show_title is None:
-            sql_comm += ' ORDER BY Show_Title, Season, Epnumber'
+            sql_comm += ' ORDER BY Show_Title, CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
         elif order == 'Title':
             sql_comm += ' ORDER BY Title'
 
