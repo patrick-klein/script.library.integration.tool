@@ -19,9 +19,9 @@ def main():
     dir_path = xbmc.getInfoLabel('Container.FolderPath')
     dir_label = xbmc.getInfoLabel('Container.FolderName')
     # Get content type
-    STR_CHOOSE_CONTENT_TYPE = utils.ADDON.getLocalizedString(32100)
-    STR_MOVIE = utils.ADDON.getLocalizedString(32102)
-    STR_TV_SHOW = utils.ADDON.getLocalizedString(32101)
+    STR_CHOOSE_CONTENT_TYPE = utils.getLocalizedString(32100)
+    STR_MOVIE = utils.getLocalizedString(32102)
+    STR_TV_SHOW = utils.getLocalizedString(32101)
     typeofcontent = xbmcgui.Dialog().select(STR_CHOOSE_CONTENT_TYPE, ['Sync All Items', 'Sync Only Movies', 'Sync Only Shows', '[COLOR red][B]Cancel[/B][/COLOR]'])
 
     # Call corresponding method

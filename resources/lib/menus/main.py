@@ -4,14 +4,12 @@
 Defines the MainMenu class,
 which gets called from the main executable
 '''
-
 import sys
 
 import xbmc
 import xbmcgui
 
 import resources.lib.utils as utils
-
 
 class MainMenu(object):
     ''' Perform basic initialization of folder structure
@@ -37,12 +35,12 @@ class MainMenu(object):
         # TODO: add parameter for location in list -
         #       useful when returning here after doing something on an item
         #       (preselect is broken when pressing cancel)
-        STR_VIEW_MANAGED_MOVIES = utils.ADDON.getLocalizedString(32002)
-        STR_VIEW_MANAGED_TV_SHOWS = utils.ADDON.getLocalizedString(32003)
-        STR_VIEW_STAGED_MOVIES = utils.ADDON.getLocalizedString(32004)
-        STR_VIEW_STAGED_TV_SHOWS = utils.ADDON.getLocalizedString(32005)
-        STR_VIEW_SYNCED_DIRS = utils.ADDON.getLocalizedString(32006)
-        STR_VIEW_BLOCKED_ITEMS = utils.ADDON.getLocalizedString(32007)
+        STR_VIEW_MANAGED_MOVIES = utils.getLocalizedString(32002)
+        STR_VIEW_MANAGED_TV_SHOWS = utils.getLocalizedString(32003)
+        STR_VIEW_STAGED_MOVIES = utils.getLocalizedString(32004)
+        STR_VIEW_STAGED_TV_SHOWS = utils.getLocalizedString(32005)
+        STR_VIEW_SYNCED_DIRS = utils.getLocalizedString(32006)
+        STR_VIEW_BLOCKED_ITEMS = utils.getLocalizedString(32007)
         STR_UPDATE_LIBRARY = xbmc.getLocalizedString(653).title()
         STR_CLEAN_LIBRARY = xbmc.getLocalizedString(14247).title()
         lines = [

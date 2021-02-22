@@ -24,7 +24,7 @@ class ManagedMoviesMenu(object):
     @utils.logged_function
     def move_all_to_staged(items):
         ''' Remove all managed movies from library, and add them to staged '''
-        STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32015)
+        STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = utils.getLocalizedString(32015)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
         for index, item in enumerate(items):
@@ -39,8 +39,8 @@ class ManagedMoviesMenu(object):
     @utils.logged_function
     def remove_all(items):
         ''' Remove all managed movies from library '''
-        STR_REMOVING_ALL_MOVIES = utils.ADDON.getLocalizedString(32013)
-        STR_ALL_MOVIES_REMOVED = utils.ADDON.getLocalizedString(32014)
+        STR_REMOVING_ALL_MOVIES = utils.getLocalizedString(32013)
+        STR_ALL_MOVIES_REMOVED = utils.getLocalizedString(32014)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_MOVIES)
         for index, item in enumerate(items):
@@ -56,10 +56,10 @@ class ManagedMoviesMenu(object):
         ''' Provide options for a single managed movie in a dialog window '''
         # TODO: add rename option
         # TODO: add reload metadata option
-        STR_REMOVE = utils.ADDON.getLocalizedString(32017)
-        STR_MOVE_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32018)
-        STR_BACK = utils.ADDON.getLocalizedString(32011)
-        STR_MANAGED_MOVIE_OPTIONS = utils.ADDON.getLocalizedString(32019)
+        STR_REMOVE = utils.getLocalizedString(32017)
+        STR_MOVE_BACK_TO_STAGED = utils.getLocalizedString(32018)
+        STR_BACK = utils.getLocalizedString(32011)
+        STR_MANAGED_MOVIE_OPTIONS = utils.getLocalizedString(32019)
         lines = [STR_REMOVE, STR_MOVE_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
@@ -83,11 +83,11 @@ class ManagedMoviesMenu(object):
     def view_all(self):
         ''' Display all managed movies, which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        STR_NO_MANAGED_MOVIES = utils.ADDON.getLocalizedString(32008)
-        STR_REMOVE_ALL_MOVIES = utils.ADDON.getLocalizedString(32009)
-        STR_MOVE_ALL_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32010)
-        STR_BACK = utils.ADDON.getLocalizedString(32011)
-        STR_MANAGED_MOVIES = utils.ADDON.getLocalizedString(32012)
+        STR_NO_MANAGED_MOVIES = utils.getLocalizedString(32008)
+        STR_REMOVE_ALL_MOVIES = utils.getLocalizedString(32009)
+        STR_MOVE_ALL_BACK_TO_STAGED = utils.getLocalizedString(32010)
+        STR_BACK = utils.getLocalizedString(32011)
+        STR_MANAGED_MOVIES = utils.getLocalizedString(32012)
 
         managed_movies = self.dbh.get_content_items(
             status='managed', mediatype='movie', order='Title'

@@ -26,9 +26,9 @@ class BlockedMenu(object):
         # TODO: add blocked types: plugin, path
         # TODO: add blocked keywords, let you choose type
         # TODO: intialize blocked list with known bad items
-        STR_BACK = utils.ADDON.getLocalizedString(32011)
-        STR_BLOCKED_ITEMS = utils.ADDON.getLocalizedString(32098)
-        STR_NO_BLOCKED_ITEMS = utils.ADDON.getLocalizedString(32119)
+        STR_BACK = utils.getLocalizedString(32011)
+        STR_BLOCKED_ITEMS = utils.getLocalizedString(32098)
+        STR_NO_BLOCKED_ITEMS = utils.getLocalizedString(32119)
         blocked_items = self.dbh.get_blocked_items()
         if not blocked_items:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_BLOCKED_ITEMS)
@@ -50,9 +50,9 @@ class BlockedMenu(object):
     @utils.logged_function
     def options(self, item):
         ''' Provide options for a single blocked item in a dialog window '''
-        STR_REMOVE = utils.ADDON.getLocalizedString(32017)
-        STR_BACK = utils.ADDON.getLocalizedString(32011)
-        STR_BLOCKED_ITEM_OPTIONS = utils.ADDON.getLocalizedString(32099)
+        STR_REMOVE = utils.getLocalizedString(32017)
+        STR_BACK = utils.getLocalizedString(32011)
+        STR_BLOCKED_ITEM_OPTIONS = utils.getLocalizedString(32099)
         lines = [STR_REMOVE, STR_BACK]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item['value']),

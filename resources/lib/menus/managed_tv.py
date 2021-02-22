@@ -21,8 +21,8 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def move_episodes_to_staged(items):
         ''' Remove all managed episodes in specified show from library, and add them to staged '''
-        STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32034)
-        STR_ALL_x_EPISODES_MOVED_TO_STAGED = utils.ADDON.getLocalizedString(32035)
+        STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = utils.getLocalizedString(32034)
+        STR_ALL_x_EPISODES_MOVED_TO_STAGED = utils.getLocalizedString(32035)
         show_title = items[0].show_title
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(
@@ -84,8 +84,8 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def move_all_to_staged(self):
         ''' Remove all managed tvshow items from library, and add them to staged '''
-        STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32026)
-        STR_ALL_TV_SHOWS_MOVED_TO_STAGED = utils.ADDON.getLocalizedString(32027)
+        STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = utils.getLocalizedString(32026)
+        STR_ALL_TV_SHOWS_MOVED_TO_STAGED = utils.getLocalizedString(32027)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED)
 
@@ -106,8 +106,8 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def remove_all(self):
         ''' Remove all managed tvshow items from library '''
-        STR_REMOVING_ALL_TV_SHOWS = utils.ADDON.getLocalizedString(32024)
-        STR_ALL_TV_SHOWS_REMOVED = utils.ADDON.getLocalizedString(32025)
+        STR_REMOVING_ALL_TV_SHOWS = utils.getLocalizedString(32024)
+        STR_ALL_TV_SHOWS_REMOVED = utils.getLocalizedString(32025)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
         managed_tv_items = self.dbh.get_content_items(
@@ -127,11 +127,12 @@ class ManagedTVMenu(object):
         ''' Displays all managed episodes in the specified show,
         which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        STR_NO_MANAGED_x_EPISODES = utils.ADDON.getLocalizedString(32028) % show_title
-        STR_REMOVE_ALL_EPISODES = utils.ADDON.getLocalizedString(32029)
-        STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32030)
-        STR_BACK = utils.ADDON.getLocalizedString(32011)
-        STR_MANAGED_x_EPISODES = utils.ADDON.getLocalizedString(32031) % show_title
+        STR_NO_MANAGED_x_EPISODES = utils.getLocalizedString(32028) % show_title
+        STR_REMOVE_ALL_EPISODES = utils.getLocalizedString(32029)
+        STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = utils.getLocalizedString(32030)
+        STR_BACK = utils.getLocalizedString(32011)
+        STR_MANAGED_x_EPISODES = utils.getLocalizedString(32031) % show_title
+
         managed_episodes = self.dbh.get_content_items(
             status='managed', mediatype='tvshow', order='Show_Title', show_title=show_title
         )
@@ -162,11 +163,11 @@ class ManagedTVMenu(object):
     def view_shows(self):
         ''' Display all managed tvshows, which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        STR_NO_MANAGED_TV_SHOWS = utils.ADDON.getLocalizedString(32020)
-        STR_REMOVE_ALL_TV_SHOWS = utils.ADDON.getLocalizedString(32021)
-        STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = utils.ADDON.getLocalizedString(32022)
-        STR_BACK = utils.ADDON.getLocalizedString(32011)
-        STR_MANAGED_TV_SHOWS = utils.ADDON.getLocalizedString(32023)
+        STR_NO_MANAGED_TV_SHOWS = utils.getLocalizedString(32020)
+        STR_REMOVE_ALL_TV_SHOWS = utils.getLocalizedString(32021)
+        STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = utils.getLocalizedString(32022)
+        STR_BACK = utils.getLocalizedString(32011)
+        STR_MANAGED_TV_SHOWS = utils.getLocalizedString(32023)
 
         managed_tvshows = self.dbh.get_all_shows('managed')
 
