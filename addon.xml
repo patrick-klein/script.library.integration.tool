@@ -13,6 +13,10 @@
 
   <extension point="kodi.context.item">
     <menu id="kodi.core.main">
+      <item library="default.py">
+        <label>32154</label>
+        <visible>String.StartsWith(ListItem.Path,plugin) + !Container.Content(addons)</visible>
+      </item>
       <item library="context.py">
         <label>32000</label>
         <visible>String.StartsWith(ListItem.Path,plugin) + !Container.Content(addons)</visible>
