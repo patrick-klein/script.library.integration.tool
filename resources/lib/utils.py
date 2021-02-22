@@ -120,7 +120,7 @@ def check_managed_folder():
     # Display an error is user hasn't configured managed folder yet
     if not (MANAGED_FOLDER and isdir(MANAGED_FOLDER)):
         # TODO: Open prompt to just set managed folder from here
-        STR_CHOOSE_FOLDER = ADDON.getLocalizedString(32123)
+        STR_CHOOSE_FOLDER = getLocalizedString(32123)
         notification(STR_CHOOSE_FOLDER)
         log_msg('No managed folder "{}"'.format(MANAGED_FOLDER), xbmc.LOGERROR)
         sys.exit()
@@ -143,7 +143,7 @@ def check_subfolders():
             fs.mkdir(folder)
             created_folders |= True
     if created_folders:
-        STR_SUBFOLDERS_CREATED = ADDON.getLocalizedString(32127)
+        STR_SUBFOLDERS_CREATED = getLocalizedString(32127)
         notification(STR_SUBFOLDERS_CREATED)
         # TODO: Add video sources here
         sys.exit()
@@ -165,8 +165,8 @@ def check_version_file():
         # version = Version(ADDON_VERSION)
         version = Version('0.3.2')
     if version != ADDON_VERSION:
-        STR_UPDATING = ADDON.getLocalizedString(32133)
-        STR_UPDATED = ADDON.getLocalizedString(32134)
+        STR_UPDATING = getLocalizedString(32133)
+        STR_UPDATED = getLocalizedString(32134)
         notification(STR_UPDATING)
         if version < '0.3.0':
             # Update .pkl files
@@ -335,14 +335,15 @@ def skip_filter(contets_json):
     for item in contets_json:
         if not re_search(item['label']):
             yield item
+
+def list_reorder(contets_json, showtitle, sync_type=False):
     ''' Return a list of elements reordered by number id '''
     reordered = [''] * len(contets_json)
     years = []
-
     for index, item in enumerate(contets_json):
-        if sync_type == 'all_items':
-            pass
-        else:
+        # TODO: check if logic is real necessary, test is for all languages eficient
+        SEASON_CHECK = bool(re.search(r'season|temporada', item['label'].lower()))
+        if not sync_type == 'all_items':
             if sync_type == 'movie' and item['type'] == 'movie':
                 pass
             elif (sync_type == 'tvshow' and item['type']
@@ -353,14 +354,12 @@ def skip_filter(contets_json):
             else:
                 continue
 
-        if (re.search(r'(i?\#(?:\d{1,5}\.\d{1,5}|SP))', item['label']) or
-        item['label'] in ['Suggested', 'Extras', 'Next page\u2026', 'Pr\u00f3xima P\u00e1gina']):
-            # do nothing for this itens
-            pass
-        else:
+        # if item['label'] in ['next page\u2026', 'pr\u00f3xima p\u00e1gina']:
+        #     nextpage = True
+
             item['number'] = index + 1
             # 1601 é o ano que aparece quando a informação de ano correta não existe
-            if str(item['year']) == '1601':
+        if item['year'] == 1601:
                 del item['year']
 
             # MOVIES: detect movies in dir
@@ -378,7 +377,6 @@ def skip_filter(contets_json):
                         pass
                 except Exception:
                     pass
-                
                 reordered[item['number'] - 1] = item
 
             # # CRUNCHYROLL: tenta identificar oque é uma pasta de serie
@@ -387,44 +385,32 @@ def skip_filter(contets_json):
             item['type'] in 'unknown' and not
             re.search(r'\/\?status=Continuing|\/\?status=Completed', item['file']) and
             re.search(r'\&mode=series', item['file'])):
-                #
                 item['type'] = 'tvshow'
                 del item['episode']
                 del item['season']
                 del item['title']
-
                 reordered[item['number'] - 1] = item
 
             #AMAZON: tenta identificar oque é uma pasta de serie
             elif ('amazon' in item['file'] and
             item['filetype'] == 'directory' and
             item['type'] in ['tvshow', 'unknown'] and
-            str(item['episode']) == '-1' and not
-            'Season' in item['label']):
-            #
+        item['episode'] == -1 and SEASON_CHECK is False):
                 item['type'] = 'tvshow'
-
                 item['showtitle'] = item['label']
-
                 del item['episode']
                 del item['season']
-
                 reordered[item['number'] - 1] = item
 
             #DISNEY: tenta identificar oque é uma pasta de serie
             elif ('disney' in item['file'] and
             item['filetype'] == 'directory' and
             item['type'] in ['tvshow'] and
-            str(item['episode']) == '-1' and not
-            'Season' in item['label']):
-            #
+        item['episode'] == -1 and not SEASON_CHECK is True):               
                 item['type'] = 'tvshow'
-
                 item['showtitle'] = item['label']
-
                 del item['episode']
                 del item['season']
-
                 reordered[item['number'] - 1] = item
 
             # NETFLIX: tenta identificar oque é uma pasta de serie,
@@ -432,49 +418,53 @@ def skip_filter(contets_json):
             elif ('netflix' in item['file'] and
             item['filetype'] == 'directory' and
             item['type'] in 'tvshow'):
-            #
                 del item['episode']
                 del item['season']
                 reordered[item['number'] - 1] = item
 
             # GENERICO: tenta identificar se é uma pasta de serie
-            elif item['filetype'] == 'directory' and item['type'] in 'tvshow':
+        elif item['filetype'] == 'directory' and 'tvshow' in item['type']:
                 item['showtitle'] = item['title']
                 del item['episode']
                 del item['season']
                 reordered[item['number'] - 1] = item
 
+        # AMAZON: tenta identificar oque é uma temporada
+        if ('amazon' in item['file'] and
+        item['filetype'] == 'directory' and
+        item['type'] == 'unknown' and SEASON_CHECK is True):
+            del item['episode']
+            del item['number']
+            item['type'] = 'season'
+            item['showtitle'] = showtitle
+
+            try:
+                years.append(item['year'])
+            except KeyError:
+                pass
+            reordered[item['season'] - 1] = item
+
             # CRUNCHYROLL: tenta identificar oque é uma temporada
             if ('crunchyroll' in item['file'] and
             item['filetype'] == 'directory' and
             item['type'] == 'unknown' and 'season=' in item['file']):
-            #
                 del item['episode']
                 item['type'] = 'season'
-
                 item['showtitle'] = showtitle
-
-
                 if str(item['season']) == '0':
                     item['season'] = 1
-
                 try:
                     years.append(item['year'])
                 except KeyError:
                     pass
-
                 reordered[item['number'] - 1] = item
 
             # GENERICO: tenta identificar oque é uma temporada
             if (item['filetype'] == 'directory' and
-            item['type'] == 'unknown' and
-            'Season' in item['label']):
-            #
+        item['type'] == 'unknown' and SEASON_CHECK == True):
                 item['showtitle'] = showtitle
                 del item['episode']
-
                 item['type'] = 'season'
-
                 try:
                     years.append(item['year'])
                 except KeyError:
@@ -487,25 +477,15 @@ def skip_filter(contets_json):
                     years.append(item['year'])
                 except KeyError:
                     pass            
-        
                 reordered[item['episode'] - 1] = item
 
             # CRUNCHYROLL: tenta identificar oque é um episodio
             if 'crunchyroll' in item['file'] and 'episode=' in item['file'] and item['filetype'] == 'file':
                 item['type'] = 'episode'
-
                 try:
                     years.append(item['year'])
                 except KeyError:
                     pass
-
-                # update json to create absoluteepisode from crunchyroll and episode by index_items
-                if item.has_key('episode') and item.has_key('number'):
-                    if nextpage == True:
-                        item['absoluteepisode'] = item['episode']
-                        item['episode'] = item['episode']
-                    else:
-                        item['absoluteepisode'] = item['episode']
                         item['episode'] = item['number']
                 reordered[item['number'] - 1] = item
     for item in reordered:
@@ -523,13 +503,12 @@ def skip_filter(contets_json):
 def load_directory_items(progressdialog, dir_path, recursive=False, 
                                                 allow_directories=False, depth=1, 
                                                 showtitle=False, season=False,
-                                                year=False, nextpage=False, sync_type=False):
+                                                year=False, sync_type=False):
     ''' Load items in a directory using the JSON-RPC interface '''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
 
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)    
-
     if not (results.has_key('result') and results['result'].has_key('files')):
         yield []
     try:
@@ -565,13 +544,9 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
             if year is not False:
                 item['year'] = year
 
-            if item['label'] or item['title'] in ['Next page\u2026', 'Pr\u00f3xima P\u00e1gina']:
-                item['nextpage'] = True
-
                 # # se for um diretorio ele é adicionado a lista directories
             if item['filetype'] == 'directory' and item['type'] == 'tvshow' or item['type'] == 'season':
                 showtitle = item['showtitle']
-                # progressdialog.update(percent, line1=('Processando diretorio:'))
                 progressdialog.update(0, line1='Coletando itens no diretorio!')
                 progressdialog.update(percent, line2=('%s' % item['label']))
                 xbmc.sleep(200)
@@ -582,7 +557,6 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 progressdialog.update(percent, line1=('Processando items:'))
                 progressdialog.update(percent, line2=('%s' % item['label']))
                 xbmc.sleep(100)
-                item['nextpage'] = nextpage
                 item['showtitle'] = showtitle
                 yield item
 
@@ -608,12 +582,6 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
             except KeyError:
                 year = False
 
-            try:
-                nextpage = _dir['nextpage']
-                recursive = True
-            except KeyError:
-                nextpage = False
-
             new_items = list(load_directory_items(
                             progressdialog=progressdialog,
                             dir_path=_dir['file'],
@@ -623,7 +591,6 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                             showtitle=title,
                             season=season,
                             year=year,
-                            nextpage=nextpage,
                             sync_type=sync_type
                             ))
 
@@ -641,3 +608,9 @@ def tojs(data, filename):
     with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
         f.write(str(json.dumps(data, indent=4, sort_keys=True)))
         f.close()
+
+def getLocalizedString(string_id):
+    try:
+        return str(ADDON.getLocalizedString(string_id).decode('utf-8'))
+    except UnicodeEncodeError:
+        return ADDON.getLocalizedString(string_id)
