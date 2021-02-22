@@ -7,8 +7,8 @@ The purpose is to stage the currently selected movie/tvshow, and update synced d
 
 import sys
 
-import xbmc
-import xbmcgui
+import xbmc # pylint: disable=import-error
+import xbmcgui  # pylint: disable=import-error
 
 import resources.lib.utils as utils
 from resources.lib.menus.synced import SyncedMenu
@@ -17,18 +17,20 @@ from resources.lib.menus.synced import SyncedMenu
 def main():
     ''' Main entrypoint for context menu item '''
     # is more simple and fast ask user about type, many addons don't give this info
-    label = sys.listitem.getLabel().decode('utf-8')  # pylint: disable=E1101
+    label = sys.listitem.getLabel()  # pylint: disable=E1101
     year = xbmc.getInfoLabel('ListItem.Year')
 
-    current_dir = xbmc.getInfoLabel('Container.FolderPath')
-    selected_path = sys.listitem.getPath()  # pylint: disable=E1101
-        
+    selected_path = sys.listitem.getPath() # pylint: disable=E1101
     STR_CHOOSE_CONTENT_TYPE = utils.getLocalizedString(32100)
-    STR_MOVIE = utils.getLocalizedString(32102)
-    STR_TV_SHOW = utils.getLocalizedString(32101)
-    
-    # Using the Dialog().select method is better as it allows the user to cancel if they want, and we can add more options if needed.
-    typeofcontent = xbmcgui.Dialog().select(STR_CHOOSE_CONTENT_TYPE, ['It is a Movie', 'It is a Show', '[COLOR red][B]Cancel[/B][/COLOR]'])
+    # Using the Dialog().select method is better as it allows the user to cancel if they want,
+    #  and we can add more options if needed.
+    typeofcontent = xbmcgui.Dialog().select(
+        STR_CHOOSE_CONTENT_TYPE, [
+            'It is a Movie',
+            'It is a Show',
+            '[COLOR red][B]Cancel[/B][/COLOR]'
+            ]
+        )
     # Call corresponding method
     if typeofcontent == 0:
         SyncedMenu().sync_single_movie(title=label, year=year, link_stream_path=selected_path)
@@ -37,8 +39,6 @@ def main():
     elif typeofcontent == -1 or 2:
         xbmc.sleep(200)
         utils.notification('Type of content not selected, Try again.')
-        pass
-
 
 if __name__ == '__main__':
     main()
