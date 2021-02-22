@@ -627,3 +627,7 @@ msgstr ""
 msgctxt "#32153"
 msgid "Add TV show items without staging"
 msgstr ""
+
+msgctxt "#32154"
+msgid "[B]Library Integration Tool Menu[/B]"
+msgstr ""
