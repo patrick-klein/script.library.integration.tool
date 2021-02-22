@@ -214,7 +214,7 @@ class DatabaseHandler(object):
         return [BlockedItem(*x) for x in rows]
 
     @utils.logged_function
-    def get_content_items(self, status=None, mediatype=None, order=None, show_title=None):
+    def get_content_items(self, status=None, mediatype=None, order=None, show_title=None, season_number=None):
         ''' Query Content table for sorted items with given constaints
         and casts results as ContentItem subclasses
         keyword arguments:
@@ -235,12 +235,23 @@ class DatabaseHandler(object):
         # Define template for this sql command
         sql_comm = ('SELECT * FROM %s WHERE Status=?' % table_name)
 
-        if order == 'Show_Title' and show_title is not None:
+        if order == 'Show_Title' and season_number is not None and show_title is not None:
+            params += (show_title, season_number, )
+            sql_comm += ' and Show_Title=? and Season=? ORDER BY CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
+
+        if order == 'Show_Title' and season_number is None and show_title is not None:
             params += (show_title, )
-            sql_comm += ' and Show_Title=? ORDER BY CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
+            sql_comm += ' AND Show_Title=? ORDER BY CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
+
         if order == 'Show_Title' and show_title is None:
             sql_comm += ' ORDER BY Show_Title, CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
-        elif order == 'Title':
+
+        if order == 'Season':
+            params += (show_title, )
+            sql_comm = sql_comm.replace('*', 'DISTINCT CAST(Season AS INTEGER)')
+            sql_comm += ' and Show_Title=? ORDER BY CAST(Season AS INTEGER)'
+
+        if order == 'Title':
             sql_comm += ' ORDER BY Title'
 
         self.cur.execute(sql_comm, params)
@@ -339,7 +350,7 @@ class DatabaseHandler(object):
 
     @utils.utf8_args
     @utils.logged_function
-    def remove_from(self, status=None, mediatype=None, show_title=None, directory=None):
+    def remove_from(self, status=None, mediatype=None, show_title=None, directory=None, season=None):
         ''' Remove all items with status, mediatype or show_title'''
         ''' Remove all tvshow items from Content with status and show_title '''
 
@@ -362,13 +373,17 @@ class DatabaseHandler(object):
             self.cur.execute(
                 (QUERY_STR % "WHERE Status=? AND Show_Title=?"), (status, show_title)
             )
-        elif show_title is None and directory is None:
+        if show_title is None and directory is None:
             self.cur.execute(
                 (QUERY_STR % "WHERE Status=? AND Mediatype=?"), (status, mediatype)
             )
-        elif directory is not None:
+        if directory is not None:
             self.cur.execute(
                 (QUERY_STR % "WHERE Directory=?"), (directory, )
+            )
+        if season is not None:
+            self.cur.execute(
+                (QUERY_STR % "WHERE Show_Title=? AND Season=?"), (show_title, season)
             )
         self.conn.commit()
 
