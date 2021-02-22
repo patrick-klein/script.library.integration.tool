@@ -317,8 +317,24 @@ def videolibrary(method):
             }, ensure_ascii=False)
         )
 
-@logged_function
-def list_reorder(contets_json, nextpage, showtitle, sync_type=False):
+
+def re_search(string, _SKIP_STRINGS=None):
+    SKIP_STRINGS = [
+        'resumo',
+        'suggested',
+        'extras',
+        'trailer',
+        '(?i)\#(?:\d{1,5}\.\d{1,5}|SP)',
+    ]
+
+    if _SKIP_STRINGS is not None:
+        SKIP_STRINGS = _SKIP_STRINGS
+    return bool(any(re.search(rgx, string.lower()) for rgx in SKIP_STRINGS))
+ 
+def skip_filter(contets_json):
+    for item in contets_json:
+        if not re_search(item['label']):
+            yield item
     ''' Return a list of elements reordered by number id '''
     reordered = [''] * len(contets_json)
     years = []
@@ -517,7 +533,11 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     if not (results.has_key('result') and results['result'].has_key('files')):
         yield []
     try:
-        listofitems = list(list_reorder(results['result']['files'], nextpage, showtitle, sync_type=sync_type))
+        listofitems = list(list_reorder(
+            list(skip_filter(
+                results['result']['files'])), showtitle, sync_type=sync_type
+            )
+        )
     except KeyError:
         listofitems = []
 
