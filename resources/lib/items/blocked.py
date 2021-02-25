@@ -23,13 +23,13 @@ class BlockedItem(dict):
         ''' Localize tags used for identifying mediatype '''
         if not self._localized_type:
             if self['type'] == 'movie':  # Movie
-                return getLocalizedString(32102)
+                return utils.getlocalizedstring(32102)
             elif self['type'] == 'tvshow':  # TV Show
-                return getLocalizedString(32101)
+                return utils.getlocalizedstring(32101)
             elif self['type'] == 'keyword':  # Keyword
-                return getLocalizedString(32113)
+                return utils.getlocalizedstring(32113)
             elif self['type'] == 'episode':  # Episode
-                return getLocalizedString(32114)
+                return utils.getlocalizedstring(32114)
             else:
                 self._localized_type = self['type']
         return self._localized_type

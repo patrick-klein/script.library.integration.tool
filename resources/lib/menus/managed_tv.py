@@ -21,8 +21,8 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def move_episodes_to_staged(items):
         ''' Remove all managed episodes in specified show from library, and add them to staged '''
-        STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = utils.getLocalizedString(32034)
-        STR_ALL_x_EPISODES_MOVED_TO_STAGED = utils.getLocalizedString(32035)
+        STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = utils.getlocalizedstring(32034)
+        STR_ALL_x_EPISODES_MOVED_TO_STAGED = utils.getlocalizedstring(32035)
         show_title = items[0].show_title
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(
@@ -65,8 +65,8 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def move_all_to_staged(self):
         ''' Remove all managed tvshow items from library, and add them to staged '''
-        STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = utils.getLocalizedString(32026)
-        STR_ALL_TV_SHOWS_MOVED_TO_STAGED = utils.getLocalizedString(32027)
+        STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = utils.getlocalizedstring(32026)
+        STR_ALL_TV_SHOWS_MOVED_TO_STAGED = utils.getlocalizedstring(32027)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED)
 
@@ -88,8 +88,8 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def remove_episodes(items):
         ''' Remove all episodes in specified show from library '''
-        STR_REMOVING_ALL_x_EPISODES = utils.getLocalizedString(32032)
-        STR_ALL_x_EPISODES_REMOVED = utils.getLocalizedString(32033)
+        STR_REMOVING_ALL_x_EPISODES = utils.getlocalizedstring(32032)
+        STR_ALL_x_EPISODES_REMOVED = utils.getlocalizedstring(32033)
         show_title = items[0].show_title
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_x_EPISODES % show_title)
@@ -125,8 +125,8 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def remove_all(self):
         ''' Remove all managed tvshow items from library '''
-        STR_REMOVING_ALL_TV_SHOWS = utils.getLocalizedString(32024)
-        STR_ALL_TV_SHOWS_REMOVED = utils.getLocalizedString(32025)
+        STR_REMOVING_ALL_TV_SHOWS = utils.getlocalizedstring(32024)
+        STR_ALL_TV_SHOWS_REMOVED = utils.getlocalizedstring(32025)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
         managed_tv_items = self.dbh.get_content_items(
@@ -144,10 +144,10 @@ class ManagedTVMenu(object):
     @utils.logged_function
     def episode_options(self, item, season_number):
         ''' Provide options for a single managed episode in a dialog window '''
-        STR_REMOVE = utils.getLocalizedString(32017)
-        STR_MOVE_BACK_TO_STAGED = utils.getLocalizedString(32018)
-        STR_BACK = utils.getLocalizedString(32011)
-        STR_MANAGED_EPISODE_OPTIONS = utils.getLocalizedString(32036)
+        STR_REMOVE = utils.getlocalizedstring(32017)
+        STR_MOVE_BACK_TO_STAGED = utils.getlocalizedstring(32018)
+        STR_BACK = utils.getlocalizedstring(32011)
+        STR_MANAGED_EPISODE_OPTIONS = utils.getlocalizedstring(32036)
         lines = [STR_REMOVE, STR_MOVE_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_MANAGED_EPISODE_OPTIONS, item.episode_title_with_id),
@@ -171,12 +171,11 @@ class ManagedTVMenu(object):
         ''' Displays all managed episodes in the specified show,
         which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        STR_NO_MANAGED_x_EPISODES = utils.getLocalizedString(32028) % show_title
-        STR_REMOVE_ALL_EPISODES = utils.getLocalizedString(32029)
-        STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = utils.getLocalizedString(32030)
-        STR_BACK = utils.getLocalizedString(32011)
-        STR_MANAGED_x_EPISODES = utils.getLocalizedString(32031) % show_title
-
+        STR_NO_MANAGED_x_EPISODES = utils.getlocalizedstring(32028) % show_title
+        STR_REMOVE_ALL_EPISODES = utils.getlocalizedstring(32029)
+        STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = utils.getlocalizedstring(32030)
+        STR_BACK = utils.getlocalizedstring(32011)
+        STR_MANAGED_x_EPISODES = utils.getlocalizedstring(32031) % show_title
         managed_episodes = self.dbh.get_content_items(
             status='managed', mediatype='tvshow', order='Show_Title', show_title=show_title, season_number=season_number
         )
@@ -212,7 +211,7 @@ class ManagedTVMenu(object):
         STR_NO_MANAGED_X_SEASONS = str('No managed %s seasons') % show_title
         STR_REMOVE_ALL_SEASONS = 'Remove all seasons'
         STR_MOVE_ALL_SEASONS_BACK_TO_STAGED = 'Move all seasons back to staged'
-        STR_BACK = utils.getLocalizedString(32011)
+        STR_BACK = utils.getlocalizedstring(32011)
         STR_MANAGED_X_SEASONS = str('Managed %s Seasons') % show_title
         managed_seasons = self.dbh.get_content_items(
             status='managed', mediatype='tvshow', order='Season', show_title=show_title
@@ -247,14 +246,12 @@ class ManagedTVMenu(object):
     def view_shows(self):
         ''' Display all managed tvshows, which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        STR_NO_MANAGED_TV_SHOWS = utils.getLocalizedString(32020)
-        STR_REMOVE_ALL_TV_SHOWS = utils.getLocalizedString(32021)
-        STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = utils.getLocalizedString(32022)
-        STR_BACK = utils.getLocalizedString(32011)
-        STR_MANAGED_TV_SHOWS = utils.getLocalizedString(32023)
-
+        STR_NO_MANAGED_TV_SHOWS = utils.getlocalizedstring(32020)
+        STR_REMOVE_ALL_TV_SHOWS = utils.getlocalizedstring(32021)
+        STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = utils.getlocalizedstring(32022)
+        STR_BACK = utils.getlocalizedstring(32011)
+        STR_MANAGED_TV_SHOWS = utils.getlocalizedstring(32023)
         managed_tvshows = self.dbh.get_all_shows('managed')
-
         if not managed_tvshows:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_MANAGED_TV_SHOWS)
             return

@@ -21,7 +21,7 @@ def main():
     year = xbmc.getInfoLabel('ListItem.Year')
 
     selected_path = sys.listitem.getPath() # pylint: disable=E1101
-    STR_CHOOSE_CONTENT_TYPE = utils.getLocalizedString(32100)
+    STR_CHOOSE_CONTENT_TYPE = utils.getlocalizedstring(32100)
     # Using the Dialog().select method is better as it allows the user to cancel if they want,
     #  and we can add more options if needed.
     typeofcontent = xbmcgui.Dialog().select(

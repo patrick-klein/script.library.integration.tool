@@ -35,12 +35,12 @@ class MainMenu(object):
         # TODO: add parameter for location in list -
         #       useful when returning here after doing something on an item
         #       (preselect is broken when pressing cancel)
-        STR_VIEW_MANAGED_MOVIES = utils.getLocalizedString(32002)
-        STR_VIEW_MANAGED_TV_SHOWS = utils.getLocalizedString(32003)
-        STR_VIEW_STAGED_MOVIES = utils.getLocalizedString(32004)
-        STR_VIEW_STAGED_TV_SHOWS = utils.getLocalizedString(32005)
-        STR_VIEW_SYNCED_DIRS = utils.getLocalizedString(32006)
-        STR_VIEW_BLOCKED_ITEMS = utils.getLocalizedString(32007)
+        STR_VIEW_MANAGED_MOVIES = utils.getlocalizedstring(32002)
+        STR_VIEW_MANAGED_TV_SHOWS = utils.getlocalizedstring(32003)
+        STR_VIEW_STAGED_MOVIES = utils.getlocalizedstring(32004)
+        STR_VIEW_STAGED_TV_SHOWS = utils.getlocalizedstring(32005)
+        STR_VIEW_SYNCED_DIRS = utils.getlocalizedstring(32006)
+        STR_VIEW_BLOCKED_ITEMS = utils.getlocalizedstring(32007)
         STR_UPDATE_LIBRARY = xbmc.getLocalizedString(653).title()
         STR_CLEAN_LIBRARY = xbmc.getLocalizedString(14247).title()
         lines = [

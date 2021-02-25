@@ -22,13 +22,13 @@ class SyncedItem(dict):
         ''' Localizes tags used for identifying mediatype '''
         if not self._localized_type:
             if self['type'] == 'movie':  # Movies
-                self._localized_type = utils.getLocalizedString(32109)
+                self._localized_type = utils.getlocalizedstring(32109)
             elif self['type'] == 'tvshow':  # TV Shows
-                self._localized_type = utils.getLocalizedString(32108)
+                self._localized_type = utils.getlocalizedstring(32108)
             elif self['type'] == 'single-movie':  # Single Movie
-                self._localized_type = utils.getLocalizedString(32116)
+                self._localized_type = utils.getlocalizedstring(32116)
             elif self['type'] == 'single-tvshow':  # Single TV Show
-                self._localized_type = utils.getLocalizedString(32115)
+                self._localized_type = utils.getlocalizedstring(32115)
             else:
                 self._localized_type = self['type']
         return self._localized_type
