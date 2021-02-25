@@ -600,7 +600,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 yield new
 
 @logged_function
-def notification(message, time=3000, icon='icon.png'):
+def notification(message, time=3000, icon='ntf_icon.png'):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
     from os.path import join
     xbmc.executebuiltin('Notification("{0}", "{1}", "{2}", "{3}")'.format(
