@@ -8,7 +8,7 @@ import os
 import sys
 import unittest
 
-import xbmc
+import xbmc # pylint: disable=import-error
 
 import resources.lib.utils as utils
 

@@ -6,8 +6,8 @@ which gets called from the main executable
 '''
 import sys
 
-import xbmc
-import xbmcgui
+import xbmc  # pylint: disable=import-error
+import xbmcgui  # pylint: disable=import-error
 
 import resources.lib.utils as utils
 

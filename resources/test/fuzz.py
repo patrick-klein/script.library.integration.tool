@@ -7,7 +7,7 @@ Defines function to call fuzz modules
 import os
 import unittest
 
-import xbmc
+import xbmc # pylint: disable=import-error
 
 import resources.lib.utils as utils
 

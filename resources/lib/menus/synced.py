@@ -6,8 +6,9 @@ Defines the SyncedMenu class
 # TODO: Different notifications depending on whether items were staged vs. automatically added
 import sys
 
-import xbmcgui
-import xbmc
+import xbmc # pylint: disable=import-error
+import xbmcgui # pylint: disable=import-error
+
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
 

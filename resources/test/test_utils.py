@@ -6,7 +6,7 @@ Defines class for testing utils module
 
 import unittest
 
-# import xbmcaddon
+# import xbmcaddon # pylint: disable=import-error
 
 import resources.lib.utils as utils
 

@@ -8,8 +8,8 @@ import os
 import shutil
 from fnmatch import fnmatch
 
-import xbmc
-import xbmcgui
+import xbmc  # pylint: disable=import-error
+import xbmcgui  # pylint: disable=import-error
 
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler

@@ -5,8 +5,8 @@ This module gets called from the context menu item "Sync directory to library" (
 The purpose is to stage all movies/tvshows in the current directory, and update database
 '''
 
-import xbmc
-import xbmcgui
+import xbmc  # pylint: disable=import-error
+import xbmcgui  # pylint: disable=import-error
 
 import resources.lib.utils as utils
 from resources.lib.menus.synced import SyncedMenu

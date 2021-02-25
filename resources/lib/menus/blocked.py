@@ -3,8 +3,7 @@
 '''
 Defines the BlockedMenu class
 '''
-
-import xbmcgui
+import xbmcgui  # pylint: disable=import-error
 
 import resources.lib.database_handler as db
 import resources.lib.utils as utils

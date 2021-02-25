@@ -3,9 +3,9 @@
 '''
 Defines the ManagedTVMenu class
 '''
+import xbmc # pylint: disable=import-error
+import xbmcgui # pylint: disable=import-error
 
-import xbmcgui
-import xbmc
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
 

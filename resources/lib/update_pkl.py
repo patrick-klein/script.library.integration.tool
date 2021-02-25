@@ -7,7 +7,7 @@ Script that converts old-style .pkl files to a SQLite database
 import os
 
 import cPickle as pickle
-import xbmc
+import xbmc # pylint: disable=import-error
 
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
