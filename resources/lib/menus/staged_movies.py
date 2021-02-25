@@ -124,7 +124,7 @@ class StagedMoviesMenu(object):
                 utils.ADDON_NAME,
                 STR_STAGED_MOVIE_OPTIONS,
                 item.movie_title),
-                lines
+            lines
         )
         if ret >= 0:
             if lines[ret] == STR_ADD:

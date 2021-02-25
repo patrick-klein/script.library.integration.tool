@@ -55,10 +55,10 @@ class ManagedTVMenu(object):
             percent = 100 * index / len(items)
             progress_dialog.update(
                 percent, line2=item.show_title, line3=item.episode_title_with_id
-        )
+            )
             xbmc.sleep(200)
-                item.remove_from_library()
-                item.set_as_staged()
+            item.remove_from_library()
+            item.set_as_staged()
         progress_dialog.close()
         utils.notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED % show_title)
 
@@ -73,7 +73,6 @@ class ManagedTVMenu(object):
         managed_tv_items = self.dbh.get_content_items(
             status='managed', mediatype='tvshow', order='Show_Title'
         )
-        
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
             progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
@@ -109,16 +108,18 @@ class ManagedTVMenu(object):
         STR_REMOVING_ALL_X_SEASONS = 'Removendo temporadas de: %s'
         STR_ALL_X_SEASONS_REMOVED = 'Todas as temporadas de %s, foram removidas'
         seasons = items[0]
-        
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_X_SEASONS % show_title)
 
         for season_number in seasons:
             percent = 100 * season_number / len(seasons)
-            progress_dialog.update(percent, line2=show_title, line3=str("Season: %s" % season_number))
+            progress_dialog.update(
+                percent,
+                line2=show_title,
+                line3=str("Season: %s" % season_number)
+            )
             self.dbh.remove_from(mediatype='tvshow', show_title=show_title, season=season_number)
             xbmc.sleep(300)
-
         progress_dialog.close()
         utils.notification(STR_ALL_X_SEASONS_REMOVED % show_title)
 
@@ -150,7 +151,9 @@ class ManagedTVMenu(object):
         STR_MANAGED_EPISODE_OPTIONS = utils.getlocalizedstring(32036)
         lines = [STR_REMOVE, STR_MOVE_BACK_TO_STAGED, STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_MANAGED_EPISODE_OPTIONS, item.episode_title_with_id),
+            '{0} - {1} - {2}'.format(
+                utils.ADDON_NAME, STR_MANAGED_EPISODE_OPTIONS, item.episode_title_with_id
+            ),
             lines
         )
         if ret >= 0:
@@ -177,7 +180,11 @@ class ManagedTVMenu(object):
         STR_BACK = utils.getlocalizedstring(32011)
         STR_MANAGED_x_EPISODES = utils.getlocalizedstring(32031) % show_title
         managed_episodes = self.dbh.get_content_items(
-            status='managed', mediatype='tvshow', order='Show_Title', show_title=show_title, season_number=season_number
+            status='managed',
+            mediatype='tvshow',
+            order='Show_Title',
+            show_title=show_title,
+            season_number=season_number
         )
         if not managed_episodes:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_MANAGED_x_EPISODES)
@@ -216,30 +223,32 @@ class ManagedTVMenu(object):
         managed_seasons = self.dbh.get_content_items(
             status='managed', mediatype='tvshow', order='Season', show_title=show_title
         )
-        
         if not managed_seasons:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_MANAGED_X_SEASONS)
-                return self.view_shows()
-        
+            return self.view_shows()
         lines = [str('[B]Season %s[/B]' % x) for x in managed_seasons]
-        lines += [STR_REMOVE_ALL_SEASONS, STR_MOVE_ALL_SEASONS_BACK_TO_STAGED, STR_BACK]
+        lines += [
+            STR_REMOVE_ALL_SEASONS, STR_MOVE_ALL_SEASONS_BACK_TO_STAGED, STR_BACK
+        ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1}'.format(utils.ADDON_NAME, STR_MANAGED_X_SEASONS), lines
         )
+        selection = lines[ret]
         if ret >= 0:
-            if ret < len(managed_seasons):  # managed item
-                for i, item in enumerate(managed_seasons):
-                    if ret == i:
-                        return self.view_episodes(show_title=show_title, season_number=ret + 1)
-            elif lines[ret] == STR_REMOVE_ALL_SEASONS:
+            if selection == STR_REMOVE_ALL_SEASONS:
                 # TODO: remove by title only
                 self.remove_seasons(managed_seasons, show_title)
-        return self.view_shows()
-            elif lines[ret] == STR_MOVE_ALL_SEASONS_BACK_TO_STAGED:
+                return self.view_shows()
+            elif selection == STR_MOVE_ALL_SEASONS_BACK_TO_STAGED:
                 self.move_all_seasons_to_staged(show_title)
                 return self.view_shows()
-            elif lines[ret] == STR_BACK:
+            elif selection == STR_BACK:
+                self.view_shows()
                 return self.view_shows()
+            else:  # managed item
+                return self.view_episodes(
+                    show_title=show_title,
+                    season_number=''.join(filter(str.isdigit, selection)))
         return self.view_shows()
 
     @utils.logged_function
@@ -255,14 +264,13 @@ class ManagedTVMenu(object):
         if not managed_tvshows:
             xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_MANAGED_TV_SHOWS)
             return
-
-        lines = ['[B]%s[/B]' % x for x in managed_tvshows]
-        lines += [STR_REMOVE_ALL_TV_SHOWS, STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED, STR_BACK]
-
+        lines = ['[B]{}[/B]'.format(x) for x in managed_tvshows]
+        lines += [
+            STR_REMOVE_ALL_TV_SHOWS, STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED, STR_BACK
+        ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1}'.format(utils.ADDON_NAME, STR_MANAGED_TV_SHOWS), lines
         )
-
         if ret >= 0:
             if ret < len(managed_tvshows):
                 for show_title in managed_tvshows:

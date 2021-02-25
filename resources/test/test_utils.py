@@ -5,20 +5,21 @@ Defines class for testing utils module
 '''
 
 import unittest
-
-# import xbmcaddon # pylint: disable=import-error
-
+import xbmcaddon # pylint: disable=import-error
 import resources.lib.utils as utils
-
 
 class TestUtils(unittest.TestCase):
     ''' Test cases for utils module '''
 
     def test_constants(self):
         ''' Check values returned by constants in utils '''
-        # addon = xbmcaddon.Addon(id='script.library.integration.tool')
-        self.assertEqual(utils.ADDON_NAME, addon.getAddonInfo('name'))
-        self.assertEqual(utils.ADDON_VERSION, addon.getAddonInfo('version'))
+        addon = xbmcaddon.Addon(id='script.library.integration.tool')
+        self.assertEqual(
+            utils.ADDON_NAME, addon.getAddonInfo('name')
+            )
+        self.assertEqual(
+            utils.ADDON_VERSION, addon.getAddonInfo('version')
+            )
         # TODO: test all contants, including type
 
     def test_clean_name(self):

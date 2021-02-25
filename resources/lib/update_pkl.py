@@ -11,7 +11,7 @@ import xbmc # pylint: disable=import-error
 
 import resources.lib.utils as utils
 from resources.lib.database_handler import DatabaseHandler
-
+# TODO: this module need to be updated
 
 @utils.logged_function
 def update_managed():

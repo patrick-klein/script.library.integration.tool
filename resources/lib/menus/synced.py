@@ -38,10 +38,8 @@ class SyncedMenu(object):
             # Don't prepare items that are already staged or managed
             label = dir_item['label']
             mediatype = 'tvshow' if dir_item['mediatype'] == 'episode' else dir_item['mediatype']
-
             if self.dbh.path_exists(path=path, status=['staged', 'managed'], mediatype=mediatype):
                 continue
-            
             if mediatype == 'movie':
                 item = (path, label, mediatype)
             elif mediatype == 'tvshow':
@@ -60,9 +58,13 @@ class SyncedMenu(object):
     def get_movies_in_directory(self, directory):
         ''' Get all movies in the directory and tags them '''
         dir_items = self.filter_blocked_items(
-            list(utils.load_directory_items(progressdialog=None, dir_path=directory, recursive=True, sync_type='movie'), 'movie')
-        )
-
+            list(utils.load_directory_items(
+                progressdialog=None,
+                dir_path=directory,
+                recursive=True,
+                sync_type='movie'
+                )), mediatype='movie'
+            )
         for item in dir_items:
             # Add tag to items
             item['mediatype'] = 'movie'
@@ -72,9 +74,13 @@ class SyncedMenu(object):
     def get_single_tvshow(self, directory, show_title):
         ''' Get the single TV show in the directory, and tag the items'''
         show_items = self.filter_blocked_items(
-            list(utils.load_directory_items(progressdialog=None, dir_path=directory, recursive=True, sync_type='tvshow'), 'episode')
-        )
-        
+            list(utils.load_directory_items(
+                progressdialog=None,
+                dir_path=directory,
+                recursive=True,
+                sync_type='tvshow'
+                )), mediatype='episode'
+            )
         for item in show_items:
             # Add tag to items
             item['mediatype'] = 'tvshow'
@@ -85,8 +91,14 @@ class SyncedMenu(object):
     def get_tvshows_in_directory(self, directory):
         ''' Get all TV shows in the directory, and tag the items '''
         dir_items = self.filter_blocked_items(
-            list(utils.load_directory_items(progressdialog=None, dir_path=directory, allow_directories=True, recursive=True, sync_type='tvshow'), 'tvshow')
-        )
+            list(utils.load_directory_items(
+                progressdialog=None,
+                dir_path=directory,
+                allow_directories=True,
+                recursive=True,
+                sync_type='tvshow'
+                )), mediatype='tvshow'
+            )
         all_items = []
         # Check every tvshow in list
         for dir_item in dir_items:
@@ -94,8 +106,13 @@ class SyncedMenu(object):
             # Load results if show isn't blocked
             show_path = dir_item['file']
             show_items = self.filter_blocked_items(
-                list(utils.load_directory_items(progressdialog=None, dir_path=show_path, recursive=True, sync_type='tvshow'), 'episode')
-            )
+                list(utils.load_directory_items(
+                    progressdialog=None,
+                    dir_path=show_path,
+                    recursive=True,
+                    sync_type='tvshow'
+                    )), mediatype='episode'
+                )
             for show_item in show_items:
                 # Add formatted item
                 show_item['mediatype'] = 'tvshow'
@@ -150,26 +167,22 @@ class SyncedMenu(object):
         STR_ITEM_IS_ALREADY_MANAGED = utils.getlocalizedstring(32104)
         STR_MOVIE_STAGED = utils.getlocalizedstring(32105)
         if not 'directory' in link_stream_path:
-        # Add synced directory to database
-        self.dbh.add_synced_dir(title, link_stream_path, 'single-movie')
-        # Check for duplicate in database
-        
-        if self.dbh.path_exists(path=link_stream_path, status='staged', mediatype='movie'):
-            utils.notification(STR_ITEM_IS_ALREADY_STAGED)
-        elif self.dbh.path_exists(path=link_stream_path, status='managed', mediatype='movie'):
-            utils.notification(STR_ITEM_IS_ALREADY_MANAGED)
-        else:
-            # Add item to database
-
-            self.dbh.add_content_item(MovieItem(
-                title=title,
-                year=year,
-                link_stream_path=link_stream_path,
-                mediatype='movie',
-                ).returasjson(),
-                'movie'
-            )
-            utils.notification('%s: %s' % (STR_MOVIE_STAGED, title))
+            # Add synced directory to database
+            self.dbh.add_synced_dir(title, link_stream_path, 'single-movie')
+            # Check for duplicate in database
+            if self.dbh.path_exists(path=link_stream_path, status='staged', mediatype='movie'):
+                utils.notification(STR_ITEM_IS_ALREADY_STAGED)
+            elif self.dbh.path_exists(path=link_stream_path, status='managed', mediatype='movie'):
+                utils.notification(STR_ITEM_IS_ALREADY_MANAGED)
+            else:
+                # Add item to database
+                self.dbh.add_content_item(MovieItem(
+                    title=title,
+                    year=year,
+                    link_stream_path=link_stream_path,
+                    mediatype='movie',
+                    ).returasjson(), 'movie')
+                utils.notification('%s: %s' % (STR_MOVIE_STAGED, title.encode('utf-8')))
         else:
             utils.notification('%s (%s) - %s' % (title, year, 'not added, is realy a movie?'))
 
@@ -194,9 +207,7 @@ class SyncedMenu(object):
             allow_directories=True,
             recursive=True,
             showtitle=title,
-            sync_type='tvshow'
-            )
-        )
+            sync_type='tvshow'))
         # Get all items to stage
         items_to_stage = 0
         num_already_staged = 0
@@ -205,7 +216,7 @@ class SyncedMenu(object):
         progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
 
         for index, showfile in enumerate(files_list):
-            if progressdialog.iscanceled() == True:
+            if progressdialog.iscanceled() is True:
                 progressdialog.close()
                 break
             try:
@@ -221,30 +232,32 @@ class SyncedMenu(object):
                 ).returasjson()
                 # Update progress
                 percent = 100 * index / len(files_list)
-                progressdialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title']))
-
-                if self.dbh.path_exists(path=contentdata['link_stream_path'], status='staged', mediatype='tvshow'):
+                progressdialog.update(
+                    percent, line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title'])
+                    )
+                if (self.dbh.path_exists(
+                        path=contentdata['link_stream_path'],
+                        status='staged',
+                        mediatype='tvshow')):
                     num_already_staged += 1
                     continue
 
-                elif self.dbh.path_exists(path=contentdata['link_stream_path'], status='managed', mediatype='tvshow'):
+                elif (self.dbh.path_exists(
+                        path=contentdata['link_stream_path'],
+                        status='managed',
+                        mediatype='tvshow')):
                     num_already_managed += 1
                     continue
-                    
                 elif self.dbh.check_blocked(contentdata['show_title'], 'episode'):
                     continue
-
                 # Update progress
                 progressdialog.update(percent, line2=contentdata['show_title'])
                 progressdialog.update(percent, line2=contentdata['episode_title_with_id'])
-                
                 self.dbh.add_content_item(contentdata, 'tvshow')
-                # 
                 items_to_stage += 1
                 xbmc.sleep(300)
             except TypeError:
                 utils.notification("Something went wrong, try again, maybe this isn't a Tvshow.")
-            
         if num_already_staged > 0 or num_already_managed > 0:
             utils.notification(
                 STR_i_NEW_i_STAGED_i_MANAGED %
@@ -256,8 +269,10 @@ class SyncedMenu(object):
 
     @utils.logged_function
     def sync_all_items_in_directory(self, sync_type, dir_label, dir_path):
-        ''' Synchronize all items in a directory (movies/series or all), based on the user's choice and stage items '''
-        # TODO: new notification label to show movies, TV shows and episodes that have been added
+        ''' Synchronize all items in a directory (movies/series or all),
+         based on the user's choice and stage items '''
+        # TODO: new notification label to show movies,
+        #  TV shows and episodes that have been added
         contentdata = None
         content_title = None
         STR_GETTING_ITEMS_IN_DIR = utils.getlocalizedstring(32125)
@@ -273,16 +288,16 @@ class SyncedMenu(object):
             # query json-rpc to get files in directory
             progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
             files_list = list(utils.load_directory_items(
-                progressdialog=progressdialog, dir_path=dir_path,
-                allow_directories=True, recursive=True, sync_type=sync_type
-                )
-            )
+                progressdialog=progressdialog,
+                dir_path=dir_path,
+                allow_directories=True,
+                recursive=True,
+                sync_type=sync_type))
             items_to_stage = 0
             for index, content_file in enumerate(files_list):
-                if progressdialog.iscanceled() == True:
+                if progressdialog.iscanceled() is True:
                     progressdialog.close()
-                    break                
-
+                    break
                 try:
                     content_title = content_file['movie_title']
                     contentdata = MovieItem(
@@ -292,7 +307,7 @@ class SyncedMenu(object):
                         year=content_file['year']
                     ).returasjson()
                     sync_type = 'movie'
-                except Exception:
+                except KeyError:
                     content_title = content_file['showtitle']
                     contentdata = EpisodeItem(
                         link_stream_path=content_file['file'],
@@ -310,12 +325,11 @@ class SyncedMenu(object):
                 # # # # # # # # # # # # # # # # # # # # type: movie or episode
                 if self.dbh.check_blocked(content_title, content_file['type']):
                     continue
-                
                 if self.dbh.path_exists(
-                    path=contentdata['link_stream_path'],
-                    status=['staged', 'managed'],
-                    #TODO: future dosen't use sync_type here
-                    mediatype=sync_type):
+                        path=contentdata['link_stream_path'],
+                        status=['staged', 'managed'],
+                        #TODO: future dosen't use sync_type here
+                        mediatype=sync_type):
                     continue
 
                 # Update progress
@@ -323,21 +337,25 @@ class SyncedMenu(object):
                 # Check for duplicate paths and blocked items
 
                 try:
-                    progressdialog.update(percent, line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title']))
-                    progressdialog.update(percent, line2=contentdata['episode_title_with_id'])
+                    progressdialog.update(
+                        percent,
+                        line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title'])
+                        )
+                    progressdialog.update(
+                        percent,
+                        line2=contentdata['episode_title_with_id']
+                        )
                     # try add tvshow
                     self.dbh.add_content_item(contentdata, 'tvshow')
-
                     xbmc.sleep(300)
-                except Exception:
+                except KeyError:
                     # TODO: new dialog str to movie
                     progressdialog.update(percent, line1=('Staged Movie:'))
-                    progressdialog.update(percent, line2=content_title)                    
+                    progressdialog.update(percent, line2=content_title)
                     # try add movie
                     self.dbh.add_content_item(contentdata, 'movie')
                     xbmc.sleep(500)
                 items_to_stage += 1
-                pass
             utils.notification(STR_i_EPISODES_STAGED % items_to_stage)
         finally:
             progressdialog.close()
@@ -428,17 +446,16 @@ class SyncedMenu(object):
 
         progressdialog = xbmcgui.DialogProgressBG()
         progressdialog.create(utils.ADDON_NAME)
-
         try:
             all_items = []
             movie_dirs = self.dbh.get_synced_dirs(synced_type='movie')
             single_movie_dirs = self.dbh.get_synced_dirs(synced_type='single-movie')
             total_num_dirs = len(movie_dirs + single_movie_dirs)
-
             for index, synced_dir in enumerate(movie_dirs):
-                progressdialog.update(percent=99 * index / total_num_dirs, message=synced_dir['label'])
+                progressdialog.update(
+                    percent=99 * index / total_num_dirs, message=synced_dir['label']
+                    )
                 all_items += self.get_movies_in_directory(synced_dir['dir'])
-
             for index, synced_dir in enumerate(single_movie_dirs):
                 progressdialog.update(
                     percent=99 * (index + len(movie_dirs)) / total_num_dirs,
@@ -494,11 +511,11 @@ class SyncedMenu(object):
             show_dirs = self.dbh.get_synced_dirs(synced_type='tvshow')
             single_show_dirs = self.dbh.get_synced_dirs(synced_type='single-tvshow')
             total_num_dirs = len(show_dirs + single_show_dirs)
-
             for index, synced_dir in enumerate(show_dirs):
-                progressdialog.update(percent=99 * index / total_num_dirs, message=synced_dir['label'])
+                progressdialog.update(
+                    percent=99 * index / total_num_dirs, message=synced_dir['label']
+                    )
                 all_items += self.get_tvshows_in_directory(synced_dir['dir'])
-
             for index, synced_dir in enumerate(single_show_dirs):
                 progressdialog.update(
                     percent=99. * (index + len(show_dirs)) / total_num_dirs,
@@ -545,11 +562,14 @@ class SyncedMenu(object):
         STR_NO_SYNCED_DIRS = utils.getlocalizedstring(32120)
         synced_dirs = self.dbh.get_synced_dirs()
         if not synced_dirs:
-            xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_SYNCED_DIRS)
+            xbmcgui.Dialog().ok(
+                utils.ADDON_NAME,
+                STR_NO_SYNCED_DIRS
+                )
             return
         lines = [
-            '[B]%s[/B] - %s - [I]%s[/I]' % (x['label'].decode('utf-8'), x.localize_type(), x['dir'])
-            for x in synced_dirs
+            '[B]%s[/B] - %s - [I]%s[/I]' %
+            (x['label'].decode('utf-8'), x.localize_type(), x['dir']) for x in synced_dirs
         ]
         lines += [STR_UPDATE_ALL, STR_UPDATE_MOVIES, STR_UPDATE_TV_SHOWS, STR_REMOVE_ALL, STR_BACK]
         ret = xbmcgui.Dialog().select(

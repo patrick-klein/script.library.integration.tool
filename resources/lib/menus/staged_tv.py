@@ -36,7 +36,6 @@ class StagedTVMenu(object):
             progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
             xbmc.sleep(200)
             item.add_to_library()
-        
         progress_dialog.close()
         utils.notification(STR_ALL_x_EPISODES_ADDED % show_title)
 
@@ -58,7 +57,6 @@ class StagedTVMenu(object):
             progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
             xbmc.sleep(100)
             item.add_to_library()
-        
         progress_dialog.close()
         utils.notification(STR_ALL_x_SEASONS_ADDED % show_title)
 
@@ -79,7 +77,11 @@ class StagedTVMenu(object):
             percent = 100 * index / len(staged_seasons)
 
             if os.path.exists(item.episode_nfo[0]):
-                progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+                progress_dialog.update(
+                    percent,
+                    line2=item.show_title,
+                    line3=item.episode_title_with_id
+                )
                 xbmc.sleep(200)
                 item.add_to_library()
 
@@ -193,9 +195,12 @@ class StagedTVMenu(object):
         # content menaget precisa retornar episode_nfo[0]
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-        
             if os.path.exists(item.episode_nfo[0]):
-                progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+                progress_dialog.update(
+                    percent,
+                    line2=item.show_title,
+                    line3=item.episode_title_with_id
+                )
                 xbmc.sleep(200)
                 item.add_to_library()
             progress_dialog.update(percent, line2=' ', line3=' ')
@@ -359,13 +364,19 @@ class StagedTVMenu(object):
         STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA = utils.getlocalizedstring(32069)
         STR_GENERATE_ALL_METADATA_ITEMS = utils.getlocalizedstring(32040)
         STR_BACK = utils.getlocalizedstring(32011)
-        STR_STAGED_x_EPISODES = utils.getlocalizedstring(32070) % show_title        
+        STR_STAGED_x_EPISODES = utils.getlocalizedstring(32070) % show_title
         staged_episodes = self.dbh.get_content_items(
-            status='staged', mediatype='tvshow', order='Show_Title', show_title=show_title, season_number=season_number
+            status='staged',
+            mediatype='tvshow',
+            order='Show_Title',
+            show_title=show_title,
+            season_number=season_number
         )
-
         if not staged_episodes:
-            xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_STAGED_x_EPISODES)
+            xbmcgui.Dialog().ok(
+                utils.ADDON_NAME,
+                STR_NO_STAGED_x_EPISODES
+            )
             self.view_shows()
             return
         lines = [str(x) for x in staged_episodes]

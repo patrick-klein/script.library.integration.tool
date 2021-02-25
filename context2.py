@@ -15,12 +15,21 @@ from resources.lib.menus.synced import SyncedMenu
 @utils.entrypoint
 def main():
     ''' Main entrypoint for context menu item '''
-    container_type = xbmc.getInfoLabel('Container.Content')
     dir_path = xbmc.getInfoLabel('Container.FolderPath')
     dir_label = xbmc.getInfoLabel('Container.FolderName')
     # Get content type
     STR_CHOOSE_CONTENT_TYPE = utils.getlocalizedstring(32100)
     # STR_MOVIE = utils.getlocalizedstring(32102)
+    # STR_TV_SHOW = utils.getlocalizedstring(32101)
+    typeofcontent = xbmcgui.Dialog().select(
+        STR_CHOOSE_CONTENT_TYPE,
+        [
+            'Sync All Items',
+            'Sync Only Movies',
+            'Sync Only Shows',
+            '[COLOR red][B]Cancel[/B][/COLOR]'
+        ]
+        )
 
     # Call corresponding method
     if typeofcontent == 0:
@@ -35,8 +44,9 @@ def main():
 
     try:
         SyncedMenu().sync_all_items_in_directory(sync_type, dir_label, dir_path)
-    except Exception:
-        pass
+    except Exception as genericexception:
+        # TODO: A generic except, in furure, can be updated
+        raise genericexception
 
 
 if __name__ == '__main__':

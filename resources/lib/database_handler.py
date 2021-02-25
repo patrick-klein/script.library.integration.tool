@@ -214,12 +214,18 @@ class DatabaseHandler(object):
         return [BlockedItem(*x) for x in rows]
 
     @utils.logged_function
-    def get_content_items(self, status=None, mediatype=None, order=None, show_title=None, season_number=None):
+    def get_content_items(self,
+                          status=None,
+                          mediatype=None,
+                          order=None,
+                          show_title=None,
+                          season_number=None
+                         ):
         ''' Query Content table for sorted items with given constaints
         and casts results as ContentItem subclasses
         keyword arguments:
-            mediatype: string, 'movie' or 'tvshow'
             status: string, 'managed' or 'staged'
+            mediatype: string, 'movie' or 'tvshow'
             show_title: string, any show title
             order: string, any single column '''
 
@@ -231,20 +237,34 @@ class DatabaseHandler(object):
             # FUTURE: check if is music
             raise 'Type not detected'
 
+        # status='managed',
+        # mediatype='tvshow',
+        # order='Show_Title',
+        # show_title=show_title,
+        # season_number=season_number
+
         params = (status, )
         # Define template for this sql command
         sql_comm = ('SELECT * FROM %s WHERE Status=?' % table_name)
+        if order == 'Show_Title':
+            if (season_number is not None and
+                    show_title is not None):
+                params += (show_title, season_number, )
+                sql_comm += ' and Show_Title=? and Season=? \
+                    ORDER BY CAST(Season AS INTEGER), \
+                    CAST(Epnumber AS INTEGER)'
 
-        if order == 'Show_Title' and season_number is not None and show_title is not None:
-            params += (show_title, season_number, )
-            sql_comm += ' and Show_Title=? and Season=? ORDER BY CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
+            if (season_number is None and
+                    show_title is not None):
+                params += (show_title, )
+                sql_comm += ' AND Show_Title=? \
+                    ORDER BY CAST(Season AS INTEGER), \
+                    CAST(Epnumber AS INTEGER)'
 
-        if order == 'Show_Title' and season_number is None and show_title is not None:
-            params += (show_title, )
-            sql_comm += ' AND Show_Title=? ORDER BY CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
-
-        if order == 'Show_Title' and show_title is None:
-            sql_comm += ' ORDER BY Show_Title, CAST(Season AS INTEGER), CAST(Epnumber AS INTEGER)'
+            if show_title is None:
+                sql_comm += ' ORDER BY Show_Title, \
+                    CAST(Season AS INTEGER), \
+                    CAST(Epnumber AS INTEGER)'
 
         if order == 'Season':
             params += (show_title, )
@@ -253,7 +273,6 @@ class DatabaseHandler(object):
 
         if order == 'Title':
             sql_comm += ' ORDER BY Title'
-
         self.cur.execute(sql_comm, params)
         # Get results and return items as content items
         rows = self.cur.fetchall()
@@ -296,8 +315,8 @@ class DatabaseHandler(object):
         #TODO: test speed against a set from "get_content_paths"
         # Build sql command and parameters, adding status if provided
         entries = []
-
-        for item in ([status] if type(status) == str else status):
+        # TODO: check this isinstance
+        for item in [status] if isinstance(status, str) else status:
             if mediatype == 'movie':
                 table_name = 'Movies'
             elif mediatype == 'tvshow':
@@ -307,18 +326,19 @@ class DatabaseHandler(object):
                 raise 'Type not detected'
 
             sql_comm = (
-                "SELECT (Directory) FROM {0} WHERE Directory = '{1}' AND Status = '{2}'".format(
-                                                                                            table_name,
-                                                                                            path,
-                                                                                            item
-                                                                                        )
+                "SELECT (Directory) FROM {0} \
+                    WHERE Directory = '{1}' \
+                    AND Status = '{2}'".format(
+                        table_name,
+                        path,
+                        item
+                        )
             )
             ret = self.cur.execute(sql_comm).fetchone()
 
             if ret > 0:
                 entries += ret
-            
-        if len(entries) > 0:
+        if entries:
             return True
         else:
             return False
@@ -327,7 +347,10 @@ class DatabaseHandler(object):
     # def remove_all_content_items(self, status, mediatype):
     #     ''' Remove all items from Content with status and mediatype '''
     #     # delete from table
-    #     self.cur.execute("DELETE FROM Content WHERE Status=? AND Mediatype=?", (status, mediatype))
+    #     self.cur.execute(
+    #         "DELETE FROM Content \
+    #         WHERE Status=? AND Mediatype=?",
+    #         (status, mediatype))
     #     self.conn.commit()
 
     # @utils.utf8_args
@@ -336,7 +359,8 @@ class DatabaseHandler(object):
     #     ''' Remove all tvshow items from Content with status and show_title '''
     #     # delete from table
     #     self.cur.execute(
-    #         "DELETE FROM Content WHERE Status=? AND Show_Title=?",
+    #         "DELETE FROM Content \
+    #         WHERE Status=? AND Show_Title=?",
     #         (status, show_title)
     #     )
     #     self.conn.commit()
@@ -350,15 +374,13 @@ class DatabaseHandler(object):
 
     @utils.utf8_args
     @utils.logged_function
-    def remove_from(self, status=None, mediatype=None, show_title=None, directory=None, season=None):
-        ''' Remove all items with status, mediatype or show_title'''
-        ''' Remove all tvshow items from Content with status and show_title '''
-
-        # merge functions:
-        # remove_all_content_items,
-        # remove_all_show_episodes,
-        # remove_content_item
-
+    def remove_from(self,
+                    status=None,
+                    mediatype=None,
+                    show_title=None,
+                    directory=None,
+                    season=None):
+        ''' Remove all items colected with sqlquerys '''
         if mediatype == 'movie':
             table_name = 'Movies'
         elif mediatype == 'tvshow':
@@ -367,23 +389,31 @@ class DatabaseHandler(object):
             # FUTURE: check if is music
             raise 'Type not detected'
 
-        QUERY_STR = "DELETE FROM {0} %s".format(table_name)
+        STR_CMD_QUERY = "DELETE FROM {0} %s".format(table_name)
 
         if show_title is not None:
             self.cur.execute(
-                (QUERY_STR % "WHERE Status=? AND Show_Title=?"), (status, show_title)
+                (
+                    STR_CMD_QUERY % "WHERE Status=? AND Show_Title=?"
+                ), (status, show_title)
             )
         if show_title is None and directory is None:
             self.cur.execute(
-                (QUERY_STR % "WHERE Status=? AND Mediatype=?"), (status, mediatype)
+                (
+                    STR_CMD_QUERY % "WHERE Status=? AND Mediatype=?"
+                ), (status, mediatype)
             )
         if directory is not None:
             self.cur.execute(
-                (QUERY_STR % "WHERE Directory=?"), (directory, )
+                (
+                    STR_CMD_QUERY % "WHERE Directory=?"
+                ), (directory, )
             )
         if season is not None:
             self.cur.execute(
-                (QUERY_STR % "WHERE Show_Title=? AND Season=?"), (show_title, season)
+                (
+                    STR_CMD_QUERY % "WHERE Show_Title=? AND Season=?"
+                ), (show_title, season)
             )
         self.conn.commit()
 
@@ -399,7 +429,10 @@ class DatabaseHandler(object):
     @utils.logged_function
     def remove_blocked(self, value, mediatype):
         ''' Remove the item in Blocked with the specified parameters '''
-        self.cur.execute('DELETE FROM Blocked WHERE Value=? AND Type=?', (value, mediatype))
+        self.cur.execute(
+            'DELETE FROM Blocked WHERE Value=? AND Type=?',
+            (value, mediatype)
+        )
         self.conn.commit()
 
     @utils.utf8_args
@@ -407,7 +440,10 @@ class DatabaseHandler(object):
     def remove_synced_dir(self, path):
         ''' Remove the entry in Synced with the specified Directory '''
         # remove entry
-        self.cur.execute("DELETE FROM Synced WHERE Directory=?", (path, ))
+        self.cur.execute(
+            "DELETE FROM Synced WHERE Directory=?",
+            (path, )
+        )
         self.conn.commit()
 
     @utils.utf8_args
@@ -423,7 +459,9 @@ class DatabaseHandler(object):
             raise 'Type not detected'
 
         #TODO: Verify there's only one entry in kwargs
-        sql_comm = ('''UPDATE %s SET {0}=(?) WHERE Directory=?''' % table_name)
+        sql_comm = (
+            '''UPDATE %s SET {0}=(?) WHERE Directory=?''' % table_name
+        )
         params = (path, )
 
         for key, val in kwargs.iteritems():
