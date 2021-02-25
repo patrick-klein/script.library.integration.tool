@@ -25,6 +25,7 @@ else:
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo('id')
 ADDON_NAME = ADDON.getAddonInfo('name')
+ADDON_PATH = ADDON.getAddonInfo('path')
 ADDON_VERSION = ADDON.getAddonInfo('version')
 AUTO_ADD_MOVIES = ADDON.getSetting('auto_add_movies')
 AUTO_ADD_TVSHOWS = ADDON.getSetting('auto_add_tvshows')
@@ -599,15 +600,15 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 yield new
 
 @logged_function
-def notification(message, time=3000, icon='../icon.png'):
+def notification(message, time=3000, icon='icon.png'):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
+    from os.path import join
     xbmc.executebuiltin('Notification("{0}", "{1}", "{2}", "{3}")'.format(
         ADDON_NAME,
         message,
         time,
-        icon
-        )
-                       )
+        join(ADDON_PATH, icon)
+        ))
 
 @logged_function
 def tojs(data, filename):
