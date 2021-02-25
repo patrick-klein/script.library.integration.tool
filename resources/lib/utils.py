@@ -7,7 +7,7 @@ Contains various constants and utility functions used thoughout the addon
 import re
 import sys
 
-from os import name, mkdir
+from os import mkdir, name as osname
 from os.path import expanduser, join, dirname, isdir, isfile
 
 import simplejson as json
@@ -16,7 +16,7 @@ import xbmc # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error
 
 # Get file system tools depending on platform
-if name == 'posix':
+if osname == 'posix':
     import resources.lib.unix as fs
 else:
     import resources.lib.universal as fs
@@ -68,7 +68,7 @@ MAPPED_STRINGS = [
     ('Part 5', 'Part Five'),
     ('Part 6', 'Part Six'),
 ]
-if name == 'nt':
+if osname == 'nt':
     MAPPED_STRINGS += [
         ('?', ''),
         ('<', ''),
@@ -237,7 +237,6 @@ def logged_function(func):
             )
             func_str = '{0}.{1}'.format(parent, func.__name__)
             # Pretty formating for argument string
-            # TODO: fix UnicodeEncodeError: 'ascii', normaly with Amazon VOD
             arg_list = list()
             for arg in args[1 if is_method else 0:]:
                 arg_list.append("'{0}'".format(arg) if isinstance(arg, basestring) else str(arg))
@@ -273,7 +272,7 @@ def clean_name(title):
     # TODO: Efficient algorithm that removes/replaces in a single
     for key, val in MAPPED_STRINGS:
         title = title.replace(key, val)
-    return name
+    return title
 
 
 @logged_function
