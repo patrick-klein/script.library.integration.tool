@@ -73,28 +73,32 @@ class DatabaseHandler(object):
     @staticmethod
     def content_item_from_db(item):
         ''' Static method that converts Content query output to ContentItem subclasses '''
-        if item[2] == 'movie':
-            # MovieItem.returasjson create a json and it is passed to ContentManMovies
-            return ContentManMovies(MovieItem(
-                                    link_stream_path=item[0],
-                                    title=item[1],
-                                    mediatype='movie',
-                                    year=item[4],
-                                ).returasjson()
-                            )
-        elif item[2] == 'tvshow':
-            # EpisodeItem.returasjson create a json and it is passed to ContentManShows
-            return ContentManShows(EpisodeItem(
-                                    link_stream_path=item[0],
-                                    title=item[1],
-                                    mediatype='tvshow',
-                                    # staged
-                                    year=item[4],
-                                    show_title=item[5],
-                                    season=item[6],
-                                    epnumber=item[7]
-                                ).returasjson()
-                            )
+        if isinstance(item[0], int):
+            return item
+        else:
+            if item[2] == 'movie':
+                # MovieItem.returasjson create a json and it is passed to ContentManMovies
+                return ContentManMovies(MovieItem(
+                    link_stream_path=item[0],
+                    title=item[1],
+                    mediatype='movie',
+                    year=item[4],
+                ).returasjson())
+            elif item[2] == 'tvshow':
+                # EpisodeItem.returasjson create a json and it is passed to ContentManShows
+                return ContentManShows(EpisodeItem(
+                    link_stream_path=item[0],
+                    title=item[1].decode('utf-8'),
+                    mediatype='tvshow',
+                    # staged
+                    year=item[4],
+                    show_title=item[5].decode('utf-8'),
+                    season=item[6],
+                    epnumber=item[7]
+                ).returasjson())
+            elif item[2] == 'music':
+                # TODO: add music
+                utils.notification('Music Here', 5000)  
         raise ValueError('Unrecognized Mediatype in Content query')
 
     @utils.utf8_args
