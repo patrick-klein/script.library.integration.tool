@@ -321,15 +321,10 @@ def execute_json_rpc(method, directory):
 
 def videolibrary(method):
     ''' A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary.Clean '''
-    if method == 'scan':
-        method = 'VideoLibrary.Scan'
-    elif method == 'clean':
-        method = 'VideoLibrary.Clean'
-
     return xbmc.executeJSONRPC(
         json.dumps({
             'jsonrpc': '2.0',
-            "method": method,
+            "method": 'VideoLibrary.Scan' if method == 'scan' else 'VideoLibrary.Clean',
             'id': 1
         }, ensure_ascii=False)
     )
