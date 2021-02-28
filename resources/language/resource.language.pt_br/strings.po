@@ -409,7 +409,7 @@ msgid "Blocked Item Options"
 msgstr ""
 
 msgctxt "#32100"
-msgid "Unable to determine content.  Choose content type:"
+msgid "Unable to determine content. Choose type:"
 msgstr ""
 
 msgctxt "#32101"
@@ -510,19 +510,19 @@ msgstr ""
 
 msgctxt "#32125"
 msgid "Getting all items in directory..."
-msgstr ""
+msgstr "Coletando todos os itens do diretório ..."
 
 msgctxt "#32126"
-msgid "Getting all items in %s..."
-msgstr ""
+msgid "Getting items of [COLOR blue][B]%s[/B][/COLOR]..."
+msgstr "Coletando items de [COLOR blue][B]%s[/B][/COLOR]..."
 
 msgctxt "#32127"
-msgid "Configured managed folder"
-msgstr ""
+msgid "[B]Configured managed[/B] folder"
+msgstr "[B]Pasta gerenciada[/B] configurada"
 
 msgctxt "#32128"
 msgid "Synced Directories"
-msgstr ""
+msgstr "Diretórios sincronizados"
 
 msgctxt "#32129"
 msgid "Use TV show artwork if episode thumb is unavailable"
@@ -530,7 +530,7 @@ msgstr ""
 
 msgctxt "#32130"
 msgid "Development"
-msgstr ""
+msgstr "Desenvolvimento"
 
 msgctxt "#32131"
 msgid "Run Test Suite"
@@ -542,11 +542,11 @@ msgstr ""
 
 msgctxt "#32133"
 msgid "Updating addon settings..."
-msgstr ""
+msgstr "Atualizando configurações do addon..."
 
 msgctxt "#32134"
-msgid "Add-on updated.  See change log for details."
-msgstr ""
+msgid "Add-on updated. See change log for details."
+msgstr "Atualização. Olhe o Log de mudanças"
 
 msgctxt "#32135"
 msgid "Clean up movie metadata"
@@ -558,11 +558,11 @@ msgstr ""
 
 msgctxt "#32137"
 msgid "Update TV shows"
-msgstr ""
+msgstr "Atualizar Series de TV"
 
 msgctxt "#32138"
 msgid "Update movies"
-msgstr ""
+msgstr "Atualizar Filmes"
 
 msgctxt "#32139"
 msgid "Max recursion when finding videos (0 for unlimited)"
@@ -570,11 +570,11 @@ msgstr ""
 
 msgctxt "#32140"
 msgid "Use custom managed folder"
-msgstr ""
+msgstr "Usar Pasta Gerenciada personalizada"
 
 msgctxt "#32141"
 msgid "Select managed folder"
-msgstr ""
+msgstr "Selecione Pasta Gerenciada"
 
 msgctxt "#32142"
 msgid "Use custom metadata folder"
@@ -627,3 +627,47 @@ msgstr ""
 msgctxt "#32154"
 msgid "[B]Library Integration Tool Menu[/B]"
 msgstr "[B]Menu Library Integration Tool[/B]"
+
+msgctxt "#32155"
+msgid "It is a Movie"
+msgstr "É um Filme"
+
+msgctxt "#32156"
+msgid "It is a Show"
+msgstr "É um Série de TV"
+
+msgctxt "#32157"
+msgid "[COLOR red][B]Cancelar[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#32158"
+msgid "Type not selected, Try again."
+msgstr "Tipo não selecionado, tente novamente."
+
+msgctxt "#32159"
+msgid "Choose the type of this content:"
+msgstr "Escolha o tipo deste conteúdo:"
+
+msgctxt "#32160"
+msgid "All Items"
+msgstr "Todos os Itens"
+
+msgctxt "#32161"
+msgid "Only Movies"
+msgstr "Apenas Filmes"
+
+msgctxt "#32162"
+msgid "Only Shows"
+msgstr "Apenas Séries de TV"
+
+msgctxt "#32163"
+msgid "could not be identified, not added!"
+msgstr "não pôde ser identificado, não adicionado!"
+
+msgctxt "#32164"
+msgid "Choose the type of content you want to sync?"
+msgstr "Que tipo de conteúdo que deseja sincronizar?"
+
+msgctxt "#32165"
+msgid "Staged Movie: [COLOR blue][B]%s[/B][/COLOR]"
+msgstr "Filme Armazenado: [COLOR blue][B]%s[/B][/COLOR]"

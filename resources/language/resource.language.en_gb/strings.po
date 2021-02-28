@@ -413,7 +413,7 @@ msgid "Blocked Item Options"
 msgstr ""
 
 msgctxt "#32100"
-msgid "Unable to determine content.  Choose content type:"
+msgid "Unable to determine content. Choose type:"
 msgstr ""
 
 msgctxt "#32101"
@@ -517,11 +517,11 @@ msgid "Getting all items in directory..."
 msgstr ""
 
 msgctxt "#32126"
-msgid "Getting all items in %s..."
+msgid "Getting all items of [COLOR blue][B]%s[/B][/COLOR]..."
 msgstr ""
 
 msgctxt "#32127"
-msgid "Configured managed folder"
+msgid "[B]Configured managed[/B] folder"
 msgstr ""
 
 msgctxt "#32128"
@@ -630,4 +630,48 @@ msgstr ""
 
 msgctxt "#32154"
 msgid "[B]Library Integration Tool Menu[/B]"
+msgstr ""
+
+msgctxt "#32155"
+msgid "It is a Movie"
+msgstr ""
+
+msgctxt "#32156"
+msgid "It is a Show"
+msgstr ""
+
+msgctxt "#32157"
+msgid "[COLOR red][B]Cancel[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#32158"
+msgid "Type not selected, Try again."
+msgstr ""
+
+msgctxt "#32159"
+msgid "Choose the type of this content:"
+msgstr ""
+
+msgctxt "#32160"
+msgid "All Items"
+msgstr ""
+
+msgctxt "#32161"
+msgid "Only Movies"
+msgstr ""
+
+msgctxt "#32162"
+msgid "Only Shows"
+msgstr ""
+
+msgctxt "#32163"
+msgid "could not be identified, not added!"
+msgstr ""
+
+msgctxt "#32164"
+msgid "Choose the type of content you want to sync?"
+msgstr ""
+
+msgctxt "#32165"
+msgid "Staged Movie: [COLOR blue][B]%s[/B][/COLOR]"
 msgstr ""
