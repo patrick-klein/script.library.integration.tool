@@ -353,6 +353,8 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
     ''' Return a list of elements reordered by number id '''
     reordered = [''] * len(contets_json)
     years = []
+    stored_title = None
+    stored_season = None
     for index, item in enumerate(contets_json):
         # TODO: check if logic is real necessary, test is for all languages eficient
         STR_SEASON_CHECK = bool(re.search(r'season|temporada', item['label'].lower()))
@@ -536,8 +538,21 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
                         except KeyError:
                             pass
                         reordered[item['episode'] - 1] = item
-            item['episode'] = item['number']
-            reordered[item['number'] - 1] = item
+            # this part of code detect episodes with < 30 in season with 'Next Page'
+            # works with CRUNCHYROLL, but can work for all
+            if (item['filetype'] == 'file' and
+                    item['type'] == 'episode'):
+                if stored_season and stored_title is None:
+                    stored_title = item['showtitle']
+                    stored_season = item['season']
+                if (item['season'] == stored_season and
+                        item['showtitle'] == stored_title and
+                        item['episode'] < 30):
+                    item['episode'] = item['number']
+                if item['season'] != stored_season:
+                    stored_season = item['season']
+                if item['showtitle'] != stored_title:
+                    stored_title = item['showtitle']
     for item in reordered:
         if not item == "":
             try:
