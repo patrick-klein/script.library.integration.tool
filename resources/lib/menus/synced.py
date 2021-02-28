@@ -203,6 +203,7 @@ class SyncedMenu(object):
             dir_path=link_stream_path,
             allow_directories=True,
             recursive=True,
+            year=year,
             showtitle=title,
             sync_type='tvshow'))
         # Get all items to stage

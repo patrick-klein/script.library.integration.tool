@@ -349,7 +349,7 @@ def skip_filter(contets_json):
         if not re_search(item['label']):
             yield item
 
-def list_reorder(contets_json, showtitle, sync_type=False):
+def list_reorder(contets_json, showtitle, year=False, sync_type=False):
     ''' Return a list of elements reordered by number id '''
     reordered = [''] * len(contets_json)
     years = []
