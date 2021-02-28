@@ -339,12 +339,17 @@ def re_search(string, strings_to_skip=None):
         r'(?i)\#(?:\d{1,5}\.\d{1,5}|SP)',
     ]
 
-    if strings_to_skip is not None:
+    if strings_to_skip:
         STR_SKIP_STRINGS = strings_to_skip
-    return bool(any(re.search(rgx, string.lower()) for rgx in STR_SKIP_STRINGS))
+    return bool(any(re.search(rgx, string, re.I) for rgx in STR_SKIP_STRINGS))
 
 def skip_filter(contets_json):
     ''' Function to check and filter items in a list '''
+    # TODO: IDEIA, create a new dialog to sync_all_items_in_directory in context2.py,
+    # where user can filter show/movies they whant to sync,
+    # imagine a list with 30 shows/movies, but user realy want 5,
+    # with this they can select dinamicaly first we ask if user want to filter,
+    # if yes, the multselection list will apear
     for item in contets_json:
         if not re_search(item['label']):
             yield item
@@ -357,12 +362,16 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
     stored_season = None
     for index, item in enumerate(contets_json):
         # TODO: check if logic is real necessary, test is for all languages eficient
-        STR_SEASON_CHECK = bool(re.search(r'season|temporada', item['label'].lower()))
+        STR_SEASON_CHECK = re_search(
+            item['label'], ['season', 'temporada', r'S\d{1,4}']
+            )
         if sync_type != 'all_items':
             if sync_type == 'movie' and item['type'] == 'movie':
                 pass
-            elif (sync_type == 'tvshow' and item['type']
-                  in ['tvshow', 'season', 'episode', 'unknown', 'directory']):
+            elif (sync_type == 'tvshow' and
+                  re_search(
+                      item['type'],
+                      ['tvshow', 'season', 'episode', 'unknown', 'directory'])):
                 pass
             elif sync_type == 'music' and item['type'] == 'music':
                 pass
@@ -558,13 +567,13 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
             try:
                 loweryear = min(years)
                 item['year'] = loweryear
-            except KeyError:
+            except (KeyError, ValueError):
                 pass
             yield item
 
 def load_directory_items(progressdialog, dir_path, recursive=False,
-                         allow_directories=False, depth=1, showtitle=False, season=False,
-                         year=False, sync_type=False):
+                         allow_directories=False, depth=1, showtitle=False,
+                         season=False, year=False, sync_type=False):
     ''' Load items in a directory using the JSON-RPC interface '''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
@@ -574,7 +583,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     try:
         listofitems = list(list_reorder(
             list(skip_filter(results['result']['files'])
-                ), showtitle, sync_type=sync_type))
+                ), showtitle=showtitle, year=year, sync_type=sync_type))
     except KeyError:
         listofitems = []
     if not allow_directories:
