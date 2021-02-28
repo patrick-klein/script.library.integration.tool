@@ -166,25 +166,25 @@ class SyncedMenu(object):
         STR_ITEM_IS_ALREADY_STAGED = utils.getlocalizedstring(32103)
         STR_ITEM_IS_ALREADY_MANAGED = utils.getlocalizedstring(32104)
         STR_MOVIE_STAGED = utils.getlocalizedstring(32105)
-        if not 'directory' in link_stream_path:
-            # Add synced directory to database
-            self.dbh.add_synced_dir(title, link_stream_path, 'single-movie')
-            # Check for duplicate in database
-            if self.dbh.path_exists(path=link_stream_path, status='staged', mediatype='movie'):
-                utils.notification(STR_ITEM_IS_ALREADY_STAGED)
-            elif self.dbh.path_exists(path=link_stream_path, status='managed', mediatype='movie'):
-                utils.notification(STR_ITEM_IS_ALREADY_MANAGED)
-            else:
-                # Add item to database
-                self.dbh.add_content_item(MovieItem(
-                    title=title,
-                    year=year,
-                    link_stream_path=link_stream_path,
-                    mediatype='movie',
-                    ).returasjson(), 'movie')
-                utils.notification('%s: %s' % (STR_MOVIE_STAGED, title.encode('utf-8')))
+        # Add synced directory to database
+        self.dbh.add_synced_dir(title, link_stream_path, 'single-movie')
+        # Check for duplicate in database
+        if self.dbh.path_exists(path=link_stream_path, status='staged', mediatype='movie'):
+            utils.notification(STR_ITEM_IS_ALREADY_STAGED)
+        elif self.dbh.path_exists(path=link_stream_path, status='managed', mediatype='movie'):
+            utils.notification(STR_ITEM_IS_ALREADY_MANAGED)
         else:
-            utils.notification('%s (%s) - %s' % (title, year, 'not added, is realy a movie?'))
+            # Add item to database
+            self.dbh.add_content_item(MovieItem(
+                title=title,
+                year=year,
+                link_stream_path=link_stream_path,
+                mediatype='movie',
+                ).returasjson(), 'movie')
+            utils.notification('%s: %s' % (
+                STR_MOVIE_STAGED,
+                utils.title_with_color(title.encode('utf-8'), year)
+            ))
 
     @utils.logged_function
     def sync_single_tvshow(self, title, year, link_stream_path):
