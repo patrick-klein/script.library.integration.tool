@@ -229,7 +229,15 @@ def logged_function(func):
             # Pretty formating for argument string
             arg_list = list()
             for arg in args[1 if is_method else 0:]:
-                arg_list.append("'{0}'".format(arg) if isinstance(arg, basestring) else str(arg))
+                # TODO: It seems to work, but I don't like it.
+                try:
+                    arg_str = "'{0}'".format(
+                        arg.encode('utf-8')
+                        ) if isinstance(arg, basestring) else str(arg)
+                except UnicodeDecodeError:
+                    arg_str = "'{0}'".format(
+                        arg) if isinstance(arg, basestring) else str(arg)
+                arg_list.append(arg_str)
             for key, val in kwargs.iteritems():
                 arg_list.append(
                     '{0}={1}'
@@ -609,4 +617,6 @@ def getlocalizedstring(string_id):
     try:
         return str(ADDON.getLocalizedString(string_id).decode('utf-8'))
     except UnicodeEncodeError:
+        return str(ADDON.getLocalizedString(string_id).encode('utf-8'))
+    else:
         return ADDON.getLocalizedString(string_id)

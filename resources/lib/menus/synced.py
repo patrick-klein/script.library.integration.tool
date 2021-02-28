@@ -220,7 +220,7 @@ class SyncedMenu(object):
                     link_stream_path=showfile['file'],
                     title=showfile['title'],
                     mediatype='tvshow',
-                    show_title=title,
+                    show_title=title.decode('utf-8'),
                     season=showfile['season'],
                     epnumber=showfile['episode'],
                     year=year if year else showfile['year']
