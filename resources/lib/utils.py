@@ -53,7 +53,7 @@ WITH_METADATA = '2'
 DEFAULT_LOG_LEVEL = xbmc.LOGNOTICE if IN_DEVELOPMENT else xbmc.LOGDEBUG
 DATABASE_FILE = join(MANAGED_FOLDER, 'managed.db')
 # TODO: Use combined list on all platforms.  Would need to be combined with version check
-#       to re-add all managed items
+# to re-add all managed items
 MAPPED_STRINGS = [
     ('.', ''),
     (':', ''),
@@ -69,6 +69,7 @@ MAPPED_STRINGS = [
     ('Part 5', 'Part Five'),
     ('Part 6', 'Part Six'),
 ]
+
 if osname == 'nt':
     MAPPED_STRINGS += [
         ('?', ''),
@@ -79,7 +80,6 @@ if osname == 'nt':
         ('|', ''),
         #('+', ''), (',', ''), (';', ''), ('=', ''), ('[', ''), (']', ''),
     ]
-
 
 class Version(object):
     ''' Class that implements comparison operators for version numbers '''
@@ -116,7 +116,6 @@ class Version(object):
     def __ge__(self, other):
         return self > other or self == other
 
-
 def check_managed_folder():
     ''' Checks if the managed folder is configured '''
     # Display an error is user hasn't configured managed folder yet
@@ -126,7 +125,6 @@ def check_managed_folder():
         notification(STR_CHOOSE_FOLDER)
         log_msg('No managed folder "{}"'.format(MANAGED_FOLDER), xbmc.LOGERROR)
         sys.exit()
-
 
 def check_subfolders():
     ''' Checks the subfolders in the Managed and Metadata folders '''
@@ -149,7 +147,6 @@ def check_subfolders():
         notification(STR_SUBFOLDERS_CREATED)
         # TODO: Add video sources here
         sys.exit()
-
 
 def check_version_file():
     ''' Checks the version file and runs version-specific update actions '''
@@ -186,10 +183,8 @@ def check_version_file():
         notification(STR_UPDATED)
         sys.exit()
 
-
 def entrypoint(func):
     ''' Decorator to perform actions required for entrypoints '''
-
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
         check_version_file()
@@ -198,10 +193,8 @@ def entrypoint(func):
         return func(*args, **kwargs)
     return wrapper
 
-
 def utf8_args(func):
     ''' Decorator for encoding utf8 on all unicode arguments '''
-
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
         new_args = (x.encode('utf-8') if isinstance(x, unicode) else x for x in args)
@@ -210,9 +203,7 @@ def utf8_args(func):
             for k, v in kwargs.iteritems()
         }
         return func(*new_args, **new_kwargs)
-
     return wrapper
-
 
 def log_msg(msg, loglevel=DEFAULT_LOG_LEVEL):
     ''' Log message with addon name and version to kodi log '''
@@ -220,10 +211,8 @@ def log_msg(msg, loglevel=DEFAULT_LOG_LEVEL):
         msg = msg.encode('utf-8')
     xbmc.log("{0} v{1} --> {2}".format(ADDON_NAME, ADDON_VERSION, msg), level=loglevel)
 
-
 def logged_function(func):
     ''' Decorator for logging function call and return values (at default log level) '''
-
     # TODO: option to have "pre-" and "post-" logging
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
@@ -263,20 +252,40 @@ def logged_function(func):
             log_msg(message)
         # Return ret value from wrapper
         return ret
-
     return wrapper
+
+# TODO: NETFLIX find a way to deal with show with Part 1,
+# Part 2 and etc, now, any part will be a season,
+# maybe a api call with trakt or tvdb to get episode info is a way
+
+# TODO: Giant animes like One Piece is devided in folders with 60 eps,
+# and not splited by season, maybe all eps need to be in the Show dir
+# directly and follow absolute order, to do this is necessary identify this cases.
+
+# TODO: CHRUNCHROLL create a dialog to selec language or
+# use system language to auto select:
 
 def clean_name(title):
     ''' Remove/replace problematic characters/substrings for filenames '''
     title = title.encode('utf-8')
     # IDEA: Replace in title directly, not just filename
+
+    # TODO: use this function to remove from Show/episode title on,
+    # Show title
+    # episode number
+    # (Legendado)
+    # (Leg)
+    # (Dub PT)
+    # (French Dub)
+    # (German Dub)
+    # (Portuguese Dub)
+    # (English Dub)
+    # (Spanish Dub)
     # TODO: Efficient algorithm that removes/replaces in a single
     for key, val in MAPPED_STRINGS:
         title = title.replace(key, val)
     return title
 
-
-@logged_function
 def execute_json_rpc(method, directory):
     ''' Execute a JSON-RPC command with specified method and params (as keyword arguments)
     See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params '''
@@ -302,7 +311,6 @@ def execute_json_rpc(method, directory):
         )
     )
 
-@logged_function
 def videolibrary(method):
     ''' A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary.Clean '''
     if method == 'scan':
@@ -317,7 +325,6 @@ def videolibrary(method):
             'id': 1
         }, ensure_ascii=False)
     )
-
 
 def re_search(string, strings_to_skip=None):
     ''' Function check if string exist with re '''
@@ -370,10 +377,8 @@ def list_reorder(contets_json, showtitle, sync_type=False):
             del item['episode']
             del item['season']
             del item['showtitle']
-
             if item['label'] == item['title']:
                 del item['label']
-
             try:
                 item['movie_title'] = item['title']
                 del item['title']
@@ -501,15 +506,12 @@ def list_reorder(contets_json, showtitle, sync_type=False):
                 pass
             yield item
 
-
-@logged_function
 def load_directory_items(progressdialog, dir_path, recursive=False,
                          allow_directories=False, depth=1, showtitle=False, season=False,
                          year=False, sync_type=False):
     ''' Load items in a directory using the JSON-RPC interface '''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
-
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
     if not (results.has_key('result') and results['result'].has_key('files')):
         yield []
@@ -519,19 +521,16 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 ), showtitle, sync_type=sync_type))
     except KeyError:
         listofitems = []
-
     if not allow_directories:
         for item in listofitems:
             if item['filetype'] == 'file':
                 yield item
-
     directories = []
     for index, item in enumerate(listofitems):
         if progressdialog.iscanceled() is True:
             progressdialog.close()
             break
         percent = 100 * index / len(listofitems)
-
         if item['type'] == 'movie':
             progressdialog.update(percent, line1=('Processando items:'))
             progressdialog.update(percent, line2=('%s' % item['movie_title']))
@@ -540,10 +539,8 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
         else:
             if season is not False:
                 item['season'] = season
-
             if year is not False:
                 item['year'] = year
-
                 # # se for um diretorio ele é adicionado a lista directories
             if (item['filetype'] == 'directory' and
                     item['type'] == 'tvshow' or
@@ -553,7 +550,6 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 progressdialog.update(percent, line2=('%s' % item['label']))
                 xbmc.sleep(200)
                 directories.append(item)
-
                 # # se for um epsodio, usa o yield para guardar o item
             if item['type'] == 'episode':
                 progressdialog.update(percent, line1=('Processando items:'))
@@ -561,29 +557,24 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle
                 yield item
-
     if recursive and directories:
         for _dir in directories:
             # close the progress bar during JSONRPC process
-
             try:
                 title = _dir['showtitle']
                 recursive = True
             except KeyError:
                 title = False
-
             try:
                 season = _dir['season']
                 recursive = True
             except KeyError:
                 season = False
-
             try:
                 year = _dir['year']
                 recursive = True
             except KeyError:
                 year = False
-
             new_items = list(load_directory_items(
                 progressdialog=progressdialog,
                 dir_path=_dir['file'],
@@ -595,14 +586,11 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 year=year,
                 sync_type=sync_type
                 ))
-
             for new in new_items:
                 yield new
 
-@logged_function
 def notification(message, time=3000, icon='ntf_icon.png'):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
-    from os.path import join
     xbmc.executebuiltin('Notification("{0}", "{1}", "{2}", "{3}")'.format(
         ADDON_NAME,
         message,
@@ -610,7 +598,6 @@ def notification(message, time=3000, icon='ntf_icon.png'):
         join(ADDON_PATH, icon)
         ))
 
-@logged_function
 def tojs(data, filename):
     ''' Function to create a json file '''
     with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:

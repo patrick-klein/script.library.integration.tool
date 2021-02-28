@@ -98,7 +98,7 @@ class DatabaseHandler(object):
                 ).returasjson())
             elif item[2] == 'music':
                 # TODO: add music
-                utils.notification('Music Here', 5000)  
+                utils.notification('Music Here', 5000)
         raise ValueError('Unrecognized Mediatype in Content query')
 
     @utils.utf8_args

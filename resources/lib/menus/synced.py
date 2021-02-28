@@ -191,13 +191,10 @@ class SyncedMenu(object):
         ''' Sync single tvshow directory and stage items '''
         STR_i_NEW_i_STAGED_i_MANAGED = utils.getlocalizedstring(32106)
         STR_i_NEW = utils.getlocalizedstring(32107)
-
         STR_GETTING_ITEMS_IN_DIR = utils.getlocalizedstring(32125)
         STR_GETTING_ITEMS_IN_x = utils.getlocalizedstring(32126)
-
         progressdialog = xbmcgui.DialogProgress()
         progressdialog.create(utils.ADDON_NAME)
-
         # Add synced directory to database
         self.dbh.add_synced_dir(title, link_stream_path, 'single-tvshow')
         # Get everything inside tvshow path
@@ -212,9 +209,7 @@ class SyncedMenu(object):
         items_to_stage = 0
         num_already_staged = 0
         num_already_managed = 0
-
         progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
-
         for index, showfile in enumerate(files_list):
             if progressdialog.iscanceled() is True:
                 progressdialog.close()
@@ -241,7 +236,6 @@ class SyncedMenu(object):
                         mediatype='tvshow')):
                     num_already_staged += 1
                     continue
-
                 elif (self.dbh.path_exists(
                         path=contentdata['link_stream_path'],
                         status='managed',
@@ -266,7 +260,6 @@ class SyncedMenu(object):
         else:
             utils.notification(STR_i_NEW % items_to_stage)
 
-
     @utils.logged_function
     def sync_all_items_in_directory(self, sync_type, dir_label, dir_path):
         ''' Synchronize all items in a directory (movies/series or all),
@@ -284,7 +277,6 @@ class SyncedMenu(object):
             # add synced directory to database
             # check it in future
             self.dbh.add_synced_dir(dir_label, dir_path, 'tvshow')
-
             # query json-rpc to get files in directory
             progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
             files_list = list(utils.load_directory_items(
@@ -319,7 +311,6 @@ class SyncedMenu(object):
                         year=content_file['year']
                     ).returasjson()
                     sync_type = 'tvshow'
-
                 # Get name of show and skip if blocked
                 # Get everything inside tvshow path
                 # # # # # # # # # # # # # # # # # # # # type: movie or episode
@@ -328,14 +319,12 @@ class SyncedMenu(object):
                 if self.dbh.path_exists(
                         path=contentdata['link_stream_path'],
                         status=['staged', 'managed'],
-                        #TODO: future dosen't use sync_type here
+                        # TODO: future dosen't use sync_type here
                         mediatype=sync_type):
                     continue
-
                 # Update progress
                 percent = 100 * index / len(files_list)
                 # Check for duplicate paths and blocked items
-
                 try:
                     progressdialog.update(
                         percent,
@@ -376,10 +365,8 @@ class SyncedMenu(object):
         STR_STAGING_ITEMS = utils.getlocalizedstring(32095)
         STR_ALL_ITEMS_UPTODATE = utils.getlocalizedstring(32121)
         STR_SUCCESS = utils.getlocalizedstring(32122)
-
         progressdialog = xbmcgui.DialogProgressBG()
         progressdialog.create(utils.ADDON_NAME)
-
         try:
             # Get current items in all directories
             synced_dirs = self.dbh.get_synced_dirs()
@@ -407,16 +394,13 @@ class SyncedMenu(object):
                 elif synced_dir['type'] == 'tvshow':
                     # Directory is a path to a list of tv shows
                     all_items += self.get_tvshows_in_directory(synced_dir['dir'])
-
             # Find managed paths not in dir_items, and prepare to remove
             progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(all_paths)
-
             # Find dir_items not in managed_items or staged_items, and prepare to add
             progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
-
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
                 if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
@@ -443,7 +427,6 @@ class SyncedMenu(object):
         STR_STAGING_ITEMS = utils.getlocalizedstring(32095)
         STR_ALL_ITEMS_UPTODATE = utils.getlocalizedstring(32121)
         STR_SUCCESS = utils.getlocalizedstring(32122)
-
         progressdialog = xbmcgui.DialogProgressBG()
         progressdialog.create(utils.ADDON_NAME)
         try:
@@ -466,16 +449,13 @@ class SyncedMenu(object):
                     'label': synced_dir['label'],
                     'mediatype': 'movie'
                 })
-
             # Find managed paths not in dir_items, and prepare to remove
             progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(all_paths, mediatype='movie')
-
             # Find dir_items not in managed_items or staged_items, and prepare to add
             progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
-
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
                 if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
@@ -502,10 +482,8 @@ class SyncedMenu(object):
         STR_STAGING_ITEMS = utils.getlocalizedstring(32095)
         STR_ALL_ITEMS_UPTODATE = utils.getlocalizedstring(32121)
         STR_SUCCESS = utils.getlocalizedstring(32122)
-
         progressdialog = xbmcgui.DialogProgressBG()
         progressdialog.create(utils.ADDON_NAME)
-
         try:
             all_items = []
             show_dirs = self.dbh.get_synced_dirs(synced_type='tvshow')
@@ -522,16 +500,13 @@ class SyncedMenu(object):
                     message=synced_dir['label']
                 )
                 all_items += self.get_single_tvshow(synced_dir['dir'], synced_dir['label'])
-
             # Find managed paths not in dir_items, and prepare to remove
             progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(all_paths, mediatype='tvshow')
-
             # Find dir_items not in managed_items or staged_items, and prepare to add
             progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
-
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
                 if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
