@@ -11,42 +11,50 @@ import xbmcgui  # pylint: disable=import-error
 import resources.lib.utils as utils
 from resources.lib.menus.synced import SyncedMenu
 
+STR_SYNC_ALL_ITEMS = utils.getlocalizedstring(32160)
+STR_SYNC_ONLY_MOVIES = utils.getlocalizedstring(32161)
+STR_SYNC_ONLY_SHOWS = utils.getlocalizedstring(32162)
+STR_CANCEL_RED = utils.getlocalizedstring(32157)
+STR_NOT_SELECTED = utils.getlocalizedstring(32158)
+
 
 @utils.entrypoint
 def main():
     ''' Main entrypoint for context menu item '''
+    sync_type = False
     dir_path = xbmc.getInfoLabel('Container.FolderPath')
     dir_label = xbmc.getInfoLabel('Container.FolderName')
     # Get content type
-    STR_CHOOSE_CONTENT_TYPE = utils.getlocalizedstring(32100)
-    # STR_MOVIE = utils.getlocalizedstring(32102)
-    # STR_TV_SHOW = utils.getlocalizedstring(32101)
+    STR_CHOOSE_CONTENT_TYPE = utils.getlocalizedstring(32164)
+
+    lines = [
+        STR_SYNC_ALL_ITEMS,
+        STR_SYNC_ONLY_MOVIES,
+        STR_SYNC_ONLY_SHOWS,
+        STR_CANCEL_RED
+    ]
     typeofcontent = xbmcgui.Dialog().select(
         STR_CHOOSE_CONTENT_TYPE,
-        [
-            'Sync All Items',
-            'Sync Only Movies',
-            'Sync Only Shows',
-            '[COLOR red][B]Cancel[/B][/COLOR]'
-        ]
+        lines
         )
-
     # Call corresponding method
-    if typeofcontent == 0:
-        sync_type = 'all_items'
-    elif typeofcontent == 1:
-        sync_type = 'movie'
-    elif typeofcontent == 2:
-        sync_type = 'tvshow'
-    elif typeofcontent == -1 or 3:
-        xbmc.sleep(200)
-        utils.notification('Type of content not selected, Try again.')
+    selection = lines[typeofcontent]
+    if selection >= 0:
+        if selection == STR_SYNC_ALL_ITEMS:
+            sync_type = 'all_items'
+        elif selection == STR_SYNC_ONLY_MOVIES:
+            sync_type = 'movie'
+        elif selection == STR_SYNC_ONLY_SHOWS:
+            sync_type = 'tvshow'
+        elif selection == STR_CANCEL_RED:
+            utils.notification(STR_NOT_SELECTED, 4000)
 
-    try:
-        SyncedMenu().sync_all_items_in_directory(sync_type, dir_label, dir_path)
-    except Exception as genericexception:
-        # TODO: A generic except, in furure, can be updated
-        raise genericexception
+    if sync_type is not False:
+        try:
+            SyncedMenu().sync_all_items_in_directory(sync_type, dir_label, dir_path)
+        except Exception as genericexception:
+            # TODO: A generic except, in furure, can be updated
+            raise genericexception
 
 
 if __name__ == '__main__':
