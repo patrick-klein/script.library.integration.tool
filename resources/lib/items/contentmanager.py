@@ -92,15 +92,13 @@ class ContentManShows(ContentManagerShows):
         if not exists(self.show_dir[0]):
             try:
                 utils.fs.mkdir(self.show_dir[0])
-            except Exception as e:
-                raise e
-
+            except Exception as genericmkdir:
+                raise genericmkdir
         if not exists(self.show_dir[1]):
             try:
                 utils.fs.mkdir(self.show_dir[1])
-            except Exception as e:
-                raise e
-
+            except Exception as genericmkdir:
+                raise genericmkdir
         # create season_dir managed season dir
         if not exists(self.managed_season_dir):
             utils.fs.mkdir(self.managed_season_dir)
@@ -133,9 +131,8 @@ class ContentManShows(ContentManagerShows):
         if not exists(self.show_dir[0]):
             try:
                 utils.fs.mkdir(self.show_dir[0])
-            except Exception as e:
-                raise 
-
+            except Exception as genericmkdir:
+                raise genericmkdir
         # Create Metadata Season dir
         if not exists(self.metadata_season_dir):
             utils.fs.mkdir(self.metadata_season_dir)
@@ -152,8 +149,9 @@ class ContentManShows(ContentManagerShows):
         # Link tvshow.nfo and artwork now, if self.show_dir[0] exists
         for fname in listdir(self.show_dir[0]):
             if isfile(join(self.show_dir[0], fname)):
-                if (not re.match(r'(?i)s\d{1,5}(?:(?:x|_|.)e|e)\d{1,5}|\d{1,5}x\d{1,5}', fname)
-                or '.strm' in fname):
+                if (not re.match(
+                        r'(?i)s\d{1,5}(?:(?:x|_|.)e|e)\d{1,5}|\d{1,5}x\d{1,5}', fname
+                    ) or '.strm' in fname):
                     if not exists(join(self.show_dir[1], fname)):
                         utils.fs.softlink_file(
                             join(self.show_dir[0], fname),
