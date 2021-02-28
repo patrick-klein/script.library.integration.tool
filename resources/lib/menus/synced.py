@@ -252,7 +252,10 @@ class SyncedMenu(object):
                 items_to_stage += 1
                 xbmc.sleep(300)
             except TypeError:
-                utils.notification("Something went wrong, try again, maybe this isn't a Tvshow.")
+                utils.notification(
+                    "Something went wrong, try again, maybe this isn't a Tvshow.",
+                    4000
+                )
         if num_already_staged > 0 or num_already_managed > 0:
             utils.notification(
                 STR_i_NEW_i_STAGED_i_MANAGED %
@@ -272,6 +275,7 @@ class SyncedMenu(object):
         STR_GETTING_ITEMS_IN_DIR = utils.getlocalizedstring(32125)
         STR_GETTING_ITEMS_IN_x = utils.getlocalizedstring(32126)
         STR_i_EPISODES_STAGED = utils.getlocalizedstring(32112)
+        STR_MOVIE_STAGED = utils.getlocalizedstring(32165)
         progressdialog = xbmcgui.DialogProgress()
         progressdialog.create(utils.ADDON_NAME)
         try:
@@ -329,10 +333,7 @@ class SyncedMenu(object):
                 try:
                     progressdialog.update(
                         percent,
-                        line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title'])
-                        )
-                    progressdialog.update(
-                        percent,
+                        line1=STR_GETTING_ITEMS_IN_x % contentdata['show_title'],
                         line2=contentdata['episode_title_with_id']
                         )
                     # try add tvshow
@@ -340,8 +341,10 @@ class SyncedMenu(object):
                     xbmc.sleep(300)
                 except KeyError:
                     # TODO: new dialog str to movie
-                    progressdialog.update(percent, line1=('Staged Movie:'))
-                    progressdialog.update(percent, line2=content_title)
+                    progressdialog.update(
+                        percent,
+                        line1=STR_MOVIE_STAGED % content_title,
+                    )
                     # try add movie
                     self.dbh.add_content_item(contentdata, 'movie')
                     xbmc.sleep(500)
@@ -404,8 +407,11 @@ class SyncedMenu(object):
             items_to_stage = self.find_items_to_stage(all_items)
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
-                if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
-                                          (len(paths_to_remove), len(items_to_stage))):
+                if xbmcgui.Dialog().yesno(
+                        utils.ADDON_NAME,
+                        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED % (
+                            len(paths_to_remove),
+                            len(items_to_stage))):
                     if paths_to_remove:
                         progressdialog.update(percent=99, message=STR_REMOVING_ITEMS)
                         self.remove_paths(paths_to_remove)
@@ -459,8 +465,11 @@ class SyncedMenu(object):
             items_to_stage = self.find_items_to_stage(all_items)
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
-                if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
-                                          (len(paths_to_remove), len(items_to_stage))):
+                if xbmcgui.Dialog().yesno(
+                        utils.ADDON_NAME,
+                        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED % (
+                            len(paths_to_remove),
+                            len(items_to_stage))):
                     if paths_to_remove:
                         progressdialog.update(percent=99, message=STR_REMOVING_ITEMS)
                         self.remove_paths(paths_to_remove)
