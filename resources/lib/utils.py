@@ -367,13 +367,13 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
             else:
                 continue
 
-        # if item['label'] in ['next page\u2026', 'pr\u00f3xima p\u00e1gina']:
-        #     nextpage = True
-
         item['number'] = index + 1
         # 1601 é o ano que aparece quando a informação de ano correta não existe
         if item['year'] == 1601:
-            del item['year']
+            if year is not False:
+                item['year'] = int(year)
+            else:
+                del item['year']
 
         # MOVIES: detect movies in dir
         if item['filetype'] == 'file' and item['type'] == 'movie':
