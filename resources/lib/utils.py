@@ -668,3 +668,14 @@ def getlocalizedstring(string_id):
         return str(ADDON.getLocalizedString(string_id).encode('utf-8'))
     else:
         return ADDON.getLocalizedString(string_id)
+
+
+def title_with_color(label, year, color='skyblue'):
+    ''' Create a string to use in title Dialog().select '''
+    # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
+    # TODO: this function can be better, maybe led generic,
+    # now, this func add color and year to movie title,
+    # and any of this actions can be splited
+    if year:
+        return str('[COLOR %s][B]%s (%s)[/B][/COLOR]' % (color, label, year))
+    return str('[COLOR %s][B]%s[/B][/COLOR]' % (color, label))
