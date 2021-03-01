@@ -19,7 +19,6 @@ class ContentManShows(ContentManagerShows):
     ''' Class with objectve to manager all files '''
     def __init__(self, jsondata):
         super(ContentManShows, self).__init__(jsondata)
-        self.dbh = resources.lib.database_handler.DatabaseHandler()
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
@@ -109,7 +108,7 @@ class ContentManShows(ContentManagerShows):
         if utils.fs.create_stream_file(self.link_stream_path, self.managed_strm_path):
             self.create_metadata_item()
             utils.fs.softlink_file(self.episode_nfo[0], self.episode_nfo[1])
-            self.dbh.update_content(
+            resources.lib.database_handler.DatabaseHandler().update_content(
                 self.link_stream_path,
                 status='managed',
                 mediatype='tvshow'
@@ -180,7 +179,7 @@ class ContentManShows(ContentManagerShows):
         #             self.metadata_fanart_path,
         #             self.metadata_fanart_path
         #         )
-        self.dbh.update_content(
+        resources.lib.database_handler.DatabaseHandler().update_content(
             self.link_stream_path,
             title=self.jsondata['episode_title'],
             mediatype='tvshow'
@@ -192,7 +191,7 @@ class ContentManShows(ContentManagerShows):
         # TODO: resolve overlap/duplication with create_metadata_item
         # Check for existing nfo file
         if isdir(self.show_dir[1]):
-            self.dbh.update_content(
+            resources.lib.database_handler.DatabaseHandler().update_content(
                 self.link_stream_path,
                 title=self.jsondata['episode_title'],
                 mediatype='tvshow'
@@ -202,7 +201,9 @@ class ContentManShows(ContentManagerShows):
     def remove_and_block(self):
         # TODO: Need to remove metadata for all other items that match blocked
         # Add episode title to blocked
-        self.dbh.add_blocked_item(self.show_title, 'episode')
+        resources.lib.database_handler.DatabaseHandler().add_blocked_item(
+            self.show_title, 'episode'
+        )
         # Delete metadata items
         # title_path = join(
         #     utils.METADATA_FOLDER, 'TV', self.clean_show_title, self.clean_title
@@ -210,7 +211,7 @@ class ContentManShows(ContentManagerShows):
         utils.fs.rm_with_wildcard(splitext(self.episode_nfo[0])[0])
         # Remove from db
         # TODO: FIX pass mediatype to this func
-        self.dbh.remove_from(
+        resources.lib.database_handler.DatabaseHandler().remove_from(
             status=None,
             mediatype=None,
             show_title=None,
@@ -246,7 +247,7 @@ class ContentManShows(ContentManagerShows):
         # Rename property and refresh in staged file
         # TODO: self.show_title here is the global self.show_title
         # in future, the value need be updated to a new diferente formed name
-        self.dbh.update_content(
+        resources.lib.database_handler.DatabaseHandler().update_content(
             self.link_stream_path,
             title=self.show_title,
             mediatype='tvshow'
@@ -281,7 +282,6 @@ class ContentManMovies(ContentManagerMovies):
     and has necessary functions for managing item '''
     def __init__(self, jsondata):
         super(ContentManMovies, self).__init__(jsondata)
-        self.dbh = resources.lib.database_handler.DatabaseHandler()
         self.jsondata = jsondata
         self.managed_strm_path = join(
             self.movie_dir[1], ''.join([self.movie_title, '.strm'])
@@ -326,7 +326,7 @@ class ContentManMovies(ContentManagerMovies):
         self.create_metadata_item()
         utils.fs.create_stream_file(
             self.link_stream_path, self.managed_strm_path)
-        self.dbh.update_content(
+        resources.lib.database_handler.DatabaseHandler().update_content(
             self.link_stream_path,
             status='managed',
             mediatype='movie'
@@ -355,7 +355,7 @@ class ContentManMovies(ContentManagerMovies):
         #     except Exception:
         #         pass
         # Add metadata (optional)
-        self.dbh.update_content(
+        resources.lib.database_handler.DatabaseHandler().update_content(
             self.link_stream_path,
             title=self.jsondata['movie_title'],
             mediatype='movie'
@@ -369,12 +369,13 @@ class ContentManMovies(ContentManagerMovies):
     @utils.logged_function
     def remove_and_block(self):
         # Add title to blocked
-        self.dbh.add_blocked_item(self.movie_title, 'movie')
+        resources.lib.database_handler.DatabaseHandler(
+        ).add_blocked_item(self.movie_title, 'movie')
         # Delete metadata items
         utils.fs.remove_dir(self.movie_dir[0])
         # Remove from db
         # TODO: FIX pass mediatype to this func
-        self.dbh.remove_from(
+        resources.lib.database_handler.DatabaseHandler().remove_from(
             status=None,
             mediatype=None,
             show_title=None,
