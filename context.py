@@ -47,7 +47,7 @@ def main():
         STR_FORMED_TYPE_OF_CONTENT, lines
         )
     selection = lines[typeofcontent]
-    if selection >= 0:
+    if selection:
         # Call corresponding method
         if (selection == STR_IS_A_MOVIE and
                 utils.re_search(selected_path, LIST_TYPE_MOVIES)):
