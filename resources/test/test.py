@@ -9,6 +9,7 @@ import sys
 import unittest
 
 import xbmc # pylint: disable=import-error
+import xbmcvfs  # pylint: disable=import-error
 
 import resources.lib.utils as utils
 
@@ -17,7 +18,7 @@ def test():
     ''' Get and call all test modules and find coverage '''
 
     # Get test directory in addon folder
-    test_path = xbmc.translatePath(
+    test_path = xbmcvfs.translatePath(
         'special://home/addons/script.library.integration.tool/resources/test/'
     )
 

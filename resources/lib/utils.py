@@ -14,6 +14,7 @@ import simplejson as json
 
 import xbmc # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error
+import xbmcvfs  # pylint: disable=import-error
 
 # Get file system tools depending on platform
 if osname == 'posix':
@@ -37,7 +38,7 @@ USING_CUSTOM_METADATA_FOLDER = ADDON.getSetting('custom_metadata_folder') == 'tr
 if USING_CUSTOM_MANAGED_FOLDER:
     MANAGED_FOLDER = ADDON.getSetting('managed_folder')
 else:
-    MANAGED_FOLDER = xbmc.translatePath('special://userdata/addon_data/{}/'.format(ADDON_ID))
+    MANAGED_FOLDER = xbmcvfs.translatePath('special://userdata/addon_data/{}/'.format(ADDON_ID))
 if USING_CUSTOM_METADATA_FOLDER:
     METADATA_FOLDER = ADDON.getSetting('metadata_folder')
 else:
@@ -151,7 +152,7 @@ def check_subfolders():
 def check_version_file():
     ''' Checks the version file and runs version-specific update actions '''
     # Check version file
-    version_file_path = xbmc.translatePath(
+    version_file_path = xbmcvfs.translatePath(
         'special://userdata/addon_data/{}/.version'.format(ADDON_ID)
     )
     if isfile(version_file_path):

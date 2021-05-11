@@ -8,6 +8,7 @@ import os
 import unittest
 
 import xbmc # pylint: disable=import-error
+import xbmcvfs  # pylint: disable=import-error
 
 import resources.lib.utils as utils
 
@@ -16,7 +17,7 @@ def fuzz():
     ''' Get and call all fuzz modules '''
 
     # Get test directory in addon folder
-    test_path = xbmc.translatePath(
+    test_path = xbmcvfs.translatePath(
         'special://home/addons/script.library.integration.tool/resources/test/'
     )
 
