@@ -671,3 +671,8 @@ msgstr "Que tipo de conteúdo que deseja sincronizar?"
 msgctxt "#32165"
 msgid "Staged Movie: [COLOR blue][B]%s[/B][/COLOR]"
 msgstr "Filme Armazenado: [COLOR blue][B]%s[/B][/COLOR]"
+
+msgctxt "#32166"
+msgid "Something went wrong, try again, maybe this isn't a Tvshow."
+msgstr "Algo deu errado, tente novamente, talvez esta não seja uma série de TV."
+

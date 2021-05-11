@@ -253,7 +253,7 @@ class SyncedMenu(object):
                 xbmc.sleep(300)
             except TypeError:
                 utils.notification(
-                    "Something went wrong, try again, maybe this isn't a Tvshow.",
+                    utils.getlocalizedstring(32166),
                     4000
                 )
         if num_already_staged > 0 or num_already_managed > 0:

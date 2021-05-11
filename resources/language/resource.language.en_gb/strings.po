@@ -675,3 +675,7 @@ msgstr ""
 msgctxt "#32165"
 msgid "Staged Movie: [COLOR blue][B]%s[/B][/COLOR]"
 msgstr ""
+
+msgctxt "#32166"
+msgid "Something went wrong, try again, maybe this isn't a Tvshow."
+msgstr ""
