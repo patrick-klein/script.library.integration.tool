@@ -14,7 +14,7 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 ## Requirements
 
-* **Kodi 17+**
+* **Kodi 19+**
 
 ## Installation
 
