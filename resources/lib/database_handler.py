@@ -462,7 +462,7 @@ class DatabaseHandler(object):
         )
         params = (path, )
 
-        for key, val in kwargs.iteritems():
+        for key, val in kwargs.items():
             if key == 'status':
                 sql_comm = sql_comm.format('Status')
             elif key == 'title':

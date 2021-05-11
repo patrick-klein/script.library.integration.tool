@@ -41,7 +41,7 @@ class TestUtils(unittest.TestCase):
             'test13é': 'test13e',
             'test14$': 'test14',
         }
-        for key, value in test_names.iteritems():
+        for key, value in test_names.items():
             self.assertEqual(utils.clean_name(key), value)
 
     def test_version_comparison(self):
