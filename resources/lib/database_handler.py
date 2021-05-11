@@ -88,11 +88,11 @@ class DatabaseHandler(object):
                 # EpisodeItem.returasjson create a json and it is passed to ContentManShows
                 return ContentManShows(EpisodeItem(
                     link_stream_path=item[0],
-                    title=item[1].decode('utf-8'),
+                    title=item[1],
                     mediatype='tvshow',
                     # staged
                     year=item[4],
-                    show_title=item[5].decode('utf-8'),
+                    show_title=item[5],
                     season=item[6],
                     epnumber=item[7]
                 ).returasjson())
@@ -318,7 +318,7 @@ class DatabaseHandler(object):
         #       might speed-up by adding additional constraint
         #TODO: test speed against a set from "get_content_paths"
         # Build sql command and parameters, adding status if provided
-        entries = []
+
         # TODO: check this isinstance
         for item in [status] if isinstance(status, str) else status:
             if mediatype == 'movie':

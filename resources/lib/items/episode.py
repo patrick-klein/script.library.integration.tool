@@ -16,7 +16,7 @@ class EpisodeItem(ContentItemShow):
         super(EpisodeItem, self).__init__(link_stream_path, title, mediatype, show_title, season, epnumber, year)
         self._link_stream_path = link_stream_path
         try:
-            self._episode_title = title.decode('utf-8')
+            self._episode_title = title
         except UnicodeEncodeError:
             self._episode_title = title
 

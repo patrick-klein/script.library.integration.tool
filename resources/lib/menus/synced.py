@@ -183,9 +183,9 @@ class SyncedMenu(object):
                 ).returasjson(), 'movie')
             utils.notification('%s: %s' % (
                 STR_MOVIE_STAGED,
-                utils.title_with_color(title.encode('utf-8'), year)
-            ))
-
+                utils.title_with_color(title, year)
+                ))
+                
     @utils.logged_function
     def sync_single_tvshow(self, title, year, link_stream_path):
         ''' Sync single tvshow directory and stage items '''
@@ -221,7 +221,7 @@ class SyncedMenu(object):
                     link_stream_path=showfile['file'],
                     title=showfile['title'],
                     mediatype='tvshow',
-                    show_title=title.decode('utf-8'),
+                    show_title=title,
                     season=showfile['season'],
                     epnumber=showfile['episode'],
                     year=year if year else showfile['year']

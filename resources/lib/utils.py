@@ -198,18 +198,11 @@ def utf8_args(func):
     ''' Decorator for encoding utf8 on all unicode arguments '''
     def wrapper(*args, **kwargs):
         ''' function wrapper '''
-        new_args = (x.encode('utf-8') if isinstance(x, unicode) else x for x in args)
-        new_kwargs = {
-            k: v.encode('utf-8') if isinstance(v, unicode) else v
-            for k, v in kwargs.iteritems()
-        }
-        return func(*new_args, **new_kwargs)
+        return func(*args, **kwargs)
     return wrapper
 
 def log_msg(msg, loglevel=DEFAULT_LOG_LEVEL):
     ''' Log message with addon name and version to kodi log '''
-    if isinstance(msg, unicode):
-        msg = msg.encode('utf-8')
     xbmc.log("{0} v{1} --> {2}".format(ADDON_NAME, ADDON_VERSION, msg), level=loglevel)
 
 def logged_function(func):
@@ -230,14 +223,13 @@ def logged_function(func):
             # Pretty formating for argument string
             arg_list = list()
             for arg in args[1 if is_method else 0:]:
+                arg_list.append("'{0}'".format(arg))
             for key, val in kwargs.items():
                 arg_list.append(
-                    '{0}={1}'
-                    .format(key, "'{0}'".format(val) if isinstance(val, basestring) else str(val))
-                )
+                    '{0}={1}'.format(key, "'{0}'".format(val)))
             arg_str = '({0})'.format(', '.join(arg_list))
             # Add line breaks and limit output if ret value is iterable
-            if isinstance(ret, basestring):
+            if isinstance(ret, str):
                 ret_str = "'{0}'".format(ret)
             else:
                 try:
@@ -267,7 +259,6 @@ def logged_function(func):
 
 def clean_name(title):
     ''' Remove/replace problematic characters/substrings for filenames '''
-    title = title.encode('utf-8')
     # IDEA: Replace in title directly, not just filename
 
     # TODO: use this function to remove from Show/episode title on,
