@@ -561,7 +561,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
     results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
-    if not (results.has_key('result') and results['result'].has_key('files')):
+    if 'result' not in results and 'files' not in results:
         yield []
     try:
         listofitems = list(list_reorder(
@@ -580,8 +580,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
             break
         percent = 100 * index / len(listofitems)
         if item['type'] == 'movie':
-            progressdialog.update(percent, line1=('Processando items:'))
-            progressdialog.update(percent, line2=('%s' % item['movie_title']))
+            progressdialog.update(int(percent), 'Processando items:\n%s' % item['movie_title'])
             xbmc.sleep(200)
             yield item
         else:
@@ -594,14 +593,12 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                     item['type'] == 'tvshow' or
                     item['type'] == 'season'):
                 showtitle = item['showtitle']
-                progressdialog.update(0, line1='Coletando itens no diretorio!')
-                progressdialog.update(percent, line2=('%s' % item['label']))
+                progressdialog.update(int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
                 xbmc.sleep(200)
                 directories.append(item)
                 # # se for um epsodio, usa o yield para guardar o item
             if item['type'] == 'episode':
-                progressdialog.update(percent, line1=('Processando items:'))
-                progressdialog.update(percent, line2=('%s' % item['label']))
+                progressdialog.update(int(percent), 'Processando items:\n%s' % item['label'])
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle
                 yield item
@@ -654,15 +651,9 @@ def tojs(data, filename):
 
 def getlocalizedstring(string_id):
     ''' Function to get call getLocalizedString and deal with unicodedecodeerrors '''
-    try:
-        return str(ADDON.getLocalizedString(string_id).decode('utf-8'))
-    except UnicodeEncodeError:
-        return str(ADDON.getLocalizedString(string_id).encode('utf-8'))
-    else:
-        return ADDON.getLocalizedString(string_id)
+    return str(ADDON.getLocalizedString(string_id))
 
-
-def title_with_color(label, year, color='skyblue'):
+def title_with_color(label, year=None, color='skyblue'):
     ''' Create a string to use in title Dialog().select '''
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
     # TODO: this function can be better, maybe led generic,

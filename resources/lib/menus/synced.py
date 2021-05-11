@@ -210,8 +210,9 @@ class SyncedMenu(object):
         items_to_stage = 0
         num_already_staged = 0
         num_already_managed = 0
-        progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
+        progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
         for index, showfile in enumerate(files_list):
+            utils.tojs(showfile, 'showfile')
             if progressdialog.iscanceled() is True:
                 progressdialog.close()
                 break
@@ -228,9 +229,6 @@ class SyncedMenu(object):
                 ).returasjson()
                 # Update progress
                 percent = 100 * index / len(files_list)
-                progressdialog.update(
-                    percent, line1=(STR_GETTING_ITEMS_IN_x % contentdata['show_title'])
-                    )
                 if (self.dbh.path_exists(
                         path=contentdata['link_stream_path'],
                         status='staged',
@@ -246,8 +244,18 @@ class SyncedMenu(object):
                 elif self.dbh.check_blocked(contentdata['show_title'], 'episode'):
                     continue
                 # Update progress
-                progressdialog.update(percent, line2=contentdata['show_title'])
-                progressdialog.update(percent, line2=contentdata['episode_title_with_id'])
+                progressdialog.update(
+                    int(percent),
+                    '\n'.join(
+                        [
+                            utils.title_with_color(
+                                contentdata['show_title'],
+                                year=contentdata['year']
+                            ),
+                                contentdata['episode_title_with_id']
+                        ]
+                    )
+                )
                 self.dbh.add_content_item(contentdata, 'tvshow')
                 items_to_stage += 1
                 xbmc.sleep(300)
@@ -283,7 +291,7 @@ class SyncedMenu(object):
             # check it in future
             self.dbh.add_synced_dir(dir_label, dir_path, 'tvshow')
             # query json-rpc to get files in directory
-            progressdialog.update(0, line1=STR_GETTING_ITEMS_IN_DIR)
+            progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
             files_list = list(utils.load_directory_items(
                 progressdialog=progressdialog,
                 dir_path=dir_path,
@@ -332,9 +340,9 @@ class SyncedMenu(object):
                 # Check for duplicate paths and blocked items
                 try:
                     progressdialog.update(
-                        percent,
-                        line1=STR_GETTING_ITEMS_IN_x % contentdata['show_title'],
-                        line2=contentdata['episode_title_with_id']
+                        int(percent),
+                        '\n'.join([STR_GETTING_ITEMS_IN_x % contentdata['show_title'],
+                        contentdata['episode_title_with_id']])
                         )
                     # try add tvshow
                     self.dbh.add_content_item(contentdata, 'tvshow')
@@ -342,8 +350,7 @@ class SyncedMenu(object):
                 except KeyError:
                     # TODO: new dialog str to movie
                     progressdialog.update(
-                        percent,
-                        line1=STR_MOVIE_STAGED % content_title,
+                        int(percent), STR_MOVIE_STAGED % content_title,
                     )
                     # try add movie
                     self.dbh.add_content_item(contentdata, 'movie')
@@ -377,8 +384,8 @@ class SyncedMenu(object):
             all_items = []
             for index, synced_dir in enumerate(synced_dirs):
                 progressdialog.update(
-                    percent=99 * index / len(synced_dirs),
-                    message='{label} - {type}'.format(
+                    99 * index / len(synced_dirs),
+                    '{label} - {type}'.format(
                         label=synced_dir['label'], type=synced_dir.localize_type()
                     )
                 )
@@ -399,11 +406,11 @@ class SyncedMenu(object):
                     # Directory is a path to a list of tv shows
                     all_items += self.get_tvshows_in_directory(synced_dir['dir'])
             # Find managed paths not in dir_items, and prepare to remove
-            progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_REMOVE)
+            progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(all_paths)
             # Find dir_items not in managed_items or staged_items, and prepare to add
-            progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_ADD)
+            progressdialog.update(99, STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
@@ -413,10 +420,10 @@ class SyncedMenu(object):
                             len(paths_to_remove),
                             len(items_to_stage))):
                     if paths_to_remove:
-                        progressdialog.update(percent=99, message=STR_REMOVING_ITEMS)
+                        progressdialog.update(99, STR_REMOVING_ITEMS)
                         self.remove_paths(paths_to_remove)
                     if items_to_stage:
-                        progressdialog.update(percent=99, message=STR_STAGING_ITEMS)
+                        progressdialog.update(99, STR_STAGING_ITEMS)
                         self.stage_items(items_to_stage)
                     # TODO: update/clean managed folder
                     xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_SUCCESS)
@@ -443,13 +450,13 @@ class SyncedMenu(object):
             total_num_dirs = len(movie_dirs + single_movie_dirs)
             for index, synced_dir in enumerate(movie_dirs):
                 progressdialog.update(
-                    percent=99 * index / total_num_dirs, message=synced_dir['label']
+                    int(99 * index / total_num_dirs), synced_dir['label']
                     )
                 all_items += self.get_movies_in_directory(synced_dir['dir'])
             for index, synced_dir in enumerate(single_movie_dirs):
                 progressdialog.update(
-                    percent=99 * (index + len(movie_dirs)) / total_num_dirs,
-                    message=synced_dir['label']
+                    int(99 * (index + len(movie_dirs)) / total_num_dirs),
+                    synced_dir['label']
                 )
                 all_items.append({
                     'file': synced_dir['dir'],
@@ -457,11 +464,11 @@ class SyncedMenu(object):
                     'mediatype': 'movie'
                 })
             # Find managed paths not in dir_items, and prepare to remove
-            progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_REMOVE)
+            progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(all_paths, mediatype='movie')
             # Find dir_items not in managed_items or staged_items, and prepare to add
-            progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_ADD)
+            progressdialog.update(99, STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
@@ -471,10 +478,10 @@ class SyncedMenu(object):
                             len(paths_to_remove),
                             len(items_to_stage))):
                     if paths_to_remove:
-                        progressdialog.update(percent=99, message=STR_REMOVING_ITEMS)
+                        progressdialog.update(99, STR_REMOVING_ITEMS)
                         self.remove_paths(paths_to_remove)
                     if items_to_stage:
-                        progressdialog.update(percent=99, message=STR_STAGING_ITEMS)
+                        progressdialog.update(99, STR_STAGING_ITEMS)
                         self.stage_items(items_to_stage)
                     # TODO: update/clean managed folder
                     xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_SUCCESS)
@@ -501,31 +508,31 @@ class SyncedMenu(object):
             total_num_dirs = len(show_dirs + single_show_dirs)
             for index, synced_dir in enumerate(show_dirs):
                 progressdialog.update(
-                    percent=99 * index / total_num_dirs, message=synced_dir['label']
+                    int(99 * index / total_num_dirs), synced_dir['label']
                     )
                 all_items += self.get_tvshows_in_directory(synced_dir['dir'])
             for index, synced_dir in enumerate(single_show_dirs):
                 progressdialog.update(
-                    percent=99. * (index + len(show_dirs)) / total_num_dirs,
-                    message=synced_dir['label']
+                    int(99. * (index + len(show_dirs)) / total_num_dirs),
+                    synced_dir['label']
                 )
                 all_items += self.get_single_tvshow(synced_dir['dir'], synced_dir['label'])
             # Find managed paths not in dir_items, and prepare to remove
-            progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_REMOVE)
+            progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(all_paths, mediatype='tvshow')
             # Find dir_items not in managed_items or staged_items, and prepare to add
-            progressdialog.update(percent=99, message=STR_FINDING_ITEMS_TO_ADD)
+            progressdialog.update(99, STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
             # Prompt user to remove & stage
             if paths_to_remove or items_to_stage:
                 if xbmcgui.Dialog().yesno(utils.ADDON_NAME, STR_i_TO_REMOVE_i_TO_STAGE_PROCEED %
                                           (len(paths_to_remove), len(items_to_stage))):
                     if paths_to_remove:
-                        progressdialog.update(percent=99, message=STR_REMOVING_ITEMS)
+                        progressdialog.update(99, STR_REMOVING_ITEMS)
                         self.remove_paths(paths_to_remove)
                     if items_to_stage:
-                        progressdialog.update(percent=99, message=STR_STAGING_ITEMS)
+                        progressdialog.update(99, STR_STAGING_ITEMS)
                         self.stage_items(items_to_stage)
                     # TODO: update/clean managed folder
                     xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_SUCCESS)
@@ -554,7 +561,7 @@ class SyncedMenu(object):
             return
         lines = [
             '[B]%s[/B] - %s - [I]%s[/I]' %
-            (x['label'].decode('utf-8'), x.localize_type(), x['dir']) for x in synced_dirs
+            (x['label'], x.localize_type(), x['dir']) for x in synced_dirs
         ]
         lines += [STR_UPDATE_ALL, STR_UPDATE_MOVIES, STR_UPDATE_TV_SHOWS, STR_REMOVE_ALL, STR_BACK]
         ret = xbmcgui.Dialog().select(

@@ -31,7 +31,7 @@ class ManagedTVMenu(object):
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             progress_dialog.update(
-                percent, line2=item.show_title, line3=item.episode_title_with_id
+                int(percent), message='\n'.join([item.show_title, item.episode_title_with_id])
             )
             xbmc.sleep(200)
             item.remove_from_library()
@@ -54,7 +54,7 @@ class ManagedTVMenu(object):
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             progress_dialog.update(
-                percent, line2=item.show_title, line3=item.episode_title_with_id
+                int(percent), message='\n'.join([item.show_title, item.episode_title_with_id])
             )
             xbmc.sleep(200)
             item.remove_from_library()
@@ -75,7 +75,7 @@ class ManagedTVMenu(object):
         )
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
-            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+            progress_dialog.update(int(percent), message='\n'.join([item.show_title, item.episode_title_with_id]))
 
             xbmc.sleep(200)
             item.remove_from_library()
@@ -95,7 +95,7 @@ class ManagedTVMenu(object):
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             progress_dialog.update(
-                percent, line2=item.show_title, line3=item.episode_title_with_id
+                int(percent), message='\n'.join([item.show_title, item.episode_title_with_id])
             )
             item.remove_from_library()
             item.delete()
@@ -114,9 +114,9 @@ class ManagedTVMenu(object):
         for season_number in seasons:
             percent = 100 * season_number / len(seasons)
             progress_dialog.update(
-                percent,
-                line2=show_title,
-                line3=str("Season: %s" % season_number)
+                int(percent),
+                message='\n'.join([show_title,
+                str("Season: %s" % season_number)])
             )
             self.dbh.remove_from(mediatype='tvshow', show_title=show_title, season=season_number)
             xbmc.sleep(300)
@@ -135,7 +135,7 @@ class ManagedTVMenu(object):
         )
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
-            progress_dialog.update(percent, line2=item.show_title, line3=item.episode_title_with_id)
+            progress_dialog.update(int(percent), message='\n'.join([item.show_title, item.episode_title_with_id]))
 
             item.remove_from_library()
             item.delete()
