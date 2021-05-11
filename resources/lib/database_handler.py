@@ -339,13 +339,7 @@ class DatabaseHandler(object):
                         )
             )
             ret = self.cur.execute(sql_comm).fetchone()
-
-            if ret > 0:
-                entries += ret
-        if entries:
-            return True
-        else:
-            return False
+        return True if ret else False
 
     # @utils.logged_function
     # def remove_all_content_items(self, status, mediatype):
