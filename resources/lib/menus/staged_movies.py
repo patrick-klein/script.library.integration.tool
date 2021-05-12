@@ -36,7 +36,7 @@ class StagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_ADDING_ALL_MOVIES)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.movie_title)
+            progress_dialog.update(int(percent), item.movie_title)
             item.add_to_library()
         progress_dialog.close()
         utils.notification(STR_ALL_MOVIES_ADDED)
@@ -55,9 +55,9 @@ class StagedMoviesMenu(object):
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             if os.path.exists(item.movie_nfo[0]):
-                progress_dialog.update(percent, line2=item.movie_title)
+                progress_dialog.update(int(percent), item.movie_title)
                 item.add_to_library()
-            progress_dialog.update(percent, line2=' ')
+            # progress_dialog.update(int(percent), ' ') # TODO: remove it?
         progress_dialog.close()
         utils.notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
@@ -88,7 +88,7 @@ class StagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.movie_title)
+            progress_dialog.update(int(percent), item.movie_title)
             item.create_metadata_item()
         progress_dialog.close()
         utils.notification(STR_ALL_MOVIE_METADTA_CREATED)

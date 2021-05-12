@@ -28,7 +28,7 @@ class ManagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.movie_title)
+            progress_dialog.update(int(percent), item.movie_title)
             item.remove_from_library()
             item.set_as_staged()
         progress_dialog.close()
@@ -44,7 +44,7 @@ class ManagedMoviesMenu(object):
         progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_MOVIES)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(percent, line2=item.movie_title)
+            progress_dialog.update(int(percent), item.movie_title)
             item.remove_from_library()
             item.delete()
         progress_dialog.close()
