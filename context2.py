@@ -39,7 +39,7 @@ def main():
         )
     # Call corresponding method
     selection = lines[typeofcontent]
-    if selection >= 0:
+    if selection:
         if selection == STR_SYNC_ALL_ITEMS:
             sync_type = 'all_items'
         elif selection == STR_SYNC_ONLY_MOVIES:
@@ -49,7 +49,7 @@ def main():
         elif selection == STR_CANCEL_RED:
             utils.notification(STR_NOT_SELECTED, 4000)
 
-    if sync_type is not False:
+    if sync_type:
         try:
             SyncedMenu().sync_all_items_in_directory(sync_type, dir_label, dir_path)
         except Exception as genericexception:
