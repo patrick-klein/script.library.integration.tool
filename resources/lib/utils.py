@@ -15,6 +15,7 @@ import simplejson as json
 import xbmc # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error
 import xbmcvfs  # pylint: disable=import-error
+import xbmcgui
 
 # Get file system tools depending on platform
 if osname == 'posix':
@@ -561,12 +562,17 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     ''' Load items in a directory using the JSON-RPC interface '''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
-    results = execute_json_rpc('Files.GetDirectory', directory=dir_path)
-    if 'result' not in results and 'files' not in results:
-        yield []
+    results = execute_json_rpc(
+        'Files.GetDirectory',
+        directory=dir_path)['result']['files']
+
+    if sync_type == 'filter':
+        sync_type = 'all_items'
+        results = list(selected_list(results))
+
     try:
         listofitems = list(list_reorder(
-            list(skip_filter(results['result']['files'])
+            list(skip_filter(results)
                 ), showtitle=showtitle, year=year, sync_type=sync_type))
     except KeyError:
         listofitems = []

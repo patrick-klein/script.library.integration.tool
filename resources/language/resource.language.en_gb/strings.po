@@ -679,3 +679,7 @@ msgstr ""
 msgctxt "#32166"
 msgid "Something went wrong, try again, maybe this isn't a Tvshow."
 msgstr ""
+
+msgctxt "#32167"
+msgid "Filter items"
+msgstr ""

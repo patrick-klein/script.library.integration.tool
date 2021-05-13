@@ -676,3 +676,6 @@ msgctxt "#32166"
 msgid "Something went wrong, try again, maybe this isn't a Tvshow."
 msgstr "Algo deu errado, tente novamente, talvez esta não seja uma série de TV."
 
+msgctxt "#32167"
+msgid "Filter items"
+msgstr "Filtrar itens"

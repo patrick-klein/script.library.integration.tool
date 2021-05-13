@@ -14,6 +14,7 @@ from resources.lib.menus.synced import SyncedMenu
 STR_SYNC_ALL_ITEMS = utils.getlocalizedstring(32160)
 STR_SYNC_ONLY_MOVIES = utils.getlocalizedstring(32161)
 STR_SYNC_ONLY_SHOWS = utils.getlocalizedstring(32162)
+STR_FILTER_ITEMS = utils.getlocalizedstring(32167)
 STR_CANCEL_RED = utils.getlocalizedstring(32157)
 STR_NOT_SELECTED = utils.getlocalizedstring(32158)
 
@@ -31,6 +32,7 @@ def main():
         STR_SYNC_ALL_ITEMS,
         STR_SYNC_ONLY_MOVIES,
         STR_SYNC_ONLY_SHOWS,
+        STR_FILTER_ITEMS,
         STR_CANCEL_RED
     ]
     typeofcontent = xbmcgui.Dialog().select(
@@ -46,6 +48,8 @@ def main():
             sync_type = 'movie'
         elif selection == STR_SYNC_ONLY_SHOWS:
             sync_type = 'tvshow'
+        elif selection == STR_FILTER_ITEMS:
+            sync_type = 'filter'
         elif selection == STR_CANCEL_RED:
             utils.notification(STR_NOT_SELECTED, 4000)
 
