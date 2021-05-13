@@ -529,7 +529,10 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
                             years.append(item['year'])
                         except KeyError:
                             pass
-                        reordered[item['episode'] - 1] = item
+                        if item['episode'] != item['number']:
+                            reordered[item['number'] - 1] = item
+                        else:
+                            reordered[item['episode'] - 1] = item
             # this part of code detect episodes with < 30 in season with 'Next Page'
             # works with CRUNCHYROLL, but can work for all
             if (item['filetype'] == 'file' and
