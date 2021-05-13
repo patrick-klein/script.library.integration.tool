@@ -351,9 +351,7 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
         if sync_type != 'all_items':
             if sync_type == 'movie' and item['type'] == 'movie':
                 pass
-            elif (sync_type == 'tvshow' and
-                  re_search(
-                      item['type'],
+            elif (sync_type == 'tvshow' and re_search(item['type'],
                       ['tvshow', 'season', 'episode', 'unknown', 'directory'])):
                 pass
             elif sync_type == 'music' and item['type'] == 'music':
