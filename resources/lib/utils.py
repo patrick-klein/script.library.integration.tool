@@ -556,6 +556,17 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
                 pass
             yield item
 
+
+def selected_list(results):
+    mapped = dict()
+    for index, item in enumerate(results):
+        mapped[index] = item
+            
+    selection = xbmcgui.Dialog().multiselect(
+        'Escolha:', list(x['label'] for x in results))
+    for index in selection:
+        yield mapped[index] 
+
 def load_directory_items(progressdialog, dir_path, recursive=False,
                          allow_directories=False, depth=1, showtitle=False,
                          season=False, year=False, sync_type=False):
