@@ -312,7 +312,7 @@ class SyncedMenu(object):
                         year=content_file['year']
                     ).returasjson()
                     sync_type = 'movie'
-                except KeyError:
+                except (KeyError, TypeError):
                     content_title = content_file['showtitle']
                     contentdata = EpisodeItem(
                         link_stream_path=content_file['file'],
@@ -324,6 +324,8 @@ class SyncedMenu(object):
                         year=content_file['year']
                     ).returasjson()
                     sync_type = 'tvshow'
+                except (KeyError, TypeError) as e:
+                    raise e
                 # Get name of show and skip if blocked
                 # Get everything inside tvshow path
                 # # # # # # # # # # # # # # # # # # # # type: movie or episode
