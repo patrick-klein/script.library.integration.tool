@@ -50,7 +50,7 @@ class SyncedMenu(object):
     @utils.logged_function
     def find_paths_to_remove(self, all_paths, **kwargs):
         ''' Find paths in database no longer available '''
-        #TODO: update this func in future, now
+        #TODO: update this func in future
         managed_items = self.dbh.get_content_items(**kwargs)
         return [x.path for x in managed_items if x.path not in all_paths]
 
@@ -212,7 +212,6 @@ class SyncedMenu(object):
         num_already_managed = 0
         progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
         for index, showfile in enumerate(files_list):
-            utils.tojs(showfile, 'showfile')
             if progressdialog.iscanceled() is True:
                 progressdialog.close()
                 break
@@ -288,7 +287,7 @@ class SyncedMenu(object):
         progressdialog.create(utils.ADDON_NAME)
         try:
             # add synced directory to database
-            # check it in future
+            # TODO: check it in future
             self.dbh.add_synced_dir(dir_label, dir_path, 'tvshow')
             # query json-rpc to get files in directory
             progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)

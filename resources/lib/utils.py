@@ -587,6 +587,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 ), showtitle=showtitle, year=year, sync_type=sync_type))
     except KeyError:
         listofitems = []
+
     if not allow_directories:
         for item in listofitems:
             if item['filetype'] == 'file':
