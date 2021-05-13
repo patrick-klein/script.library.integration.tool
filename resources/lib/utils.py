@@ -548,7 +548,7 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
                 if item['showtitle'] != stored_title:
                     stored_title = item['showtitle']
     for item in reordered:
-        if not item == "":
+        if item:
             try:
                 loweryear = min(years)
                 item['year'] = loweryear
