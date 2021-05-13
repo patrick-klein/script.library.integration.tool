@@ -590,7 +590,8 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
     if not allow_directories:
         for item in listofitems:
             if item['filetype'] == 'file':
-                yield item
+                if item:
+                    yield item
     directories = []
     for index, item in enumerate(listofitems):
         if progressdialog.iscanceled() is True:
@@ -600,7 +601,8 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
         if item['type'] == 'movie':
             progressdialog.update(int(percent), 'Processando items:\n%s' % item['movie_title'])
             xbmc.sleep(200)
-            yield item
+            if item:
+                yield item
         else:
             if season is not False:
                 item['season'] = season
@@ -619,7 +621,8 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 progressdialog.update(int(percent), 'Processando items:\n%s' % item['label'])
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle
-                yield item
+                if item:
+                    yield item
     if recursive and directories:
         for _dir in directories:
             # close the progress bar during JSONRPC process
@@ -650,7 +653,8 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 sync_type=sync_type
                 ))
             for new in new_items:
-                yield new
+                if item:
+                    yield new
 
 def notification(message, time=3000, icon='ntf_icon.png'):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
