@@ -73,7 +73,7 @@ class StagedMoviesMenu(object):
                 folder_contents = os.listdir(full_path)
                 if len(folder_contents) == 1 and fnmatch(folder_contents[0], '*.strm'):
                     utils.log_msg(
-                        'Removing metadata folder {}'.format(full_path), loglevel=xbmc.LOGNOTICE
+                        'Removing metadata folder {}'.format(full_path), loglevel=xbmc.LOGINFO
                     )
                 shutil.rmtree(full_path)
         utils.notification(STR_MOVIE_METADATA_CLEANED)

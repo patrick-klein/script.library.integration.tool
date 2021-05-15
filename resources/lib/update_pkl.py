@@ -80,9 +80,9 @@ def update_blocked():
 def main():
     ''' Main entrypoint for module.
     Update log and call other functions to update files '''
-    utils.log_msg('Updating pickle files...', xbmc.LOGNOTICE)
+    utils.log_msg('Updating pickle files...', xbmc.LOGINFO)
     update_managed()
     update_staged()
     update_synced()
     update_blocked()
-    utils.log_msg('Pickle files updated.', xbmc.LOGNOTICE)
+    utils.log_msg('Pickle files updated.', xbmc.LOGINFO)
