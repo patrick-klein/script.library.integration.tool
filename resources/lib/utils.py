@@ -52,7 +52,7 @@ WITH_EPID = '1'
 WITH_METADATA = '2'
 
 # Define other constants
-DEFAULT_LOG_LEVEL = xbmc.LOGNOTICE if IN_DEVELOPMENT else xbmc.LOGDEBUG
+DEFAULT_LOG_LEVEL = xbmc.LOGINFO if IN_DEVELOPMENT else xbmc.LOGDEBUG
 DATABASE_FILE = join(MANAGED_FOLDER, 'managed.db')
 # TODO: Use combined list on all platforms.  Would need to be combined with version check
 # to re-add all managed items
@@ -141,7 +141,7 @@ def check_subfolders():
     created_folders = False
     for folder in subfolders:
         if not isdir(folder):
-            log_msg('Creating subfolder {}'.format(folder), loglevel=xbmc.LOGNOTICE)
+            log_msg('Creating subfolder {}'.format(folder), loglevel=xbmc.LOGINFO)
             fs.mkdir(folder)
             created_folders |= True
     if created_folders:
