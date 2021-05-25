@@ -329,11 +329,6 @@ def re_search(string, strings_to_skip=None):
 
 def skip_filter(contets_json):
     ''' Function to check and filter items in a list '''
-    # TODO: IDEIA, create a new dialog to sync_all_items_in_directory in context2.py,
-    # where user can filter show/movies they whant to sync,
-    # imagine a list with 30 shows/movies, but user realy want 5,
-    # with this they can select dinamicaly first we ask if user want to filter,
-    # if yes, the multselection list will apear
     for item in contets_json:
         if not re_search(item['label']):
             yield item
