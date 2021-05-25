@@ -529,6 +529,7 @@ def list_reorder(contets_json, showtitle, year=False, sync_type=False):
                         except KeyError:
                             pass
                         if item['episode'] != item['number']:
+                            item['episode'] = item['number']
                             reordered[item['number'] - 1] = item
                         else:
                             reordered[item['episode'] - 1] = item
