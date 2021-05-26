@@ -559,9 +559,7 @@ def selected_list(results):
         mapped[index] = item
             
     selection = xbmcgui.Dialog().multiselect(
-        'Escolha:', list(x['label'] for x in results))
-    for index in selection:
-        yield mapped[index] 
+        'Escolha:', list(x['label'] for x in skip_filter(results)))
 
 def load_directory_items(progressdialog, dir_path, recursive=False,
                          allow_directories=False, depth=1, showtitle=False,
