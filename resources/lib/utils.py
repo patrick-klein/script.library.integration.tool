@@ -586,9 +586,9 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
 
     if not allow_directories:
         for item in listofitems:
-            if item['filetype'] == 'file':
-                if item:
-                    yield item
+            if item and item['filetype'] == 'file':
+                yield item
+
     directories = []
     for index, item in enumerate(listofitems):
         if progressdialog.iscanceled() is True:
@@ -605,7 +605,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 item['season'] = season
             if year is not False:
                 item['year'] = year
-                # # se for um diretorio ele é adicionado a lista directories
+                # if content is a directory will be added to directories list
             if (item['filetype'] == 'directory' and
                     item['type'] == 'tvshow' or
                     item['type'] == 'season'):
@@ -613,7 +613,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 progressdialog.update(int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
                 xbmc.sleep(200)
                 directories.append(item)
-                # # se for um epsodio, usa o yield para guardar o item
+                # if content is a episode, will be stored with yeld
             if item['type'] == 'episode':
                 progressdialog.update(int(percent), 'Processando items:\n%s' % item['label'])
                 xbmc.sleep(100)
