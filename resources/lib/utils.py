@@ -621,7 +621,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
         listofitems = list(list_reorder(
             list(skip_filter(results)
                 ), showtitle=showtitle, year=year, sync_type=sync_type))
-    except KeyError:
+    except (KeyError, TypeError):
         listofitems = []
 
     if not allow_directories:
