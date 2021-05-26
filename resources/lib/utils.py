@@ -328,20 +328,24 @@ def re_search(string, strings_to_skip=None):
     return bool(any(re.search(rgx, string, re.I) for rgx in STR_SKIP_STRINGS))
 
 
-def skip_filter(contets_json):
+def skip_filter(contents_json):
     ''' Function to check and filter items in a list '''
-    for item in contets_json:
-        if not ('seren' in item['file'] and item['label'] == 'Next'): # TODO: generic and temporary way to skip seren nextpage
-            if not re_search(item['label']):
-                yield item
+    try:
+        for item in contents_json:
+            if not ('seren' in item['file'] and item['label'] == 'Next'): # TODO: generic and temporary way to skip seren nextpage
+                if not re_search(item['label']):
+                    yield item
+    except TypeError:
+        yield None
 
-def list_reorder(contets_json, showtitle, year=False, sync_type=False):
+
+def list_reorder(contents_json, showtitle, year=False, sync_type=False):
     ''' Return a list of elements reordered by number id '''
-    reordered = [''] * len(contets_json)
+    reordered = [''] * len(contents_json)
     years = []
     stored_title = None
     stored_season = None
-    for index, item in enumerate(contets_json):
+    for index, item in enumerate(contents_json):
         # TODO: check if logic is real necessary, test is for all languages eficient
         STR_SEASON_CHECK = re_search(
             item['label'], ['season', 'temporada', r'S\d{1,4}']
@@ -602,7 +606,7 @@ def selected_list(results):
         for index in selection:
             yield mapped[index] 
     except TypeError:
-        return None
+        yield None
 
 
 def load_directory_items(progressdialog, dir_path, recursive=False,
