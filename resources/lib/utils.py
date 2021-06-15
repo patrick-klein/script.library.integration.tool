@@ -119,15 +119,14 @@ class Version(object):
     def __ge__(self, other):
         return self > other or self == other
 
+
 def check_managed_folder():
     ''' Checks if the managed folder is configured '''
-    # Display an error is user hasn't configured managed folder yet
-    if not (MANAGED_FOLDER and isdir(MANAGED_FOLDER)):
-        # TODO: Open prompt to just set managed folder from here
-        STR_CHOOSE_FOLDER = getlocalizedstring(32123)
-        notification(STR_CHOOSE_FOLDER)
-        log_msg('No managed folder "{}"'.format(MANAGED_FOLDER), xbmc.LOGERROR)
-        sys.exit()
+    if not exists(MANAGED_FOLDER):
+        STR_CHOOSE_FOLDER = 'Created managed folder "{}"'.format(MANAGED_FOLDER)
+        mkdir(MANAGED_FOLDER)
+        log_msg(STR_CHOOSE_FOLDER, xbmc.LOGERROR)
+
 
 def check_subfolders():
     ''' Checks the subfolders in the Managed and Metadata folders '''
@@ -285,6 +284,7 @@ def clean_name(title):
         title = title.replace(key, val)
     return title
 
+
 def execute_json_rpc(method, directory):
     ''' Execute a JSON-RPC command with specified method and params (as keyword arguments)
     See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params '''
@@ -309,6 +309,7 @@ def execute_json_rpc(method, directory):
             }, ensure_ascii=False) # ensure_ascii ONLY scape charters in python3
         )
     )
+
 
 def videolibrary(method):
     ''' A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary.Clean '''
