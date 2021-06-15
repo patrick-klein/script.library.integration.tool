@@ -501,7 +501,7 @@ msgid "All items were successfully updated.  Please clean library and review sta
 msgstr ""
 
 msgctxt "#32123"
-msgid "Choose managed folder in settings"
+msgid ""
 msgstr ""
 
 msgctxt "#32124"
