@@ -6,22 +6,23 @@ Contains various constants and utility functions used thoughout the addon
 # TODO: Consider breaking up into more files (or Python package)
 import re
 import sys
-
-from os import mkdir, name as osname
-from os.path import expanduser, join, dirname, isdir, isfile
-
 import simplejson as json
+
+from os import name as osname
+
+from os.path import join
+from os.path import isdir
+from os.path import exists
+from os.path import isfile
+from os.path import dirname
+from os.path import expanduser
 
 import xbmc # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error
 import xbmcvfs  # pylint: disable=import-error
-import xbmcgui
+import xbmcgui  # pylint: disable=import-error
 
-# Get file system tools depending on platform
-if osname == 'posix':
-    import resources.lib.unix as fs
-else:
-    import resources.lib.universal as fs
+from resources.lib.filesystem import mkdir
 
 # Get settings
 ADDON = xbmcaddon.Addon()
