@@ -10,6 +10,7 @@ import xbmc # pylint: disable=import-error
 import xbmcgui # pylint: disable=import-error
 
 import resources.lib.utils as utils
+import resources.lib.filesystem as fs
 from resources.lib.database_handler import DatabaseHandler
 
 
@@ -318,7 +319,7 @@ class StagedTVMenu(object):
         # Delete metadata folder
         clean_show_title = utils.clean_name(show_title)
         metadata_dir = os.path.join(utils.METADATA_FOLDER, 'TV', clean_show_title)
-        utils.fs.remove_dir(metadata_dir)
+        fs.remove_dir(metadata_dir)
         # Add show title to blocked
         self.dbh.add_blocked_item(show_title, 'tvshow')
 
