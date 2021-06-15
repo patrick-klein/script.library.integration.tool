@@ -132,24 +132,30 @@ def check_managed_folder():
 def check_subfolders():
     ''' Checks the subfolders in the Managed and Metadata folders '''
     # Create subfolders if they don't exist
-    subfolders = [
-        join(MANAGED_FOLDER, 'ManagedMovies'),
-        join(MANAGED_FOLDER, 'ManagedTV')
-    ] + ([] if USING_CUSTOM_METADATA_FOLDER else [join(MANAGED_FOLDER, 'Metadata')]) + [
-        join(METADATA_FOLDER, 'Movies'),
-        join(METADATA_FOLDER, 'TV')
-    ]
+    subfolders = {
+        'ManagedMovies': MANAGED_FOLDER,
+        'ManagedTV': MANAGED_FOLDER,
+        'Movies': METADATA_FOLDER,
+        'TV': METADATA_FOLDER,
+    }
+
+    if not USING_CUSTOM_METADATA_FOLDER:
+        subfolders['Metadata'] = MANAGED_FOLDER
+
     created_folders = False
-    for folder in subfolders:
-        if not isdir(folder):
-            log_msg('Creating subfolder {}'.format(folder), loglevel=xbmc.LOGINFO)
-            fs.mkdir(folder)
-            created_folders |= True
+    for basepath, diretory in subfolders.items():
+        dest_dir = join(diretory, basepath)
+        if not exists(dest_dir):
+            log_msg('Creating subfolder {}'.format(dest_dir), loglevel=xbmc.LOGINFO)
+            mkdir(dest_dir)
+            created_folders = True
+
     if created_folders:
         STR_SUBFOLDERS_CREATED = getlocalizedstring(32127)
         notification(STR_SUBFOLDERS_CREATED)
         # TODO: Add video sources here
-        sys.exit()
+        xbmc.sleep(1)
+
 
 def check_version_file():
     ''' Checks the version file and runs version-specific update actions '''
