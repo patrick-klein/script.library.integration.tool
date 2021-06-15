@@ -713,15 +713,21 @@ def notification(message, time=3000, icon='ntf_icon.png'):
         join(ADDON_PATH, icon)
         ))
 
+ 
 def tojs(data, filename):
     ''' Function to create a json file '''
-    with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
-        f.write(str(json.dumps(data, indent=4, sort_keys=True)))
-        f.close()
+    try:
+        with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
+            f.write(str(json.dumps(data, indent=4, sort_keys=True)))
+            f.close()
+    except AttributeError:
+        pass
+
 
 def getlocalizedstring(string_id):
     ''' Function to get call getLocalizedString and deal with unicodedecodeerrors '''
     return str(ADDON.getLocalizedString(string_id))
+
 
 def title_with_color(label, year=None, color='skyblue'):
     ''' Create a string to use in title Dialog().select '''
