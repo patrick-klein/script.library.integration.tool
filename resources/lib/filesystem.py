@@ -112,7 +112,7 @@ else:
 def mkdir(dir_path):
     ''' Create a directory '''
     Path(dir_path).mkdir(
-        mode=0o644,
+        mode=0o755,
         parents=True,
         exist_ok=True
     )
