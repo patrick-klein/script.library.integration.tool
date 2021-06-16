@@ -22,15 +22,6 @@ from .version import check_version_file
 from resources import *
 
 
-# Enum values in settings
-NEVER = '0'
-ALWAYS = '1'
-WITH_EPID = '1'
-WITH_METADATA = '2'
-
-# Define other constants
-DEFAULT_LOG_LEVEL = xbmc.LOGINFO if IN_DEVELOPMENT else xbmc.LOGDEBUG
-DATABASE_FILE = join(MANAGED_FOLDER, 'managed.db')
 # TODO: Use combined list on all platforms.  Would need to be combined with version check
 # to re-add all managed items
 MAPPED_STRINGS = [

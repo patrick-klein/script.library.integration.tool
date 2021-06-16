@@ -3,6 +3,7 @@
 
 from os.path import join
 
+import xbmc # pylint: disable=import-error
 import xbmcvfs # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error
 
@@ -28,3 +29,15 @@ if USING_CUSTOM_METADATA_FOLDER:
     METADATA_FOLDER = ADDON.getSetting('metadata_folder')
 else:
     METADATA_FOLDER = join(MANAGED_FOLDER, 'Metadata')
+
+
+# Enum values in settings
+NEVER = '0'
+ALWAYS = '1'
+WITH_EPID = '1'
+WITH_METADATA = '2'
+
+# Define other constants
+DEFAULT_LOG_LEVEL = xbmc.LOGINFO if IN_DEVELOPMENT else xbmc.LOGDEBUG
+
+DATABASE_FILE = join(MANAGED_FOLDER, 'managed.db')
