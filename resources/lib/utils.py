@@ -5,24 +5,19 @@ Contains various constants and utility functions used thoughout the addon
 '''
 # TODO: Consider breaking up into more files (or Python package)
 import re
-import sys
 import simplejson as json
 
 from os import name as osname
 
 from os.path import join
-from os.path import isdir
 from os.path import exists
-from os.path import isfile
-from os.path import dirname
 from os.path import expanduser
 
 import xbmc # pylint: disable=import-error
-import xbmcaddon # pylint: disable=import-error
-import xbmcvfs  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
-from resources.lib.filesystem import mkdir
+from .filesystem import mkdir
+from .version import check_version_file
 
 from resources import *
 
@@ -65,41 +60,6 @@ if osname == 'nt':
         #('+', ''), (',', ''), (';', ''), ('=', ''), ('[', ''), (']', ''),
     ]
 
-class Version(object):
-    ''' Class that implements comparison operators for version numbers '''
-
-    def __init__(self, version_number):
-        self.version_number = version_number
-
-    def __eq__(self, other):
-        if isinstance(other, Version):
-            return self.version_number == other.version_number
-        return self.version_number == other
-
-    def __lt__(self, other):
-        if isinstance(other, Version):
-            other_version = other.version_number
-        else:
-            other_version = other
-        for this, that in zip(self.version_number.split('.'), other_version.split('.')):
-            if int(this) < int(that):
-                return True
-            elif int(this) > int(that):
-                return False
-        return False
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __gt__(self, other):
-        return not (self < other or self == other)
-
-    def __le__(self, other):
-        return self < other or self == other
-
-    def __ge__(self, other):
-        return self > other or self == other
-
 
 def check_managed_folder():
     ''' Checks if the managed folder is configured '''
@@ -137,41 +97,6 @@ def check_subfolders():
         xbmc.sleep(1)
 
 
-def check_version_file():
-    ''' Checks the version file and runs version-specific update actions '''
-    # Check version file
-    version_file_path = xbmcvfs.translatePath(
-        'special://userdata/addon_data/{}/.version'.format(ADDON_ID)
-    )
-    if isfile(version_file_path):
-        with open(version_file_path, 'r') as version_file:
-            version = Version(version_file.read())
-    else:
-        # TODO: Use the following after updating to v0.5.0
-        # with open(version_file_path, 'w') as version_file:
-        #     version_file.write(ADDON_VERSION)
-        # version = Version(ADDON_VERSION)
-        version = Version('0.3.2')
-    if version != ADDON_VERSION:
-        STR_UPDATING = getlocalizedstring(32133)
-        STR_UPDATED = getlocalizedstring(32134)
-        notification(STR_UPDATING)
-        if version < '0.3.0':
-            # Update .pkl files
-            import resources.lib.update_pkl as update_pkl
-            update_pkl.main()
-        if version < '0.4.0':
-            # Maintain previous settings if managed folder is already set
-            if ADDON.getSetting('managed_folder'):
-                ADDON.setSetting('custom_managed_folder', 'true')
-        # Create addons dir if not exist
-        mkdir(dirname(version_file_path))
-        # Update version file
-        with open(version_file_path, 'w+') as version_file:
-            version_file.write(ADDON_VERSION)
-        notification(STR_UPDATED)
-        sys.exit()
-
 def entrypoint(func):
     ''' Decorator to perform actions required for entrypoints '''
     def wrapper(*args, **kwargs):
@@ -182,6 +107,7 @@ def entrypoint(func):
         return func(*args, **kwargs)
     return wrapper
 
+
 def utf8_args(func):
     ''' Decorator for encoding utf8 on all unicode arguments '''
     def wrapper(*args, **kwargs):
@@ -189,9 +115,11 @@ def utf8_args(func):
         return func(*args, **kwargs)
     return wrapper
 
+
 def log_msg(msg, loglevel=DEFAULT_LOG_LEVEL):
     ''' Log message with addon name and version to kodi log '''
     xbmc.log("{0} v{1} --> {2}".format(ADDON_NAME, ADDON_VERSION, msg), level=loglevel)
+
 
 def logged_function(func):
     ''' Decorator for logging function call and return values (at default log level) '''
