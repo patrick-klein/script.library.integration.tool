@@ -27,6 +27,7 @@ from resources.lib.items.episode import EpisodeItem
 
 from resources.lib.items.contentmanager import ContentManShows, ContentManMovies
 
+
 class DatabaseHandler(object):
     ''' Opens a connection with the SQLite file
     and provides methods for interfacing with database.
@@ -39,7 +40,7 @@ class DatabaseHandler(object):
     #the objective is reduce the if's in all plaves
     def __init__(self):
         # Connect to database
-        self.conn = sqlite3.connect(utils.DATABASE_FILE)
+        self.conn = sqlite3.connect(DATABASE_FILE)
         self.conn.text_factory = str
         self.cur = self.conn.cursor()
         # Create tables if they doesn't exist
@@ -110,11 +111,11 @@ class DatabaseHandler(object):
                 ).returasjson())
             elif item[2] == 'music':
                 # TODO: add music
-                utils.notification('Music Here', 5000)
+                notification('Music Here', 5000)
         raise ValueError('Unrecognized Mediatype in Content query')
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def add_blocked_item(self, value, mediatype):
         ''' Add an item to Blocked with the specified values '''
         # Ignore if already in table
@@ -123,8 +124,8 @@ class DatabaseHandler(object):
             self.cur.execute("INSERT INTO Blocked (Value, Type) VALUES (?, ?)", (value, mediatype))
             self.conn.commit()
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def add_content_item(self, jsondata, mediatype):
         '''Add content to library'''
         query_defs = ''
@@ -179,19 +180,19 @@ class DatabaseHandler(object):
         self.cur.execute(sql_comm, params)
         self.conn.commit()
         # Optionally add item to directory, depending on settings and metadata items
-        if mediatype == 'movie' and utils.AUTO_ADD_MOVIES != utils.NEVER:
-            if utils.AUTO_ADD_MOVIES == utils.ALWAYS:
+        if mediatype == 'movie' and AUTO_ADD_MOVIES != NEVER:
+            if AUTO_ADD_MOVIES == ALWAYS:
                 ContentManMovies(jsondata).add_to_library()
-            elif utils.AUTO_ADD_MOVIES == utils.WITH_METADATA:
+            elif AUTO_ADD_MOVIES == WITH_METADATA:
                 ContentManMovies(jsondata).add_to_library_if_metadata()
-        elif mediatype == 'tvshow' and utils.AUTO_ADD_TVSHOWS != utils.NEVER:
-            if utils.AUTO_ADD_TVSHOWS == utils.WITH_EPID:
+        elif mediatype == 'tvshow' and AUTO_ADD_TVSHOWS != NEVER:
+            if AUTO_ADD_TVSHOWS == WITH_EPID:
                 ContentManShows(jsondata).add_to_library()
-            elif utils.AUTO_ADD_TVSHOWS == utils.WITH_METADATA:
+            elif AUTO_ADD_TVSHOWS == WITH_METADATA:
                 ContentManShows(jsondata).add_to_library_if_metadata()
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def add_synced_dir(self, label, path, mediatype):
         ''' Create an entry in Synced with specified values '''
         self.cur.execute(
@@ -200,15 +201,15 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def check_blocked(self, value, mediatype):
         ''' Return True if the given entry is in Blocked '''
         self.cur.execute('SELECT (Value) FROM Blocked WHERE Value=? AND Type=?', (value, mediatype))
         res = self.cur.fetchone()
         return bool(res)
 
-    @utils.logged_function
+    @logged_function
     def get_all_shows(self, status):
         ''' Query Content table for all (not null) distinct show_titles
         and cast results as list of strings '''
@@ -222,14 +223,14 @@ class DatabaseHandler(object):
         rows = self.cur.fetchall()
         return [x[0] for x in rows if x[0] is not None]
 
-    @utils.logged_function
+    @logged_function
     def get_blocked_items(self):
         ''' Return all items in Blocked as a list of BlockedItem objects '''
         self.cur.execute("SELECT * FROM Blocked ORDER BY Type, Value")
         rows = self.cur.fetchall()
         return [BlockedItem(*x) for x in rows]
 
-    @utils.logged_function
+    @logged_function
     def get_content_items(self,
                           status=None,
                           mediatype=None,
@@ -294,8 +295,8 @@ class DatabaseHandler(object):
         rows = self.cur.fetchall()
         return [self.content_item_from_db(x) for x in rows]
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def get_synced_dirs(self, synced_type=None):
         ''' Get all items in Synced cast as a list of dicts '''
         # Define template for this sql command
@@ -312,8 +313,8 @@ class DatabaseHandler(object):
         rows = self.cur.fetchall()
         return [SyncedItem(*x) for x in rows]
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def load_item(self, path):
         ''' Query a single item with path and casts result as ContentItem subclasses '''
         # query database
@@ -322,8 +323,8 @@ class DatabaseHandler(object):
         item = self.cur.fetchone()
         return self.content_item_from_db(item)
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def path_exists(self, path, mediatype, status=None):
         ''' Return True if path is already in database (with given status) '''
         #TODO: consider adding mediatype as optional parameter
@@ -353,7 +354,7 @@ class DatabaseHandler(object):
             ret = self.cur.execute(sql_comm).fetchone()
         return True if ret else False
 
-    # @utils.logged_function
+    # @logged_function
     # def remove_all_content_items(self, status, mediatype):
     #     ''' Remove all items from Content with status and mediatype '''
     #     # delete from table
@@ -363,8 +364,8 @@ class DatabaseHandler(object):
     #         (status, mediatype))
     #     self.conn.commit()
 
-    # @utils.utf8_args
-    # @utils.logged_function
+    # @utf8_args
+    # @logged_function
     # def remove_all_show_episodes(self, status, show_title):
     #     ''' Remove all tvshow items from Content with status and show_title '''
     #     # delete from table
@@ -375,15 +376,15 @@ class DatabaseHandler(object):
     #     )
     #     self.conn.commit()
 
-    # @utils.utf8_args
-    # @utils.logged_function
+    # @utf8_args
+    # @logged_function
     # def remove_content_item(self, path):
     #     ''' Remove the item in Content with specified path '''
     #     # delete from table
     #     self.conn.commit()
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def remove_from(self,
                     status=None,
                     mediatype=None,
@@ -428,15 +429,15 @@ class DatabaseHandler(object):
         self.conn.commit()
 
 
-    @utils.logged_function
+    @logged_function
     def remove_all_synced_dirs(self):
         ''' Delete all entries in Synced '''
         # remove all rows
         self.cur.execute('DELETE FROM Synced')
         self.conn.commit()
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def remove_blocked(self, value, mediatype):
         ''' Remove the item in Blocked with the specified parameters '''
         self.cur.execute(
@@ -445,8 +446,8 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def remove_synced_dir(self, path):
         ''' Remove the entry in Synced with the specified Directory '''
         # remove entry
@@ -456,8 +457,8 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
-    @utils.utf8_args
-    @utils.logged_function
+    @utf8_args
+    @logged_function
     def update_content(self, path, mediatype, **kwargs):
         ''' Update a single field for item in Content with specified path '''
         if mediatype == 'movie':
