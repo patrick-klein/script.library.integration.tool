@@ -705,14 +705,10 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 if item:
                     yield new
 
-def notification(message, time=3000, icon='ntf_icon.png'):
+
+def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
     ''' Provide a shorthand for xbmc builtin notification with addon name '''
-    xbmc.executebuiltin('Notification("{0}", "{1}", "{2}", "{3}")'.format(
-        ADDON_NAME,
-        message,
-        time,
-        join(ADDON_PATH, icon)
-        ))
+    xbmcgui.Dialog().notification(ADDON_NAME, message, icon, time, True) 
 
  
 def tojs(data, filename):
