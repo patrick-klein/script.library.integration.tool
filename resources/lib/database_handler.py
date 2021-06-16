@@ -6,7 +6,19 @@ Defines the DatabaseHandler class
 
 import sqlite3
 
-import resources.lib.utils as utils
+from resources import NEVER
+from resources import ALWAYS
+from resources import WITH_EPID
+from resources import WITH_METADATA
+
+from resources import AUTO_ADD_MOVIES
+from resources import AUTO_ADD_TVSHOWS
+
+from resources import DATABASE_FILE
+
+from resources.lib.log import logged_function
+from resources.lib.utils import notification, utf8_args
+
 from resources.lib.items.blocked import BlockedItem
 from resources.lib.items.synced import SyncedItem
 

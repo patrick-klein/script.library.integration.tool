@@ -3,15 +3,20 @@
 
 import sys
 
+from os.path import join
 from os.path import isfile
 from os.path import dirname
 
-import xbmcvfs
-import xbmcgui
+import xbmcvfs  # pylint: disable=import-error
+import xbmcgui  # pylint: disable=import-error
 
-from resources import *
+from resources import ADDON
+from resources import ADDON_ID
+from resources import ADDON_NAME
+from resources import ADDON_PATH
+from resources import ADDON_VERSION
 
-from .filesystem import mkdir
+from resources.lib.filesystem import mkdir
 
 
 class Version(object):

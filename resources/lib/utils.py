@@ -16,11 +16,18 @@ from os.path import expanduser
 import xbmc # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
-from .filesystem import mkdir
-from .version import check_version_file
 
-from resources import *
+from resources import ADDON
+from resources import ADDON_NAME
+from resources import ADDON_PATH
+from resources import RECURSION_LIMIT
+from resources import MANAGED_FOLDER
+from resources import METADATA_FOLDER
+from resources import USING_CUSTOM_METADATA_FOLDER
 
+from resources.lib.log import log_msg
+from resources.lib.filesystem import mkdir
+from resources.lib.version import check_version_file
 
 # TODO: Use combined list on all platforms.  Would need to be combined with version check
 # to re-add all managed items
