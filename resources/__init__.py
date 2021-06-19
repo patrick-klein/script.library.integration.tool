@@ -1,10 +1,7 @@
 # /usr/bin/python
 # -*- coding: utf-8 -*-
 
-from os.path import join
-
 import xbmc # pylint: disable=import-error
-import xbmcvfs # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error
 
 # Get settings
@@ -20,16 +17,6 @@ RECURSION_LIMIT = int(ADDON.getSetting('recursion_limit'))
 USE_SHOW_ARTWORK = ADDON.getSetting('use_show_artwork') == 'true'
 USING_CUSTOM_MANAGED_FOLDER = ADDON.getSetting('custom_managed_folder') == 'true'
 USING_CUSTOM_METADATA_FOLDER = ADDON.getSetting('custom_metadata_folder') == 'true'
-
-if USING_CUSTOM_MANAGED_FOLDER:
-    MANAGED_FOLDER = ADDON.getSetting('managed_folder')
-else:
-    MANAGED_FOLDER = xbmcvfs.translatePath('special://userdata/addon_data/{}/'.format(ADDON_ID))
-if USING_CUSTOM_METADATA_FOLDER:
-    METADATA_FOLDER = ADDON.getSetting('metadata_folder')
-else:
-    METADATA_FOLDER = join(MANAGED_FOLDER, 'Metadata')
-
 
 # Enum values in settings
 NEVER = '0'
