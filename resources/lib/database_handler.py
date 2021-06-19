@@ -227,15 +227,15 @@ class DatabaseHandler(object):
             ELSE Show_Title END) COLLATE NOCASE''', (status, )
         )
         # Get results and return items as list
-        rows = self.cur.fetchall()
-        return [x[0] for x in rows if x[0] is not None]
+        return [x[0] for x in self.cur.fetchall() if x[0] is not None]
+
 
     @logged_function
     def get_blocked_items(self):
         ''' Return all items in Blocked as a list of BlockedItem objects '''
         self.cur.execute("SELECT * FROM Blocked ORDER BY Type, Value")
-        rows = self.cur.fetchall()
-        return [BlockedItem(*x) for x in rows]
+        return [BlockedItem(*x) for x in self.cur.fetchall()]
+
 
     @logged_function
     def get_content_items(self,
@@ -299,8 +299,8 @@ class DatabaseHandler(object):
             sql_comm += ' ORDER BY Title'
         self.cur.execute(sql_comm, params)
         # Get results and return items as content items
-        rows = self.cur.fetchall()
-        return [self.content_item_from_db(x) for x in rows]
+        return [self.content_item_from_db(x) for x in self.cur.fetchall()]
+
 
     @utf8_args
     @logged_function
@@ -317,8 +317,8 @@ class DatabaseHandler(object):
         # query database
         self.cur.execute(sql_templ, params)
         # get results and return as list of dicts
-        rows = self.cur.fetchall()
-        return [SyncedItem(*x) for x in rows]
+        return [SyncedItem(*x) for x in self.cur.fetchall()]
+
 
     @utf8_args
     @logged_function
@@ -327,19 +327,17 @@ class DatabaseHandler(object):
         # query database
         self.cur.execute('SELECT * FROM Content WHERE Directory=?', (path, ))
         # get results and return items as object
-        item = self.cur.fetchone()
-        return self.content_item_from_db(item)
+        return self.content_item_from_db(self.cur.fetchone())
+
 
     @utf8_args
     @logged_function
     def path_exists(self, path, mediatype, status=None):
         ''' Return True if path is already in database (with given status) '''
-        #TODO: consider adding mediatype as optional parameter
+        # TODO: consider adding mediatype as optional parameter
         #       might speed-up by adding additional constraint
-        #TODO: test speed against a set from "get_content_paths"
+        # TODO: test speed against a set from "get_content_paths"
         # Build sql command and parameters, adding status if provided
-
-        # TODO: check this isinstance
         for item in [status] if isinstance(status, str) else status:
             if mediatype == 'movie':
                 table_name = 'Movies'
@@ -356,10 +354,9 @@ class DatabaseHandler(object):
                         table_name,
                         path,
                         item
-                        )
+                    )
             )
-            ret = self.cur.execute(sql_comm).fetchone()
-        return True if ret else False
+        return bool(self.cur.execute(sql_comm).fetchone())
 
     # @logged_function
     # def remove_all_content_items(self, status, mediatype):
@@ -389,6 +386,7 @@ class DatabaseHandler(object):
     #     ''' Remove the item in Content with specified path '''
     #     # delete from table
     #     self.conn.commit()
+
 
     @utf8_args
     @logged_function
