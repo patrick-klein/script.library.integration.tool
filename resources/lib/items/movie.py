@@ -4,10 +4,14 @@
 Defines the MovieItem class
 '''
 
-from os.path import join, isdir
+from os.path import join
 
+from resources.lib.log import log_msg
+from resources.lib.log import logged_function
 from resources.lib.abs.item import ABSItemMovie
 
+from resources.lib.utils import MANAGED_FOLDER
+from resources.lib.utils import METADATA_FOLDER
 
 
 class MovieItem(ABSItemMovie):
@@ -19,34 +23,40 @@ class MovieItem(ABSItemMovie):
         self._movie_title = title
         self._year = year
 
+
     @property
     def link_stream_path(self):
         return self._link_stream_path
 
+
     @property
     def movie_title(self):
         return self._movie_title
+
 
     @property
     def year(self):
         ''' Show title with problematic characters removed '''
         return self._year    
 
+
     @property
     def managed_movie_dir(self):
         if not self._managed_dir:
             self._managed_dir = join(
-                utils.MANAGED_FOLDER, 'ManagedMovies', self.movie_title
+                MANAGED_FOLDER, 'ManagedMovies', self.movie_title
             )
         return self._managed_dir
+
 
     @property
     def metadata_movie_dir(self):
         if not self._metadata_movie_dir:
-            self._metadata_movie_dir = join(utils.METADATA_FOLDER, 'Movies', self.movie_title)
+            self._metadata_movie_dir = join(METADATA_FOLDER, 'Movies', self.movie_title)
         return self._metadata_movie_dir
 
-    @utils.logged_function
+
+    @logged_function
     def returasjson(self):
         try:
             return {

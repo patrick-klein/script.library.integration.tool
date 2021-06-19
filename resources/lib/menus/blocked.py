@@ -5,8 +5,10 @@ Defines the BlockedMenu class
 '''
 import xbmcgui  # pylint: disable=import-error
 
-import resources.lib.database_handler as db
-import resources.lib.utils as utils
+from resources import ADDON_NAME
+from resources.lib.log import logged_function
+from resources.lib.utils import getlocalizedstring
+from resources.lib.database_handler import DatabaseHandler
 
 
 class BlockedMenu(object):
@@ -14,9 +16,10 @@ class BlockedMenu(object):
     and tools for managing them '''
 
     def __init__(self):
-        self.dbh = db.DatabaseHandler()
+        self.dbh = DatabaseHandler()
 
-    @utils.logged_function
+
+    @logged_function
     def view(self):
         ''' Display all blocked items, which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
@@ -25,17 +28,17 @@ class BlockedMenu(object):
         # TODO: add blocked types: plugin, path
         # TODO: add blocked keywords, let you choose type
         # TODO: intialize blocked list with known bad items
-        STR_BACK = utils.getlocalizedstring(32011)
-        STR_BLOCKED_ITEMS = utils.getlocalizedstring(32098)
-        STR_NO_BLOCKED_ITEMS = utils.getlocalizedstring(32119)
+        STR_BACK = getlocalizedstring(32011)
+        STR_BLOCKED_ITEMS = getlocalizedstring(32098)
+        STR_NO_BLOCKED_ITEMS = getlocalizedstring(32119)
         blocked_items = self.dbh.get_blocked_items()
         if not blocked_items:
-            xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_BLOCKED_ITEMS)
+            xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_BLOCKED_ITEMS)
             return
         lines = ['{0} - [B]{1}[/B]'.format(x.localize_type(), x['value']) for x in blocked_items]
         lines += [STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1}'.format(utils.ADDON_NAME, STR_BLOCKED_ITEMS), lines
+            '{0} - {1}'.format(ADDON_NAME, STR_BLOCKED_ITEMS), lines
         )
         if ret >= 0:
             if ret < len(blocked_items):  # managed item
@@ -46,15 +49,15 @@ class BlockedMenu(object):
             elif lines[ret] == STR_BACK:
                 return
 
-    @utils.logged_function
+    @logged_function
     def options(self, item):
         ''' Provide options for a single blocked item in a dialog window '''
-        STR_REMOVE = utils.getlocalizedstring(32017)
-        STR_BACK = utils.getlocalizedstring(32011)
-        STR_BLOCKED_ITEM_OPTIONS = utils.getlocalizedstring(32099)
+        STR_REMOVE = getlocalizedstring(32017)
+        STR_BACK = getlocalizedstring(32011)
+        STR_BLOCKED_ITEM_OPTIONS = getlocalizedstring(32099)
         lines = [STR_REMOVE, STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(utils.ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item['value']),
+            '{0} - {1} - {2}'.format(ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item['value']),
             lines
         )
         if ret >= 0:

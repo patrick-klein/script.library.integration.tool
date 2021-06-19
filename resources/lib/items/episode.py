@@ -5,6 +5,10 @@ Defines the EpisodeItem class
 '''
 from os.path import join
 
+from resources.lib.utils import MANAGED_FOLDER
+from resources.lib.utils import METADATA_FOLDER
+from resources.lib.utils import clean_name
+from resources.lib.log import logged_function
 
 from resources.lib.abs.item import ABSItemShow
 
@@ -12,7 +16,6 @@ from resources.lib.abs.item import ABSItemShow
 class EpisodeItem(ABSItemShow):
     ''' Contains information about a TV show episode from the database,
     and has necessary functions for managing item '''
-
     def __init__(self, link_stream_path, title, mediatype, show_title=None, season=None, epnumber=None, year=None):
         super(EpisodeItem, self).__init__(link_stream_path, title, mediatype, show_title, season, epnumber, year)
         self._link_stream_path = link_stream_path
@@ -35,12 +38,12 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def episode_title(self):
-        return utils.clean_name(self._episode_title)
+        return clean_name(self._episode_title)
     
     @property
     def show_title(self):
         ''' Show title with problematic characters removed '''
-        return str(utils.clean_name(self._show_title))
+        return str(clean_name(self._show_title))
 
     @property
     def season_number(self):
@@ -85,17 +88,17 @@ class EpisodeItem(ABSItemShow):
     def managed_show_dir(self):
         if not self._managed_dir:
             self._managed_dir = join(
-                utils.MANAGED_FOLDER, 'ManagedTV', self.show_title
+                MANAGED_FOLDER, 'ManagedTV', self.show_title
             )
         return self._managed_dir
 
     @property
     def metadata_show_dir(self):
         if not self._metadata_show_dir:
-            self._metadata_show_dir = join(utils.METADATA_FOLDER, 'TV', self.show_title)
+            self._metadata_show_dir = join(METADATA_FOLDER, 'TV', self.show_title)
         return self._metadata_show_dir
 
-    @utils.logged_function
+    @logged_function
     def returasjson(self):
         try:
             return {

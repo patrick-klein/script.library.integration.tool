@@ -9,20 +9,27 @@ import os
 import cPickle as pickle
 import xbmc # pylint: disable=import-error
 
-import resources.lib.utils as utils
+from resources.lib.utils import MANAGED_FOLDER
 from resources.lib.database_handler import DatabaseHandler
-# TODO: this module need to be updated
 
-@utils.logged_function
+from resources.lib.log import log_msg
+from resources.lib.log import logged_function
+
+# TODO: this module need to be updated
+@logged_function
 def update_managed():
     ''' Convert managed.pkl items to SQLite entries '''
-    managed_file = os.path.join(utils.MANAGED_FOLDER, 'managed.pkl')
+    managed_file = os.path.join(MANAGED_FOLDER, 'managed.pkl')
     if os.path.exists(managed_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(managed_file, 'rb'))
         for item in items:
             if item.mediatype == 'movie':
-                dbh.add_content_item(item.path, item.title, 'movie')
+                dbh.add_content_item(
+                    item.path,
+                    item.title,
+                    'movie'
+                )
             elif item.mediatype == 'tvshow':
                 dbh.add_content_item(
                     item.path,
@@ -34,27 +41,35 @@ def update_managed():
         os.remove(managed_file)
 
 
-@utils.logged_function
+@logged_function
 def update_staged():
     ''' Convert staged.pkl items to SQLite entries '''
-    staged_file = os.path.join(utils.MANAGED_FOLDER, 'staged.pkl')
+    staged_file = os.path.join(MANAGED_FOLDER, 'staged.pkl')
     if os.path.exists(staged_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(staged_file, 'rb'))
         for item in items:
             if item.mediatype == 'movie':
-                dbh.add_content_item(item.path, item.title, 'movie')
+                dbh.add_content_item(
+                    item.path,
+                    item.title,
+                    'movie'
+                )
             elif item.mediatype == 'tvshow':
-                dbh.add_content_item(item.path, item.title, 'tvshow', \
-                    item.show_title)
+                dbh.add_content_item(
+                    item.path,
+                    item.title,
+                    'tvshow',
+                    item.show_title
+                )
         os.remove(staged_file)
 
 
-@utils.logged_function
+@logged_function
 def update_synced():
     ''' Convert managed.pkl items to SQLite entries '''
     #TODO: Actually load paths and try to get new label
-    synced_file = os.path.join(utils.MANAGED_FOLDER, 'synced.pkl')
+    synced_file = os.path.join(MANAGED_FOLDER, 'synced.pkl')
     if os.path.exists(synced_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(synced_file, 'rb'))
@@ -63,10 +78,10 @@ def update_synced():
         os.remove(synced_file)
 
 
-@utils.logged_function
+@logged_function
 def update_blocked():
     ''' Convert blocked.pkl items to SQLite entries '''
-    blocked_file = os.path.join(utils.MANAGED_FOLDER, 'blocked.pkl')
+    blocked_file = os.path.join(MANAGED_FOLDER, 'blocked.pkl')
     if os.path.exists(blocked_file):
         dbh = DatabaseHandler()
         items = pickle.load(open(blocked_file, 'rb'))
@@ -76,13 +91,13 @@ def update_blocked():
         os.remove(blocked_file)
 
 
-@utils.logged_function
+@logged_function
 def main():
     ''' Main entrypoint for module.
     Update log and call other functions to update files '''
-    utils.log_msg('Updating pickle files...', xbmc.LOGINFO)
+    log_msg('Updating pickle files...', xbmc.LOGINFO)
     update_managed()
     update_staged()
     update_synced()
     update_blocked()
-    utils.log_msg('Pickle files updated.', xbmc.LOGINFO)
+    log_msg('Pickle files updated.', xbmc.LOGINFO)

@@ -11,7 +11,15 @@ from fnmatch import fnmatch
 import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
-import resources.lib.utils as utils
+
+from resources import ADDON_NAME
+from resources.lib.log import log_msg
+from resources.lib.log import logged_function
+
+from resources.lib.utils import notification
+from resources.lib.utils import METADATA_FOLDER
+from resources.lib.utils import getlocalizedstring
+
 from resources.lib.database_handler import DatabaseHandler
 
 
@@ -27,30 +35,30 @@ class StagedMoviesMenu(object):
         self.dbh = DatabaseHandler()
 
     @staticmethod
-    @utils.logged_function
+    @logged_function
     def add_all(items):
         ''' Add all staged movies to library '''
-        STR_ADDING_ALL_MOVIES = utils.getlocalizedstring(32042)
-        STR_ALL_MOVIES_ADDED = utils.getlocalizedstring(32043)
+        STR_ADDING_ALL_MOVIES = getlocalizedstring(32042)
+        STR_ALL_MOVIES_ADDED = getlocalizedstring(32043)
         progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(utils.ADDON_NAME, STR_ADDING_ALL_MOVIES)
+        progress_dialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             progress_dialog.update(int(percent), item.movie_title)
             item.add_to_library()
         progress_dialog.close()
-        utils.notification(STR_ALL_MOVIES_ADDED)
+        notification(STR_ALL_MOVIES_ADDED)
 
     @staticmethod
-    @utils.logged_function
+    @logged_function
     def add_all_with_metadata(items):
         ''' Add all movies with nfo files to the library '''
         # TODO: Remove code duplication with MovieItem.add_to_library_if_metadata
-        STR_ADDING_ALL_MOVIES_WITH_METADATA = utils.getlocalizedstring(32044)
-        STR_ALL_MOVIES_WITH_METADTA_ADDED = utils.getlocalizedstring(32045)
+        STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
+        STR_ALL_MOVIES_WITH_METADTA_ADDED = getlocalizedstring(32045)
 
         progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(utils.ADDON_NAME, STR_ADDING_ALL_MOVIES_WITH_METADATA)
+        progress_dialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES_WITH_METADATA)
 
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
@@ -59,39 +67,39 @@ class StagedMoviesMenu(object):
                 item.add_to_library()
             # progress_dialog.update(int(percent), ' ') # TODO: remove it?
         progress_dialog.close()
-        utils.notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
+        notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
     @staticmethod
-    @utils.logged_function
+    @logged_function
     def clean_up_metadata():
         ''' Remove all unused metadata '''
-        STR_MOVIE_METADATA_CLEANED = utils.getlocalizedstring(32136)
-        metadata_dir = os.path.join(utils.METADATA_FOLDER, 'Movies')
+        STR_MOVIE_METADATA_CLEANED = getlocalizedstring(32136)
+        metadata_dir = os.path.join(METADATA_FOLDER, 'Movies')
         for folder in os.listdir(metadata_dir):
             full_path = os.path.join(metadata_dir, folder)
             if os.path.isdir(full_path):
                 folder_contents = os.listdir(full_path)
                 if len(folder_contents) == 1 and fnmatch(folder_contents[0], '*.strm'):
-                    utils.log_msg(
+                    log_msg(
                         'Removing metadata folder {}'.format(full_path), loglevel=xbmc.LOGINFO
                     )
                 shutil.rmtree(full_path)
-        utils.notification(STR_MOVIE_METADATA_CLEANED)
+        notification(STR_MOVIE_METADATA_CLEANED)
 
     @staticmethod
-    @utils.logged_function
+    @logged_function
     def generate_all_metadata(items):
         ''' Generate metadata items for all staged movies '''
-        STR_GENERATING_ALL_MOVIE_METADATA = utils.getlocalizedstring(32046)
-        STR_ALL_MOVIE_METADTA_CREATED = utils.getlocalizedstring(32047)
+        STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
+        STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
         progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(utils.ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
+        progress_dialog.create(ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             progress_dialog.update(int(percent), item.movie_title)
             item.create_metadata_item()
         progress_dialog.close()
-        utils.notification(STR_ALL_MOVIE_METADTA_CREATED)
+        notification(STR_ALL_MOVIE_METADTA_CREATED)
 
     @staticmethod
     def rename_dialog(item):
@@ -101,17 +109,17 @@ class StagedMoviesMenu(object):
         if input_ret:
             item.rename(input_ret)
 
-    @utils.logged_function
+    @logged_function
     def options(self, item):
         ''' Provide options for a single staged movie in a dialog window '''
         #TODO: add a back button
-        STR_ADD = utils.getlocalizedstring(32048)
-        STR_REMOVE = utils.getlocalizedstring(32017)
-        STR_REMOVE_AND_BLOCK = utils.getlocalizedstring(32049)
-        STR_RENAME = utils.getlocalizedstring(32050)
-        STR_AUTOMATICALLY_RENAME_USING_METADTA = utils.getlocalizedstring(32051)
-        STR_GENERATE_METADATA_ITEM = utils.getlocalizedstring(32052)
-        STR_STAGED_MOVIE_OPTIONS = utils.getlocalizedstring(32053)
+        STR_ADD = getlocalizedstring(32048)
+        STR_REMOVE = getlocalizedstring(32017)
+        STR_REMOVE_AND_BLOCK = getlocalizedstring(32049)
+        STR_RENAME = getlocalizedstring(32050)
+        STR_AUTOMATICALLY_RENAME_USING_METADTA = getlocalizedstring(32051)
+        STR_GENERATE_METADATA_ITEM = getlocalizedstring(32052)
+        STR_STAGED_MOVIE_OPTIONS = getlocalizedstring(32053)
         lines = [
             STR_ADD,
             STR_REMOVE,
@@ -121,7 +129,7 @@ class StagedMoviesMenu(object):
         ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
-                utils.ADDON_NAME,
+                ADDON_NAME,
                 STR_STAGED_MOVIE_OPTIONS,
                 item.movie_title),
             lines
@@ -148,13 +156,13 @@ class StagedMoviesMenu(object):
         else:
             self.view_all()
 
-    @utils.logged_function
+    @logged_function
     def remove_all(self):
         ''' Remove all staged movies '''
-        STR_REMOVING_ALL_MOVIES = utils.getlocalizedstring(32013)
-        STR_ALL_MOVIES_REMOVED = utils.getlocalizedstring(32014)
+        STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
+        STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
         progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(utils.ADDON_NAME, STR_REMOVING_ALL_MOVIES)
+        progress_dialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
         self.dbh.remove_from(
             status='staged',
             mediatype='movie',
@@ -162,25 +170,25 @@ class StagedMoviesMenu(object):
             directory=None
         )
         progress_dialog.close()
-        utils.notification(STR_ALL_MOVIES_REMOVED)
+        notification(STR_ALL_MOVIES_REMOVED)
 
-    @utils.logged_function
+    @logged_function
     def view_all(self):
         ''' Display all staged movies, which are selectable and lead to options.
         Also provides additional options at bottom of menu '''
-        STR_NO_STAGED_MOVIES = utils.getlocalizedstring(32037)
-        STR_ADD_ALL_MOVIES = utils.getlocalizedstring(32038)
-        STR_ADD_ALL_MOVIES_WITH_METADATA = utils.getlocalizedstring(32039)
-        STR_REMOVE_ALL_MOVIES = utils.getlocalizedstring(32009)
-        STR_GENERATE_ALL_METADATA_ITEMS = utils.getlocalizedstring(32040)
-        STR_BACK = utils.getlocalizedstring(32011)
-        STR_STAGED_MOVIES = utils.getlocalizedstring(32041)
-        STR_CLEAN_UP_METADATA = utils.getlocalizedstring(32135)
+        STR_NO_STAGED_MOVIES = getlocalizedstring(32037)
+        STR_ADD_ALL_MOVIES = getlocalizedstring(32038)
+        STR_ADD_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32039)
+        STR_REMOVE_ALL_MOVIES = getlocalizedstring(32009)
+        STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
+        STR_BACK = getlocalizedstring(32011)
+        STR_STAGED_MOVIES = getlocalizedstring(32041)
+        STR_CLEAN_UP_METADATA = getlocalizedstring(32135)
         staged_movies = self.dbh.get_content_items(
             status='staged', mediatype='movie', order='Title'
         )
         if not staged_movies:
-            xbmcgui.Dialog().ok(utils.ADDON_NAME, STR_NO_STAGED_MOVIES)
+            xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_STAGED_MOVIES)
             return
         lines = [str(x) for x in staged_movies]
         lines += [
@@ -188,7 +196,7 @@ class StagedMoviesMenu(object):
             STR_GENERATE_ALL_METADATA_ITEMS, STR_CLEAN_UP_METADATA, STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1}'.format(utils.ADDON_NAME, STR_STAGED_MOVIES), lines
+            '{0} - {1}'.format(ADDON_NAME, STR_STAGED_MOVIES), lines
         )
         if ret >= 0:
             if ret < len(staged_movies):  # staged item

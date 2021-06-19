@@ -18,6 +18,7 @@ from resources import AUTO_ADD_TVSHOWS
 
 from resources.lib.utils import MANAGED_FOLDER
 
+from resources.lib.log import log_msg
 from resources.lib.log import logged_function
 from resources.lib.utils import notification, utf8_args
 
@@ -80,9 +81,11 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
+
     def __del__(self):
         # Close connection when deleted
         self.conn.close()
+
 
     @staticmethod
     def content_item_from_db(item):
@@ -115,6 +118,7 @@ class DatabaseHandler(object):
                 notification('Music Here', 5000)
         raise ValueError('Unrecognized Mediatype in Content query')
 
+
     @utf8_args
     @logged_function
     def add_blocked_item(self, value, mediatype):
@@ -125,10 +129,11 @@ class DatabaseHandler(object):
             self.cur.execute("INSERT INTO Blocked (Value, Type) VALUES (?, ?)", (value, mediatype))
             self.conn.commit()
 
+
     @utf8_args
     @logged_function
     def add_content_item(self, jsondata, mediatype):
-        '''Add content to library'''
+        ''' Add content to library '''
         query_defs = ''
         params = ''
         if mediatype == 'tvshow':
@@ -209,13 +214,16 @@ class DatabaseHandler(object):
         )
         self.conn.commit()
 
+
     @utf8_args
     @logged_function
     def check_blocked(self, value, mediatype):
         ''' Return True if the given entry is in Blocked '''
+        # TODO: test if fetchone ir realy working
         self.cur.execute('SELECT (Value) FROM Blocked WHERE Value=? AND Type=?', (value, mediatype))
         res = self.cur.fetchone()
         return bool(res)
+
 
     @logged_function
     def get_all_shows(self, status):
