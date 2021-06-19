@@ -171,17 +171,8 @@ class DatabaseHandler(object):
                 'Not detected type!'
             )
 
-
-        # ''' Add item to Content with given parameters '''
         # Define sql command string
         sql_comm = ('''INSERT OR IGNORE INTO %s %s VALUES %s''' % query_defs)
-
-        # Format comamnd & params depending on movie or tvshow
-        # sql_comm = sql_comm.format('?, ?, ?')
-
-        # else:
-        #     sql_comm = sql_comm.format('NULL')
-
         # Execute and commit sql command
         self.cur.execute(sql_comm, params)
         self.conn.commit()
