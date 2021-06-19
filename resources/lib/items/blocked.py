@@ -4,7 +4,7 @@
 Defines BlockedItem class
 '''
 
-import resources.lib.utils as utils
+from resources.lib.utils import getlocalizedstring
 
 
 class BlockedItem(dict):
@@ -23,13 +23,13 @@ class BlockedItem(dict):
         ''' Localize tags used for identifying mediatype '''
         if not self._localized_type:
             if self['type'] == 'movie':  # Movie
-                return utils.getlocalizedstring(32102)
+                return getlocalizedstring(32102)
             elif self['type'] == 'tvshow':  # TV Show
-                return utils.getlocalizedstring(32101)
+                return getlocalizedstring(32101)
             elif self['type'] == 'keyword':  # Keyword
-                return utils.getlocalizedstring(32113)
+                return getlocalizedstring(32113)
             elif self['type'] == 'episode':  # Episode
-                return utils.getlocalizedstring(32114)
+                return getlocalizedstring(32114)
             else:
                 self._localized_type = self['type']
         return self._localized_type
