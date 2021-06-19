@@ -6,11 +6,11 @@ Defines the MovieItem class
 
 from os.path import join, isdir
 
-import resources.lib.utils as utils
-from .content import ContentItemMovies
+from resources.lib.abs.item import ABSItemMovie
 
 
-class MovieItem(ContentItemMovies):
+
+class MovieItem(ABSItemMovie):
     ''' Contains information about a TV show episode from the database,
     and has necessary functions for managing item '''
     def __init__(self, link_stream_path, title, mediatype, year=None):

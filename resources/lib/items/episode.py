@@ -4,11 +4,12 @@
 Defines the EpisodeItem class
 '''
 from os.path import join
-import resources.lib.utils as utils
-from .content import ContentItemShow
 
 
-class EpisodeItem(ContentItemShow):
+from resources.lib.abs.item import ABSItemShow
+
+
+class EpisodeItem(ABSItemShow):
     ''' Contains information about a TV show episode from the database,
     and has necessary functions for managing item '''
 

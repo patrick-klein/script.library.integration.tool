@@ -3,7 +3,6 @@
 '''
 Contains various constants and utility functions used thoughout the addon
 '''
-# TODO: Consider breaking up into more files (or Python package)
 import re
 import simplejson as json
 

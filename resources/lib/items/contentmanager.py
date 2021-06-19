@@ -17,10 +17,13 @@ import resources.lib.database_handler
 from .content import ContentManagerShows, ContentManagerMovies
 
 
-class ContentManShows(ContentManagerShows):
+from resources.lib.abs.content import ABSContentShow, ABSContentMovie
+
+
+class ContentShow(ABSContentShow):
     ''' Class with objectve to manager all files '''
     def __init__(self, jsondata):
-        super(ContentManShows, self).__init__(jsondata)
+        super(ContentShow, self).__init__(jsondata)
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
@@ -292,11 +295,11 @@ class ContentManShows(ContentManagerShows):
         #         self.rename(new_title)
 
 
-class ContentManMovies(ContentManagerMovies):
+class ContenMovie(ABSContentMovie):
     ''' Contains information about a TV show episode from the database,
     and has necessary functions for managing item '''
     def __init__(self, jsondata):
-        super(ContentManMovies, self).__init__(jsondata)
+        super(ContenMovie, self).__init__(jsondata)
         self.jsondata = jsondata
         self.managed_strm_path = join(
             self.movie_dir[1], ''.join([self.movie_title, '.strm'])

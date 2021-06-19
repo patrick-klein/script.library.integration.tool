@@ -27,8 +27,7 @@ from resources.lib.items.synced import SyncedItem
 from resources.lib.items.movie import MovieItem
 from resources.lib.items.episode import EpisodeItem
 
-from resources.lib.items.contentmanager import ContentManShows, ContentManMovies
-
+from resources.lib.items.contentmanager import ContentShow, ContenMovie
 
 class DatabaseHandler(object):
     ''' Opens a connection with the SQLite file
@@ -92,16 +91,16 @@ class DatabaseHandler(object):
             return item
         else:
             if item[2] == 'movie':
-                # MovieItem.returasjson create a json and it is passed to ContentManMovies
-                return ContentManMovies(MovieItem(
+                # MovieItem.returasjson create a json and it is passed to ContenMovie
+                return ContenMovie(MovieItem(
                     link_stream_path=item[0],
                     title=item[1],
                     mediatype='movie',
                     year=item[4],
                 ).returasjson())
             elif item[2] == 'tvshow':
-                # EpisodeItem.returasjson create a json and it is passed to ContentManShows
-                return ContentManShows(EpisodeItem(
+                # EpisodeItem.returasjson create a json and it is passed to ContentShow
+                return ContentShow(EpisodeItem(
                     link_stream_path=item[0],
                     title=item[1],
                     mediatype='tvshow',
@@ -182,16 +181,23 @@ class DatabaseHandler(object):
         self.cur.execute(sql_comm, params)
         self.conn.commit()
         # Optionally add item to directory, depending on settings and metadata items
+
+        try:
+            content = ContenMovie(jsondata)
+        except Exception as e:
+            content = ContentShow(jsondata)
+            log_msg(e)
+
         if mediatype == 'movie' and AUTO_ADD_MOVIES != NEVER:
             if AUTO_ADD_MOVIES == ALWAYS:
-                ContentManMovies(jsondata).add_to_library()
+                content.add_to_library()
             elif AUTO_ADD_MOVIES == WITH_METADATA:
-                ContentManMovies(jsondata).add_to_library_if_metadata()
+                content.add_to_library_if_metadata()
         elif mediatype == 'tvshow' and AUTO_ADD_TVSHOWS != NEVER:
             if AUTO_ADD_TVSHOWS == WITH_EPID:
-                ContentManShows(jsondata).add_to_library()
+                content.add_to_library()
             elif AUTO_ADD_TVSHOWS == WITH_METADATA:
-                ContentManShows(jsondata).add_to_library_if_metadata()
+                content.add_to_library_if_metadata()
 
     @utf8_args
     @logged_function
