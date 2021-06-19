@@ -6,6 +6,8 @@ Defines the DatabaseHandler class
 
 import sqlite3
 
+from os.path import join
+
 from resources import NEVER
 from resources import ALWAYS
 from resources import WITH_EPID
@@ -14,7 +16,7 @@ from resources import WITH_METADATA
 from resources import AUTO_ADD_MOVIES
 from resources import AUTO_ADD_TVSHOWS
 
-from resources import DATABASE_FILE
+from resources.lib.utils import MANAGED_FOLDER
 
 from resources.lib.log import logged_function
 from resources.lib.utils import notification, utf8_args
@@ -40,7 +42,7 @@ class DatabaseHandler(object):
     #the objective is reduce the if's in all plaves
     def __init__(self):
         # Connect to database
-        self.conn = sqlite3.connect(DATABASE_FILE)
+        self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
         self.conn.text_factory = str
         self.cur = self.conn.cursor()
         # Create tables if they doesn't exist

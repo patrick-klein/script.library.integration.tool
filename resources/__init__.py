@@ -26,5 +26,3 @@ WITH_METADATA = '2'
 
 # Define other constants
 DEFAULT_LOG_LEVEL = xbmc.LOGINFO if IN_DEVELOPMENT else xbmc.LOGDEBUG
-
-DATABASE_FILE = join(MANAGED_FOLDER, 'managed.db')
