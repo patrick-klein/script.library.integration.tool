@@ -30,7 +30,7 @@ from resources.lib.items.episode import EpisodeItem
 
 from resources.lib.items.contentmanager import ContentShow, ContenMovie
 
-class DatabaseHandler(object):
+class Database(object):
     ''' Opens a connection with the SQLite file
     and provides methods for interfacing with database.
     SQLite connection is closed when object is deleted '''
