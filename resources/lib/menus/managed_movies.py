@@ -12,7 +12,7 @@ from resources.lib.log import logged_function
 from resources.lib.utils import notification
 from resources.lib.utils import getlocalizedstring
 
-from resources.lib.database_handler import DatabaseHandler
+from resources.lib.database import Database
 
 
 class ManagedMoviesMenu(object):
@@ -23,7 +23,7 @@ class ManagedMoviesMenu(object):
     # TODO: synced watched status with plugin item
 
     def __init__(self):
-        self.dbh = DatabaseHandler()
+        self.dbh = Database()
 
 
     @staticmethod

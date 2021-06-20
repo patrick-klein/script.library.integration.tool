@@ -19,7 +19,7 @@ from resources.lib.utils import clean_name
 from resources.lib.utils import notification
 from resources.lib.utils import getlocalizedstring
 
-from resources.lib.database_handler import DatabaseHandler
+from resources.lib.database import Database
 
 
 class StagedTVMenu(object):
@@ -27,7 +27,7 @@ class StagedTVMenu(object):
     and tools for managing the items '''
 
     def __init__(self):
-        self.dbh = DatabaseHandler()
+        self.dbh = Database()
 
 
     @staticmethod

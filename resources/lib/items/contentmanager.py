@@ -13,7 +13,7 @@ from os.path import splitext
 
 # from bs4 import BeautifulSoup
 
-import resources.lib.database_handler
+import resources.lib.database
 
 from resources import USE_SHOW_ARTWORK
 from resources.lib.log import logged_function
@@ -131,7 +131,7 @@ class ContentShow(ABSContentShow):
         if create_stream_file(self.link_stream_path, self.managed_strm_path):
             self.create_metadata_item()
             softlink_file(self.episode_nfo[0], self.episode_nfo[1])
-            resources.lib.database_handler.DatabaseHandler().update_content(
+            resources.lib.database.Database().update_content(
                 self.link_stream_path,
                 status='managed',
                 mediatype='tvshow'
@@ -204,7 +204,7 @@ class ContentShow(ABSContentShow):
                     self.metadata_fanart_path,
                     self.metadata_fanart_path
                 )
-        resources.lib.database_handler.DatabaseHandler().update_content(
+        resources.lib.database.Database().update_content(
             self.link_stream_path,
             title=self.jsondata['episode_title'],
             mediatype='tvshow'
@@ -217,7 +217,7 @@ class ContentShow(ABSContentShow):
         # TODO: resolve overlap/duplication with create_metadata_item
         # Check for existing nfo file
         if isdir(self.show_dir[1]):
-            resources.lib.database_handler.DatabaseHandler().update_content(
+            resources.lib.database.Database().update_content(
                 self.link_stream_path,
                 title=self.jsondata['episode_title'],
                 mediatype='tvshow'
@@ -228,14 +228,14 @@ class ContentShow(ABSContentShow):
     def remove_and_block(self):
         # TODO: Need to remove nfo for all other items that match blocked
         # Add episode title to blocked
-        resources.lib.database_handler.DatabaseHandler().add_blocked_item(
+        resources.lib.database.Database().add_blocked_item(
             self.show_title, 'episode'
         )
         # Delete nfo items
         delete_with_wildcard(splitext(self.episode_nfo[0])[0])
         # Remove from db
         # TODO: FIX pass mediatype to this func
-        resources.lib.database_handler.DatabaseHandler().remove_from(
+        resources.lib.database.Database().remove_from(
             status=None,
             mediatype=None,
             show_title=None,
@@ -273,7 +273,7 @@ class ContentShow(ABSContentShow):
     #     # Rename property and refresh in staged file
     #     # TODO: self.show_title here is the global self.show_title
     #     # in future, the value need be updated to a new diferente formed name
-    #     resources.lib.database_handler.DatabaseHandler().update_content(
+    #     resources.lib.database.DatabaseHandler().update_content(
     #         self.link_stream_path,
     #         title=self.show_title,
     #         mediatype='tvshow'
@@ -361,7 +361,7 @@ class ContenMovie(ABSContentMovie):
         self.create_metadata_item()
         create_stream_file(
             self.link_stream_path, self.managed_strm_path)
-        resources.lib.database_handler.DatabaseHandler().update_content(
+        resources.lib.database.Database().update_content(
             self.link_stream_path,
             status='managed',
             mediatype='movie'
@@ -391,7 +391,7 @@ class ContenMovie(ABSContentMovie):
             except Exception:
                 pass
         # Add metadata (optional)
-        resources.lib.database_handler.DatabaseHandler().update_content(
+        resources.lib.database.Database().update_content(
             self.link_stream_path,
             title=self.jsondata['movie_title'],
             mediatype='movie'
@@ -407,7 +407,7 @@ class ContenMovie(ABSContentMovie):
     @logged_function
     def remove_and_block(self):
         # Add title to blocked
-        resources.lib.database_handler.DatabaseHandler().add_blocked_item(
+        resources.lib.database.Database().add_blocked_item(
             self.movie_title,
             'movie'
         )
@@ -415,7 +415,7 @@ class ContenMovie(ABSContentMovie):
         remove_dir(self.movie_dir[0])
         # Remove from db
         # TODO: FIX pass mediatype to this func
-        resources.lib.database_handler.DatabaseHandler().remove_from(
+        resources.lib.database.Database().remove_from(
             status=None,
             mediatype=None,
             show_title=None,

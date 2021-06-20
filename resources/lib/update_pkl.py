@@ -10,7 +10,7 @@ import cPickle as pickle
 import xbmc # pylint: disable=import-error
 
 from resources.lib.utils import MANAGED_FOLDER
-from resources.lib.database_handler import DatabaseHandler
+from resources.lib.database import Database
 
 from resources.lib.log import log_msg
 from resources.lib.log import logged_function
@@ -21,7 +21,7 @@ def update_managed():
     ''' Convert managed.pkl items to SQLite entries '''
     managed_file = os.path.join(MANAGED_FOLDER, 'managed.pkl')
     if os.path.exists(managed_file):
-        dbh = DatabaseHandler()
+        dbh = Database()
         items = pickle.load(open(managed_file, 'rb'))
         for item in items:
             if item.mediatype == 'movie':
@@ -46,7 +46,7 @@ def update_staged():
     ''' Convert staged.pkl items to SQLite entries '''
     staged_file = os.path.join(MANAGED_FOLDER, 'staged.pkl')
     if os.path.exists(staged_file):
-        dbh = DatabaseHandler()
+        dbh = Database()
         items = pickle.load(open(staged_file, 'rb'))
         for item in items:
             if item.mediatype == 'movie':
@@ -71,7 +71,7 @@ def update_synced():
     #TODO: Actually load paths and try to get new label
     synced_file = os.path.join(MANAGED_FOLDER, 'synced.pkl')
     if os.path.exists(synced_file):
-        dbh = DatabaseHandler()
+        dbh = Database()
         items = pickle.load(open(synced_file, 'rb'))
         for item in items:
             dbh.add_synced_dir('NULL', item['dir'], item['mediatype'])
@@ -83,7 +83,7 @@ def update_blocked():
     ''' Convert blocked.pkl items to SQLite entries '''
     blocked_file = os.path.join(MANAGED_FOLDER, 'blocked.pkl')
     if os.path.exists(blocked_file):
-        dbh = DatabaseHandler()
+        dbh = Database()
         items = pickle.load(open(blocked_file, 'rb'))
         for item in items:
             if item['type'] != 'keyword':

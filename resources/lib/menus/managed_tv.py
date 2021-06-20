@@ -13,7 +13,7 @@ from resources.lib.log import logged_function
 from resources.lib.utils import notification
 from resources.lib.utils import getlocalizedstring
 
-from resources.lib.database_handler import DatabaseHandler
+from resources.lib.database import Database
 
 
 class ManagedTVMenu(object):
@@ -21,7 +21,7 @@ class ManagedTVMenu(object):
     and tools for manipulating the objects and managed file '''
 
     def __init__(self):
-        self.dbh = DatabaseHandler()
+        self.dbh = Database()
 
 
     @staticmethod

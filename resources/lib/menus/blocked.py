@@ -8,7 +8,7 @@ import xbmcgui  # pylint: disable=import-error
 from resources import ADDON_NAME
 from resources.lib.log import logged_function
 from resources.lib.utils import getlocalizedstring
-from resources.lib.database_handler import DatabaseHandler
+from resources.lib.database import Database
 
 
 class BlockedMenu(object):
@@ -16,7 +16,7 @@ class BlockedMenu(object):
     and tools for managing them '''
 
     def __init__(self):
-        self.dbh = DatabaseHandler()
+        self.dbh = Database()
 
 
     @logged_function

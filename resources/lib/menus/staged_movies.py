@@ -20,7 +20,7 @@ from resources.lib.utils import notification
 from resources.lib.utils import METADATA_FOLDER
 from resources.lib.utils import getlocalizedstring
 
-from resources.lib.database_handler import DatabaseHandler
+from resources.lib.database import Database
 
 
 class StagedMoviesMenu(object):
@@ -32,7 +32,7 @@ class StagedMoviesMenu(object):
     #TODO: load staged movies on init, use as instance variable, refresh as needed
 
     def __init__(self):
-        self.dbh = DatabaseHandler()
+        self.dbh = Database()
 
     @staticmethod
     @logged_function

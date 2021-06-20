@@ -3,7 +3,7 @@
 
 import abc
 
-import resources.lib.database_handler
+import resources.lib.database
 
 
 class ABSContentShow(object):
@@ -100,7 +100,7 @@ class ABSContentShow(object):
 
     def delete(self):
         ''' Remove the item from the database '''
-        resources.lib.database_handler.DatabaseHandler().remove_from(
+        resources.lib.database.Database().remove_from(
             status=None,
             mediatype='tvshow',
             show_title=None,
@@ -110,7 +110,7 @@ class ABSContentShow(object):
 
     def set_as_staged(self):
         ''' Set the item status as staged in database '''
-        resources.lib.database_handler.DatabaseHandler().update_content(
+        resources.lib.database.Database().update_content(
             self.link_stream_path,
             status='staged',
             mediatype='tvshow'
@@ -224,7 +224,7 @@ class ABSContentMovie(object):
 
     def delete(self):
         ''' Remove the item from the database '''
-        resources.lib.database_handler.DatabaseHandler().remove_from(
+        resources.lib.database.Database().remove_from(
             status=None,
             mediatype='movie',
             show_title=None,
@@ -234,7 +234,7 @@ class ABSContentMovie(object):
 
     def set_as_staged(self):
         ''' Set the item status as staged in database '''
-        resources.lib.database_handler.DatabaseHandler().update_content(
+        resources.lib.database.Database().update_content(
             self.link_stream_path,
             status='staged',
             mediatype='movie'            
