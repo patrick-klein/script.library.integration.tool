@@ -73,7 +73,7 @@ def create_stream_file(plugin_path, filepath):
         with open(filepath, "w+") as strm:
             strm.write(plugin_path)
             strm.close()
-    except Exception as e:
+    except Exception:
         return False
     return True
 
