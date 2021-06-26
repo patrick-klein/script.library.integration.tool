@@ -22,8 +22,6 @@ from os.path import isfile
 
 class CreateNfo(object):
     '''Module to create a .nfo file'''
-    # this module is necessary becouse xml.etree.ElementTree 
-    # return error with unicode charters
     def __init__(self, nfotype, filepath, jsondata):
         self.nfotype = nfotype
         self.filepath = filepath
