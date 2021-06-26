@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the DatabaseHandler class
-'''
+
+'''Defines the DatabaseHandler class'''
 
 import sqlite3
 
@@ -31,9 +30,9 @@ from resources.lib.items.episode import EpisodeItem
 from resources.lib.items.contentmanager import ContentShow, ContenMovie
 
 class Database(object):
-    ''' Opens a connection with the SQLite file
+    '''Opens a connection with the SQLite file
     and provides methods for interfacing with database.
-    SQLite connection is closed when object is deleted '''
+    SQLite connection is closed when object is deleted'''
 
     #TODO: Reimplement blocked keywords
     #TODO: Combine remove_content_item functions using **kwargs
@@ -122,7 +121,7 @@ class Database(object):
     @utf8_args
     @logged_function
     def add_blocked_item(self, value, mediatype):
-        ''' Add an item to Blocked with the specified values '''
+        '''Add an item to blocked with the specified values'''
         # Ignore if already in table
         if not self.check_blocked(value, mediatype):
             # Insert into table
@@ -132,6 +131,7 @@ class Database(object):
 
     @utf8_args
     @logged_function
+        '''Add content to library'''
     def add_content_item(self, jsondata, mediatype):
         ''' Add content to library '''
         query_defs = ''
@@ -197,8 +197,7 @@ class Database(object):
 
     @utf8_args
     @logged_function
-    def add_synced_dir(self, label, path, mediatype):
-        ''' Create an entry in Synced with specified values '''
+        '''Create an entry in synced with specified values'''
         self.cur.execute(
             "INSERT OR REPLACE INTO Synced (Directory, Label, Type) VALUES (?, ?, ?)",
             (path, label, mediatype)
@@ -209,7 +208,7 @@ class Database(object):
     @utf8_args
     @logged_function
     def check_blocked(self, value, mediatype):
-        ''' Return True if the given entry is in Blocked '''
+        '''Return True if the given entry is in blocked'''
         # TODO: test if fetchone ir realy working
         self.cur.execute('SELECT (Value) FROM Blocked WHERE Value=? AND Type=?', (value, mediatype))
         res = self.cur.fetchone()
@@ -218,8 +217,8 @@ class Database(object):
 
     @logged_function
     def get_all_shows(self, status):
-        ''' Query Content table for all (not null) distinct show_titles
-        and cast results as list of strings '''
+        '''Query Content table for all (not null) distinct showtitles
+        and cast results as list of strings'''
         # Query database
         self.cur.execute(
             '''SELECT DISTINCT Show_Title FROM Tvshows WHERE Status=?
@@ -232,8 +231,7 @@ class Database(object):
 
     @logged_function
     def get_blocked_items(self):
-        ''' Return all items in Blocked as a list of BlockedItem objects '''
-        self.cur.execute("SELECT * FROM Blocked ORDER BY Type, Value")
+        '''Return all items in blocked as a list of BlockedItem objects'''
         return [BlockedItem(*x) for x in self.cur.fetchall()]
 
 
@@ -245,13 +243,13 @@ class Database(object):
                           show_title=None,
                           season_number=None
                          ):
-        ''' Query Content table for sorted items with given constaints
-        and casts results as ContentItem subclasses
+        '''Query Content table for sorted items with given constaints
+        and casts results as contentitem subclasses
         keyword arguments:
             status: string, 'managed' or 'staged'
             mediatype: string, 'movie' or 'tvshow'
-            show_title: string, any show title
-            order: string, any single column '''
+            showtitle: string, any show title
+            order: string, any single column'''
 
         if mediatype == 'movie':
             table_name = 'Movies'
@@ -305,7 +303,7 @@ class Database(object):
     @utf8_args
     @logged_function
     def get_synced_dirs(self, synced_type=None):
-        ''' Get all items in Synced cast as a list of dicts '''
+        '''Get all items in synced cast as a list of dicts'''
         # Define template for this sql command
         sql_templ = 'SELECT * FROM Synced'
         params = ()
@@ -323,7 +321,7 @@ class Database(object):
     @utf8_args
     @logged_function
     def load_item(self, path):
-        ''' Query a single item with path and casts result as ContentItem subclasses '''
+        '''Query a single item with path and casts result as contentitem subclasses'''
         # query database
         self.cur.execute('SELECT * FROM Content WHERE Directory=?', (path, ))
         # get results and return items as object
@@ -332,21 +330,9 @@ class Database(object):
 
     @utf8_args
     @logged_function
-    def path_exists(self, path, mediatype, status=None):
-        ''' Return True if path is already in database (with given status) '''
-        # TODO: consider adding mediatype as optional parameter
-        #       might speed-up by adding additional constraint
-        # TODO: test speed against a set from "get_content_paths"
-        # Build sql command and parameters, adding status if provided
-        for item in [status] if isinstance(status, str) else status:
-            if mediatype == 'movie':
-                table_name = 'Movies'
-            elif mediatype == 'tvshow':
-                table_name = 'Tvshows'
-            else:
-                # FUTURE: check if is music
-                raise 'Type not detected'
-
+       '''Return True if path is already in database (with given status)
+            This function can return a list with multple values 
+            with name of the tables where item exist'''
             sql_comm = (
                 "SELECT (Directory) FROM {0} \
                     WHERE Directory = '{1}' \
@@ -360,7 +346,7 @@ class Database(object):
 
     # @logged_function
     # def remove_all_content_items(self, status, mediatype):
-    #     ''' Remove all items from Content with status and mediatype '''
+    #     '''Remove all items from Content with status and mediatype'''
     #     # delete from table
     #     self.cur.execute(
     #         "DELETE FROM Content \
@@ -370,8 +356,7 @@ class Database(object):
 
     # @utf8_args
     # @logged_function
-    # def remove_all_show_episodes(self, status, show_title):
-    #     ''' Remove all tvshow items from Content with status and show_title '''
+    #     '''Remove all tvshow items from Content with status and showtitle'''
     #     # delete from table
     #     self.cur.execute(
     #         "DELETE FROM Content \
@@ -383,7 +368,7 @@ class Database(object):
     # @utf8_args
     # @logged_function
     # def remove_content_item(self, path):
-    #     ''' Remove the item in Content with specified path '''
+    #     '''Remove the item in Content with specified path'''
     #     # delete from table
     #     self.conn.commit()
 
@@ -396,7 +381,7 @@ class Database(object):
                     show_title=None,
                     directory=None,
                     season=None):
-        ''' Remove all items colected with sqlquerys '''
+        '''Remove all items colected with sqlquerys'''
         if mediatype == 'movie':
             table_name = 'Movies'
         elif mediatype == 'tvshow':
@@ -436,7 +421,7 @@ class Database(object):
 
     @logged_function
     def remove_all_synced_dirs(self):
-        ''' Delete all entries in Synced '''
+        '''Delete all entries in synced'''
         # remove all rows
         self.cur.execute('DELETE FROM Synced')
         self.conn.commit()
@@ -444,7 +429,7 @@ class Database(object):
     @utf8_args
     @logged_function
     def remove_blocked(self, value, mediatype):
-        ''' Remove the item in Blocked with the specified parameters '''
+        '''Remove the item in blocked with the specified parameters'''
         self.cur.execute(
             'DELETE FROM Blocked WHERE Value=? AND Type=?',
             (value, mediatype)
@@ -454,7 +439,7 @@ class Database(object):
     @utf8_args
     @logged_function
     def remove_synced_dir(self, path):
-        ''' Remove the entry in Synced with the specified Directory '''
+        '''Remove the entry in synced with the specified file'''
         # remove entry
         self.cur.execute(
             "DELETE FROM Synced WHERE Directory=?",
@@ -464,16 +449,7 @@ class Database(object):
 
     @utf8_args
     @logged_function
-    def update_content(self, path, mediatype, **kwargs):
-        ''' Update a single field for item in Content with specified path '''
-        if mediatype == 'movie':
-            table_name = 'Movies'
-        elif mediatype == 'tvshow':
-            table_name = 'Tvshows'
-        else:
-            # FUTURE: check if is music
-            raise 'Type not detected'
-
+        '''Update a single field for item in Content with specified path'''
         #TODO: Verify there's only one entry in kwargs
         sql_comm = (
             '''UPDATE %s SET {0}=(?) WHERE Directory=?''' % table_name

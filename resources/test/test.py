@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines function to call test modules and find coverage
-'''
+
+'''Defines function to call test modules and find coverage'''
+
 
 import os
 import sys
@@ -15,7 +15,7 @@ import resources.lib.utils as utils
 
 
 def test():
-    ''' Get and call all test modules and find coverage '''
+    '''Get and call all test modules and find coverage'''
 
     # Get test directory in addon folder
     test_path = xbmcvfs.translatePath(

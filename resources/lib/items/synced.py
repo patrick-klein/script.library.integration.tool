@@ -1,15 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the SyncedItem class
-'''
+
+'''Defines the SyncedItem class'''
 
 from resources.lib.utils import getlocalizedstring
 
 
 class SyncedItem(dict):
-    ''' Dictionary-like class that contains information about
-    a synced directory in the database '''
+    '''Dictionary-like class that contains information about
+    a synced directory in the database'''
 
     def __init__(self, directory, label, synced_type):
         super(SyncedItem, self).__init__()
@@ -20,7 +19,7 @@ class SyncedItem(dict):
 
 
     def localize_type(self):
-        ''' Localizes tags used for identifying mediatype '''
+        '''Localizes tags used for identifying mediatype'''
         if not self._localized_type:
             if self['type'] == 'movie':  # Movies
                 self._localized_type = getlocalizedstring(32109)

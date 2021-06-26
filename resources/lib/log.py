@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-''' Collection of log functions '''
+'''Collection of log functions'''
 
 import xbmc  # pylint: disable=import-error
 
@@ -12,16 +12,16 @@ from resources import DEFAULT_LOG_LEVEL
 
 
 def log_msg(msg, loglevel=DEFAULT_LOG_LEVEL):
-    ''' Log message with addon name and version to kodi log '''
+    '''Log message with addon name and version to kodi log'''
     xbmc.log("{0} v{1} --> {2}".format(ADDON_NAME,
              ADDON_VERSION, msg), level=loglevel)
 
 
 def logged_function(func):
-    ''' Decorator for logging function call and return values (at default log level) '''
+    '''Decorator for logging function call and return values (at default log level)'''
     # TODO: option to have "pre-" and "post-" logging
     def wrapper(*args, **kwargs):
-        ''' function wrapper '''
+        '''function wrapper'''
         # Call the function and get the return value
         ret = func(*args, **kwargs)
         # Only log if IN_DEVELOPMENT is set

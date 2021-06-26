@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-This module gets called from the context menu item "Sync directory to library" (32001).
-The purpose is to stage all movies/tvshows in the current directory, and update database
-'''
+
+'''This module gets called from the context menu item "Sync directory to library" (32001).
+The purpose is to stage all movies/tvshows in the current directory, and update database.'''
 
 import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
@@ -21,7 +20,7 @@ STR_NOT_SELECTED = utils.getlocalizedstring(32158)
 
 @utils.entrypoint
 def main():
-    ''' Main entrypoint for context menu item '''
+    '''Main entrypoint for context menu item'''
     sync_type = False
     dir_path = xbmc.getInfoLabel('Container.FolderPath')
     dir_label = xbmc.getInfoLabel('Container.FolderName')

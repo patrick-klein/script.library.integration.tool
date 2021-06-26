@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the MovieItem class
-'''
+
+'''Defines the MovieItem class'''
 
 from os.path import join
 
@@ -15,33 +14,26 @@ from resources.lib.utils import METADATA_FOLDER
 
 
 class MovieItem(ABSItemMovie):
-    ''' Contains information about a TV show episode from the database,
-    and has necessary functions for managing item '''
-    def __init__(self, link_stream_path, title, mediatype, year=None):
-        super(MovieItem, self).__init__(link_stream_path, title, mediatype, year)
-        self._link_stream_path = link_stream_path
-        self._movie_title = title
-        self._year = year
+    '''Class to build information aboult movies'''
 
 
     @property
-    def link_stream_path(self):
-        return self._link_stream_path
+        '''return url from strm'''
 
 
     @property
-    def movie_title(self):
-        return self._movie_title
+        '''return the title from content'''
 
 
     @property
     def year(self):
-        ''' Show title with problematic characters removed '''
+        '''return the year from content'''
         return self._year    
 
 
     @property
     def managed_movie_dir(self):
+        '''return the managed_movie_dir from content'''
         if not self._managed_dir:
             self._managed_dir = join(
                 MANAGED_FOLDER, 'ManagedMovies', self.movie_title
@@ -51,6 +43,7 @@ class MovieItem(ABSItemMovie):
 
     @property
     def metadata_movie_dir(self):
+        '''return the metadata_movie_dir from content'''
         if not self._metadata_movie_dir:
             self._metadata_movie_dir = join(METADATA_FOLDER, 'Movies', self.movie_title)
         return self._metadata_movie_dir
@@ -58,6 +51,7 @@ class MovieItem(ABSItemMovie):
 
     @logged_function
     def returasjson(self):
+        '''return the json with information from content'''
         try:
             return {
                 'link_stream_path': self.link_stream_path,

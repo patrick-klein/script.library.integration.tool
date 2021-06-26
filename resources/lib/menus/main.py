@@ -1,9 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the MainMenu class,
-which gets called from the main executable
-'''
+
+'''Defines the MainMenu class,
+which gets called from the main executable'''
 import sys
 
 import xbmc  # pylint: disable=import-error
@@ -16,9 +15,8 @@ from resources.lib.utils import getlocalizedstring
 
 
 class MainMenu(object):
-    ''' Perform basic initialization of folder structure
-    and displays a window that leads to other menus '''
-
+    '''Perform basic initialization of folder structure
+    and displays a window that leads to other menus'''
     # IDEA: use plugin menu system instead of dialog windows
     # TODO: option to automatically add movies & episodes with epids
     # TODO: option to automatically clean & update when adding/removing
@@ -33,7 +31,7 @@ class MainMenu(object):
     # TODO: Put all classes in their own file, change menu classes to ManagedMenu, StagedMenu, etc.
 
     def view(self):
-        ''' Displays main menu which leads to other menus '''
+        '''Displays main menu which leads to other menus'''
         # TODO: fix update library to only update path
         # TODO: remove extraneous tv show folders in Metadata
         # TODO: add parameter for location in list -

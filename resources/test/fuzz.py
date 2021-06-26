@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines function to call fuzz modules
-'''
+
+'''Defines function to call fuzz modules'''
 
 import os
 import unittest
@@ -14,7 +13,7 @@ import resources.lib.utils as utils
 
 
 def fuzz():
-    ''' Get and call all fuzz modules '''
+    '''Get and call all fuzz modules'''
 
     # Get test directory in addon folder
     test_path = xbmcvfs.translatePath(

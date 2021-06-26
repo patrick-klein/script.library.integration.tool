@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the EpisodeItem class
-'''
+
+'''Defines the EpisodeItem class'''
 from os.path import join
 
 from resources.lib.utils import MANAGED_FOLDER
@@ -14,22 +13,7 @@ from resources.lib.abs.item import ABSItemShow
 
 
 class EpisodeItem(ABSItemShow):
-    ''' Contains information about a TV show episode from the database,
-    and has necessary functions for managing item '''
-    def __init__(self, link_stream_path, title, mediatype, show_title=None, season=None, epnumber=None, year=None):
-        super(EpisodeItem, self).__init__(link_stream_path, title, mediatype, show_title, season, epnumber, year)
-        self._link_stream_path = link_stream_path
-        try:
-            self._episode_title = title
-        except UnicodeEncodeError:
-            self._episode_title = title
-
-        self._episode_title = title
-        # mediatype
-        self._show_title = show_title
-        self._season = season
-        self._episode_number = epnumber
-        self._year = year
+    '''Class to build information aboult shows'''
         
 
     @property
@@ -41,29 +25,24 @@ class EpisodeItem(ABSItemShow):
         return clean_name(self._episode_title)
     
     @property
-    def show_title(self):
-        ''' Show title with problematic characters removed '''
-        return str(clean_name(self._show_title))
+        '''Show title with problematic characters removed'''
 
     @property
-    def season_number(self):
-        ''' Show title with problematic characters removed '''
+        '''Show title with problematic characters removed'''
         if self._season == None:
             return 1
         else:
             return int(self._season)
 
     @property
-    def episode_number(self):
-        ''' Show title with problematic characters removed '''
-        if self._episode_number == None:
+        '''Show title with problematic characters removed'''
             return  1
         else:
             return int(self._episode_number)
 
     @property
     def year(self):
-        ''' Show title with problematic characters removed '''
+        '''Show title with problematic characters removed'''
         return self._year
     # 
     # # 

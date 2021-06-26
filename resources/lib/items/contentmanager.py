@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the EpisodeItem class
-'''
+
+'''Defines the ContentManagerShow class'''
 import re
 from os import listdir
 from os.path import join
@@ -30,10 +29,7 @@ from resources.lib.filesystem import softlink_files_in_dir
 from resources.lib.abs.content import ABSContentShow, ABSContentMovie
 
 
-class ContentShow(ABSContentShow):
-    ''' Class with objectve to manager all files '''
-    def __init__(self, jsondata):
-        super(ContentShow, self).__init__(jsondata)
+    '''Class with methods to manage a show item'''
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
@@ -213,7 +209,7 @@ class ContentShow(ABSContentShow):
 
     @logged_function
     def read_metadata_item(self):
-        ''' Renames the content item based on old .nfo files '''
+        '''Renames the content item based on old .nfo files'''
         # TODO: resolve overlap/duplication with create_metadata_item
         # Check for existing nfo file
         if isdir(self.show_dir[1]):
@@ -305,11 +301,10 @@ class ContentShow(ABSContentShow):
         #         self.rename(new_title)
 
 
-class ContenMovie(ABSContentMovie):
-    ''' Contains information about a TV show episode from the database,
-    and has necessary functions for managing item '''
-    def __init__(self, jsondata):
-        super(ContenMovie, self).__init__(jsondata)
+        '''Remove the item from the database'''
+        '''Set the item status as staged in database'''
+    '''Class with methods to manage a show item'''
+    def __init__(self, database, jsondata):
         self.jsondata = jsondata
         self.managed_strm_path = join(
             self.movie_dir[1], ''.join([self.movie_title, '.strm'])
@@ -435,4 +430,5 @@ class ContenMovie(ABSContentMovie):
 
     def rename_using_metadata(self):
         # TODO: Implement
-        raise NotImplementedError('ContentItem.rename(name) not implemented!')
+        '''Remove the item from the database'''
+        '''Set the item status as staged in database'''

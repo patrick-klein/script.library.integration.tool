@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the StagedMoviesMenu class
-'''
+
+'''Defines the StagedMoviesMenu class'''
 
 import os
 import shutil
@@ -24,8 +23,8 @@ from resources.lib.database import Database
 
 
 class StagedMoviesMenu(object):
-    ''' Provide windows for displaying staged movies,
-    and tools for managing the items '''
+    '''Provide windows for displaying staged movies,
+    and tools for managing the items'''
 
     #TODO: don't commit sql changes for "... all" until end
     #TODO: decorator for "...all" commands
@@ -36,8 +35,7 @@ class StagedMoviesMenu(object):
 
     @staticmethod
     @logged_function
-    def add_all(items):
-        ''' Add all staged movies to library '''
+        '''Add all staged movies to library'''
         STR_ADDING_ALL_MOVIES = getlocalizedstring(32042)
         STR_ALL_MOVIES_ADDED = getlocalizedstring(32043)
         progress_dialog = xbmcgui.DialogProgress()
@@ -51,8 +49,7 @@ class StagedMoviesMenu(object):
 
     @staticmethod
     @logged_function
-    def add_all_with_metadata(items):
-        ''' Add all movies with nfo files to the library '''
+        '''Add all movies with nfo files to the library'''
         # TODO: Remove code duplication with MovieItem.add_to_library_if_metadata
         STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
         STR_ALL_MOVIES_WITH_METADTA_ADDED = getlocalizedstring(32045)
@@ -71,8 +68,7 @@ class StagedMoviesMenu(object):
 
     @staticmethod
     @logged_function
-    def clean_up_metadata():
-        ''' Remove all unused metadata '''
+        '''Remove all unused metadata'''
         STR_MOVIE_METADATA_CLEANED = getlocalizedstring(32136)
         metadata_dir = os.path.join(METADATA_FOLDER, 'Movies')
         for folder in os.listdir(metadata_dir):
@@ -88,8 +84,7 @@ class StagedMoviesMenu(object):
 
     @staticmethod
     @logged_function
-    def generate_all_metadata(items):
-        ''' Generate metadata items for all staged movies '''
+        '''Generate metadata items for all staged movies'''
         STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
         STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
         progress_dialog = xbmcgui.DialogProgress()
@@ -101,9 +96,7 @@ class StagedMoviesMenu(object):
         progress_dialog.close()
         notification(STR_ALL_MOVIE_METADTA_CREATED)
 
-    @staticmethod
-    def rename_dialog(item):
-        ''' Prompt input for new name, and rename if non-empty string '''
+        '''Prompt input for new name, and rename if non-empty string'''
         #TODO: move to utils or parent class so it's not duplicated
         input_ret = xbmcgui.Dialog().input("Title", defaultt=item.movie_title)
         if input_ret:
@@ -111,7 +104,7 @@ class StagedMoviesMenu(object):
 
     @logged_function
     def options(self, item):
-        ''' Provide options for a single staged movie in a dialog window '''
+        '''Provide options for a single staged movie in a dialog window'''
         #TODO: add a back button
         STR_ADD = getlocalizedstring(32048)
         STR_REMOVE = getlocalizedstring(32017)
@@ -158,7 +151,7 @@ class StagedMoviesMenu(object):
 
     @logged_function
     def remove_all(self):
-        ''' Remove all staged movies '''
+        '''Remove all staged movies'''
         STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
         STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
         progress_dialog = xbmcgui.DialogProgress()
@@ -174,8 +167,8 @@ class StagedMoviesMenu(object):
 
     @logged_function
     def view_all(self):
-        ''' Display all staged movies, which are selectable and lead to options.
-        Also provides additional options at bottom of menu '''
+        '''Display all staged movies, which are selectable and lead to options.
+        Also provides additional options at bottom of menu'''
         STR_NO_STAGED_MOVIES = getlocalizedstring(32037)
         STR_ADD_ALL_MOVIES = getlocalizedstring(32038)
         STR_ADD_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32039)

@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the ManagedMoviesMenu class
-'''
+
+'''Defines the ManagedMoviesMenu class'''
 import xbmcgui  # pylint: disable=import-error
 
 from resources import ADDON_NAME
@@ -16,8 +15,8 @@ from resources.lib.database import Database
 
 
 class ManagedMoviesMenu(object):
-    ''' Provide windows for displaying managed movies,
-    and tools for manipulating the objects and managed file '''
+    '''Provide windows for displaying managed movies,
+    and tools for manipulating the objects and managed file'''
 
     # TODO: context menu for managed items in library
     # TODO: synced watched status with plugin item
@@ -28,8 +27,7 @@ class ManagedMoviesMenu(object):
 
     @staticmethod
     @logged_function
-    def move_all_to_staged(items):
-        ''' Remove all managed movies from library, and add them to staged '''
+        '''Remove all managed movies from library, and add them to staged'''
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getlocalizedstring(32015)
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
@@ -44,8 +42,8 @@ class ManagedMoviesMenu(object):
 
     @staticmethod
     @logged_function
-    def remove_all(items):
-        ''' Remove all managed movies from library '''
+    def remove_all(self, items):
+        '''Remove all managed movies from library'''
         STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
         STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
         progress_dialog = xbmcgui.DialogProgress()
@@ -61,7 +59,7 @@ class ManagedMoviesMenu(object):
 
     @logged_function
     def options(self, item):
-        ''' Provide options for a single managed movie in a dialog window '''
+        '''Provide options for a single managed movie in a dialog window'''
         # TODO: add rename option
         # TODO: add reload metadata option
         STR_REMOVE = getlocalizedstring(32017)
@@ -90,8 +88,8 @@ class ManagedMoviesMenu(object):
 
 
     def view_all(self):
-        ''' Display all managed movies, which are selectable and lead to options.
-        Also provides additional options at bottom of menu '''
+        '''Display all managed movies, which are selectable and lead to options.
+        Also provides additional options at bottom of menu'''
         STR_NO_MANAGED_MOVIES = getlocalizedstring(32008)
         STR_REMOVE_ALL_MOVIES = getlocalizedstring(32009)
         STR_MOVE_ALL_BACK_TO_STAGED = getlocalizedstring(32010)

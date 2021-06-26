@@ -1,18 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines class for testing utils module
-'''
+
+'''Defines class for testing utils module'''
+
 
 import unittest
 import xbmcaddon # pylint: disable=import-error
 import resources.lib.utils as utils
 
 class TestUtils(unittest.TestCase):
-    ''' Test cases for utils module '''
+    '''Test cases for utils module'''
 
     def test_constants(self):
-        ''' Check values returned by constants in utils '''
+        '''Check values returned by constants in utils'''
         addon = xbmcaddon.Addon(id='script.library.integration.tool')
         self.assertEqual(
             utils.ADDON_NAME, addon.getAddonInfo('name')
@@ -23,7 +23,7 @@ class TestUtils(unittest.TestCase):
         # TODO: test all contants, including type
 
     def test_clean_name(self):
-        ''' Test keywords in clean_name '''
+        '''Test keywords in clean_name'''
         # TODO: Use MAPPED_STRINGS here
         test_names = {
             'test1.': 'test1',
@@ -45,7 +45,7 @@ class TestUtils(unittest.TestCase):
             self.assertEqual(utils.clean_name(key), value)
 
     def test_version_comparison(self):
-        ''' Test the comparison operators for the Version class '''
+        '''Test the comparison operators for the Version class'''
         reference = utils.Version('1.2.3')
         self.assertEqual(reference, '1.2.3')
         self.assertNotEqual(reference, '3.2.1')

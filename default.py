@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-This modules gets called by the main executable
-'''
+'''This modules gets called by the main executable'''
 
 import sys
 import resources.lib.utils as utils
@@ -10,7 +8,7 @@ import resources.lib.utils as utils
 
 @utils.entrypoint
 def main():
-    ''' Main entry point for addon '''
+    '''Main entry point for addon'''
 
     if len(sys.argv) == 1:
         from resources.lib.menus.main import MainMenu
