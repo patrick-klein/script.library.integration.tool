@@ -1,6 +1,8 @@
 # /usr/bin/python
 # -*- coding: utf-8 -*-
 
+'''Module with methos to check version'''
+
 import sys
 
 from os.path import join
@@ -20,17 +22,22 @@ from resources.lib.filesystem import mkdir
 
 
 class Version(object):
-    ''' Class that implements comparison operators for version numbers '''
+    '''Class that implements comparison operators for version numbers'''
 
     def __init__(self, version_number):
+        '''Startup version module'''
         self.version_number = version_number
 
+
     def __eq__(self, other):
+        '''__eq__'''
         if isinstance(other, Version):
             return self.version_number == other.version_number
         return self.version_number == other
 
+
     def __lt__(self, other):
+        '''__lt__'''
         if isinstance(other, Version):
             other_version = other.version_number
         else:
@@ -42,21 +49,29 @@ class Version(object):
                 return False
         return False
 
+
     def __ne__(self, other):
+        '''__ne__'''
         return not self == other
 
+
     def __gt__(self, other):
+        '''__gt__'''
         return not (self < other or self == other)
 
+
     def __le__(self, other):
+        '''__le__'''
         return self < other or self == other
 
+
     def __ge__(self, other):
+        '''__ge__'''
         return self > other or self == other
 
 
 def check_version_file():
-    ''' Checks the version file and runs version-specific update actions '''
+    '''Checks the version file and runs version-specific update actions'''
     # Check version file
     version_file_path = xbmcvfs.translatePath(
         'special://userdata/addon_data/{}/.version'.format(ADDON_ID)
