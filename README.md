@@ -2,9 +2,9 @@
 
 
 [![Version](https://img.shields.io/badge/latest%20version-0.4.1-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
-[![GitHub last commit](https://img.shields.io/github/last-commit/patrick-klein/script.library.integration.tool.svg)](https://github.com/patrick-klein/script.library.integration.tool/commits/master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/af5eed5b87df49b49eed908b3d808f7c)](https://www.codacy.com/app/klein.pat/Library-Integration-Tool-for-Kodi?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=patrick-klein/Library-Integration-Tool-for-Kodi&amp;utm_campaign=Badge_Grade)
-[![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.me/104084485)
+[![GitHub last commit](https://img.shields.io/github/last-commit/luizoti/script.library.integration.tool.svg)](https://github.com/luizoti/script.library.integration.tool/commits/Matrix)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2e2794f8e9fc49108aaa541a03c37ec4)](https://www.codacy.com/gh/luizoti/script.library.integration.tool/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=luizoti/script.library.integration.tool&amp;utm_campaign=Badge_Grade)
+[![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/donate?hosted_button_id=JM5MHUEW4W5AC)
 
 </br>
 
@@ -16,19 +16,17 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 * **Kodi 19+**
 
-## Installation
+## Installation Matrix.
 
-1. Download this zip for the [LibraryTools repository](https://github.com/patrick-klein/repository.librarytools/raw/master/repository.librarytools/repository.librarytools-1.0.0.zip)
+1. Download this zip for the [Library Integration Tool](https://github.com/luizoti/script.library.integration.tool/archive/refs/heads/Matrix.zip)
 
-2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.  After installing the repo, "Library Tools repository" will be available in Kodi.
+2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.
 
-3. While in Add-ons, go to Install from repository --> Library Tools repository --> Program add-ons --> Select Library Integration Tool
+3. Run Library Integration Tool for the first time.  You will get a message letting you know the managed folder was configured.
 
-4. By default, the managed folder is in the addon userdata folder.  You may open the settings for Library Integration Tool if you want to choose a custom managed folder instead.
+4. From Kodi Settings, go to Media Settings --> Library --> Videos....  If you are using a custom managed folder, add it as a source here, otherwise add `special://userdata/addon_data/script.library.integration.tool/`.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  If you plan on using your own metadata, you may want to select "Local information only".
 
-5. Run Library Integration Tool for the first time.  You will get a message letting you know the managed folder was configured.
-
-6. From Kodi Settings, go to Media Settings --> Library --> Videos....  If you are using a custom managed folder, add it as a source here, otherwise add `special://userdata/addon_data/script.library.integration.tool/`.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  If you plan on using your own metadata, you may want to select "Local information only".
+NOTE: By default, the managed folder is in the addon userdata folder.  You may open the settings for Library Integration Tool if you want to choose a custom managed folder instead.
 
 DISCLAIMER:  Do not directly edit the contents of ManagedMovies, ManagedTV, or managed.db; you need to use the Library Integration Tool menu to edit these items.
 
@@ -111,11 +109,14 @@ You can customize the behavior of this addon from the settings.  The following o
 ### Development
 **Enable development options** - Keep this option disabled, as it may slow down the addon.
 
-## Recommended Addons
+## Tested with this streaming addons:
 
-### Video Plugins
-
-* ~~**ABC Family** by t1m~~ - *Seems to be broken at the moment*
+* NETFLIX - *Works*
+* AMAZON VOD - *Works*
+* CRUNCHYROLL - *Works*
+* DISNEY+ - *Works*
+* SEREN - *Works*
+<!-- * ~~**ABC Family** by t1m~~ - *Seems to be broken at the moment*
 * **Classic Cinema** by Jonathan Beluch (jbel)
 * **Cooking Channel** by t1m
 * **Comedy Central** by Lunatixz - *Great content and all videos have episode numbers*
@@ -128,7 +129,7 @@ You can customize the behavior of this addon from the settings.  The following o
 * **TV Land** by Lunatixz - *Double check episode numbers before scraping*
 * **WABC Programs** by t1m - *Do not sync entire directory due to infinite load times for some items, but works well with individual TV shows*
 * **WNBC Programs** by t1m - *Huge amount of content, but slow to update*
-
+ -->
 ### Other Addons
 
 **Skin Helper Service Widgets BETA** by marcelveldt - *The latest versions include a new recommendation system that dynamically shows you personalized content on your homescreen.  So if you decide to add every possible directory and end up with 4000+ new items in your library, this addon will help ensure you only see the most relevant titles*
