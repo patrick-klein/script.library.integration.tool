@@ -23,7 +23,6 @@ from resources import ADDON_PATH
 from resources import RECURSION_LIMIT
 from resources import USING_CUSTOM_MANAGED_FOLDER
 from resources import USING_CUSTOM_METADATA_FOLDER
-from resources import USING_CUSTOM_METADATA_FOLDER
 
 from resources.lib.log import log_msg
 from resources.lib.filesystem import mkdir
