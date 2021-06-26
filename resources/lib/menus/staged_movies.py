@@ -28,8 +28,8 @@ class StagedMoviesMenu(object):
     #TODO: decorator for "...all" commands
     #TODO: load staged movies on init, use as instance variable, refresh as needed
 
-    def __init__(self):
-        self.dbh = Database()
+    def __init__(self, database):
+        self.database = database
 
     @staticmethod
     @logged_function
@@ -152,9 +152,7 @@ class StagedMoviesMenu(object):
         '''Remove all staged movies'''
         STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
         STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
-        self.dbh.remove_from(
+        self.database.remove_from(
             status='staged',
             mediatype='movie',
             show_title=None,
@@ -175,7 +173,7 @@ class StagedMoviesMenu(object):
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_MOVIES = getlocalizedstring(32041)
         STR_CLEAN_UP_METADATA = getlocalizedstring(32135)
-        staged_movies = self.dbh.get_content_items(
+        staged_movies = self.database.get_content_items(
             status='staged', mediatype='movie', order='Title'
         )
         if not staged_movies:

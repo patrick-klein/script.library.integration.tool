@@ -19,8 +19,8 @@ class ManagedMoviesMenu(object):
     # TODO: context menu for managed items in library
     # TODO: synced watched status with plugin item
 
-    def __init__(self):
-        self.dbh = Database()
+    def __init__(self, database):
+        self.database = database
 
 
     @staticmethod
@@ -94,9 +94,9 @@ class ManagedMoviesMenu(object):
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_MOVIES = getlocalizedstring(32012)
 
-        managed_movies = self.dbh.get_content_items(
+        managed_movies = list(self.database.get_content_items(
             status='managed', mediatype='movie', order='Title'
-        )
+        ))
 
         if not managed_movies:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_MANAGED_MOVIES)

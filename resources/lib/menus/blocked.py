@@ -14,8 +14,8 @@ class BlockedMenu(object):
     '''Provide windows for displaying blocked items,
     and tools for managing them'''
 
-    def __init__(self):
-        self.dbh = Database()
+    def __init__(self, database):
+        self.database = database
 
 
     @logged_function
@@ -30,7 +30,7 @@ class BlockedMenu(object):
         STR_BACK = getlocalizedstring(32011)
         STR_BLOCKED_ITEMS = getlocalizedstring(32098)
         STR_NO_BLOCKED_ITEMS = getlocalizedstring(32119)
-        blocked_items = self.dbh.get_blocked_items()
+        blocked_items = self.database.get_blocked_items()
         if not blocked_items:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_BLOCKED_ITEMS)
             return
@@ -61,7 +61,7 @@ class BlockedMenu(object):
         )
         if ret >= 0:
             if lines[ret] == STR_REMOVE:
-                self.dbh.remove_blocked(item['value'], item['type'])
+                self.database.remove_blocked(item['value'], item['type'])
                 return self.view()
             elif lines[ret] == STR_BACK:
                 return self.view()

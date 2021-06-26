@@ -56,7 +56,11 @@ def main():
 
     if sync_type:
         try:
-            SyncedMenu().sync_all_items_in_directory(sync_type, dir_label, dir_path)
+            SyncedMenu(database=Database()).add_all_items_in_directory(
+                sync_type,
+                dir_label,
+                dir_path
+            )
         except Exception as genericexception:
             # TODO: A generic except, in furure, can be updated
             raise genericexception

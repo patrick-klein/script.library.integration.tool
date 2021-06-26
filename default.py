@@ -14,7 +14,7 @@ def main():
 
     if len(sys.argv) == 1:
         from resources.lib.menus.main import MainMenu
-        MainMenu().view()
+        MainMenu(database=Database()).view()
 
     elif sys.argv[1] == 'test':
         from resources.test.test import test

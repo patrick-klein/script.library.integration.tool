@@ -18,8 +18,8 @@ class ManagedTVMenu(object):
     '''Provide windows for displaying managed shows and episodes,
     and tools for manipulating the objects and managed file'''
 
-    def __init__(self):
-        self.dbh = Database()
+    def __init__(self, database):
+        self.database = database
 
 
     @staticmethod
@@ -53,9 +53,10 @@ class ManagedTVMenu(object):
         progress_dialog.create(
             ADDON_NAME, STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED % show_title
         )
-        items = self.dbh.get_content_items(
+        items = list(
+            self.database.get_content_items(
             status='managed', mediatype='tvshow', show_title=show_title, order='Show_Title'
-        )
+        ))
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             progress_dialog.update(
@@ -76,9 +77,10 @@ class ManagedTVMenu(object):
         progress_dialog = xbmcgui.DialogProgress()
         progress_dialog.create(ADDON_NAME, STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED)
 
-        managed_tv_items = self.dbh.get_content_items(
+        managed_tv_items = list(
+            self.database.get_content_items(
             status='managed', mediatype='tvshow', order='Show_Title'
-        )
+        ))
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
             progress_dialog.update(int(percent), message='\n'.join([item.show_title, item.episode_title_with_id]))
@@ -125,7 +127,11 @@ class ManagedTVMenu(object):
                 message='\n'.join([show_title,
                 str("Season: %s" % season_number)])
             )
-            self.dbh.remove_from(mediatype='tvshow', show_title=show_title, season=season_number)
+            self.database.remove_from(
+                mediatype='tvshow',
+                show_title=show_title,
+                season=season_number
+            )
             xbmc.sleep(300)
         progress_dialog.close()
         notification(STR_ALL_X_SEASONS_REMOVED % show_title)
@@ -136,10 +142,10 @@ class ManagedTVMenu(object):
         '''Remove all managed tvshow items from library'''
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
         STR_ALL_TV_SHOWS_REMOVED = getlocalizedstring(32025)
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
-        managed_tv_items = self.dbh.get_content_items(
+        managed_tv_items = list(
+            self.database.get_content_items(
             status='managed', mediatype='tvshow', order='Show_Title'
+            )
         )
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
@@ -189,12 +195,12 @@ class ManagedTVMenu(object):
         STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = getlocalizedstring(32030)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_x_EPISODES = getlocalizedstring(32031) % show_title
-        managed_episodes = self.dbh.get_content_items(
+        managed_episodes = list(
+            self.database.get_episode_items(
             status='managed',
-            mediatype='tvshow',
-            order='Show_Title',
             show_title=show_title,
             season_number=season_number
+            )
         )
         if not managed_episodes:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_MANAGED_x_EPISODES)
@@ -231,9 +237,7 @@ class ManagedTVMenu(object):
         STR_MOVE_ALL_SEASONS_BACK_TO_STAGED = 'Move all seasons back to staged'
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_X_SEASONS = str('Managed %s Seasons') % show_title
-        managed_seasons = self.dbh.get_content_items(
-            status='managed', mediatype='tvshow', order='Season', show_title=show_title
-        )
+            self.database.get_season_items(
         if not managed_seasons:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_MANAGED_X_SEASONS)
             return self.view_shows()
@@ -272,7 +276,7 @@ class ManagedTVMenu(object):
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32022)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_TV_SHOWS = getlocalizedstring(32023)
-        managed_tvshows = self.dbh.get_all_shows('managed')
+        managed_tvshows = self.database.get_all_shows('managed')
         if not managed_tvshows:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_MANAGED_TV_SHOWS)
             return

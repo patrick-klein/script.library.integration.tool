@@ -28,6 +28,9 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
 
 
     '''Class with methods to manage a show item'''
+    def __init__(self, database, jsondata):
+        super(ContentManagerShow, self).__init__(jsondata)
+        self.database = database
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
@@ -125,8 +128,7 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
         if create_stream_file(self.link_stream_path, self.managed_strm_path):
             self.create_metadata_item()
             softlink_file(self.episode_nfo[0], self.episode_nfo[1])
-            resources.lib.database.Database().update_content(
-                self.link_stream_path,
+            self.database.update_content(
                 status='managed',
                 mediatype='tvshow'
             )
@@ -198,10 +200,7 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
                     self.metadata_fanart_path,
                     self.metadata_fanart_path
                 )
-        resources.lib.database.Database().update_content(
-            self.link_stream_path,
-            title=self.jsondata['episode_title'],
-            mediatype='tvshow'
+        self.database.update_content(
         )
 
 
@@ -211,10 +210,7 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
         # TODO: resolve overlap/duplication with create_metadata_item
         # Check for existing nfo file
         if isdir(self.show_dir[1]):
-            resources.lib.database.Database().update_content(
-                self.link_stream_path,
-                title=self.jsondata['episode_title'],
-                mediatype='tvshow'
+            self.database.update_content(
             )
 
 
@@ -222,14 +218,12 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
     def remove_and_block(self):
         # TODO: Need to remove nfo for all other items that match blocked
         # Add episode title to blocked
-        resources.lib.database.Database().add_blocked_item(
-            self.show_title, 'episode'
+        self.database.add_blocked_item(
         )
         # Delete nfo items
         delete_with_wildcard(splitext(self.episode_nfo[0])[0])
         # Remove from db
-        # TODO: FIX pass mediatype to this func
-        resources.lib.database.Database().remove_from(
+        self.database.remove_from(
             status=None,
             mediatype=None,
             show_title=None,
@@ -300,9 +294,13 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
 
 
         '''Remove the item from the database'''
+        self.database.remove_from(
         '''Set the item status as staged in database'''
+        self.database.update_content(
     '''Class with methods to manage a show item'''
     def __init__(self, database, jsondata):
+        super(ContentManagerMovie, self).__init__(jsondata)
+        self.database = database
         self.jsondata = jsondata
         self.managed_strm_path = join(
             self.movie_dir[1], ''.join([self.movie_title, '.strm'])
@@ -353,9 +351,7 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
         # Add stream file to self.managed_dir
         self.create_metadata_item()
         create_stream_file(
-            self.link_stream_path, self.managed_strm_path)
-        resources.lib.database.Database().update_content(
-            self.link_stream_path,
+        self.database.update_content(
             status='managed',
             mediatype='movie'
         )
@@ -384,10 +380,7 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
             except Exception:
                 pass
         # Add metadata (optional)
-        resources.lib.database.Database().update_content(
-            self.link_stream_path,
-            title=self.jsondata['movie_title'],
-            mediatype='movie'
+        self.database.update_content(
         )
 
 
@@ -400,15 +393,13 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
     @logged_function
     def remove_and_block(self):
         # Add title to blocked
-        resources.lib.database.Database().add_blocked_item(
-            self.movie_title,
+        self.database.add_blocked_item(
             'movie'
         )
         # Delete metadata items
         remove_dir(self.movie_dir[0])
         # Remove from db
-        # TODO: FIX pass mediatype to this func
-        resources.lib.database.Database().remove_from(
+        self.database.remove_from(
             status=None,
             mediatype=None,
             show_title=None,
@@ -429,4 +420,6 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
     def rename_using_metadata(self):
         # TODO: Implement
         '''Remove the item from the database'''
+        self.database.remove_from(
         '''Set the item status as staged in database'''
+        self.database.update_content(
