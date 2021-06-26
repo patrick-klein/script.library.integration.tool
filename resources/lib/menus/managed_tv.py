@@ -20,6 +20,7 @@ class ManagedTVMenu(object):
 
     def __init__(self, database):
         self.database = database
+        self.progressdialog = xbmcgui.DialogProgress()
 
 
     @staticmethod
@@ -28,19 +29,18 @@ class ManagedTVMenu(object):
         STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = getlocalizedstring(32034)
         STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(32035)
         show_title = items[0].show_title
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(
+        self.progressdialog.create(
             ADDON_NAME, STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED % show_title
         )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(
+            self.progressdialog.update(
                 int(percent), message='\n'.join([item.show_title, item.episode_title_with_id])
             )
             xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED % show_title)
 
 
@@ -49,8 +49,8 @@ class ManagedTVMenu(object):
         '''Remove all managed episodes in specified show from library, and add them to staged'''
         STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = 'Movendo temporadas de %s para staged'
         STR_ALL_x_SEASONS_MOVED_TO_STAGED = 'Todas as temporadas de %s movidas para staged'
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(
+        
+        self.progressdialog.create(
             ADDON_NAME, STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED % show_title
         )
         items = list(
@@ -59,13 +59,13 @@ class ManagedTVMenu(object):
         ))
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(
+            self.progressdialog.update(
                 int(percent), message='\n'.join([item.show_title, item.episode_title_with_id])
             )
             xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED % show_title)
 
 
@@ -74,8 +74,8 @@ class ManagedTVMenu(object):
         '''Remove all managed tvshow items from library, and add them to staged'''
         STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32026)
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = getlocalizedstring(32027)
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED)
+        
+        self.progressdialog.create(ADDON_NAME, STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED)
 
         managed_tv_items = list(
             self.database.get_content_items(
@@ -83,12 +83,12 @@ class ManagedTVMenu(object):
         ))
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
-            progress_dialog.update(int(percent), message='\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(int(percent), message='\n'.join([item.show_title, item.episode_title_with_id]))
 
             xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_TV_SHOWS_MOVED_TO_STAGED)
 
 
@@ -98,16 +98,16 @@ class ManagedTVMenu(object):
         STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032)
         STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033)
         show_title = items[0].show_title
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_REMOVING_ALL_x_EPISODES % show_title)
+        
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_x_EPISODES % show_title)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(
+            self.progressdialog.update(
                 int(percent), message='\n'.join([item.show_title, item.episode_title_with_id])
             )
             item.remove_from_library()
             item.delete()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED % show_title)
 
 
@@ -117,12 +117,12 @@ class ManagedTVMenu(object):
         STR_REMOVING_ALL_X_SEASONS = 'Removendo temporadas de: %s'
         STR_ALL_X_SEASONS_REMOVED = 'Todas as temporadas de %s, foram removidas'
         seasons = items[0]
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_REMOVING_ALL_X_SEASONS % show_title)
+        
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_X_SEASONS % show_title)
 
         for season_number in seasons:
             percent = 100 * season_number / len(seasons)
-            progress_dialog.update(
+            self.progressdialog.update(
                 int(percent),
                 message='\n'.join([show_title,
                 str("Season: %s" % season_number)])
@@ -133,7 +133,7 @@ class ManagedTVMenu(object):
                 season=season_number
             )
             xbmc.sleep(300)
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_X_SEASONS_REMOVED % show_title)
 
 
@@ -142,6 +142,7 @@ class ManagedTVMenu(object):
         '''Remove all managed tvshow items from library'''
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
         STR_ALL_TV_SHOWS_REMOVED = getlocalizedstring(32025)
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
         managed_tv_items = list(
             self.database.get_content_items(
             status='managed', mediatype='tvshow', order='Show_Title'
@@ -149,11 +150,11 @@ class ManagedTVMenu(object):
         )
         for index, item in enumerate(managed_tv_items):
             percent = 100 * index / len(managed_tv_items)
-            progress_dialog.update(int(percent), message='\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(int(percent), message='\n'.join([item.show_title, item.episode_title_with_id]))
 
             item.remove_from_library()
             item.delete()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_TV_SHOWS_REMOVED)
 
 

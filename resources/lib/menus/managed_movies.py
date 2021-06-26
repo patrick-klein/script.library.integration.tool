@@ -21,20 +21,20 @@ class ManagedMoviesMenu(object):
 
     def __init__(self, database):
         self.database = database
+        self.progressdialog = xbmcgui.DialogProgress()
 
 
     @staticmethod
     @logged_function
         '''Remove all managed movies from library, and add them to staged'''
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getlocalizedstring(32015)
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
+        self.progressdialog.create(ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(int(percent), item.movie_title)
             item.remove_from_library()
             item.set_as_staged()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
 
 
@@ -44,14 +44,13 @@ class ManagedMoviesMenu(object):
         '''Remove all managed movies from library'''
         STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
         STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(int(percent), item.movie_title)
             item.remove_from_library()
             item.delete()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
 
 

@@ -25,6 +25,7 @@ class StagedTVMenu(object):
 
     def __init__(self, database):
         self.database = database
+        self.progressdialog = xbmcgui.DialogProgress()
 
 
     @staticmethod
@@ -33,16 +34,13 @@ class StagedTVMenu(object):
         STR_ADDING_ALL_x_EPISODES = getlocalizedstring(32071)
         STR_ALL_x_EPISODES_ADDED = getlocalizedstring(32072)
         show_title = items[0].show_title
-
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_ADDING_ALL_x_EPISODES % show_title)
-
+        self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_x_EPISODES % show_title)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
             xbmc.sleep(200)
             item.add_to_library()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_ADDED % show_title)
 
 
@@ -58,13 +56,23 @@ class StagedTVMenu(object):
             show_title=show_title
             )
         )
-
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_ADDING_ALL_x_SEASONS % show_title
+        )
         for index, item in enumerate(staged_seasons):
             percent = 100 * index / len(staged_seasons)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(
+                int(percent),
+                '\n'.join([
+                    item.show_title,
+                    item.episode_title_with_id
+                    ]
+                )
+            )
             xbmc.sleep(100)
             item.add_to_library()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_SEASONS_ADDED % show_title)
 
 
@@ -81,48 +89,48 @@ class StagedTVMenu(object):
             show_title=show_title
             )
         )
+        self.progressdialog.create(
             ADDON_NAME, STR_ADDING_ALL_x_SEASONS_WITH_METADATA % show_title
         )
         for index, item in enumerate(staged_seasons):
             percent = 100 * index / len(staged_seasons)
 
             if os.path.exists(item.episode_nfo[0]):
-                progress_dialog.update(
+                self.progressdialog.update(
                     int(percent),
                     '\n'.join([item.show_title, item.episode_title_with_id])
                 )
                 xbmc.sleep(200)
                 item.add_to_library()
 
-            progress_dialog.update(int(percent), '\n'.join([' ', ' ']))
-        progress_dialog.close()
+            self.progressdialog.update(int(percent), '\n'.join([' ', ' ']))
+        self.progressdialog.close()
         notification(STR_ALL_x_SEASONS_WITH_METADATA_ADDED % show_title)
 
 
-    @staticmethod
     @logged_function
     # TODO: revise this function >> add_all_episodes_with_metadata
         '''Add all episodes in the specified show with metadata to the library'''
         STR_ADDING_ALL_x_EPISODES_WITH_METADATA = getlocalizedstring(32073)
         STR_ALL_x_EPISODES_WITH_METADATA_ADDED = getlocalizedstring(32074)
         show_title = items[0]
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(
+        
+        self.progressdialog.create(
             ADDON_NAME, STR_ADDING_ALL_x_EPISODES_WITH_METADATA % show_title
         )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             # nfo_path = os.path.join(metadata_dir, item.clean_title + '.nfo')
             if os.path.exists(item.episode_nfo[0]):
-                progress_dialog.update(
+                self.progressdialog.update(
                     int(percent),
                     item.show_title,
                     item.episode_title_with_id
                 )
                 xbmc.sleep(200)
                 item.add_to_library()
-            progress_dialog.update(int(percent), '\n'.join([' ', ' ']))
-        progress_dialog.close()
+            self.progressdialog.update(int(percent), '\n'.join([' ', ' ']))
+        self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED % show_title)
 
 
@@ -132,14 +140,14 @@ class StagedTVMenu(object):
         STR_GENERATING_ALL_x_METADATA = getlocalizedstring(32077)
         STR_ALL_x_METADATA_CREATED = getlocalizedstring(32078)
         show_title = items[0].show_title
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_GENERATING_ALL_x_METADATA % show_title)
+        
+        self.progressdialog.create(ADDON_NAME, STR_GENERATING_ALL_x_METADATA % show_title)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
             xbmc.sleep(200)
             item.create_metadata_item()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_METADATA_CREATED % show_title)
 
 
@@ -156,17 +164,15 @@ class StagedTVMenu(object):
             show_title=show_title
             )
         )
-
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_GENERATING_ALL_x_METADATA % show_title)
+        self.progressdialog.create(ADDON_NAME, STR_GENERATING_ALL_x_METADATA % show_title)
 
         for index, item in enumerate(staged_seasons):
             percent = 100 * index / len(staged_seasons)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
             xbmc.sleep(200)
             item.create_metadata_item()
 
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_METADATA_CREATED % show_title)
 
 
@@ -182,17 +188,17 @@ class StagedTVMenu(object):
         STR_RENAMING_x_EPISODES_USING_METADATA = getlocalizedstring(32075)
         STR_x_EPISODES_RENAMED_USING_METADATA = getlocalizedstring(32076)
         show_title = items[0].show_title
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(
+        
+        self.progressdialog.create(
             ADDON_NAME, STR_RENAMING_x_EPISODES_USING_METADATA % show_title
         )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
             xbmc.sleep(200)
             # TODO: fix rename_using_metadata() current is not used
             # item.rename_using_metadata()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_x_EPISODES_RENAMED_USING_METADATA % show_title)
 
 
@@ -201,7 +207,7 @@ class StagedTVMenu(object):
         '''Add all tvshow items to library'''
         STR_ADDING_ALL_TV_SHOWS = getlocalizedstring(32059)
         STR_ALL_TV_SHOWS_ADDED = getlocalizedstring(32060)
-        self.progress_dialog.create(ADDON_NAME, STR_ADDING_ALL_TV_SHOWS)
+        self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_TV_SHOWS)
         staged_tv_items = list(
             self.database.get_content_items(
             status='staged',
@@ -211,10 +217,10 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
+            self.progressdialog.update(int(percent), '\n'.join([item.show_title, item.episode_title_with_id]))
             xbmc.sleep(200)
             item.add_to_library()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_TV_SHOWS_ADDED)
 
 
@@ -223,6 +229,7 @@ class StagedTVMenu(object):
         '''Add all tvshow items with nfo file to library'''
         STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA = getlocalizedstring(32061)
         STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED = getlocalizedstring(32062)
+        self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA)
         staged_tv_items = list(
             self.database.get_content_items(
             status='staged',
@@ -234,14 +241,14 @@ class StagedTVMenu(object):
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
             if os.path.exists(item.episode_nfo[0]):
-                progress_dialog.update(
+                self.progressdialog.update(
                     int(percent),
                     '\n'.join([item.show_title, item.episode_title_with_id])
                 )
                 xbmc.sleep(200)
                 item.add_to_library()
-            progress_dialog.update(int(percent), '\n'.join([' ', ' ']))
-        progress_dialog.close()
+            self.progressdialog.update(int(percent), '\n'.join([' ', ' ']))
+        self.progressdialog.close()
         notification(STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED)
 
 
@@ -250,6 +257,7 @@ class StagedTVMenu(object):
         '''Create metadata for all staged tvshow items'''
         STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
         STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
+        self.progressdialog.create(ADDON_NAME, STR_GENERATING_ALL_TV_SHOW_METADATA)
         staged_tv_items = list(
             self.database.get_content_items(
             status='staged',
@@ -259,10 +267,10 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title]))
+            self.progressdialog.update(int(percent), '\n'.join([item.show_title]))
             xbmc.sleep(200)
             item.create_metadata_item()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_TV_SHOW_METADATA_CREATED)
 
 
@@ -271,6 +279,7 @@ class StagedTVMenu(object):
         '''Read metadata for all staged tvshow items'''
         STR_READING_ALL_TV_SHOW_METADATA = getlocalizedstring(32145)
         STR_ALL_TV_SHOW_METADATA_READ = getlocalizedstring(32146)
+        self.progressdialog.create(ADDON_NAME, STR_READING_ALL_TV_SHOW_METADATA)
         staged_tv_items = list(
             self.database.get_content_items(
             status='staged',
@@ -280,24 +289,26 @@ class StagedTVMenu(object):
         )
         for index, item in enumerate(staged_tv_items):
             percent = 100 * index / len(staged_tv_items)
-            progress_dialog.update(int(percent), '\n'.join([item.show_title]))
+            self.progressdialog.update(int(percent), '\n'.join([item.show_title]))
             xbmc.sleep(200)
             # item.read_metadata_item()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_TV_SHOW_METADATA_READ)
+
 
     @logged_function
     def remove_all(self):
         '''Remove all staged tvshow items'''
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
         STR_ALL_TV_SHOW_REMOVED = getlocalizedstring(32025)
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
         self.database.remove_from(
             status='staged',
             mediatype='tvshow',
             show_title=None,
             directory=None
         )
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_TV_SHOW_REMOVED)
 
 
@@ -306,13 +317,14 @@ class StagedTVMenu(object):
         '''Remove all seasons from the specified show'''
         STR_REMOVING_ALL_x_SEASONS = getlocalizedstring(32032) % show_title
         STR_ALL_x_SEASONS_REMOVED = getlocalizedstring(32033) % show_title
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_x_SEASONS)
         self.database.remove_from(
             status='staged',
             mediatype='tvshow',
             show_title=show_title,
             directory=None
         )
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_SEASONS_REMOVED)
 
 
@@ -321,19 +333,21 @@ class StagedTVMenu(object):
         '''Remove all episodes from the specified show'''
         STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032) % show_title
         STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033) % show_title
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_x_EPISODES)
         self.database.remove_from(
             status='staged',
             mediatype='tvshow',
             show_title=show_title,
             directory=None
         )
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED)
 
 
     @logged_function
     def remove_and_block_show(self, show_title):
         '''Remove all seasons from specified show from the library,
+        delete metadata, and add to blocked list'''
         # Remove from staged
         self.remove_all_seasons(show_title)
         # Delete metadata folder

@@ -30,19 +30,19 @@ class StagedMoviesMenu(object):
 
     def __init__(self, database):
         self.database = database
+        self.progressdialog = xbmcgui.DialogProgress()
 
     @staticmethod
     @logged_function
         '''Add all staged movies to library'''
         STR_ADDING_ALL_MOVIES = getlocalizedstring(32042)
         STR_ALL_MOVIES_ADDED = getlocalizedstring(32043)
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES)
+        self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(int(percent), item.movie_title)
             item.add_to_library()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_MOVIES_ADDED)
 
     @staticmethod
@@ -51,17 +51,14 @@ class StagedMoviesMenu(object):
         # TODO: Remove code duplication with MovieItem.add_to_library_if_metadata
         STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
         STR_ALL_MOVIES_WITH_METADTA_ADDED = getlocalizedstring(32045)
-
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES_WITH_METADATA)
-
+        self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES_WITH_METADATA)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             if os.path.exists(item.movie_nfo[0]):
-                progress_dialog.update(int(percent), item.movie_title)
+                self.progressdialog.update(int(percent), item.movie_title)
                 item.add_to_library()
-            # progress_dialog.update(int(percent), ' ') # TODO: remove it?
-        progress_dialog.close()
+            # self.progressdialog.update(int(percent), ' ') # TODO: remove it?
+        self.progressdialog.close()
         notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
     @staticmethod
@@ -85,13 +82,12 @@ class StagedMoviesMenu(object):
         '''Generate metadata items for all staged movies'''
         STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
         STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
-        progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create(ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
+        self.progressdialog.create(ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            progress_dialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(int(percent), item.movie_title)
             item.create_metadata_item()
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_MOVIE_METADTA_CREATED)
 
         '''Prompt input for new name, and rename if non-empty string'''
@@ -147,19 +143,22 @@ class StagedMoviesMenu(object):
         else:
             self.view_all()
 
+
     @logged_function
     def remove_all(self):
         '''Remove all staged movies'''
         STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
         STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
+        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
         self.database.remove_from(
             status='staged',
             mediatype='movie',
             show_title=None,
             directory=None
         )
-        progress_dialog.close()
+        self.progressdialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
+
 
     @logged_function
     def view_all(self):
