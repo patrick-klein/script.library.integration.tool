@@ -24,9 +24,11 @@ from resources.lib.filesystem import create_stream_file
 from resources.lib.filesystem import delete_with_wildcard
 from resources.lib.filesystem import softlink_files_in_dir
 
-from resources.lib.abs.content import ABSContentShow, ABSContentMovie
+from resources.lib.abs.content import ABSContentManagerShow
+from resources.lib.abs.content import ABSContentManagerMovie
 
 
+class ContentManagerShow(ABSContentManagerShow):
     '''Class with methods to manage a show item'''
     def __init__(self, database, jsondata):
         super(ContentManagerShow, self).__init__(jsondata)
@@ -297,6 +299,7 @@ from resources.lib.abs.content import ABSContentShow, ABSContentMovie
         self.database.remove_from(
         '''Set the item status as staged in database'''
         self.database.update_content(
+class ContentManagerMovie(ABSContentManagerMovie):
     '''Class with methods to manage a show item'''
     def __init__(self, database, jsondata):
         super(ContentManagerMovie, self).__init__(jsondata)

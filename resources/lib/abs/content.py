@@ -4,10 +4,12 @@
 
 import abc
 
+class ABSContentManagerShow(object):
     '''Abstract base class for ContentManager.'''
     __metaclass__ = abc.ABCMeta
     # TODO: Make rename on add optional in settings
-    # TODO: Save original_label, would be able to rename entire filename using metadata
+    # TODO: Save original_label, would be able to rename
+    # entire filename using metadata
     def __init__(self, jsondata):
         self._link_stream_path = None
         self._episode_title = None
@@ -99,6 +101,8 @@ import abc
     def set_as_staged(self):
         '''Set the item status as staged in database'''
 
+
+class ABSContentManagerMovie(object):
     '''Abstract base class for ContentManager.
     Defines required and helper methods'''
     __metaclass__ = abc.ABCMeta
