@@ -1,6 +1,5 @@
 <img src="./resources/media/logo.png" width=512>
 
-
 [![Version](https://img.shields.io/badge/latest%20version-0.4.1-blue.svg)](https://github.com/patrick-klein/repository.librarytools)
 [![GitHub last commit](https://img.shields.io/github/last-commit/luizoti/script.library.integration.tool.svg)](https://github.com/luizoti/script.library.integration.tool/commits/Matrix)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2e2794f8e9fc49108aaa541a03c37ec4)](https://www.codacy.com/gh/luizoti/script.library.integration.tool/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=luizoti/script.library.integration.tool&amp;utm_campaign=Badge_Grade)
@@ -14,16 +13,13 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 ## Requirements
 
-* **Kodi 19+**
+ *   **Kodi 19+**
 
 ## Installation Matrix.
 
 1. Download this zip for the [Library Integration Tool](https://github.com/luizoti/script.library.integration.tool/archive/refs/heads/Matrix.zip)
-
 2. In Kodi, go to Settings --> Add-ons --> Install from zip file --> then select the downloaded zip.
-
 3. Run Library Integration Tool for the first time.  You will get a message letting you know the managed folder was configured.
-
 4. From Kodi Settings, go to Media Settings --> Library --> Videos....  If you are using a custom managed folder, add it as a source here, otherwise add `special://userdata/addon_data/script.library.integration.tool/`.  Set content for ManagedMovies to Movies and check "Movies are in separate folders that match the movie title".  Set content for ManagedTV to TV shows.  If you plan on using your own metadata, you may want to select "Local information only".
 
 NOTE: By default, the managed folder is in the addon userdata folder.  You may open the settings for Library Integration Tool if you want to choose a custom managed folder instead.
