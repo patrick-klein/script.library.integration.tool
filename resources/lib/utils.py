@@ -1,8 +1,8 @@
 # /usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Contains various constants and utility functions used thoughout the addon
-'''
+
+'''Contains various constants and utility functions used thoughout the addon'''
+
 import re
 import simplejson as json
 
@@ -72,7 +72,7 @@ if osname == 'nt':
 
 
 def check_managed_folder():
-    ''' Checks if the managed folder is configured '''
+    '''Checks if the managed folder is configured'''
     if not exists(MANAGED_FOLDER):
         STR_CHOOSE_FOLDER = 'Created managed folder "{}"'.format(MANAGED_FOLDER)
         mkdir(MANAGED_FOLDER)
@@ -80,7 +80,7 @@ def check_managed_folder():
 
 
 def check_subfolders():
-    ''' Checks the subfolders in the Managed and Metadata folders '''
+    '''Checks the subfolders in the Managed and Metadata folders'''
     # Create subfolders if they don't exist
     subfolders = {
         'ManagedMovies': MANAGED_FOLDER,
@@ -108,9 +108,9 @@ def check_subfolders():
 
 
 def entrypoint(func):
-    ''' Decorator to perform actions required for entrypoints '''
+    '''Decorator to perform actions required for entrypoints'''
     def wrapper(*args, **kwargs):
-        ''' function wrapper '''
+        '''function wrapper'''
         check_version_file()
         check_managed_folder()
         check_subfolders()
@@ -119,9 +119,9 @@ def entrypoint(func):
 
 
 def utf8_args(func):
-    ''' Decorator for encoding utf8 on all unicode arguments '''
+    '''Decorator for encoding utf8 on all unicode arguments'''
     def wrapper(*args, **kwargs):
-        ''' function wrapper '''
+        '''function wrapper'''
         return func(*args, **kwargs)
     return wrapper
 
@@ -138,7 +138,7 @@ def utf8_args(func):
 # use system language to auto select:
 
 def clean_name(title):
-    ''' Remove/replace problematic characters/substrings for filenames '''
+    '''Remove/replace problematic characters/substrings for filenames'''
     # IDEA: Replace in title directly, not just filename
 
     # TODO: use this function to remove from Show/episode title on,
@@ -158,9 +158,9 @@ def clean_name(title):
     return title
 
 
-def execute_json_rpc(method, directory):
-    ''' Execute a JSON-RPC command with specified method and params (as keyword arguments)
-    See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params '''
+def execute_json_rpc(method, file):
+    '''Execute a JSON-RPC command with specified method and params (as keyword arguments)
+    See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params'''
     return json.loads(
         xbmc.executeJSONRPC(
             json.dumps({
@@ -185,7 +185,7 @@ def execute_json_rpc(method, directory):
 
 
 def videolibrary(method):
-    ''' A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary.Clean '''
+    '''A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary.Clean'''
     return xbmc.executeJSONRPC(
         json.dumps({
             'jsonrpc': '2.0',
@@ -195,7 +195,7 @@ def videolibrary(method):
     )
 
 def re_search(string, strings_to_skip=None):
-    ''' Function check if string exist with re '''
+    '''Function check if string exist with re'''
     STR_SKIP_STRINGS = [
         'resumo',
         'suggested',
@@ -210,7 +210,7 @@ def re_search(string, strings_to_skip=None):
 
 
 def skip_filter(contents_json):
-    ''' Function to check and filter items in a list '''
+    '''Function to check and filter items in a list'''
     try:
         for item in contents_json:
             if not ('seren' in item['file'] and item['label'] == 'Next'): # TODO: generic and temporary way to skip seren nextpage
@@ -221,7 +221,7 @@ def skip_filter(contents_json):
 
 
 def list_reorder(contents_json, showtitle, year=False, sync_type=False):
-    ''' Return a list of elements reordered by number id '''
+    '''Return a list of elements reordered by number id'''
     reordered = [''] * len(contents_json)
     years = []
     stored_title = None
@@ -493,7 +493,7 @@ def selected_list(results):
 def load_directory_items(progressdialog, dir_path, recursive=False,
                          allow_directories=False, depth=1, showtitle=False,
                          season=False, year=False, sync_type=False):
-    ''' Load items in a directory using the JSON-RPC interface '''
+    '''Load items in a directory using the JSON-RPC interface'''
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
     results = execute_json_rpc(
@@ -580,12 +580,12 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
 
 
 def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
-    ''' Provide a shorthand for xbmc builtin notification with addon name '''
+    '''Provide a shorthand for xbmc builtin notification with addon name'''
     xbmcgui.Dialog().notification(ADDON_NAME, message, icon, time, True) 
 
  
 def tojs(data, filename):
-    ''' Function to create a json file '''
+    '''Function to create a json file'''
     try:
         with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
             f.write(str(json.dumps(data, indent=4, sort_keys=True)))
@@ -595,12 +595,12 @@ def tojs(data, filename):
 
 
 def getlocalizedstring(string_id):
-    ''' Function to get call getLocalizedString and deal with unicodedecodeerrors '''
+    '''Function to get call getLocalizedString and deal with unicodedecodeerrors'''
     return str(ADDON.getLocalizedString(string_id))
 
 
 def title_with_color(label, year=None, color='skyblue'):
-    ''' Create a string to use in title Dialog().select '''
+    '''Create a string to use in title Dialog().select'''
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
     # TODO: this function can be better, maybe led generic,
     # now, this func add color and year to movie title,
