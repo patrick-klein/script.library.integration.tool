@@ -13,7 +13,7 @@ Forum Thread: [https://forum.kodi.tv/showthread.php?tid=327514](https://forum.ko
 
 ## Requirements
 
- *  **Kodi 19+**
+*  **Kodi 19+**
 
 ## Installation Matrix
 
