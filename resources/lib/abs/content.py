@@ -13,7 +13,6 @@ class ABSContentManagerShow(object):
     def __init__(self, jsondata):
         self._link_stream_path = None
         self._episode_title = None
-        # mediatype
         self._show_title = None
         self._season = None
         self._episode_number = None
@@ -21,7 +20,10 @@ class ABSContentManagerShow(object):
 
 
     def __str__(self):
-        return '[B]{title}[/B] - [I]{path}[/I]'.format(title=self.episode_title_with_id, path=self.link_stream_path)
+        return '[B]%s[/B] - [I]%s[/I]' % (
+            self.episode_title_with_id,
+            self.link_stream_path
+            )
 
 
     @abc.abstractproperty
@@ -76,6 +78,8 @@ class ABSContentManagerShow(object):
         # TODO: remove from library using json-rpc
 
 
+    # @abc.abstractmethod
+    # def remove_and_block(self):
     #     '''Remove content from the library, deletes metadata, and adds to blocked list'''
 
 
@@ -116,7 +120,10 @@ class ABSContentManagerMovie(object):
 
 
     def __str__(self):
-        return '[B]{title}[/B] - [I]{path}[/I]'.format(title=self.movie_title, path=self.link_stream_path)
+        return '[B]%s[/B] - [I]%s[/I]' % (
+            self.movie_title,
+            self.link_stream_path
+            )
 
 
     @abc.abstractproperty
