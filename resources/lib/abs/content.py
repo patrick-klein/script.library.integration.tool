@@ -4,8 +4,7 @@
 
 import abc
 
-    '''Abstract base class for ContentManager.
-    Defines required and helper methods'''
+    '''Abstract base class for ContentManager.'''
     __metaclass__ = abc.ABCMeta
     # TODO: Make rename on add optional in settings
     # TODO: Save original_label, would be able to rename entire filename using metadata
