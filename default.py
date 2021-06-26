@@ -4,10 +4,11 @@
 '''This modules gets called by the main executable'''
 
 import sys
-import resources.lib.utils as utils
+from resources.lib.utils import entrypoint
 
+from resources.lib.database import Database
 
-@utils.entrypoint
+@entrypoint
 def main():
     '''Main entry point for addon'''
 

@@ -15,19 +15,18 @@ from resources import WITH_METADATA
 from resources import AUTO_ADD_MOVIES
 from resources import AUTO_ADD_TVSHOWS
 
-from resources.lib.utils import MANAGED_FOLDER
+from resources.lib import build_json_item
+from resources.lib import build_contentitem
+from resources.lib import build_contentmanager
 
-from resources.lib.log import log_msg
 from resources.lib.log import logged_function
-from resources.lib.utils import notification, utf8_args
+
+from resources.lib.utils import utf8_args
+from resources.lib.utils import MANAGED_FOLDER
 
 from resources.lib.items.blocked import BlockedItem
 from resources.lib.items.synced import SyncedItem
 
-from resources.lib.items.movie import MovieItem
-from resources.lib.items.episode import EpisodeItem
-
-from resources.lib.items.contentmanager import ContentShow, ContenMovie
 
 class Database(object):
     '''Database class with all database methods.'''

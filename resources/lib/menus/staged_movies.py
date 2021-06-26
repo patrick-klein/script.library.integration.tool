@@ -19,8 +19,6 @@ from resources.lib.utils import notification
 from resources.lib.utils import METADATA_FOLDER
 from resources.lib.utils import getlocalizedstring
 
-from resources.lib.database import Database
-
 
 class StagedMoviesMenu(object):
     '''Provide windows for displaying staged movies,

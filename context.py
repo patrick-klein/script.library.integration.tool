@@ -9,20 +9,26 @@ import sys
 import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
-import resources.lib.utils as utils
+from resources.lib.database import Database
 from resources.lib.menus.synced import SyncedMenu
 
-STR_IS_A_MOVIE = utils.getlocalizedstring(32155)
-STR_IS_A_SHOW = utils.getlocalizedstring(32156)
-STR_CANCEL_RED = utils.getlocalizedstring(32157)
-STR_NOT_SELECTED = utils.getlocalizedstring(32163)
-STR_CHOOSE_CONTENT_TYPE = utils.getlocalizedstring(32159)
+from resources.lib.utils import re_search
+from resources.lib.utils import entrypoint
+from resources.lib.utils import notification
+from resources.lib.utils import title_with_color
+from resources.lib.utils import getlocalizedstring
+
+STR_IS_A_MOVIE = getlocalizedstring(32155)
+STR_IS_A_SHOW = getlocalizedstring(32156)
+STR_CANCEL_RED = getlocalizedstring(32157)
+STR_NOT_SELECTED = getlocalizedstring(32163)
+STR_CHOOSE_CONTENT_TYPE = getlocalizedstring(32159)
 
 # possible values ​​that content can have
 LIST_TYPE_SERIES = ['series', 'directory', 'show', 'browse', 'root', 'mode=series']
 LIST_TYPE_MOVIES = ['movie', 'PlayVideo', 'play&_play']
 
-@utils.entrypoint
+@entrypoint
 def main():
     '''Main entrypoint for context menu item'''
     # is more simple and fast ask user about type, many addons don't give this info
@@ -30,9 +36,9 @@ def main():
     year = xbmc.getInfoLabel('ListItem.Year')
     # if year is False, load load_directory_items will use json year
     year = int(year) if year != '' else False
-    selected_path = sys.listitem.getPath() # pylint: disable=E1101
+    file = sys.listitem.getPath() # pylint: disable=E1101
     STR_FORMED_TYPE_OF_CONTENT = '%s - %s' % (
-        utils.title_with_color(label=label, year=year), STR_CHOOSE_CONTENT_TYPE)
+        title_with_color(label=label, year=year), STR_CHOOSE_CONTENT_TYPE)
     # Using the Dialog().select method is better as
     # it allows the user to cancel if they want,
     # and we can add more options if needed.
@@ -48,28 +54,32 @@ def main():
         )
     selection = lines[typeofcontent]
     if selection:
+        syncedmenu = SyncedMenu(database=Database())
         # Call corresponding method
-        if (selection == STR_IS_A_MOVIE and
-                utils.re_search(selected_path, LIST_TYPE_MOVIES)):
-            SyncedMenu().sync_single_movie(
-                title=label,
-                year=year,
-                link_stream_path=selected_path
-                )
-        elif (selection == STR_IS_A_SHOW and
-              utils.re_search(selected_path, LIST_TYPE_SERIES)):
-            SyncedMenu().sync_single_tvshow(
-                title=label,
-                year=year,
-                link_stream_path=selected_path
-                )
+        if selection == STR_IS_A_MOVIE:
+            if re_search(file, LIST_TYPE_MOVIES):
+                syncedmenu.add_single_movie(
+                    title=label,
+                    year=year,
+                    file=file
+                    )
+        elif selection == STR_IS_A_SHOW:
+            if re_search(file, LIST_TYPE_SERIES):
+                syncedmenu.add_single_tvshow(
+                    title=label,
+                    year=year,
+                    file=file
+                    )
         elif selection == STR_CANCEL_RED:
             xbmc.sleep(200)
-            utils.notification(utils.getlocalizedstring(32158))
+            notification(getlocalizedstring(32158))
         else:
-            utils.notification('%s %s' % (utils.title_with_color(
-                label=label,
-                year=year), STR_NOT_SELECTED))
+            notification(
+                '%s %s' % (title_with_color(label=label,year=year),
+                STR_NOT_SELECTED
+                )
+            )
+
 
 if __name__ == '__main__':
     main()

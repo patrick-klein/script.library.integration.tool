@@ -9,8 +9,10 @@ import sys
 import xbmc # pylint: disable=import-error
 import xbmcgui # pylint: disable=import-error
 
-
 from resources import ADDON_NAME
+
+from resources.lib import build_json_item
+from resources.lib import build_contentitem
 
 from resources.lib.log import logged_function
 
@@ -21,9 +23,7 @@ from resources.lib.utils import notification
 from resources.lib.utils import title_with_color
 from resources.lib.utils import getlocalizedstring
 from resources.lib.utils import load_directory_items
-
-from resources.lib.database_handler import DatabaseHandler
-
+# 
 
 class SyncedMenu(object):
     '''Provides windows for displaying synced directories,
@@ -192,12 +192,7 @@ class SyncedMenu(object):
             notification(STR_ITEM_IS_ALREADY_MANAGED)
         else:
             # Add item to database
-            self.dbh.add_content_item(MovieItem(
-                title=title,
-                year=year,
-                link_stream_path=link_stream_path,
-                mediatype='movie',
-                ).returasjson(), 'movie')
+            item = build_json_item([file, title, 'movie', None, year])
             notification('%s: %s' % (
                 STR_MOVIE_STAGED,
                 title_with_color(title, year)
@@ -233,22 +228,10 @@ class SyncedMenu(object):
                 progressdialog.close()
                 break
             try:
-                contentdata = EpisodeItem(
-                    # IDEA: in future, pass a json and not separeted values
-                    link_stream_path=showfile['file'],
-                    title=showfile['title'],
-                    mediatype='tvshow',
-                    show_title=title,
-                    season=showfile['season'],
-                    epnumber=showfile['episode'],
-                    year=year if year else showfile['year']
-                ).returasjson()
+                contentitem = build_contentitem(showjson)
                 # Update progress
                 percent = 100 * index / len(files_list)
-                if (self.dbh.path_exists(
-                        path=contentdata['link_stream_path'],
-                        status='staged',
-                        mediatype='tvshow')):
+                exist_in_db = self.database.path_exists(file=contentitem['file'])
                     num_already_staged += 1
                     continue
                 elif (self.dbh.path_exists(
@@ -319,39 +302,16 @@ class SyncedMenu(object):
                 if progressdialog.iscanceled() is True:
                     progressdialog.close()
                     break
-                try:
-                    content_title = content_file['movie_title']
-                    contentdata = MovieItem(
-                        link_stream_path=content_file['file'],
-                        title=content_file['movie_title'],
-                        mediatype='movie',
-                        year=content_file['year']
-                    ).returasjson()
-                    sync_type = 'movie'
-                except (KeyError, TypeError):
-                    content_title = content_file['showtitle']
-                    contentdata = EpisodeItem(
-                        link_stream_path=content_file['file'],
-                        title=content_file['title'],
-                        mediatype='tvshow',
-                        show_title=content_file['showtitle'],
-                        season=content_file['season'],
-                        epnumber=content_file['episode'],
-                        year=content_file['year']
-                    ).returasjson()
-                    sync_type = 'tvshow'
-                except (KeyError, TypeError) as e:
-                    raise e
-                # Get name of show and skip if blocked
-                # Get everything inside tvshow path
-                # # # # # # # # # # # # # # # # # # # # type: movie or episode
-                if self.dbh.check_blocked(content_title, content_file['type']):
+                contentitem = build_contentitem(content_in_json)
+                if 'movie_title' in contentitem:
+                    content_title = contentitem['movie_title']
+                if 'showtitle' in contentitem:
+                    content_title = contentitem['showtitle']
+                if self.database.check_blocked(content_title, contentitem['type']):
                     continue
-                if self.dbh.path_exists(
-                        path=contentdata['link_stream_path'],
+                if self.database.path_exists(
                         status=['staged', 'managed'],
-                        # TODO: future dosen't use sync_type here
-                        mediatype=sync_type):
+                        mediatype=contentitem['type']):
                     continue
                 # Update progress
                 percent = 100 * index / len(files_list)

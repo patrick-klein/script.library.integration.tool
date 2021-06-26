@@ -5,7 +5,6 @@
 
 from os.path import join
 
-from resources.lib.log import log_msg
 from resources.lib.log import logged_function
 from resources.lib.abs.item import ABSItemMovie
 

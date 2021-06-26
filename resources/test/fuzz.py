@@ -3,13 +3,14 @@
 
 '''Defines function to call fuzz modules'''
 
+
 import os
 import unittest
 
-import xbmc # pylint: disable=import-error
 import xbmcvfs  # pylint: disable=import-error
 
-import resources.lib.utils as utils
+from resources.lib.utils import log_msg
+from resources.lib.utils import notification
 
 
 def fuzz():
@@ -24,7 +25,7 @@ def fuzz():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
     suite.addTests(loader.discover(os.path.dirname(__file__), pattern='fuzz_*.py'))
-    utils.log_msg('All fuzz tests: %s' % suite)
+    log_msg('All fuzz tests: %s' % suite)
 
     # Run all unit tests and save to text file
     log_file = os.path.join(test_path, 'fuzz_report.txt')
@@ -32,8 +33,8 @@ def fuzz():
         result = unittest.TextTestRunner(f, verbosity=2).run(suite)
 
     if result.wasSuccessful():
-        utils.notification('Fuzz successful')
+        notification('Fuzz successful')
     else:
-        utils.notification('Fuzz failed')
+        notification('Fuzz failed')
 
-    utils.log_msg('Fuzz result: %s' % result)
+    log_msg('Fuzz result: %s' % result)

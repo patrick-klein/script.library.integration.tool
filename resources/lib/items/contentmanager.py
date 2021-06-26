@@ -12,8 +12,6 @@ from os.path import splitext
 
 # from bs4 import BeautifulSoup
 
-import resources.lib.database
-
 from resources import USE_SHOW_ARTWORK
 from resources.lib.log import logged_function
 

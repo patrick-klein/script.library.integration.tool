@@ -11,8 +11,6 @@ from resources.lib.log import logged_function
 from resources.lib.utils import notification
 from resources.lib.utils import getlocalizedstring
 
-from resources.lib.database import Database
-
 
 class ManagedMoviesMenu(object):
     '''Provide windows for displaying managed movies,

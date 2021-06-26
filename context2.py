@@ -10,6 +10,8 @@ import xbmcgui  # pylint: disable=import-error
 import resources.lib.utils as utils
 from resources.lib.menus.synced import SyncedMenu
 
+from resources.lib.database import Database
+
 STR_SYNC_ALL_ITEMS = utils.getlocalizedstring(32160)
 STR_SYNC_ONLY_MOVIES = utils.getlocalizedstring(32161)
 STR_SYNC_ONLY_SHOWS = utils.getlocalizedstring(32162)
