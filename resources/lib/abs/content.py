@@ -98,10 +98,12 @@ class ABSContentManagerShow(object):
         '''Rename title and files'''
 
 
+    @abc.abstractmethod
     def delete(self):
         '''Remove the item from the database'''
 
 
+    @abc.abstractmethod
     def set_as_staged(self):
         '''Set the item status as staged in database'''
 
@@ -213,9 +215,11 @@ class ABSContentManagerMovie(object):
         '''Rename title and files'''
 
 
+    @abc.abstractmethod
     def delete(self):
         '''Remove the item from the database'''
 
 
+    @abc.abstractmethod
     def set_as_staged(self):
         '''Set the item status as staged in database'''

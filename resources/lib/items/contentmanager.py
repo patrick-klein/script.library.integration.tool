@@ -295,10 +295,25 @@ class ContentManagerShow(ABSContentManagerShow):
         #         self.rename(new_title)
 
 
+    def delete(self):
         '''Remove the item from the database'''
         self.database.remove_from(
+            status=None,
+            type='tvshow',
+            showtitle=None,
+            directory=self.file
+            )
+
+
+    def set_as_staged(self):
         '''Set the item status as staged in database'''
         self.database.update_content(
+            file=self.file,
+            status='staged',
+            type='tvshow'
+        )
+
+
 class ContentManagerMovie(ABSContentManagerMovie):
     '''Class with methods to manage a show item'''
     def __init__(self, database, jsondata):
@@ -422,7 +437,20 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     def rename_using_metadata(self):
         # TODO: Implement
+    def delete(self):
         '''Remove the item from the database'''
         self.database.remove_from(
+            status=None,
+            type='movie',
+            showtitle=None,
+            directory=self.file
+        )
+
+
+    def set_as_staged(self):
         '''Set the item status as staged in database'''
         self.database.update_content(
+            file=self.file,
+            status='staged',
+            type='movie'
+        )
