@@ -83,38 +83,6 @@ class Database(object):
         self.conn.close()
 
 
-    @staticmethod
-    def content_item_from_db(item):
-        ''' Static method that converts Content query output to ContentItem subclasses '''
-        if isinstance(item[0], int):
-            return item
-        else:
-            if item[2] == 'movie':
-                # MovieItem.returasjson create a json and it is passed to ContenMovie
-                return ContenMovie(MovieItem(
-                    link_stream_path=item[0],
-                    title=item[1],
-                    mediatype='movie',
-                    year=item[4],
-                ).returasjson())
-            elif item[2] == 'tvshow':
-                # EpisodeItem.returasjson create a json and it is passed to ContentShow
-                return ContentShow(EpisodeItem(
-                    link_stream_path=item[0],
-                    title=item[1],
-                    mediatype='tvshow',
-                    # staged
-                    year=item[4],
-                    show_title=item[5],
-                    season=item[6],
-                    epnumber=item[7]
-                ).returasjson())
-            elif item[2] == 'music':
-                # TODO: add music
-                notification('Music Here', 5000)
-        raise ValueError('Unrecognized Mediatype in Content query')
-
-
     @utf8_args
     @logged_function
     def add_blocked_item(self, value, _type):
