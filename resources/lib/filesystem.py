@@ -18,6 +18,7 @@ from os import name as osname
 from os.path import join
 from os.path import isdir
 from os.path import isfile
+from os.path import exists
 
 
 class CreateNfo(object):
@@ -81,7 +82,10 @@ def create_stream_file(plugin_path, filepath):
 if osname == 'posix':
     def softlink_file(src, dst):
         '''Symlink file at src to dst'''
-        symlink(src, dst)
+        try:
+            symlink(src, dst)
+        except FileExistsError:
+            pass
 
 
     def softlink_files_in_dir(src_dir, dst_dir):
@@ -133,10 +137,15 @@ def delete_strm(path_to_remove):
 def delete_with_wildcard(title_path):
     '''Remove all files starting with title_path using wildcard'''
     wildcard = basename(title_path)
-
-    for file in os.listdir(dirname(title_path)):
-        if wildcard in file:
-            os.remove(file, dir_fd=None)
+    directory = dirname(title_path)
+    
+    if exists(directory):
+        for file in os.listdir(dirname(directory)):
+            if wildcard in file:
+                try:
+                    os.remove(file, dir_fd=None)
+                except FileNotFoundError:
+                    pass
 
 
 def remove_dir(dir_path):
