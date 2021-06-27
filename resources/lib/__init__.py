@@ -20,6 +20,13 @@ def build_json_item(item):
             'state',
             'year'
         ]
+    if len(item) == 8:
+        # extra keys to convert show from db
+        keys += [
+            'showtitle',
+            'season',
+            'episode'
+        ]
     for key, value in zip(keys, item):
         formated_json[key] = value
     return formated_json
