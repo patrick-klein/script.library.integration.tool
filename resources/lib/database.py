@@ -232,8 +232,8 @@ class Database(object):
                     END
                 ) COLLATE NOCASE''', (status, )
         )
-        # Get results and return items as list
-        return [x[0] for x in self.cur.fetchall() if x[0] is not None]
+        for item in self.cur.fetchall():
+            yield item[0]
 
 
     @logged_function
@@ -267,13 +267,11 @@ class Database(object):
                         WHERE
                             status="%s"''' % (_type, status)
         )
+        self.cur.execute(sql_comm)
+        for content in self.cur.fetchall():
+            json_item = build_json_item(content)
+            yield build_contentmanager(self, build_contentitem(json_item))
 
-            if (season_number is None and
-                    show_title is not None):
-                params += (show_title, )
-                sql_comm += ' AND Show_Title=? \
-                    ORDER BY CAST(Season AS INTEGER), \
-                    CAST(Epnumber AS INTEGER)'
 
     @logged_function
     def get_season_items(self, status, showtitle):
@@ -290,11 +288,9 @@ class Database(object):
                 ORDER BY 
                     CAST(season AS INTEGER)''' % (status, showtitle)
         )
+        for content in self.cur.fetchall():
+            yield int(*content)
 
-        if order == 'Season':
-            params += (show_title, )
-            sql_comm = sql_comm.replace('*', 'DISTINCT CAST(Season AS INTEGER)')
-            sql_comm += ' and Show_Title=? ORDER BY CAST(Season AS INTEGER)'
 
     @logged_function
     def get_episode_items(self, status, showtitle, season):
@@ -316,6 +312,11 @@ class Database(object):
         self.cur.execute(
             sql_comm % (status, showtitle, season)
         )
+        for content in self.cur.fetchall():
+            from resources.lib.utils import tojs
+            tojs(content, 'content')
+            json_item = build_json_item(content)
+            yield build_contentmanager(self, build_contentitem(json_item))
 
 
     @utf8_args
