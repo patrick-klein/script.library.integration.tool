@@ -182,6 +182,9 @@ class Database(object):
     def add_synced_dir(self, label, path, _type):
         '''Create an entry in synced with specified values'''
         self.cur.execute(
+            '''INSERT OR REPLACE INTO 
+                    synced(file, label, type)
+                VALUES
                     (?, ?, ?)''', (path, label, _type)
         )
         self.conn.commit()
@@ -192,7 +195,15 @@ class Database(object):
     def check_blocked(self, value, _type):
         '''Return True if the given entry is in blocked'''
         # TODO: test if fetchone ir realy working
+        self.cur.execute('''SELECT
+                               (value)
+                            FROM
+                                blocked
+                            WHERE
+                                value=?
+                            AND
                                 type=?''', (value, _type))
+        return bool(self.cur.fetchone())
 
 
     @logged_function
@@ -201,9 +212,25 @@ class Database(object):
         and cast results as list of strings'''
         # Query database
         self.cur.execute(
-            '''SELECT DISTINCT Show_Title FROM Tvshows WHERE Status=?
-            ORDER BY (CASE WHEN Show_Title LIKE 'the %' THEN substr(Show_Title,5)
-            ELSE Show_Title END) COLLATE NOCASE''', (status, )
+           '''
+            SELECT DISTINCT
+                showtitle
+            FROM
+                tvshow
+            WHERE
+                status=?
+            ORDER BY
+                (
+                    CASE WHEN
+                        showtitle
+                    LIKE
+                        'the %'
+                    THEN
+                        substr(showtitle,5)
+                    ELSE
+                        showtitle
+                    END
+                ) COLLATE NOCASE''', (status, )
         )
         # Get results and return items as list
         return [x[0] for x in self.cur.fetchall() if x[0] is not None]
@@ -212,6 +239,15 @@ class Database(object):
     @logged_function
     def get_blocked_items(self):
         '''Return all items in blocked as a list of BlockedItem objects'''
+        self.cur.execute(
+            '''SELECT
+                    *
+                FROM
+                    blocked
+                ORDER BY
+                    type,
+                    value'''
+        )
         return [BlockedItem(*x) for x in self.cur.fetchall()]
 
 
@@ -224,7 +260,13 @@ class Database(object):
             _type: string, 'movie' or 'tvshow'
             showtitle: string, any show title
             order: string, any single column'''
-                            status="%s"''' % (_type, status))
+        sql_comm = ('''SELECT
+                            *
+                        FROM
+                            %s
+                        WHERE
+                            status="%s"''' % (_type, status)
+        )
 
             if (season_number is None and
                     show_title is not None):
@@ -233,38 +275,74 @@ class Database(object):
                     ORDER BY CAST(Season AS INTEGER), \
                     CAST(Epnumber AS INTEGER)'
 
-            if show_title is None:
-                sql_comm += ' ORDER BY Show_Title, \
-                    CAST(Season AS INTEGER), \
-                    CAST(Epnumber AS INTEGER)'
+    @logged_function
+    def get_season_items(self, status, showtitle):
+        self.cur.execute(
+            '''
+                SELECT DISTINCT CAST
+                    (season AS INTEGER)
+                FROM
+                    tvshow
+                WHERE
+                    status='%s'
+                AND
+                    showtitle='%s'
+                ORDER BY 
+                    CAST(season AS INTEGER)''' % (status, showtitle)
+        )
 
         if order == 'Season':
             params += (show_title, )
             sql_comm = sql_comm.replace('*', 'DISTINCT CAST(Season AS INTEGER)')
             sql_comm += ' and Show_Title=? ORDER BY CAST(Season AS INTEGER)'
 
-        if order == 'Title':
-            sql_comm += ' ORDER BY Title'
-        self.cur.execute(sql_comm, params)
-        # Get results and return items as content items
-        return [self.content_item_from_db(x) for x in self.cur.fetchall()]
+    @logged_function
+    def get_episode_items(self, status, showtitle, season):
+        sql_comm ='''
+                    SELECT
+                        *
+                    FROM
+                        tvshow
+                    WHERE
+                        status='%s'
+                    AND
+                        showtitle='%s'
+                    AND
+                        season=%s
+                    ORDER BY CAST
+                        (season AS INTEGER),
+                    CAST
+                        (episode AS INTEGER)'''
+        self.cur.execute(
+            sql_comm % (status, showtitle, season)
+        )
 
 
     @utf8_args
     @logged_function
     def get_synced_dirs(self, synced_type=None):
         '''Get all items in synced cast as a list of dicts'''
-        # Define template for this sql command
-        sql_templ = 'SELECT * FROM Synced'
+        sql_templ = '''SELECT
+                            *
+                        FROM
+                            synced'''
         params = ()
         if synced_type:
-            sql_templ += ' WHERE Type=?'
+            sql_templ += ' WHERE type=?'
             params = (synced_type, )
-        sql_templ += ''' ORDER BY (CASE WHEN Label LIKE 'the %' THEN substr(Label,5)
-            ELSE Label END) COLLATE NOCASE'''
-        # query database
+        sql_templ += '''ORDER BY
+                            (
+                                CASE WHEN
+                                    label
+                                LIKE
+                                    'the %'
+                                THEN
+                                    substr(label,5)
+                                ELSE
+                                    label
+                                END
+                            ) COLLATE NOCASE'''
         self.cur.execute(sql_templ, params)
-        # get results and return as list of dicts
         return [SyncedItem(*x) for x in self.cur.fetchall()]
 
 
@@ -273,7 +351,12 @@ class Database(object):
     def load_item(self, path):
         '''Query a single item with path and casts result as contentitem subclasses'''
         # query database
-        self.cur.execute('SELECT * FROM Content WHERE Directory=?', (path, ))
+        self.cur.execute('''SELECT
+                                *
+                            FROM
+                                Content
+                            WHERE
+                                file="%s"''', path)
         # get results and return items as object
         return self.content_item_from_db(self.cur.fetchone())
 
@@ -284,13 +367,14 @@ class Database(object):
             This function can return a list with multple values 
             with name of the tables where item exist'''
             sql_comm = (
-                "SELECT (Directory) FROM {0} \
-                    WHERE Directory = '{1}' \
-                    AND Status = '{2}'".format(
-                        table_name,
-                        path,
-                        item
-                    )
+               '''
+                    SELECT 
+                        status
+                    FROM 
+                        '%s'
+                    WHERE 
+                        file="%s"''' % (table, file)
+                )
             )
         return bool(self.cur.execute(sql_comm).fetchone())
 
@@ -372,6 +456,7 @@ class Database(object):
         self.cur.execute('DELETE FROM Synced')
         self.conn.commit()
 
+
     @utf8_args
     @logged_function
     def remove_blocked(self, value, _type):
@@ -380,6 +465,7 @@ class Database(object):
             (value, _type)
         )
         self.conn.commit()
+
 
     @utf8_args
     @logged_function
@@ -391,6 +477,7 @@ class Database(object):
             (path, )
         )
         self.conn.commit()
+
 
     @utf8_args
     @logged_function

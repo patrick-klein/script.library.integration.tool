@@ -48,11 +48,19 @@ class MainMenu(object):
         STR_UPDATE_LIBRARY = xbmc.getLocalizedString(653).title()
         STR_CLEAN_LIBRARY = xbmc.getLocalizedString(14247).title()
         lines = [
-            STR_VIEW_MANAGED_MOVIES, STR_VIEW_MANAGED_TV_SHOWS, STR_VIEW_STAGED_MOVIES,
-            STR_VIEW_STAGED_TV_SHOWS, STR_VIEW_SYNCED_DIRS, STR_VIEW_BLOCKED_ITEMS,
-            STR_UPDATE_LIBRARY, STR_CLEAN_LIBRARY
+            STR_VIEW_MANAGED_MOVIES,
+            STR_VIEW_STAGED_MOVIES,
+            STR_VIEW_MANAGED_TV_SHOWS,
+            STR_VIEW_STAGED_TV_SHOWS,
+            STR_VIEW_SYNCED_DIRS,
+            STR_VIEW_BLOCKED_ITEMS,
+            STR_UPDATE_LIBRARY,
+            STR_CLEAN_LIBRARY
         ]
-        ret = xbmcgui.Dialog().select(ADDON_NAME, lines)
+        ret = xbmcgui.Dialog().select(
+            ADDON_NAME,
+            lines
+        )
         if ret >= 0:
             if lines[ret] == STR_VIEW_MANAGED_MOVIES:
                 from resources.lib.menus.managed_movies import ManagedMoviesMenu

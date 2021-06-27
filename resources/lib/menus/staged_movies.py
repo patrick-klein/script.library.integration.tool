@@ -111,7 +111,8 @@ class StagedMoviesMenu(object):
             STR_ADD,
             STR_REMOVE,
             STR_REMOVE_AND_BLOCK,
-            #STR_RENAME, STR_AUTOMATICALLY_RENAME_USING_METADTA,
+            # STR_RENAME,
+            # STR_AUTOMATICALLY_RENAME_USING_METADTA,
             STR_GENERATE_METADATA_ITEM
         ]
         ret = xbmcgui.Dialog().select(

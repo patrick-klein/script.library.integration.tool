@@ -284,7 +284,10 @@ class StagedTVMenu(object):
         '''Create metadata for all staged tvshow items'''
         STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
         STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
-        self.progressdialog.create(ADDON_NAME, STR_GENERATING_ALL_TV_SHOW_METADATA)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_GENERATING_ALL_TV_SHOW_METADATA
+        )
         staged_tv_items = list(
             self.database.get_content_items(
                 status='staged',
@@ -309,7 +312,10 @@ class StagedTVMenu(object):
         '''Read metadata for all staged tvshow items'''
         STR_READING_ALL_TV_SHOW_METADATA = getlocalizedstring(32145)
         STR_ALL_TV_SHOW_METADATA_READ = getlocalizedstring(32146)
-        self.progressdialog.create(ADDON_NAME, STR_READING_ALL_TV_SHOW_METADATA)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_READING_ALL_TV_SHOW_METADATA
+        )
         staged_tv_items = list(
             self.database.get_content_items(
                 status='staged',
@@ -348,7 +354,10 @@ class StagedTVMenu(object):
         '''Remove all seasons from the specified show'''
         STR_REMOVING_ALL_x_SEASONS = getlocalizedstring(32032) % showtitle
         STR_ALL_x_SEASONS_REMOVED = getlocalizedstring(32033) % showtitle
-        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_x_SEASONS)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_REMOVING_ALL_x_SEASONS
+        )
         self.database.remove_from(
             status='staged',
             _type='tvshow',
@@ -363,7 +372,10 @@ class StagedTVMenu(object):
         '''Remove all episodes from the specified show'''
         STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032) % showtitle
         STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033) % showtitle
-        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_x_EPISODES)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_REMOVING_ALL_x_EPISODES
+        )
         self.database.remove_from(
             status='staged',
             _type='tvshow',
@@ -404,14 +416,16 @@ class StagedTVMenu(object):
         STR_REMOVE = getlocalizedstring(32017)
         STR_REMOVE_AND_BLOCK_EPISODE = getlocalizedstring(32079)
         STR_RENAME = getlocalizedstring(32050)
-        STR_AUTOMATICALLY_RENAME_USING_METADTA = getlocalizedstring(
-            32051)
+        STR_AUTOMATICALLY_RENAME_USING_METADTA = getlocalizedstring(32051)
         STR_GENERATE_METADATA_ITEM = getlocalizedstring(32052)
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_EPISODE_OPTIONS = getlocalizedstring(32080)
         lines = [
-            STR_ADD, STR_REMOVE, STR_REMOVE_AND_BLOCK_EPISODE, STR_RENAME,
-            STR_AUTOMATICALLY_RENAME_USING_METADTA, STR_GENERATE_METADATA_ITEM, STR_BACK
+            STR_ADD, STR_REMOVE,
+            STR_REMOVE_AND_BLOCK_EPISODE,
+            STR_RENAME,
+            STR_AUTOMATICALLY_RENAME_USING_METADTA,
+            STR_GENERATE_METADATA_ITEM, STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
@@ -477,9 +491,13 @@ class StagedTVMenu(object):
             return
         lines = [str(x) for x in staged_episodes]
         lines += [
-            STR_ADD_ALL_EPISODES, STR_ADD_ALL_EPISODES_WITH_METADATA, STR_REMOVE_ALL_EPISODES,
-            STR_REMOVE_AND_BLOCK_TV_SHOW, STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA,
-            STR_GENERATE_ALL_METADATA_ITEMS, STR_BACK
+            STR_ADD_ALL_EPISODES,
+            STR_ADD_ALL_EPISODES_WITH_METADATA,
+            STR_REMOVE_ALL_EPISODES,
+            STR_REMOVE_AND_BLOCK_TV_SHOW,
+            STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA,
+            STR_GENERATE_ALL_METADATA_ITEMS,
+            STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1}'.format(ADDON_NAME, STR_STAGED_x_EPISODES), lines
@@ -613,12 +631,18 @@ class StagedTVMenu(object):
         STR_STAGED_TV_SHOWS = getlocalizedstring(32058)
         staged_tvshows = self.database.get_all_shows('staged')
         if not staged_tvshows:
-            xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_STAGED_TV_SHOWS)
+            xbmcgui.Dialog().ok(
+                ADDON_NAME,
+                STR_NO_STAGED_TV_SHOWS
+            )
             return
         lines = ['[B]{}[/B]'.format(x) for x in staged_tvshows]
         lines += [
-            STR_ADD_ALL_TV_SHOWS, STR_ADD_ALL_ITEMS_WITH_METADTA, STR_REMOVE_ALL_TV_SHOWS,
-            STR_GENERATE_ALL_METADATA_ITEMS, STR_READ_ALL_METADATA_ITEMS, STR_BACK
+            STR_ADD_ALL_TV_SHOWS,
+            STR_ADD_ALL_ITEMS_WITH_METADTA,
+            STR_REMOVE_ALL_TV_SHOWS,
+            STR_GENERATE_ALL_METADATA_ITEMS,
+            STR_READ_ALL_METADATA_ITEMS, STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
             '%s - %s' % (

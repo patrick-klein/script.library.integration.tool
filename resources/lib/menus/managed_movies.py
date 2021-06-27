@@ -94,7 +94,10 @@ class ManagedMoviesMenu(object):
         STR_MANAGED_MOVIES = getlocalizedstring(32012)
                 _type='movie'
         if not managed_movies:
-            xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_MANAGED_MOVIES)
+            xbmcgui.Dialog().ok(
+                ADDON_NAME,
+                STR_NO_MANAGED_MOVIES
+            )
             return
 
         lines = [str(x) for x in managed_movies]
