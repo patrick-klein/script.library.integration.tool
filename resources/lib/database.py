@@ -102,69 +102,80 @@ class Database(object):
 
     @utf8_args
     @logged_function
+    def add_content_item(self, jsondata):
         '''Add content to library'''
-    def add_content_item(self, jsondata, mediatype):
-        ''' Add content to library '''
-        query_defs = ''
-        params = ''
-        if mediatype == 'tvshow':
-            # try set params for tvshow episode
-            params = (
-                jsondata['link_stream_path'],
-                jsondata['episode_title'],
-                mediatype,
-                jsondata['year'],
-                jsondata['show_title'],
-                jsondata['season_number'],
-                jsondata['episode_number'],
-            )
+        query_defs = tuple()
+        sql_comm ='''
+            INSERT OR IGNORE INTO
+                {table}
+                %s
+            VALUES
+                %s'''.format(table=jsondata['type'])
+        contentmanager = build_contentmanager(
+            self,
+            jsondata
+        )
+        # sqlite named style:
+        if jsondata['type'] == 'tvshow':
             query_defs = (
-                "Tvshows",
-                "(Directory, Title, Mediatype, Status, Year, Show_Title, Season, Epnumber)",
-                "(?, ?, ?, 'staged', ?, ?, ?, ?)"
+                '''(
+                    file,
+                    title,
+                    type,
+                    status,
+                    year,
+                    showtitle,
+                    season,
+                    episode
+                    )''',
+                '''(
+                    :file,
+                    :title,
+                    :type,
+                    'staged',
+                    :year,
+                    :showtitle,
+                    :season,
+                    :episode
+                    )'''
             )
-        elif mediatype == 'movie':
-            # try set params for movie
-            params = (
-                jsondata['link_stream_path'],
-                jsondata['movie_title'],
-                mediatype,
-                jsondata['year'],
-            )
+            self.cur.execute(sql_comm % query_defs, jsondata)
+            self.conn.commit()
+            if AUTO_ADD_TVSHOWS != NEVER:
+                if AUTO_ADD_TVSHOWS == WITH_EPID:
+                    contentmanager.add_to_library()
+                elif AUTO_ADD_TVSHOWS == WITH_METADATA:
+                    contentmanager.add_to_library_if_metadata()
+        elif jsondata['type'] == 'movie':
             query_defs = (
-                "Movies",
-                "(Directory, Title, Mediatype, Status, Year)",
-                "(?, ?, ?, 'staged', ?)"
+                '''(
+                    file,
+                    title,
+                    type,
+                    status,
+                    year
+                    )''',
+                '''(
+                    :file,
+                    :title,
+                    :type,
+                    'staged',
+                    :year
+                    )'''
             )
-        elif mediatype == 'music':
+            self.cur.execute(sql_comm % query_defs, jsondata)
+            self.conn.commit()
+            if AUTO_ADD_MOVIES != NEVER:
+                if AUTO_ADD_MOVIES == ALWAYS:
+                    contentmanager.add_to_library()
+                elif AUTO_ADD_MOVIES == WITH_METADATA:
+                    contentmanager.add_to_library_if_metadata()
+        elif jsondata['type'] == 'music':
             # TODO: Music params
             raise NotImplementedError(
-                'Not detected type!'
+                'Not implemented yet'
             )
 
-        # Define sql command string
-        sql_comm = ('''INSERT OR IGNORE INTO %s %s VALUES %s''' % query_defs)
-        # Execute and commit sql command
-        self.cur.execute(sql_comm, params)
-        self.conn.commit()
-        # Optionally add item to directory, depending on settings and metadata items
-
-        try:
-            content = ContenMovie(jsondata)
-        except Exception as e:
-            content = ContentShow(jsondata)
-            log_msg(e)
-
-        if mediatype == 'movie' and AUTO_ADD_MOVIES != NEVER:
-            if AUTO_ADD_MOVIES == ALWAYS:
-                content.add_to_library()
-            elif AUTO_ADD_MOVIES == WITH_METADATA:
-                content.add_to_library_if_metadata()
-        elif mediatype == 'tvshow' and AUTO_ADD_TVSHOWS != NEVER:
-            if AUTO_ADD_TVSHOWS == WITH_EPID:
-                content.add_to_library()
-            elif AUTO_ADD_TVSHOWS == WITH_METADATA:
-                content.add_to_library_if_metadata()
 
     @utf8_args
     @logged_function
