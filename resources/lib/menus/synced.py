@@ -36,6 +36,7 @@ class SyncedMenu(object):
         self.progressdialog = xbmcgui.DialogProgress()
 
 
+    def filter_blocked_items(self, items, type):
         '''Filters out all blocked items in the list'''
         return [x for x in items if not self.database.check_blocked(x['label'], type)]
 
@@ -44,13 +45,16 @@ class SyncedMenu(object):
     def find_items_to_stage(self, all_items):
         '''Find items in the list not present in database'''
         items_to_stage = []
+        for jsonitem in all_items:
+            file = jsonitem['file']
+            label = jsonitem['label']
+            type = jsonitem['type']
             if self.database.path_exists(file=file):
                 continue
-            if mediatype == 'movie':
-                item = (path, label, mediatype)
-            elif mediatype == 'tvshow':
-                item = (path, label, mediatype, dir_item['show_title'])
-            items_to_stage.append(item)
+            if type == 'movie':
+                items_to_stage.append((file, label, type))
+            elif type in ['tvshow', 'episode']:
+                items_to_stage.append((file, label, type, jsonitem['showtitle']))
         return items_to_stage
 
 
@@ -68,31 +72,34 @@ class SyncedMenu(object):
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
-                dir_path=directory,
+                path=directory,
                 recursive=True,
                 sync_type='movie'
-                )), mediatype='movie'
+                )), type='movie'
             )
+        # TODO: this loop aparently not realy work
         for item in dir_items:
             # Add tag to items
-            item['mediatype'] = 'movie'
+            item['type'] = 'movie'
         return dir_items
 
 
     @logged_function
+    def get_single_tvshow(self, directory, showtitle):
         '''Get the single TV show in the directory, and tag the items'''
         show_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
-                dir_path=directory,
+                path=directory,
                 recursive=True,
                 sync_type='tvshow'
-                )), mediatype='episode'
+                )), type='episode'
             )
         for item in show_items:
             # Add tag to items
-            item['mediatype'] = 'tvshow'
-            item['show_title'] = show_title
+            # TODO: this loop aparently not realy work
+            item['type'] = 'tvshow'
+            item['showtitle'] = showtitle
         return show_items
 
 
@@ -102,30 +109,30 @@ class SyncedMenu(object):
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
-                dir_path=directory,
+                path=directory,
                 allow_directories=True,
                 recursive=True,
                 sync_type='tvshow'
-                )), mediatype='tvshow'
+                )), type='tvshow'
             )
         all_items = []
         # Check every tvshow in list
-        for dir_item in dir_items:
-            show_title = dir_item['label']
+        for jsonitem in dir_items:
+            showtitle = jsonitem['label']
             # Load results if show isn't blocked
-            show_path = dir_item['file']
+            show_path = jsonitem['file']
             show_items = self.filter_blocked_items(
                 list(load_directory_items(
                     progressdialog=None,
-                    dir_path=show_path,
+                    path=show_path,
                     recursive=True,
                     sync_type='tvshow'
-                    )), mediatype='episode'
+                    )), type='episode'
                 )
             for show_item in show_items:
                 # Add formatted item
-                show_item['mediatype'] = 'tvshow'
-                show_item['show_title'] = show_title
+                show_item['type'] = 'tvshow'
+                show_item['showtitle'] = showtitle
             all_items += show_items
         return all_items
 
@@ -176,10 +183,11 @@ class SyncedMenu(object):
 
     @logged_function
         '''Sync single movie path and stage item'''
+        STR_MOVIE_STAGED = getlocalizedstring(32105)
         STR_ITEM_IS_ALREADY_STAGED = getlocalizedstring(32103)
         STR_ITEM_IS_ALREADY_MANAGED = getlocalizedstring(32104)
-        STR_MOVIE_STAGED = getlocalizedstring(32105)
         # Add synced directory to database
+        # TODO: add single-movie to synced is necessary? revise this
         self.database.add_synced_dir(title, file, 'single-movie')
         # Check for duplicate in database
         exist_in_db = self.database.path_exists(file=file)
@@ -200,9 +208,10 @@ class SyncedMenu(object):
 
     @logged_function
         '''Sync single tvshow directory and stage items'''
-        STR_i_NEW_i_STAGED_i_MANAGED = getlocalizedstring(32106)
         STR_i_NEW = getlocalizedstring(32107)
+        STR_i_NEW_i_STAGED_i_MANAGED = getlocalizedstring(32106)
         STR_GETTING_ITEMS_IN_DIR = getlocalizedstring(32125)
+        # STR_GETTING_ITEMS_IN_x = getlocalizedstring(32126)
         self.progressdialog.create(ADDON_NAME)
         # Add synced directory to database
         self.database.add_synced_dir(
@@ -213,21 +222,25 @@ class SyncedMenu(object):
         # Get everything inside tvshow path
         files_list = list(load_directory_items(
             progressdialog=self.progressdialog,
+            path=file,
             allow_directories=True,
             recursive=True,
             year=year,
             showtitle=title,
-            sync_type='tvshow'))
+            sync_type='tvshow'
+            )
+        )
         # Get all items to stage
         items_to_stage = 0
         num_already_staged = 0
         num_already_managed = 0
         self.progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
+        for index, jsonitem in enumerate(files_list):
             if self.progressdialog.iscanceled() is True:
                 self.progressdialog.close()
                 break
             try:
-                contentitem = build_contentitem(showjson)
+                contentitem = build_contentitem(jsonitem)
                 # Update progress
                 percent = 100 * index / len(files_list)
                 exist_in_db = self.database.path_exists(file=contentitem['file'])
@@ -245,21 +258,19 @@ class SyncedMenu(object):
                     '\n'.join(
                         [
                             title_with_color(
-                                contentdata['show_title'],
-                                year=contentdata['year']
+                                contentitem['showtitle'],
+                                year=contentitem['year']
                             ),
-                                contentdata['episode_title_with_id']
+                                contentitem['episode_title_with_id']
                         ]
                     )
                 )
                 self.database.add_content_item(contentitem)
                 items_to_stage += 1
                 xbmc.sleep(300)
-            except TypeError:
-                notification(
-                    getlocalizedstring(32166),
-                    4000
-                )
+            except Exception as e:
+                raise e
+
         if num_already_staged > 0 or num_already_managed > 0:
             notification(
                 STR_i_NEW_i_STAGED_i_MANAGED %
@@ -274,11 +285,12 @@ class SyncedMenu(object):
          based on the user's choice and stage items'''
         # TODO: new notification label to show movies,
         #  TV shows and episodes that have been added
-        contentdata = None
+        contentitem = None
         content_title = None
-        STR_GETTING_ITEMS_IN_DIR = getlocalizedstring(32125)
+        STR_MOVIE_STAGED = getlocalizedstring(32165)
         STR_GETTING_ITEMS_IN_x = getlocalizedstring(32126)
         STR_i_EPISODES_STAGED = getlocalizedstring(32112)
+        STR_GETTING_ITEMS_IN_DIR = getlocalizedstring(32125)
         self.progressdialog.create(ADDON_NAME)
         try:
             # add synced directory to database
@@ -292,23 +304,26 @@ class SyncedMenu(object):
             self.progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
             files_list = list(load_directory_items(
                 progressdialog=self.progressdialog,
+                path=dir_path,
                 allow_directories=True,
                 recursive=True,
                 sync_type=sync_type))
             items_to_stage = 0
+            for index, jsonitem in enumerate(files_list):
                 if self.progressdialog.iscanceled() is True:
                     self.progressdialog.close()
                     break
-                contentitem = build_contentitem(content_in_json)
-                if 'movie_title' in contentitem:
-                    content_title = contentitem['movie_title']
+                contentitem = build_contentitem(jsonitem)
+                if 'title' in contentitem:
+                    content_title = contentitem['title']
                 if 'showtitle' in contentitem:
                     content_title = contentitem['showtitle']
                 if self.database.check_blocked(content_title, contentitem['type']):
                     continue
                 if self.database.path_exists(
+                        path=contentitem['file'],
                         status=['staged', 'managed'],
-                        mediatype=contentitem['type']):
+                        type=contentitem['type']):
                     continue
                 # Update progress
                 percent = 100 * index / len(files_list)
@@ -316,8 +331,8 @@ class SyncedMenu(object):
                 try:
                     self.progressdialog.update(
                         int(percent),
-                        '\n'.join([STR_GETTING_ITEMS_IN_x % contentdata['show_title'],
-                        contentdata['episode_title_with_id']])
+                        '\n'.join([STR_GETTING_ITEMS_IN_x % contentitem['showtitle'],
+                        contentitem['episode_title_with_id']])
                         )
                     # try add tvshow
                     self.database.add_content_item(
@@ -376,7 +391,7 @@ class SyncedMenu(object):
                     all_items.append({
                         'file': synced_dir['dir'],
                         'label': synced_dir['label'],
-                        'mediatype': 'movie'
+                        'type': 'movie'
                     })
                 elif synced_dir['type'] == 'single-tvshow':
                     # Directory is a path to a tv show folder
@@ -435,21 +450,21 @@ class SyncedMenu(object):
                 self.progressdialog.update(
                     int(99 * index / total_num_dirs), synced_dir['label']
                     )
-                all_items += self.get_movies_in_directory(synced_dir['dir'])
+                all_items += self.get_movies_in_directory(synced_dir['file'])
             for index, synced_dir in enumerate(single_movie_dirs):
                 self.progressdialog.update(
                     int(99 * (index + len(movie_dirs)) / total_num_dirs),
                     synced_dir['label']
                 )
                 all_items.append({
-                    'file': synced_dir['dir'],
+                    'file': synced_dir['file'],
                     'label': synced_dir['label'],
-                    'mediatype': 'movie'
+                    'type': 'movie'
                 })
             # Find managed paths not in dir_items, and prepare to remove
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
-            paths_to_remove = self.find_paths_to_remove(all_paths, mediatype='movie')
+            paths_to_remove = self.find_paths_to_remove(all_paths, type='movie')
             # Find dir_items not in managed_items or staged_items, and prepare to add
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
@@ -483,7 +498,6 @@ class SyncedMenu(object):
         STR_STAGING_ITEMS = getlocalizedstring(32095)
         STR_ALL_ITEMS_UPTODATE = getlocalizedstring(32121)
         STR_SUCCESS = getlocalizedstring(32122)
-        self.progressdialog = xbmcgui.DialogProgressBG()
         self.progressdialog.create(ADDON_NAME)
         try:
             all_items = []
@@ -492,19 +506,23 @@ class SyncedMenu(object):
             total_num_dirs = len(show_dirs + single_show_dirs)
             for index, synced_dir in enumerate(show_dirs):
                 self.progressdialog.update(
-                    int(99 * index / total_num_dirs), synced_dir['label']
-                    )
-                all_items += self.get_tvshows_in_directory(synced_dir['dir'])
+                    int(99 * index / total_num_dirs),
+                    synced_dir['label']
+                )
+                all_items += self.get_tvshows_in_directory(synced_dir['file'])
             for index, synced_dir in enumerate(single_show_dirs):
                 self.progressdialog.update(
                     int(99. * (index + len(show_dirs)) / total_num_dirs),
                     synced_dir['label']
                 )
-                all_items += self.get_single_tvshow(synced_dir['dir'], synced_dir['label'])
+                all_items += self.get_single_tvshow(
+                    synced_dir['file'],
+                    synced_dir['label']
+                )
             # Find managed paths not in dir_items, and prepare to remove
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
-            paths_to_remove = self.find_paths_to_remove(all_paths, mediatype='tvshow')
+            paths_to_remove = self.find_paths_to_remove(all_paths, type='tvshow')
             # Find dir_items not in managed_items or staged_items, and prepare to add
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
