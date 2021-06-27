@@ -182,6 +182,7 @@ class SyncedMenu(object):
 
 
     @logged_function
+    def add_single_movie(self, title, year, file):
         '''Sync single movie path and stage item'''
         STR_MOVIE_STAGED = getlocalizedstring(32105)
         STR_ITEM_IS_ALREADY_STAGED = getlocalizedstring(32103)
@@ -207,6 +208,7 @@ class SyncedMenu(object):
 
 
     @logged_function
+    def add_single_tvshow(self, title, year, file):
         '''Sync single tvshow directory and stage items'''
         STR_i_NEW = getlocalizedstring(32107)
         STR_i_NEW_i_STAGED_i_MANAGED = getlocalizedstring(32106)
@@ -281,6 +283,7 @@ class SyncedMenu(object):
 
 
     @logged_function
+    def add_all_items_in_directory(self, sync_type, dir_label, dir_path):
         '''Synchronize all items in a directory (movies/series or all),
          based on the user's choice and stage items'''
         # TODO: new notification label to show movies,
