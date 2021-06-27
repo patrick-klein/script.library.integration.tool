@@ -9,6 +9,7 @@ class ABSItemShow(object):
     '''Abstract base class for EpisodeItem'''
     __metaclass__ = abc.ABCMeta
 
+    def __init__(self, jsondata, year):
         self._managed_dir = None
         self._metadata_show_dir = None
         self._metadata_movie_dir = None
@@ -69,6 +70,7 @@ class ABSItemMovie(object):
     '''Abstract base class for MovieItem'''
     __metaclass__ = abc.ABCMeta
 
+    def __init__(self, jsonitem, year):
         self._managed_dir = None
         self._metadata_movie_dir = None
 

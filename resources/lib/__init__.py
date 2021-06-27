@@ -36,20 +36,16 @@ def build_contentitem(jsonitem):
     '''Shortcut to return a MovieItem or EpisodeItem json'''
     if jsonitem['type'] == 'movie':
         return MovieItem(
-            jsonitem=jsonitem,
-            type='movie',
-            year=None,
+            jsonitem=jsonitem
         ).returasjson()
     if jsonitem['type'] in ['tvshow', 'episode']:
         return EpisodeItem(
-            jsonitem=jsonitem,
-            type='tvshow',
-            year=None,
+            jsonitem=jsonitem
         ).returasjson()
     elif jsonitem['type'] == 'music':
         # TODO: add music
         raise ValueError('Not implemented yet, music')
-    raise ValueError('Unrecognized Mediatype in Content query')
+    raise ValueError('Unrecognized type in Content query')
 
 
 def build_contentmanager(database, jsonitem):

@@ -14,6 +14,8 @@ from resources.lib.utils import METADATA_FOLDER
 
 class MovieItem(ABSItemMovie):
     '''Class to build information aboult movies'''
+    def __init__(self, jsonitem, year=None):
+        super(MovieItem, self).__init__(jsonitem, year)
 
 
     @property

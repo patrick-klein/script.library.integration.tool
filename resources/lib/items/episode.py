@@ -14,6 +14,8 @@ from resources.lib.abs.item import ABSItemShow
 
 class EpisodeItem(ABSItemShow):
     '''Class to build information aboult shows'''
+    def __init__(self, jsonitem, year=None):
+        super(EpisodeItem, self).__init__(jsonitem, year)
         
 
     @property
