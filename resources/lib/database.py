@@ -390,40 +390,39 @@ class Database(object):
     def remove_from(self,
                     status=None,
                     _type=None,
-                    directory=None,
+                    showtitle=None,
+                    file=None,
                     season=None):
         '''Remove all items colected with sqlquerys'''
-        STR_CMD_QUERY = "DELETE FROM {0} %s".format(_type)
-        else:
-            # FUTURE: check if is music
-            raise 'Type not detected'
+        STR_CMD_QUERY = "DELETE FROM %s" % _type
+        if showtitle:
+            STR_CMD_QUERY += '''
+                        WHERE
+                            status="%s"
+                        AND
+                            showtitle="%s"
+                        ''' % (status, showtitle)
+        elif showtitle and file:
+            STR_CMD_QUERY += '''
+                        WHERE
+                            status="%s"
+                        AND
+                            type="%s"
+                        ''' % (status, _type)
+        elif file:
+            STR_CMD_QUERY += '''
+                        WHERE
+                            file="%s"
+                        ''' % (file)
+        elif season:
+            STR_CMD_QUERY += '''
+                        WHERE
+                            showtitle="%s"
+                        AND
+                            season="%s"
+                        ''' % (showtitle, season)
 
-        STR_CMD_QUERY = "DELETE FROM {0} %s".format(table_name)
-
-        if show_title is not None:
-            self.cur.execute(
-                (
-                    STR_CMD_QUERY % "WHERE Status=? AND Show_Title=?"
-                ), (status, show_title)
-            )
-        if show_title is None and directory is None:
-            self.cur.execute(
-                (
-                    STR_CMD_QUERY % "WHERE Status=? AND Mediatype=?"
-                ), (status, mediatype)
-            )
-        if directory is not None:
-            self.cur.execute(
-                (
-                    STR_CMD_QUERY % "WHERE Directory=?"
-                ), (directory, )
-            )
-        if season is not None:
-            self.cur.execute(
-                (
-                    STR_CMD_QUERY % "WHERE Show_Title=? AND Season=?"
-                ), (show_title, season)
-            )
+        self.cur.execute(STR_CMD_QUERY)
         self.conn.commit()
 
 
