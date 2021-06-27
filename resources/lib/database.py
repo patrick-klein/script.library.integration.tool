@@ -364,9 +364,12 @@ class Database(object):
 
     @utf8_args
     @logged_function
-       '''Return True if path is already in database (with given status)
+    def path_exists(self, file):
+        '''Return True if path is already in database (with given status)
             This function can return a list with multple values 
             with name of the tables where item exist'''
+        tables = list()
+        for table in ['movie', 'tvshow']:
             sql_comm = (
                '''
                     SELECT 
@@ -376,36 +379,10 @@ class Database(object):
                     WHERE 
                         file="%s"''' % (table, file)
                 )
-            )
-        return bool(self.cur.execute(sql_comm).fetchone())
-
-    # @logged_function
-    # def remove_all_content_items(self, status, mediatype):
-    #     '''Remove all items from Content with status and mediatype'''
-    #     # delete from table
-    #     self.cur.execute(
-    #         "DELETE FROM Content \
-    #         WHERE Status=? AND Mediatype=?",
-    #         (status, mediatype))
-    #     self.conn.commit()
-
-    # @utf8_args
-    # @logged_function
-    #     '''Remove all tvshow items from Content with status and showtitle'''
-    #     # delete from table
-    #     self.cur.execute(
-    #         "DELETE FROM Content \
-    #         WHERE Status=? AND Show_Title=?",
-    #         (status, show_title)
-    #     )
-    #     self.conn.commit()
-
-    # @utf8_args
-    # @logged_function
-    # def remove_content_item(self, path):
-    #     '''Remove the item in Content with specified path'''
-    #     # delete from table
-    #     self.conn.commit()
+            result = self.cur.execute(sql_comm).fetchone()
+            if result:
+                tables.append(*list(result))
+        return tables
 
 
     @utf8_args
