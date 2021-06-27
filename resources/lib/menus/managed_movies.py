@@ -92,7 +92,12 @@ class ManagedMoviesMenu(object):
         STR_MOVE_ALL_BACK_TO_STAGED = getlocalizedstring(32010)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_MOVIES = getlocalizedstring(32012)
+        managed_movies = list(
+            self.database.get_content_items(
+                status='managed',
                 _type='movie'
+            )
+        )
         if not managed_movies:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,

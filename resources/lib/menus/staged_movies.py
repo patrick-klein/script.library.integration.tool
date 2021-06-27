@@ -171,7 +171,11 @@ class StagedMoviesMenu(object):
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_MOVIES = getlocalizedstring(32041)
         STR_CLEAN_UP_METADATA = getlocalizedstring(32135)
+        staged_movies = list(
+            self.database.get_content_items(
+                status='staged',
                 _type='movie'
+            )
         )
         if not staged_movies:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_STAGED_MOVIES)

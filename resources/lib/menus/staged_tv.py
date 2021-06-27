@@ -474,12 +474,10 @@ class StagedTVMenu(object):
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_x_EPISODES = getlocalizedstring(32070) % showtitle
         staged_episodes = list(
-            self.database.get_content_items(
-            status='staged',
-            mediatype='tvshow',
-            order='Show_Title',
-            show_title=show_title,
-            season_number=season_number
+            self.database.get_episode_items(
+                status='staged',
+                showtitle=showtitle,
+                season=season
             )
         )
         if not staged_episodes:
