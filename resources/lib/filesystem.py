@@ -23,8 +23,8 @@ from os.path import exists
 
 class CreateNfo(object):
     '''Module to create a .nfo file'''
-    def __init__(self, nfotype, filepath, jsondata):
-        self.nfotype = nfotype
+    def __init__(self, _type, filepath, jsondata):
+        self.type = _type
         self.filepath = filepath
         self.jsondata = jsondata
 
@@ -35,20 +35,24 @@ class CreateNfo(object):
 
     def create(self):
         file = open(self.filepath, "w+")
-        root = ''.join(['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n',
-                        '<{0}>\n%s</{1}>'.format(self.nfotype, self.nfotype)])
+        root = ''.join(
+            [
+                '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n',
+                '<{0}>\n%s</{1}>'.format(self.type, self.type)
+            ]
+        )
         # element root: movie, tvshow or episodedetails
         # tvshow            title, showtitle
         # movie             title
         # episodedetails    title, showtitle
-        if self.nfotype == 'tvshow':
+        if self.type == 'tvshow':
             # future possible new keys:
             # title, showtitle, year, runtime, thumb aspect="poster"
             # thumb aspect="poster" season="1" type="season", id, imdbid
             body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['show_title']),
                             '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['show_title']),
                             '\t<year>{0}</year>\n'.format(self.jsondata['year']),])
-        elif self.nfotype == 'episodedetails':
+        elif self.type == 'episodedetails':
             # future possible new keys:
             # id, uniqueid default="true" type="tvdb", runtime, thumb
             body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['episode_title']),
@@ -57,7 +61,7 @@ class CreateNfo(object):
                             '\t<episode>{0}</episode_number>\n'.format(self.jsondata['season_number']),
                             '\t<year>{0}</year>\n'.format(self.jsondata['year']),
                             '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['link_stream_path'])])
-        elif self.nfotype == 'movie':
+        elif self.type == 'movie':
             # future possible new keys:
             # runtime, thumb aspect="poster", fanart, thumb, id, tmdbid
             body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['movie_title']),

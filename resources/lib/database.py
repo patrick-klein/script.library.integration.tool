@@ -117,12 +117,11 @@ class Database(object):
 
     @utf8_args
     @logged_function
-    def add_blocked_item(self, value, mediatype):
+    def add_blocked_item(self, value, _type):
         '''Add an item to blocked with the specified values'''
         # Ignore if already in table
-        if not self.check_blocked(value, mediatype):
-            # Insert into table
-            self.cur.execute("INSERT INTO Blocked (Value, Type) VALUES (?, ?)", (value, mediatype))
+        if not self.check_blocked(value, _type):
+            self.cur.execute("INSERT INTO blocked (value, type) VALUES (?, ?)", (value, _type))
             self.conn.commit()
 
 
@@ -194,22 +193,20 @@ class Database(object):
 
     @utf8_args
     @logged_function
+    def add_synced_dir(self, label, path, _type):
         '''Create an entry in synced with specified values'''
         self.cur.execute(
-            "INSERT OR REPLACE INTO Synced (Directory, Label, Type) VALUES (?, ?, ?)",
-            (path, label, mediatype)
+                    (?, ?, ?)''', (path, label, _type)
         )
         self.conn.commit()
 
 
     @utf8_args
     @logged_function
-    def check_blocked(self, value, mediatype):
+    def check_blocked(self, value, _type):
         '''Return True if the given entry is in blocked'''
         # TODO: test if fetchone ir realy working
-        self.cur.execute('SELECT (Value) FROM Blocked WHERE Value=? AND Type=?', (value, mediatype))
-        res = self.cur.fetchone()
-        return bool(res)
+                                type=?''', (value, _type))
 
 
     @logged_function
@@ -233,45 +230,15 @@ class Database(object):
 
 
     @logged_function
-    def get_content_items(self,
-                          status=None,
-                          mediatype=None,
-                          order=None,
-                          show_title=None,
-                          season_number=None
-                         ):
+    def get_content_items(self, status=None, _type=None):
         '''Query Content table for sorted items with given constaints
         and casts results as contentitem subclasses
         keyword arguments:
             status: string, 'managed' or 'staged'
-            mediatype: string, 'movie' or 'tvshow'
+            _type: string, 'movie' or 'tvshow'
             showtitle: string, any show title
             order: string, any single column'''
-
-        if mediatype == 'movie':
-            table_name = 'Movies'
-        elif mediatype == 'tvshow':
-            table_name = 'Tvshows'
-        else:
-            # FUTURE: check if is music
-            raise 'Type not detected'
-
-        # status='managed',
-        # mediatype='tvshow',
-        # order='Show_Title',
-        # show_title=show_title,
-        # season_number=season_number
-
-        params = (status, )
-        # Define template for this sql command
-        sql_comm = ('SELECT * FROM %s WHERE Status=?' % table_name)
-        if order == 'Show_Title':
-            if (season_number is not None and
-                    show_title is not None):
-                params += (show_title, season_number, )
-                sql_comm += ' and Show_Title=? and Season=? \
-                    ORDER BY CAST(Season AS INTEGER), \
-                    CAST(Epnumber AS INTEGER)'
+                            status="%s"''' % (_type, status))
 
             if (season_number is None and
                     show_title is not None):
@@ -374,15 +341,11 @@ class Database(object):
     @logged_function
     def remove_from(self,
                     status=None,
-                    mediatype=None,
-                    show_title=None,
+                    _type=None,
                     directory=None,
                     season=None):
         '''Remove all items colected with sqlquerys'''
-        if mediatype == 'movie':
-            table_name = 'Movies'
-        elif mediatype == 'tvshow':
-            table_name = 'Tvshows'
+        STR_CMD_QUERY = "DELETE FROM {0} %s".format(_type)
         else:
             # FUTURE: check if is music
             raise 'Type not detected'
@@ -425,11 +388,10 @@ class Database(object):
 
     @utf8_args
     @logged_function
-    def remove_blocked(self, value, mediatype):
+    def remove_blocked(self, value, _type):
         '''Remove the item in blocked with the specified parameters'''
         self.cur.execute(
-            'DELETE FROM Blocked WHERE Value=? AND Type=?',
-            (value, mediatype)
+            (value, _type)
         )
         self.conn.commit()
 
@@ -446,10 +408,11 @@ class Database(object):
 
     @utf8_args
     @logged_function
+    def update_content(self, file, _type, status=None, title=None):
         '''Update a single field for item in Content with specified path'''
         #TODO: Verify there's only one entry in kwargs
         sql_comm = (
-            '''UPDATE %s SET {0}=(?) WHERE Directory=?''' % table_name
+            '''UPDATE %s SET {0}=(?) WHERE file=?''' % _type
         )
         params = (path, )
 

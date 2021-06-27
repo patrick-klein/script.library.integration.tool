@@ -152,9 +152,7 @@ class StagedMoviesMenu(object):
         self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
         self.database.remove_from(
             status='staged',
-            mediatype='movie',
-            show_title=None,
-            directory=None
+            _type='movie'
         )
         self.progressdialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
@@ -172,8 +170,7 @@ class StagedMoviesMenu(object):
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_MOVIES = getlocalizedstring(32041)
         STR_CLEAN_UP_METADATA = getlocalizedstring(32135)
-        staged_movies = self.database.get_content_items(
-            status='staged', mediatype='movie', order='Title'
+                _type='movie'
         )
         if not staged_movies:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_STAGED_MOVIES)

@@ -132,7 +132,7 @@ class ContentManagerShow(ABSContentManagerShow):
             softlink_file(self.episode_nfo[0], self.episode_nfo[1])
             self.database.update_content(
                 status='managed',
-                mediatype='tvshow'
+                _type='tvshow'
             )
 
 
@@ -162,7 +162,7 @@ class ContentManagerShow(ABSContentManagerShow):
         if not exists(self.metadata_tvshow_nfo):
             try:
                 CreateNfo(
-                    nfotype='tvshow',
+                    _type='tvshow',
                     filepath=self.metadata_tvshow_nfo,
                     jsondata=self.jsondata
                 )
@@ -183,7 +183,7 @@ class ContentManagerShow(ABSContentManagerShow):
         if not exists(self.episode_nfo[0]):
             try:
                 CreateNfo(
-                    nfotype='episodedetails',
+                    _type='episodedetails',
                     filepath=self.episode_nfo[0],
                     jsondata=self.jsondata
                 )
@@ -203,6 +203,7 @@ class ContentManagerShow(ABSContentManagerShow):
                     self.metadata_fanart_path
                 )
         self.database.update_content(
+            _type='tvshow'
         )
 
 
@@ -213,6 +214,7 @@ class ContentManagerShow(ABSContentManagerShow):
         # Check for existing nfo file
         if isdir(self.show_dir[1]):
             self.database.update_content(
+                _type='tvshow'
             )
 
 
@@ -226,10 +228,7 @@ class ContentManagerShow(ABSContentManagerShow):
         delete_with_wildcard(splitext(self.episode_nfo[0])[0])
         # Remove from db
         self.database.remove_from(
-            status=None,
-            mediatype=None,
-            show_title=None,
-            directory=self.link_stream_path
+            _type='episode'
         )
 
 
@@ -310,7 +309,7 @@ class ContentManagerShow(ABSContentManagerShow):
         self.database.update_content(
             file=self.file,
             status='staged',
-            type='tvshow'
+            _type='tvshow'
         )
 
 
@@ -371,7 +370,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         create_stream_file(
         self.database.update_content(
             status='managed',
-            mediatype='movie'
+            _type='movie'
         )
 
 
@@ -387,7 +386,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         if not exists(self.movie_nfo[0]):
             try:
                 CreateNfo(
-                    nfotype='movie',
+                    _type='movie',
                     filepath=self.movie_nfo[0],
                     jsondata=self.jsondata
                 )
@@ -399,6 +398,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
                 pass
         # Add metadata (optional)
         self.database.update_content(
+            _type='movie',
         )
 
 
@@ -418,10 +418,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         remove_dir(self.movie_dir[0])
         # Remove from db
         self.database.remove_from(
-            status=None,
-            mediatype=None,
-            show_title=None,
-            directory=self.link_stream_path
+            _type='movie'
         )
 
 
@@ -440,9 +437,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
     def delete(self):
         '''Remove the item from the database'''
         self.database.remove_from(
-            status=None,
-            type='movie',
-            showtitle=None,
+            _type='movie',
             directory=self.file
         )
 
@@ -452,5 +447,5 @@ class ContentManagerMovie(ABSContentManagerMovie):
         self.database.update_content(
             file=self.file,
             status='staged',
-            type='movie'
+            _type='movie'
         )

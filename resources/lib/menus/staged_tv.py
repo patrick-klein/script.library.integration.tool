@@ -59,9 +59,7 @@ class StagedTVMenu(object):
         staged_seasons = list(
             self.database.get_content_items(
                 status='staged',
-                mediatype='tvshow',
-                order='showtitle',
-                showtitle=showtitle
+                _type='tvshow'
             )
         )
         self.progressdialog.create(
@@ -92,9 +90,7 @@ class StagedTVMenu(object):
         staged_seasons = list(
             self.database.get_content_items(
                 status='staged',
-                mediatype='tvshow',
-                order='showtitle',
-                showtitle=showtitle
+                _type='tvshow'
             )
         )
         self.progressdialog.create(
@@ -175,9 +171,7 @@ class StagedTVMenu(object):
         staged_seasons = list(
             self.database.get_content_items(
                 status='staged',
-                mediatype='tvshow',
-                order='showtitle',
-                showtitle=showtitle
+                _type='tvshow'
             )
         )
         self.progressdialog.create(
@@ -242,8 +236,7 @@ class StagedTVMenu(object):
         staged_tv_items = list(
             self.database.get_content_items(
                 status='staged',
-                mediatype='tvshow',
-                order='showtitle'
+                _type='tvshow'
             )
         )
         for index, item in enumerate(staged_tv_items):
@@ -268,8 +261,7 @@ class StagedTVMenu(object):
         staged_tv_items = list(
             self.database.get_content_items(
                 status='staged',
-                mediatype='tvshow',
-                order='showtitle'
+                _type='tvshow'
             )
         )
         # content menaget precisa retornar episode_nfo[0]
@@ -296,8 +288,7 @@ class StagedTVMenu(object):
         staged_tv_items = list(
             self.database.get_content_items(
                 status='staged',
-                mediatype='tvshow',
-                order='showtitle'
+                _type='tvshow'
             )
         )
         for index, item in enumerate(staged_tv_items):
@@ -322,8 +313,7 @@ class StagedTVMenu(object):
         staged_tv_items = list(
             self.database.get_content_items(
                 status='staged',
-                mediatype='tvshow',
-                order='showtitle'
+                _type='tvshow'
             )
         )
         for index, item in enumerate(staged_tv_items):
@@ -347,9 +337,7 @@ class StagedTVMenu(object):
         self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
         self.database.remove_from(
             status='staged',
-            mediatype='tvshow',
-            showtitle=None,
-            directory=None
+            _type='tvshow'
         )
         self.progressdialog.close()
         notification(STR_ALL_TV_SHOW_REMOVED)
@@ -363,9 +351,7 @@ class StagedTVMenu(object):
         self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_x_SEASONS)
         self.database.remove_from(
             status='staged',
-            mediatype='tvshow',
-            showtitle=showtitle,
-            directory=None
+            _type='tvshow',
         )
         self.progressdialog.close()
         notification(STR_ALL_x_SEASONS_REMOVED)
@@ -379,9 +365,7 @@ class StagedTVMenu(object):
         self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_x_EPISODES)
         self.database.remove_from(
             status='staged',
-            mediatype='tvshow',
-            showtitle=showtitle,
-            directory=None
+            _type='tvshow',
         )
         self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED)
