@@ -157,7 +157,7 @@ def clean_name(title):
     return title
 
 
-def execute_json_rpc(method, file):
+def execute_json_rpc(method, path):
     '''Execute a JSON-RPC command with specified method and params (as keyword arguments)
     See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params'''
     return json.loads(
@@ -166,7 +166,7 @@ def execute_json_rpc(method, file):
                 'jsonrpc': '2.0',
                 "method": method,
                 "params": {
-                    'directory': directory,
+                    'directory': path,
                     'properties': [
                         'duration',
                         'season',
@@ -489,7 +489,7 @@ def selected_list(results):
         yield None
 
 
-def load_directory_items(progressdialog, dir_path, recursive=False,
+def load_directory_items(progressdialog, path, recursive=False,
                          allow_directories=False, depth=1, showtitle=False,
                          season=False, year=False, sync_type=False):
     '''Load items in a directory using the JSON-RPC interface'''
@@ -497,7 +497,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
         yield []
     results = execute_json_rpc(
         'Files.GetDirectory',
-        directory=dir_path)['result']['files']
+        path=path)['result']['files']
     if sync_type == 'filter':
         sync_type = 'all_items'
         results = list(selected_list(results))
@@ -564,7 +564,7 @@ def load_directory_items(progressdialog, dir_path, recursive=False,
                 year = False
             new_items = list(load_directory_items(
                 progressdialog=progressdialog,
-                dir_path=_dir['file'],
+                path=_dir['file'],
                 recursive=recursive,
                 allow_directories=allow_directories,
                 depth=depth + 1,
