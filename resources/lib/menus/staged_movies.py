@@ -32,8 +32,9 @@ class StagedMoviesMenu(object):
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
 
-    @staticmethod
+
     @logged_function
+    def add_all(self, items):
         '''Add all staged movies to library'''
         STR_ADDING_ALL_MOVIES = getlocalizedstring(32042)
         STR_ALL_MOVIES_ADDED = getlocalizedstring(32043)
@@ -45,8 +46,10 @@ class StagedMoviesMenu(object):
         self.progressdialog.close()
         notification(STR_ALL_MOVIES_ADDED)
 
-    @staticmethod
+
+
     @logged_function
+    def add_all_with_metadata(self, items):
         '''Add all movies with nfo files to the library'''
         # TODO: Remove code duplication with MovieItem.add_to_library_if_metadata
         STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
@@ -61,8 +64,9 @@ class StagedMoviesMenu(object):
         self.progressdialog.close()
         notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
-    @staticmethod
+
     @logged_function
+    def clean_up_metadata(self):
         '''Remove all unused metadata'''
         STR_MOVIE_METADATA_CLEANED = getlocalizedstring(32136)
         metadata_dir = os.path.join(METADATA_FOLDER, 'Movies')
@@ -77,8 +81,9 @@ class StagedMoviesMenu(object):
                 shutil.rmtree(full_path)
         notification(STR_MOVIE_METADATA_CLEANED)
 
-    @staticmethod
+
     @logged_function
+    def generate_all_metadata(self, items):
         '''Generate metadata items for all staged movies'''
         STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
         STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
