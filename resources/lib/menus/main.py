@@ -54,14 +54,9 @@ class MainMenu(object):
         ]
         ret = xbmcgui.Dialog().select(ADDON_NAME, lines)
         if ret >= 0:
-
             if lines[ret] == STR_VIEW_MANAGED_MOVIES:
-                
                 from resources.lib.menus.managed_movies import ManagedMoviesMenu
                 ManagedMoviesMenu(database=self.database).view_all()
-            elif lines[ret] == STR_VIEW_MANAGED_TV_SHOWS:
-                from resources.lib.menus.managed_tv import ManagedTVMenu
-                ManagedTVMenu(database=self.database).view_shows()
             elif lines[ret] == STR_VIEW_STAGED_MOVIES:
                 from resources.lib.menus.staged_movies import StagedMoviesMenu
                 StagedMoviesMenu(database=self.database).view_all()
@@ -77,9 +72,7 @@ class MainMenu(object):
             elif lines[ret] == STR_UPDATE_LIBRARY:
                 videolibrary('scan')
                 sys.exit()
-
             elif lines[ret] == STR_CLEAN_LIBRARY:
                 videolibrary('clean')
                 sys.exit()
-
             self.view()

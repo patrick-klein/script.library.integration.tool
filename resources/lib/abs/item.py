@@ -8,7 +8,7 @@ import abc
 class ABSItemShow(object):
     '''Abstract base class for EpisodeItem'''
     __metaclass__ = abc.ABCMeta
-    def __init__(self, link_stream_path, title, mediatype, show_title=None, season=None, epnumber=None, year=None):
+
         self._managed_dir = None
         self._metadata_show_dir = None
         self._metadata_movie_dir = None
@@ -68,7 +68,7 @@ class ABSItemShow(object):
 class ABSItemMovie(object):
     '''Abstract base class for MovieItem'''
     __metaclass__ = abc.ABCMeta
-    def __init__(self, link_stream_path, title, mediatype, year=None):
+
         self._managed_dir = None
         self._metadata_movie_dir = None
 

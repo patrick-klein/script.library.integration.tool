@@ -17,15 +17,14 @@ class EpisodeItem(ABSItemShow):
         
 
     @property
-    def link_stream_path(self):
-        return self._link_stream_path
+
 
     @property
-    def episode_title(self):
-        return clean_name(self._episode_title)
-    
+
+
     @property
         '''Show title with problematic characters removed'''
+
 
     @property
         '''Show title with problematic characters removed'''
@@ -34,21 +33,22 @@ class EpisodeItem(ABSItemShow):
         else:
             return int(self._season)
 
+
     @property
         '''Show title with problematic characters removed'''
             return  1
         else:
-            return int(self._episode_number)
+
 
     @property
     def year(self):
         '''Show title with problematic characters removed'''
         return self._year
-    # 
-    # # 
+
+
     @property
     def season_dir(self):
-        return ('Season %s' % (self.season_number))
+
 
     @property
     def episode_id(self):
@@ -63,6 +63,7 @@ class EpisodeItem(ABSItemShow):
             ep = ('E%s' % self.episode_number)
         return ('%s%s' % (season, ep))
 
+
     @property
     def managed_show_dir(self):
         if not self._managed_dir:
@@ -71,11 +72,13 @@ class EpisodeItem(ABSItemShow):
             )
         return self._managed_dir
 
+
     @property
     def metadata_show_dir(self):
         if not self._metadata_show_dir:
             self._metadata_show_dir = join(METADATA_FOLDER, 'TV', self.show_title)
         return self._metadata_show_dir
+
 
     @logged_function
     def returasjson(self):
