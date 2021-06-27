@@ -61,8 +61,8 @@ class ContentManagerShow(ABSContentManagerShow):
 
 
     @property
-    def show_title(self):
-        return self.jsondata['show_title']
+    def showtitle(self):
+        return self.jsondata['showtitle']
 
 
     @property
@@ -81,14 +81,14 @@ class ContentManagerShow(ABSContentManagerShow):
     @property
     def complete_episode_title(self):
         return '%s - %s' % (
-            ' '.join([self.show_title, self.formedyear]),
+            ' '.join([self.showtitle, self.formedyear]),
             self.episode_title_with_id
         )
 
 
     @property
-    def link_stream_path(self):
-        return self.jsondata['link_stream_path']
+    def file(self):
+        return self.jsondata['file']
 
 
     @property
@@ -127,10 +127,11 @@ class ContentManagerShow(ABSContentManagerShow):
         if not exists(self.metadata_season_dir):
             mkdir(self.metadata_season_dir)
         # Create stream file
-        if create_stream_file(self.link_stream_path, self.managed_strm_path):
+        if create_stream_file(self.file, self.managed_strm_path):
             self.create_metadata_item()
             softlink_file(self.episode_nfo[0], self.episode_nfo[1])
             self.database.update_content(
+                file=self.file,
                 status='managed',
                 _type='tvshow'
             )
@@ -203,6 +204,8 @@ class ContentManagerShow(ABSContentManagerShow):
                     self.metadata_fanart_path
                 )
         self.database.update_content(
+            self.file,
+            title=self.jsondata['title'],
             _type='tvshow'
         )
 
@@ -214,6 +217,8 @@ class ContentManagerShow(ABSContentManagerShow):
         # Check for existing nfo file
         if isdir(self.show_dir[1]):
             self.database.update_content(
+                file=self.file,
+                title=self.jsondata['title'],
                 _type='tvshow'
             )
 
@@ -223,11 +228,14 @@ class ContentManagerShow(ABSContentManagerShow):
         # TODO: Need to remove nfo for all other items that match blocked
         # Add episode title to blocked
         self.database.add_blocked_item(
+            self.showtitle,
+            'episode'
         )
         # Delete nfo items
         delete_with_wildcard(splitext(self.episode_nfo[0])[0])
         # Remove from db
         self.database.remove_from(
+            file=self.file,
             _type='episode'
         )
 
@@ -253,26 +261,26 @@ class ContentManagerShow(ABSContentManagerShow):
     #     # becouse the new_title is equal the original
     #     if exists(self.show_dir[0]):
     #         # Define "title paths" (paths without extensions)
-    #         title_path = join(self.show_dir[0], self.show_title)
-    #         new_title_path = join(self.show_dir[0], self.show_title)
+    #         title_path = join(self.show_dir[0], self.showtitle)
+    #         new_title_path = join(self.show_dir[0], self.showtitle)
     #         # Rename stream placeholder, nfo file, and thumb
     #         mv_with_type(title_path, '.strm', new_title_path)
     #         mv_with_type(title_path, '.nfo', new_title_path)
     #         mv_with_type(title_path, '-thumb.jpg', new_title_path)
     #     # Rename property and refresh in staged file
-    #     # TODO: self.show_title here is the global self.show_title
+    #     # TODO: self.showtitle here is the global self.showtitle
     #     # in future, the value need be updated to a new diferente formed name
     #     resources.lib.database.DatabaseHandler().update_content(
-    #         self.link_stream_path,
-    #         title=self.show_title,
-    #         mediatype='tvshow'
+    #         self.file,
+    #         title=self.showtitle,
+    #         _type='tvshow'
     #     )
 
 
 
     @logged_function
     def rename_using_metadata(self):
-        # TODO?: Rename show_title too
+        # TODO?: Rename showtitle too
         # Read old metadata items to rename self
         self.read_metadata_item()
         # # Only rename if nfo file exists
@@ -297,11 +305,9 @@ class ContentManagerShow(ABSContentManagerShow):
     def delete(self):
         '''Remove the item from the database'''
         self.database.remove_from(
-            status=None,
-            type='tvshow',
-            showtitle=None,
-            directory=self.file
-            )
+            _type='tvshow',
+            file=self.file
+        )
 
 
     def set_as_staged(self):
@@ -320,18 +326,19 @@ class ContentManagerMovie(ABSContentManagerMovie):
         self.database = database
         self.jsondata = jsondata
         self.managed_strm_path = join(
-            self.movie_dir[1], ''.join([self.movie_title, '.strm'])
+            self.movie_dir[1],
+            ''.join([self.title, '.strm'])
         )
 
 
     @property
-    def link_stream_path(self):
-        return self.jsondata['link_stream_path']
+    def file(self):
+        return self.jsondata['file']
 
 
     @property
-    def movie_title(self):
-        return ' '.join([self.jsondata['movie_title'], self.formedyear])
+    def title(self):
+        return ' '.join([self.jsondata['title'], self.formedyear])
 
 
     @property
@@ -368,7 +375,11 @@ class ContentManagerMovie(ABSContentManagerMovie):
         # Add stream file to self.managed_dir
         self.create_metadata_item()
         create_stream_file(
+            self.file,
+            self.managed_strm_path
+        )
         self.database.update_content(
+            file=self.file,
             status='managed',
             _type='movie'
         )
@@ -382,7 +393,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
         if not exists(self.movie_dir[0]):
             mkdir(self.movie_dir[0])
-        # create a blank movie_title.nfo
+        # create a blank title.nfo
         if not exists(self.movie_nfo[0]):
             try:
                 CreateNfo(
@@ -438,7 +449,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         '''Remove the item from the database'''
         self.database.remove_from(
             _type='movie',
-            directory=self.file
+            file=self.file
         )
 
 

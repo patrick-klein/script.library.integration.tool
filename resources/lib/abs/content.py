@@ -11,23 +11,23 @@ class ABSContentManagerShow(object):
     # TODO: Save original_label, would be able to rename
     # entire filename using metadata
     def __init__(self, jsondata):
-        self._link_stream_path = None
-        self._episode_title = None
-        self._show_title = None
+        self._file = None
+        self._title = None
+        self._showtitle = None
         self._season = None
-        self._episode_number = None
+        self._episode = None
         self._year = None
 
 
     def __str__(self):
         return '[B]%s[/B] - [I]%s[/I]' % (
             self.episode_title_with_id,
-            self.link_stream_path
+            self.file
             )
 
 
     @abc.abstractproperty
-    def show_title(self):
+    def showtitle(self):
         '''Path to the show_dir directory for the item'''
 
 
@@ -47,7 +47,7 @@ class ABSContentManagerShow(object):
 
 
     @abc.abstractproperty
-    def link_stream_path(self):
+    def file(self):
         '''Path to the episode_title_with_id directory for the item'''
 
 

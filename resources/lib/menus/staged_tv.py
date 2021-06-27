@@ -352,6 +352,7 @@ class StagedTVMenu(object):
         self.database.remove_from(
             status='staged',
             _type='tvshow',
+            showtitle=showtitle
         )
         self.progressdialog.close()
         notification(STR_ALL_x_SEASONS_REMOVED)
@@ -366,6 +367,7 @@ class StagedTVMenu(object):
         self.database.remove_from(
             status='staged',
             _type='tvshow',
+            showtitle=showtitle
         )
         self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED)
@@ -393,7 +395,7 @@ class StagedTVMenu(object):
 
 
     @logged_function
-    def episode_options(self, item, season_number):
+    def episode_options(self, item, season):
         '''Provide options for a single staged episode in a dialog window'''
         #TODO: rename associated metadata when renaming
         #TODO: rename show title
@@ -412,41 +414,43 @@ class StagedTVMenu(object):
             STR_AUTOMATICALLY_RENAME_USING_METADTA, STR_GENERATE_METADATA_ITEM, STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(ADDON_NAME,
-                                     STR_STAGED_EPISODE_OPTIONS, item.show_title),
-            lines
+            '{0} - {1} - {2}'.format(
+                ADDON_NAME,
+                STR_STAGED_EPISODE_OPTIONS,
+                item.showtitle
+            ), lines
         )
         if ret >= 0:
             if lines[ret] == STR_ADD:
                 item.add_to_library()
-                self.view_episodes(item.show_title, season_number)
+                self.view_episodes(item.showtitle, season)
             elif lines[ret] == STR_REMOVE:
                 item.delete()
-                self.view_episodes(item.show_title, season_number)
+                self.view_episodes(item.showtitle, season)
             elif lines[ret] == STR_REMOVE_AND_BLOCK_EPISODE:
                 item.remove_and_block()
-                self.view_episodes(item.show_title, season_number)
+                self.view_episodes(item.showtitle, season)
             elif lines[ret] == STR_RENAME:
                 self.rename_dialog(item)
-                self.episode_options(item, season_number)
+                self.episode_options(item, season)
             elif lines[ret] == STR_GENERATE_METADATA_ITEM:
                 item.create_metadata_item()
-                self.episode_options(item, season_number)
+                self.episode_options(item, season)
             elif lines[ret] == STR_AUTOMATICALLY_RENAME_USING_METADTA:
                 item.rename_using_metadata()
-                self.episode_options(item, season_number)
+                self.episode_options(item, season)
             elif lines[ret] == STR_BACK:
-                self.view_episodes(item.show_title, season_number)
+                self.view_episodes(item.showtitle, season)
         else:
-            self.view_episodes(item.show_title, season_number)
+            self.view_episodes(item.showtitle, season)
 
 
     @logged_function
-    def view_episodes(self, show_title, season_number):
+    def view_episodes(self, showtitle, season):
         '''Display all staged episodes in the specified show,
         which are selectable and lead to options.
         Also provides additional options at bottom of menu'''
-        STR_NO_STAGED_x_EPISODES = getlocalizedstring(32065) % show_title
+        STR_NO_STAGED_x_EPISODES = getlocalizedstring(32065) % showtitle
         STR_ADD_ALL_EPISODES = getlocalizedstring(32066)
         STR_ADD_ALL_EPISODES_WITH_METADATA = getlocalizedstring(32067)
         STR_REMOVE_ALL_EPISODES = getlocalizedstring(32029)
@@ -454,7 +458,7 @@ class StagedTVMenu(object):
         STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA = getlocalizedstring(32069)
         STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
         STR_BACK = getlocalizedstring(32011)
-        STR_STAGED_x_EPISODES = getlocalizedstring(32070) % show_title
+        STR_STAGED_x_EPISODES = getlocalizedstring(32070) % showtitle
         staged_episodes = list(
             self.database.get_content_items(
             status='staged',
@@ -484,38 +488,44 @@ class StagedTVMenu(object):
             if ret < len(staged_episodes):  # staged item
                 for i, item in enumerate(staged_episodes):
                     if ret == i:
-                        self.episode_options(item, season_number)
+                        self.episode_options(item, season)
                         break
             elif lines[ret] == STR_ADD_ALL_EPISODES:
                 self.add_all_episodes(staged_episodes)
                 self.view_shows()
             elif lines[ret] == STR_ADD_ALL_EPISODES_WITH_METADATA:
-                self.add_all_episodes_with_metadata(staged_episodes, show_title)
-                self.view_episodes(show_title, season_number)
+                self.add_all_episodes_with_metadata(
+                    staged_episodes,
+                    showtitle
+                )
+                self.view_episodes(
+                    showtitle,
+                    season
+                )
             elif lines[ret] == STR_REMOVE_ALL_EPISODES:
-                self.remove_all_episodes(show_title)
+                self.remove_all_episodes(showtitle)
                 self.view_shows()
             elif lines[ret] == STR_REMOVE_AND_BLOCK_TV_SHOW:
-                self.remove_and_block_show(show_title)
+                self.remove_and_block_show(showtitle)
                 self.view_shows()
             elif lines[ret] == STR_AUTOMATICALLY_RENAME_ALL_EPISODES_USING_METADATA:
                 self.rename_episodes_using_metadata(staged_episodes)
-                self.view_episodes(show_title, season_number)
+                self.view_episodes(showtitle, season)
             elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
                 self.generate_all_episodes_metadata(staged_episodes)
-                self.view_episodes(show_title, season_number)
+                self.view_episodes(showtitle, season)
             elif lines[ret] == STR_BACK:
-                self.view_seasons(show_title)
+                self.view_seasons(showtitle)
         else:
-            self.view_seasons(show_title)
+            self.view_seasons(showtitle)
 
 
     @logged_function
-    def view_seasons(self, show_title):
+    def view_seasons(self, showtitle):
         '''Display all staged seasons in the specified show,
         which are selectable and lead to options.
         Also provides additional options at bottom of menu'''
-        STR_NO_STAGED_x_SEASONS = 'No staged %s seasons' % show_title
+        STR_NO_STAGED_x_SEASONS = 'No staged %s seasons' % showtitle
         STR_ADD_ALL_SEASONS = 'Add all seasons'
         STR_ADD_ALL_SEASONS_WITH_METADATA = 'Add all seasons with metadata'
         STR_REMOVE_ALL_SEASONS = 'Remove all seasons'
@@ -523,7 +533,7 @@ class StagedTVMenu(object):
         STR_AUTOMATICALLY_RENAME_ALL_SEASONS_USING_METADATA = getlocalizedstring(32069)
         STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
         STR_BACK = getlocalizedstring(32011)
-        STR_STAGED_x_SEASONS = 'Staged %s seasons' % show_title
+        STR_STAGED_x_SEASONS = 'Staged %s seasons' % showtitle
         staged_seasons = list(
             self.database.get_content_items(
             status='staged',
@@ -578,7 +588,12 @@ class StagedTVMenu(object):
             else:  # staged item
                 self.view_episodes(
                     showtitle,
-                    episode=''.join(filter(str.isdigit, selection))
+                    season=''.join(
+                        filter(
+                            str.isdigit,
+                            selection
+                        )
+                    )
                 )
         else:
             self.view_shows()

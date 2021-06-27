@@ -43,37 +43,44 @@ class Database(object):
         self.cur = self.conn.cursor()
         # Create tables if they doesn't exist
         self.cur.execute(
-            '''CREATE TABLE IF NOT EXISTS Movies
+            '''CREATE TABLE IF NOT EXISTS movie
             (
-                Directory TEXT PRIMARY KEY,
-                Title TEXT,
-                Mediatype TEXT,
-                Status TEXT,
-                Year TEXT
+                file TEXT PRIMARY KEY,
+                title TEXT,
+                type TEXT,
+                status TEXT,
+                year TEXT
             )'''
         )
 
         self.cur.execute(
-            '''CREATE TABLE IF NOT EXISTS Tvshows
+            '''CREATE TABLE IF NOT EXISTS tvshow
             (
-                Directory TEXT PRIMARY KEY,
-                Title TEXT,
-                Mediatype TEXT,
-                Status TEXT,
-                Year TEXT,
-                Show_Title TEXT,
-                Season TEXT,
-                Epnumber TEXT
+                file TEXT PRIMARY KEY,
+                title TEXT,
+                type TEXT,
+                status TEXT,
+                year TEXT,
+                showtitle TEXT,
+                season TEXT,
+                episode TEXT
             )'''
         )
         # FUTURE: Add a music table, for stage and add musics
         self.cur.execute(
-            '''CREATE TABLE IF NOT EXISTS Synced
-            (Directory TEXT PRIMARY KEY, Label TEXT, Type TEXT)'''
+            '''CREATE TABLE IF NOT EXISTS synced
+            (
+                file TEXT PRIMARY KEY,
+                label TEXT,
+                type TEXT
+            )'''
         )
         self.cur.execute(
-            '''CREATE TABLE IF NOT EXISTS Blocked
-            (Value TEXT NOT NULL, Type TEXT NOT NULL)'''
+            '''CREATE TABLE IF NOT EXISTS blocked
+            (
+                value TEXT NOT NULL,
+                type TEXT NOT NULL
+            )'''
         )
         self.conn.commit()
 

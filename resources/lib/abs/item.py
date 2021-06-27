@@ -17,22 +17,27 @@ class ABSItemShow(object):
 
 
     @abc.abstractproperty
+    def file(self):
         '''Create the file str'''
 
 
     @abc.abstractproperty
+    def title(self):
         '''title with problematic characters removed'''
 
 
     @abc.abstractproperty
+    def showtitle(self):
         '''Create the showtitle str'''
 
 
     @abc.abstractproperty
+    def season(self):
         '''Create the season int'''
 
 
     @abc.abstractproperty
+    def episode(self):
         '''Create the episode int'''
 
 
@@ -76,10 +81,12 @@ class ABSItemMovie(object):
 
 
     @abc.abstractproperty
+    def file(self):
         '''Create the file str'''
 
 
     @abc.abstractproperty
+    def title(self):
         '''Create the title str'''
 
 
