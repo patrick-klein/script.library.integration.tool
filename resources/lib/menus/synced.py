@@ -16,14 +16,11 @@ from resources.lib import build_contentitem
 
 from resources.lib.log import logged_function
 
-from resources.lib.items.movie import MovieItem
-from resources.lib.items.episode import EpisodeItem
-
 from resources.lib.utils import notification
 from resources.lib.utils import title_with_color
 from resources.lib.utils import getlocalizedstring
 from resources.lib.utils import load_directory_items
-# 
+
 
 class SyncedMenu(object):
     '''Provides windows for displaying synced directories,
