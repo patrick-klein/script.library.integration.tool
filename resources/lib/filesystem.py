@@ -13,12 +13,13 @@ from shutil import copyfile
 
 from os.path import dirname
 from os.path import basename
-from os import name as osname
 
 from os.path import join
 from os.path import isdir
 from os.path import isfile
 from os.path import exists
+
+from resources.lib.log import log_msg
 
 
 class CreateNfo(object):
@@ -122,7 +123,7 @@ def create_stream_file(plugin_path, filepath):
     return True
 
 
-if osname == 'posix':
+if os.name == 'posix':
     def softlink_file(src, dst):
         '''Symlink file at src to dst'''
         try:
