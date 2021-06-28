@@ -111,15 +111,9 @@ class ContentManagerShow(ABSContentManagerShow):
         self.rename_using_metadata()
         # create show dir
         if not exists(self.show_dir[0]):
-            try:
-                mkdir(self.show_dir[0])
-            except Exception as genericmkdir:
-                raise genericmkdir
+            mkdir(self.show_dir[0])
         if not exists(self.show_dir[1]):
-            try:
-                mkdir(self.show_dir[1])
-            except Exception as genericmkdir:
-                raise genericmkdir
+            mkdir(self.show_dir[1])
         # create season_dir managed season dir
         if not exists(self.managed_season_dir):
             mkdir(self.managed_season_dir)
@@ -152,10 +146,7 @@ class ContentManagerShow(ABSContentManagerShow):
         # Create show_dir in Metadata/TV if it doesn't already exist
         # Create Metadate Show Dir
         if not exists(self.show_dir[0]):
-            try:
-                mkdir(self.show_dir[0])
-            except Exception as genericmkdir:
-                raise genericmkdir
+            mkdir(self.show_dir[0])
         # Create Metadata Season dir
         if not exists(self.metadata_season_dir):
             mkdir(self.metadata_season_dir)

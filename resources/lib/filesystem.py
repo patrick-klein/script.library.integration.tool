@@ -75,12 +75,14 @@ class CreateNfo(object):
 
 def create_stream_file(plugin_path, filepath):
     '''Create stream file with plugin_path at filepath'''
-    try:
-        with open(filepath, "w+") as strm:
+    with open(filepath, "w+") as strm:
+        try:
             strm.write(plugin_path)
+        except Exception as e:
+            log_msg(e)
+            return False
+        finally:
             strm.close()
-    except Exception:
-        return False
     return True
 
 
@@ -116,12 +118,14 @@ else:
 
 def mkdir(dir_path):
     '''Create a directory'''
-    Path(dir_path).mkdir(
-        mode=0o755,
-        parents=True,
-        exist_ok=True
-    )
-
+    try:
+        Path(dir_path).mkdir(
+            mode=0o755,
+            parents=True,
+            exist_ok=True
+        )
+    except Exception as e:
+        raise e
 
 # def mv_with_type(title_path, filetype, title_dst):
 #     '''Move files with wildcard between title_path & filetype to title_dst'''
