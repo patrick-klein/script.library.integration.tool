@@ -49,8 +49,8 @@ class ManagedTVMenu(object):
     def move_all_seasons_to_staged(self, showtitle):
         '''Remove all managed episodes in specified show from library, and add them to staged'''
         # TODO: move to languages
-        STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = 'Movendo temporadas de %s para staged'
-        STR_ALL_x_SEASONS_MOVED_TO_STAGED = 'Todas as temporadas de %s movidas para staged'
+        STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172)
+        STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173)
         self.progressdialog.create(
             ADDON_NAME,
             STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED % showtitle
@@ -128,11 +128,8 @@ class ManagedTVMenu(object):
     @logged_function
     def remove_seasons(self, items, showtitle):
         '''Remove all seasons in specified show from library'''
-        from resources.lib.utils import tojs
-        tojs(str([items, showtitle]), 'teste')
-        # TODO: move to languages
-        STR_REMOVING_ALL_X_SEASONS = 'Removendo temporadas de: %s'
-        STR_ALL_X_SEASONS_REMOVED = 'Todas as temporadas de %s, foram removidas'
+        STR_REMOVING_ALL_X_SEASONS = getlocalizedstring(32168)
+        STR_ALL_X_SEASONS_REMOVED = getlocalizedstring(32169)
         seasons = items[0]
         self.progressdialog.create(
             ADDON_NAME,
@@ -272,9 +269,9 @@ class ManagedTVMenu(object):
         which are selectable and lead to options.
         Also provides additional options at bottom of menu'''
         # TODO: functions to remove all or add all if necessary
-        STR_NO_MANAGED_X_SEASONS = str('No managed %s seasons') % showtitle
-        STR_REMOVE_ALL_SEASONS = 'Remove all seasons'
-        STR_MOVE_ALL_SEASONS_BACK_TO_STAGED = 'Move all seasons back to staged'
+        STR_NO_MANAGED_X_SEASONS = getlocalizedstring(32170) % showtitle
+        STR_REMOVE_ALL_SEASONS = getlocalizedstring(32171)
+        STR_MOVE_ALL_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_X_SEASONS = str('Managed %s Seasons') % showtitle
         managed_seasons = list(

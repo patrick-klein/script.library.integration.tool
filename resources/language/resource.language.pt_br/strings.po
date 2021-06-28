@@ -394,111 +394,111 @@ msgstr ""
 
 msgctxt "#32096"
 msgid "All synced directories updated"
-msgstr ""
+msgstr "Todos os diretórios sincronizados atualizados"
 
 msgctxt "#32097"
 msgid "Add keyword"
-msgstr ""
+msgstr "Adicionar palavra-chave"
 
 msgctxt "#32098"
 msgid "Blocked Items"
-msgstr ""
+msgstr "Itens Bloqueados"
 
 msgctxt "#32099"
 msgid "Blocked Item Options"
-msgstr ""
+msgstr "Opções de item bloqueado"
 
 msgctxt "#32100"
 msgid "Unable to determine content. Choose type:"
-msgstr ""
+msgstr "Incapaz de determinar o conteúdo. Escolha o tipo:"
 
 msgctxt "#32101"
 msgid "TV Show"
-msgstr ""
+msgstr "Série de TV"
 
 msgctxt "#32102"
 msgid "Movie"
-msgstr ""
+msgstr "Filme"
 
 msgctxt "#32103"
 msgid "Item is already staged"
-msgstr ""
+msgstr "O item já está armazenado"
 
 msgctxt "#32104"
 msgid "Item is already managed"
-msgstr ""
+msgstr "Item já gerenciado"
 
 msgctxt "#32105"
 msgid "Movie staged"
-msgstr ""
+msgstr "Filme armazenado"
 
 msgctxt "#32106"
-msgid "%i new episodes staged.  %i were already staged, and %i were already managed"
-msgstr ""
+msgid "%i new episodes staged. %i were already staged, and %i were already managed"
+msgstr "%i novos episódios armazenados. %i já foi armazenados e %i já foi gerenciado"
 
 msgctxt "#32107"
 msgid "%i new episodes staged"
-msgstr ""
+msgstr "%i novos episodios armazenados"
 
 msgctxt "#32108"
 msgid "TV Shows"
-msgstr ""
+msgstr "Series de TV"
 
 msgctxt "#32109"
 msgid "Movies"
-msgstr ""
+msgstr "Filmes"
 
 msgctxt "#32110"
 msgid "Current directory already synced.  Looking for new items..."
-msgstr ""
+msgstr "Diretório atual já está sincronizado. Procurando por novos itens..."
 
 msgctxt "#32111"
 msgid "%i movies staged"
-msgstr ""
+msgstr "%i filmes armazenados"
 
 msgctxt "#32112"
 msgid "All TV shows staged. %i episodes staged"
-msgstr ""
+msgstr "Todos os programas de TV armazenados. %i episódios armazenados"
 
 msgctxt "#32113"
 msgid "Keyword"
-msgstr ""
+msgstr "Palavra-chave"
 
 msgctxt "#32114"
 msgid "Episode"
-msgstr ""
+msgstr "Episódio"
 
 msgctxt "#32115"
 msgid "Single TV Show"
-msgstr ""
+msgstr "Programa de TV individual"
 
 msgctxt "#32116"
 msgid "Single Movie"
-msgstr ""
+msgstr "Filme Único"
 
 msgctxt "#32117"
 msgid "General"
-msgstr ""
+msgstr "Geral"
 
 msgctxt "#32118"
 msgid "Managed Folder"
-msgstr ""
+msgstr "Pasta Gerenciada"
 
 msgctxt "#32119"
 msgid "No blocked items"
-msgstr ""
+msgstr "Nenhum item bloqueado"
 
 msgctxt "#32120"
 msgid "No synced directories"
-msgstr ""
+msgstr "Nenhum diretório sincronizado"
 
 msgctxt "#32121"
 msgid "All items are up-to-date"
-msgstr ""
+msgstr "Todos os itens estão atualizados"
 
 msgctxt "#32122"
-msgid "All items were successfully updated.  Please clean library and review staged items."
-msgstr ""
+msgid "All items were successfully updated. Please clean library and review staged items."
+msgstr "Todos os itens foram atualizados. Limpe a biblioteca e reveja os itens armazenados."
 
 msgctxt "#32123"
 msgid ""
@@ -506,7 +506,7 @@ msgstr ""
 
 msgctxt "#32124"
 msgid "Updating synced directory list..."
-msgstr ""
+msgstr "Atualizando lista de diretórios sincronizados ..."
 
 msgctxt "#32125"
 msgid "Getting all items in directory..."
@@ -526,7 +526,7 @@ msgstr "Diretórios sincronizados"
 
 msgctxt "#32129"
 msgid "Use TV show artwork if episode thumb is unavailable"
-msgstr ""
+msgstr "Usar arte do programa de TV se as miniaturas não estiverem disponíveis"
 
 msgctxt "#32130"
 msgid "Development"
@@ -534,11 +534,11 @@ msgstr "Desenvolvimento"
 
 msgctxt "#32131"
 msgid "Run Test Suite"
-msgstr ""
+msgstr "Executar suíte de teste"
 
 msgctxt "#32132"
 msgid "Run Fuzzer"
-msgstr ""
+msgstr "Executar Fuzzer"
 
 msgctxt "#32133"
 msgid "Updating addon settings..."
@@ -550,11 +550,11 @@ msgstr "Atualização. Olhe o Log de mudanças"
 
 msgctxt "#32135"
 msgid "Clean up movie metadata"
-msgstr ""
+msgstr "Limpar metadados do filme"
 
 msgctxt "#32136"
 msgid "All metadata for movies cleaned"
-msgstr ""
+msgstr "Todos os metadados de filmes foram limpos"
 
 msgctxt "#32137"
 msgid "Update TV shows"
@@ -566,7 +566,7 @@ msgstr "Atualizar Filmes"
 
 msgctxt "#32139"
 msgid "Max recursion when finding videos (0 for unlimited)"
-msgstr ""
+msgstr "Recursão máxima ao encontrar vídeos (0 para ilimitado)"
 
 msgctxt "#32140"
 msgid "Use custom managed folder"
@@ -578,51 +578,51 @@ msgstr "Selecione Pasta Gerenciada"
 
 msgctxt "#32142"
 msgid "Use custom metadata folder"
-msgstr ""
+msgstr "Usar pasta de metadados customizada"
 
 msgctxt "#32143"
 msgid "Select metadata folder"
-msgstr ""
+msgstr "Selecione a pasta de metadados"
 
 msgctxt "#32144"
 msgid "Enable development options"
-msgstr ""
+msgstr "Habilitar opções de desenvolvimento"
 
 msgctxt "#32145"
 msgid "Reading all TV show metadata..."
-msgstr ""
+msgstr "Lendo todos os metadados do programa de TV ..."
 
 msgctxt "#32146"
 msgid "All TV show metadata read"
-msgstr ""
+msgstr "Todos os metadados de programas de TV lidos"
 
 msgctxt "#32147"
 msgid "Read all TV show metadata"
-msgstr ""
+msgstr "Leia todos os metadados do programa de TV"
 
 msgctxt "#32148"
 msgid "Never"
-msgstr ""
+msgstr "Nunca"
 
 msgctxt "#32149"
 msgid "Always"
-msgstr ""
+msgstr "Sempre"
 
 msgctxt "#32150"
 msgid "Only items with metadata"
-msgstr ""
+msgstr "Apenas itens com metadados"
 
 msgctxt "#32151"
 msgid "Only items with episode ID"
-msgstr ""
+msgstr "Apenas itens com ID de episódio"
 
 msgctxt "#32152"
 msgid "Add movies without staging"
-msgstr ""
+msgstr "Adicione filmes sem armazenar"
 
 msgctxt "#32153"
 msgid "Add TV show items without staging"
-msgstr ""
+msgstr "Adicionar itens de programas de TV sem armazenar"
 
 msgctxt "#32154"
 msgid "[B]Library Integration Tool Menu[/B]"
@@ -638,7 +638,7 @@ msgstr "É um Série de TV"
 
 msgctxt "#32157"
 msgid "[COLOR red][B]Cancelar[/B][/COLOR]"
-msgstr ""
+msgstr "[COLOR red][B]Cancel[/B][/COLOR]"
 
 msgctxt "#32158"
 msgid "Type not selected, Try again."
@@ -679,3 +679,28 @@ msgstr "Algo deu errado, tente novamente, talvez esta não seja uma série de TV
 msgctxt "#32167"
 msgid "Filter items"
 msgstr "Filtrar itens"
+
+
+msgctxt "#32168"
+msgid "Removing seasons from: %s"
+msgstr "Removendo temporadas de: %s"
+
+msgctxt "#32169"
+msgid "All seasons of %s have been removed."
+msgstr "Todas as temporadas de %s, foram removidas"
+
+msgctxt "#32170"
+msgid "No managed %s seasons"
+msgstr "Nenhuma %s temporada gerenciada"
+
+msgctxt "#32171"
+msgid "Remove all seasons"
+msgstr "Remova todas as temporadas"
+
+msgctxt "#32172"
+msgid "Moving all seasons to managed"
+msgstr "Movendo todas as temporadas para armazenados"
+
+msgctxt "#32173"
+msgid "All seasons of %s moved to staged"
+msgstr "Todas as temporadas de %s movidas para gerenciados"

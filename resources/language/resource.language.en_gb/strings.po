@@ -683,3 +683,23 @@ msgstr ""
 msgctxt "#32167"
 msgid "Filter items"
 msgstr ""
+
+msgctxt "#32168"
+msgid "Removing seasons from: %s"
+msgstr ""
+
+msgctxt "#32169"
+msgid "All seasons of %s have been removed."
+msgstr ""
+
+msgctxt "#32170"
+msgid "No managed %s seasons"
+msgstr ""
+
+msgctxt "#32171"
+msgid "Remove all seasons"
+msgstr ""
+
+msgctxt "#32172"
+msgid "Move all seasons back to staged"
+msgstr ""

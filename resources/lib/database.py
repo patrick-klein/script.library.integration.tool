@@ -313,8 +313,6 @@ class Database(object):
             sql_comm % (status, showtitle, season)
         )
         for content in self.cur.fetchall():
-            from resources.lib.utils import tojs
-            tojs(content, 'content')
             json_item = build_json_item(content)
             yield build_contentmanager(self, build_contentitem(json_item))
 
