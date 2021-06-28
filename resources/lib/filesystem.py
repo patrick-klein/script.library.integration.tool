@@ -171,8 +171,11 @@ def mkdir(dir_path):
 def delete_strm(path_to_remove):
     '''Remove one or more strm files'''
     if isdir(path_to_remove):
-        rm_files = [strm_file for strm_file in os.listdir(
-            path_to_remove) if ".strm" in strm_file]
+        rm_files = [
+            strm_file for strm_file in os.listdir(
+                path_to_remove
+            ) if ".strm" in strm_file
+        ]
         for file in rm_files:
             remove(file)
     elif isfile(path_to_remove):
@@ -183,7 +186,6 @@ def delete_with_wildcard(title_path):
     '''Remove all files starting with title_path using wildcard'''
     wildcard = basename(title_path)
     directory = dirname(title_path)
-
     if exists(directory):
         for file in os.listdir(dirname(directory)):
             if wildcard in file:
