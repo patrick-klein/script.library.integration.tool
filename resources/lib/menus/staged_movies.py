@@ -95,11 +95,14 @@ class StagedMoviesMenu(object):
         self.progressdialog.close()
         notification(STR_ALL_MOVIE_METADTA_CREATED)
 
+
+    def rename_dialog(self, item):
         '''Prompt input for new name, and rename if non-empty string'''
-        #TODO: move to utils or parent class so it's not duplicated
+        # TODO: move to utils or parent class so it's not duplicated
         input_ret = xbmcgui.Dialog().input("Title", defaultt=item.movie_title)
         if input_ret:
             item.rename(input_ret)
+
 
     @logged_function
     def options(self, item):

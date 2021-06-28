@@ -498,7 +498,10 @@ class StagedTVMenu(object):
             STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1}'.format(ADDON_NAME, STR_STAGED_x_EPISODES), lines
+            '%s - %s' % (
+                ADDON_NAME,
+                STR_STAGED_x_EPISODES
+            ), lines
         )
         if ret >= 0:
             if ret < len(staged_episodes):  # staged item
@@ -551,11 +554,9 @@ class StagedTVMenu(object):
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_x_SEASONS = 'Staged %s seasons' % showtitle
         staged_seasons = list(
-            self.database.get_content_items(
-            status='staged',
-            mediatype='tvshow',
-            order='Season',
-            show_title=show_title
+            self.database.get_season_items(
+                status='staged',
+                showtitle=showtitle
             )
         )
         if not staged_seasons:
@@ -573,7 +574,7 @@ class StagedTVMenu(object):
             STR_GENERATE_ALL_METADATA_ITEMS, STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1}'.format(
+            '%s - %s' % (
                 ADDON_NAME,
                 STR_STAGED_x_SEASONS
             ), lines
@@ -617,8 +618,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def view_shows(self):
-        '''Display all managed tvshows, which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        '''Display all managed tvshows, which are selectable and lead to options.'''
         STR_NO_STAGED_TV_SHOWS = getlocalizedstring(32054)
         STR_ADD_ALL_TV_SHOWS = getlocalizedstring(32055)
         STR_ADD_ALL_ITEMS_WITH_METADTA = getlocalizedstring(32056)
@@ -627,14 +627,16 @@ class StagedTVMenu(object):
         STR_READ_ALL_METADATA_ITEMS = getlocalizedstring(32147)
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_TV_SHOWS = getlocalizedstring(32058)
-        staged_tvshows = self.database.get_all_shows('staged')
+        staged_tvshows = list(
+            self.database.get_all_shows('staged')
+        )
         if not staged_tvshows:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,
                 STR_NO_STAGED_TV_SHOWS
             )
             return
-        lines = ['[B]{}[/B]'.format(x) for x in staged_tvshows]
+        lines = ['[B]%s[/B]' % x for x in staged_tvshows]
         lines += [
             STR_ADD_ALL_TV_SHOWS,
             STR_ADD_ALL_ITEMS_WITH_METADTA,

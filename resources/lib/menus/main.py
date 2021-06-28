@@ -68,6 +68,9 @@ class MainMenu(object):
             elif lines[ret] == STR_VIEW_STAGED_MOVIES:
                 from resources.lib.menus.staged_movies import StagedMoviesMenu
                 StagedMoviesMenu(database=self.database).view_all()
+            elif lines[ret] == STR_VIEW_MANAGED_TV_SHOWS:
+                from resources.lib.menus.managed_tv import ManagedTVMenu
+                ManagedTVMenu(database=self.database).view_shows()
             elif lines[ret] == STR_VIEW_STAGED_TV_SHOWS:
                 from resources.lib.menus.staged_tv import StagedTVMenu
                 StagedTVMenu(database=self.database).view_shows()
