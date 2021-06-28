@@ -41,7 +41,7 @@ class MovieItem(ABSItemMovie):
 
     @property
     def managed_movie_dir(self):
-        '''return the managed_movie_dir from content'''
+        """return the managed_movie_dir from content"""
         if not self._managed_dir:
             self._managed_dir = join(
                 MANAGED_FOLDER, 'ManagedMovies', self.title
@@ -59,7 +59,7 @@ class MovieItem(ABSItemMovie):
 
     @logged_function
     def returasjson(self):
-        '''return the json with information from content'''
+        """return the json with information from content"""
         try:
             return {
                 'file': self.file,

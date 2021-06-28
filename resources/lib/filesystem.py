@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''Filesystem utils for Windows/Linux'''
+"""Filesystem utils for Windows/Linux"""
 
 import os
 from os import remove
