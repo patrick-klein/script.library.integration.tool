@@ -430,7 +430,7 @@ class Database(object):
     def remove_all_synced_dirs(self):
         '''Delete all entries in synced'''
         # remove all rows
-        self.cur.execute('DELETE FROM Synced')
+        self.cur.execute('DELETE FROM synced')
         self.conn.commit()
 
 
@@ -450,7 +450,7 @@ class Database(object):
         '''Remove the entry in synced with the specified file'''
         # remove entry
         self.cur.execute(
-            "DELETE FROM Synced WHERE Directory=?",
+            "DELETE FROM synced WHERE file=?",
             (path, )
         )
         self.conn.commit()
@@ -464,14 +464,13 @@ class Database(object):
         sql_comm = (
             '''UPDATE %s SET {0}=(?) WHERE file=?''' % _type
         )
-        params = (path, )
-
-        for key, val in kwargs.items():
-            if key == 'status':
-                sql_comm = sql_comm.format('Status')
-            elif key == 'title':
-                sql_comm = sql_comm.format('Title')
-            params = (val, ) + params
+        params = (file, )
+        if status:
+            sql_comm = sql_comm.format('status')
+            params = (status, ) + params
+        elif title:
+            sql_comm = sql_comm.format('title')
+            params = (title, ) + params
         # update item
         self.cur.execute(sql_comm, params)
         self.conn.commit()

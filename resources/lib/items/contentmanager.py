@@ -362,8 +362,8 @@ class ContentManagerMovie(ABSContentManagerMovie):
     @property
     def movie_nfo(self):
         return (
-            join(self.movie_dir[0], ''.join([self.movie_title, '.nfo'])),
-            join(self.movie_dir[1], ''.join([self.movie_title, '.nfo']))
+            join(self.movie_dir[0], ''.join([self.title, '.nfo'])),
+            join(self.movie_dir[1], ''.join([self.title, '.nfo']))
         )
 
 
