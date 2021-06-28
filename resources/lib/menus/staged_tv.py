@@ -119,7 +119,7 @@ class StagedTVMenu(object):
         STR_ADDING_ALL_x_EPISODES_WITH_METADATA = getlocalizedstring(32073)
         STR_ALL_x_EPISODES_WITH_METADATA_ADDED = getlocalizedstring(32074)
         showtitle = staged_episodes[0]
-        
+
         self.progressdialog.create(
             ADDON_NAME,
             STR_ADDING_ALL_x_EPISODES_WITH_METADATA % showtitle
@@ -231,7 +231,7 @@ class StagedTVMenu(object):
     def add_all_shows(self):
         '''Add all tvshow items to library'''
         STR_ADDING_ALL_TV_SHOWS = getlocalizedstring(32059)
-        STR_ALL_TV_SHOWS_ADDED = getlocalizedstring(32060)        
+        STR_ALL_TV_SHOWS_ADDED = getlocalizedstring(32060)
         self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_TV_SHOWS)
         staged_tv_items = list(
             self.database.get_content_items(

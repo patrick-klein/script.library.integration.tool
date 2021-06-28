@@ -182,7 +182,7 @@ class Database(object):
     def add_synced_dir(self, label, path, _type):
         '''Create an entry in synced with specified values'''
         self.cur.execute(
-            '''INSERT OR REPLACE INTO 
+            '''INSERT OR REPLACE INTO
                     synced(file, label, type)
                 VALUES
                     (?, ?, ?)''', (path, label, _type)
@@ -285,7 +285,7 @@ class Database(object):
                     status='%s'
                 AND
                     showtitle='%s'
-                ORDER BY 
+                ORDER BY
                     CAST(season AS INTEGER)''' % (status, showtitle)
         )
         for content in self.cur.fetchall():
@@ -364,17 +364,17 @@ class Database(object):
     @logged_function
     def path_exists(self, file):
         '''Return True if path is already in database (with given status)
-            This function can return a list with multple values 
+            This function can return a list with multple values
             with name of the tables where item exist'''
         tables = list()
         for table in ['movie', 'tvshow']:
             sql_comm = (
                '''
-                    SELECT 
+                    SELECT
                         status
-                    FROM 
+                    FROM
                         '%s'
-                    WHERE 
+                    WHERE
                         file="%s"''' % (table, file)
                 )
             result = self.cur.execute(sql_comm).fetchone()

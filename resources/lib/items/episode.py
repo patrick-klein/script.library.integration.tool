@@ -22,7 +22,7 @@ class EpisodeItem(ABSItemShow):
         self._season = jsonitem['season']
         self._episode = jsonitem['episode']
         self._year = year if year else jsonitem['year']
-        
+
 
     @property
     def file(self):

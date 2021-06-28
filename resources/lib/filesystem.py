@@ -142,7 +142,7 @@ def delete_with_wildcard(title_path):
     '''Remove all files starting with title_path using wildcard'''
     wildcard = basename(title_path)
     directory = dirname(title_path)
-    
+
     if exists(directory):
         for file in os.listdir(dirname(directory)):
             if wildcard in file:

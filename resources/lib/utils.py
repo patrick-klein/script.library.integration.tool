@@ -419,14 +419,14 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                 if item['filetype'] == 'directory':
                     # SEREN SHOW DIRECTORY
                     if (re_search(item['type'], ['tvshow']) and not
-                            re_search(item['file'], ['episode']) and 
+                            re_search(item['file'], ['episode']) and
                             item['filetype'] == 'directory'):
                         del item['episode']
                         del item['season']
                         reordered[item['number'] - 1] = item
                     # SEREN SEASON DIRECTORY
                     if (item['type'] == 'unknown' and
-                            re_search(item['file'], ['show', 'season']) and 
+                            re_search(item['file'], ['show', 'season']) and
                             item['filetype'] == 'directory' and
                             STR_SEASON_CHECK is True):
                         item['showtitle'] = showtitle
@@ -449,7 +449,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                             item['episode'] = item['number']
                             reordered[item['number'] - 1] = item
                         else:
-                            reordered[item['episode'] - 1] = item                            
+                            reordered[item['episode'] - 1] = item
             # this part of code detect episodes with < 30 in season with 'Next Page'
             # works with CRUNCHYROLL, but can work for all
             if (item['filetype'] == 'file' and
@@ -479,12 +479,11 @@ def selected_list(results):
     mapped = dict()
     for index, item in enumerate(results):
         mapped[index] = item
-            
     selection = xbmcgui.Dialog().multiselect(
         'Escolha:', list(x['label'] for x in skip_filter(results)))
     try:
         for index in selection:
-            yield mapped[index] 
+            yield mapped[index]
     except TypeError:
         yield None
 
@@ -580,7 +579,13 @@ def load_directory_items(progressdialog, _path, recursive=False,
 
 def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
     '''Provide a shorthand for xbmc builtin notification with addon name'''
-    xbmcgui.Dialog().notification(ADDON_NAME, message, icon, time, True) 
+    xbmcgui.Dialog().notification(
+        ADDON_NAME,
+        message,
+        icon,
+        time,
+        True
+    )
 
  
 def tojs(data, filename):

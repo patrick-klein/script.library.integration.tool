@@ -86,7 +86,7 @@ def check_version_file():
         # version = Version(ADDON_VERSION)
         version = Version('0.3.2')
     if version != ADDON_VERSION:
-        # TODO: xbmcgui.Dialog().notification and ADDON.getLocalizedString 
+        # TODO: xbmcgui.Dialog().notification and ADDON.getLocalizedString
         # in future can be moved from utils and imported here
         STR_UPDATING = ADDON.getLocalizedString(32133)
         STR_UPDATED = ADDON.getLocalizedString(32134)

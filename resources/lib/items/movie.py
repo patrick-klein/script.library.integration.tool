@@ -36,7 +36,7 @@ class MovieItem(ABSItemMovie):
     @property
     def year(self):
         '''return the year from content'''
-        return self._year    
+        return self._year
 
 
     @property
