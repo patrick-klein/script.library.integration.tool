@@ -69,7 +69,7 @@ class SyncedMenu(object):
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
-                path=directory,
+                _path=directory,
                 recursive=True,
                 sync_type='movie'
                 )), _type='movie'
@@ -87,7 +87,7 @@ class SyncedMenu(object):
         show_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
-                path=directory,
+                _path=directory,
                 recursive=True,
                 sync_type='tvshow'
                 )), _type='episode'
@@ -106,7 +106,7 @@ class SyncedMenu(object):
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
-                path=directory,
+                _path=directory,
                 allow_directories=True,
                 recursive=True,
                 sync_type='tvshow'
@@ -121,7 +121,7 @@ class SyncedMenu(object):
             show_items = self.filter_blocked_items(
                 list(load_directory_items(
                     progressdialog=None,
-                    path=show_path,
+                    _path=show_path,
                     recursive=True,
                     sync_type='tvshow'
                     )), _type='episode'
@@ -221,7 +221,7 @@ class SyncedMenu(object):
         # Get everything inside tvshow path
         files_list = list(load_directory_items(
             progressdialog=self.progressdialog,
-            path=file,
+            _path=file,
             allow_directories=True,
             recursive=True,
             year=year,
@@ -304,7 +304,7 @@ class SyncedMenu(object):
             self.progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
             files_list = list(load_directory_items(
                 progressdialog=self.progressdialog,
-                path=dir_path,
+                _path=dir_path,
                 allow_directories=True,
                 recursive=True,
                 sync_type=sync_type))
