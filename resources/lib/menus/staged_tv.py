@@ -14,7 +14,7 @@ from resources.lib.utils import METADATA_FOLDER
 from resources.lib.log import logged_function
 from resources.lib.filesystem import remove_dir
 
-from resources.lib.utils import clean_name
+from resources.lib.manipulator import clean_name
 from resources.lib.utils import notification
 from resources.lib.utils import getlocalizedstring
 

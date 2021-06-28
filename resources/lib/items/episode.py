@@ -6,7 +6,7 @@ from os.path import join
 
 from resources.lib.utils import MANAGED_FOLDER
 from resources.lib.utils import METADATA_FOLDER
-from resources.lib.utils import clean_name
+from resources.lib.manipulator import clean_name
 from resources.lib.log import logged_function
 
 from resources.lib.abs.item import ABSItemShow

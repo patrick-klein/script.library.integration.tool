@@ -5,10 +5,9 @@
 
 import unittest
 import xbmcaddon # pylint: disable=import-error
-import resources.lib.utils as utils
 
 from resources.lib.version import Version
-from resources.lib.utils import clean_name
+from resources.lib.manipulator import clean_name
 
 from resources import ADDON_NAME, ADDON_VERSION
 
@@ -19,11 +18,13 @@ class TestUtils(unittest.TestCase):
         '''Check values returned by constants in utils'''
         addon = xbmcaddon.Addon(id='script.library.integration.tool')
         self.assertEqual(
-            ADDON_NAME, addon.getAddonInfo('name')
-            )
+            ADDON_NAME,
+            addon.getAddonInfo('name')
+        )
         self.assertEqual(
-            ADDON_VERSION, addon.getAddonInfo('version')
-            )
+            ADDON_VERSION,
+            addon.getAddonInfo('version')
+        )
         # TODO: test all contants, including type
 
     def test_clean_name(self):
