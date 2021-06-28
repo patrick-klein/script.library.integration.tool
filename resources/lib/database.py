@@ -350,16 +350,14 @@ class Database(object):
     @utf8_args
     @logged_function
     def load_item(self, path):
-        '''Query a single item with path and casts result as contentitem subclasses'''
-        # query database
+        '''Query a single item and return as a json'''
         self.cur.execute('''SELECT
                                 *
                             FROM
                                 Content
                             WHERE
                                 file="%s"''', path)
-        # get results and return items as object
-        return self.content_item_from_db(self.cur.fetchone())
+        return build_json_item(self.cur.fetchone())
 
 
     @utf8_args
