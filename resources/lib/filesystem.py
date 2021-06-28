@@ -198,4 +198,7 @@ def delete_with_wildcard(title_path):
 
 def remove_dir(dir_path):
     '''Remove directory at dir_path'''
-    rmtree(dir_path, ignore_errors=False, onerror=None)
+    try:
+        rmtree(dir_path, ignore_errors=False, onerror=None)
+    except FileNotFoundError:
+        pass
