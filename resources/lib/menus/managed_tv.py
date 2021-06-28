@@ -48,12 +48,11 @@ class ManagedTVMenu(object):
     @logged_function
     def move_all_seasons_to_staged(self, showtitle):
         '''Remove all managed episodes in specified show from library, and add them to staged'''
-        # TODO: move to languages
-        STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172)
+        STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172) % showtitle
         STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173)
         self.progressdialog.create(
             ADDON_NAME,
-            STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED % showtitle
+            STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED
         )
         items = list(
             self.database.get_content_items(

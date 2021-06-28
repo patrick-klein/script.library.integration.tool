@@ -698,8 +698,8 @@ msgid "Remove all seasons"
 msgstr "Remova todas as temporadas"
 
 msgctxt "#32172"
-msgid "Moving all seasons to managed"
-msgstr "Movendo todas as temporadas para armazenados"
+msgid "Move all %s seasons back to staged"
+msgstr "Mover todas as temporadas de %s devolta para armazenados"
 
 msgctxt "#32173"
 msgid "All seasons of %s moved to staged"

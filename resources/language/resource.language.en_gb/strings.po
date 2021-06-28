@@ -701,5 +701,5 @@ msgid "Remove all seasons"
 msgstr ""
 
 msgctxt "#32172"
-msgid "Move all seasons back to staged"
+msgid "Move all %s seasons back to staged"
 msgstr ""
