@@ -65,8 +65,9 @@ class StagedMoviesMenu(object):
         notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
 
+    @staticmethod
     @logged_function
-    def clean_up_metadata(self):
+    def clean_up_metadata():
         '''Remove all unused metadata'''
         STR_MOVIE_METADATA_CLEANED = getlocalizedstring(32136)
         metadata_dir = os.path.join(METADATA_FOLDER, 'Movies')
