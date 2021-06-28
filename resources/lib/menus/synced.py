@@ -33,9 +33,9 @@ class SyncedMenu(object):
         self.progressdialog = xbmcgui.DialogProgress()
 
 
-    def filter_blocked_items(self, items, type):
+    def filter_blocked_items(self, items, _type):
         '''Filters out all blocked items in the list'''
-        return [x for x in items if not self.database.check_blocked(x['label'], type)]
+        return [x for x in items if not self.database.check_blocked(x['label'], _type)]
 
 
     @logged_function
@@ -45,13 +45,13 @@ class SyncedMenu(object):
         for jsonitem in all_items:
             file = jsonitem['file']
             label = jsonitem['label']
-            type = jsonitem['type']
+            _type = jsonitem['type']
             if self.database.path_exists(file=file):
                 continue
-            if type == 'movie':
-                items_to_stage.append((file, label, type))
-            elif type in ['tvshow', 'episode']:
-                items_to_stage.append((file, label, type, jsonitem['showtitle']))
+            if _type == 'movie':
+                items_to_stage.append((file, label, _type))
+            elif _type in ['tvshow', 'episode']:
+                items_to_stage.append((file, label, _type, jsonitem['showtitle']))
         return items_to_stage
 
 
@@ -72,7 +72,7 @@ class SyncedMenu(object):
                 path=directory,
                 recursive=True,
                 sync_type='movie'
-                )), type='movie'
+                )), _type='movie'
             )
         # TODO: this loop aparently not realy work
         for item in dir_items:
@@ -90,7 +90,7 @@ class SyncedMenu(object):
                 path=directory,
                 recursive=True,
                 sync_type='tvshow'
-                )), type='episode'
+                )), _type='episode'
             )
         for item in show_items:
             # Add tag to items
@@ -110,7 +110,7 @@ class SyncedMenu(object):
                 allow_directories=True,
                 recursive=True,
                 sync_type='tvshow'
-                )), type='tvshow'
+                )), _type='tvshow'
             )
         all_items = []
         # Check every tvshow in list
@@ -124,7 +124,7 @@ class SyncedMenu(object):
                     path=show_path,
                     recursive=True,
                     sync_type='tvshow'
-                    )), type='episode'
+                    )), _type='episode'
                 )
             for show_item in show_items:
                 # Add formatted item
