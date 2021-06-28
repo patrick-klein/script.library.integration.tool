@@ -444,11 +444,14 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     def rename(self, name):
         # TODO: Implement
-        raise NotImplementedError('ContentItem.rename(name) not implemented!')
+        raise NotImplementedError('contentitem.rename(name) not implemented!')
 
 
     def rename_using_metadata(self):
         # TODO: Implement
+        raise NotImplementedError('contentitem.rename(name) not implemented!')
+
+
     def delete(self):
         '''Remove the item from the database'''
         self.database.remove_from(
