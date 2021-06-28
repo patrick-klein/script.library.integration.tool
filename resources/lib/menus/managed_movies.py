@@ -29,10 +29,16 @@ class ManagedMoviesMenu(object):
     def move_all_to_staged(self, items):
         '''Remove all managed movies from library, and add them to staged'''
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getlocalizedstring(32015)
-        self.progressdialog.create(ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_MOVING_ALL_MOVIES_BACK_TO_STAGED
+        )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            self.progressdialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(
+                int(percent),
+                item.title
+            )
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close()
@@ -44,10 +50,16 @@ class ManagedMoviesMenu(object):
         '''Remove all managed movies from library'''
         STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
         STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
-        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_REMOVING_ALL_MOVIES
+        )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            self.progressdialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(
+                int(percent),
+                item.title
+            )
             item.remove_from_library()
             item.delete()
         self.progressdialog.close()
@@ -67,7 +79,7 @@ class ManagedMoviesMenu(object):
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
                 ADDON_NAME, STR_MANAGED_MOVIE_OPTIONS,
-                item.movie_title
+                item.title
             ), lines
         )
         if ret >= 0:

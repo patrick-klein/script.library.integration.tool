@@ -187,11 +187,6 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             del item['showtitle']
             if item['label'] == item['title']:
                 del item['label']
-            try:
-                item['movie_title'] = item['title']
-                del item['title']
-            except KeyError:
-                pass
             reordered[item['number'] - 1] = item
         else:
             # CRUNCHYROLL
@@ -450,7 +445,10 @@ def load_directory_items(progressdialog, _path, recursive=False,
             break
         percent = 100 * index / len(listofitems)
         if item['type'] == 'movie':
-            progressdialog.update(int(percent), 'Processando items:\n%s' % item['movie_title'])
+            progressdialog.update(
+                int(percent),
+                'Processando items:\n%s' % item['title']
+            )
             xbmc.sleep(200)
             if item:
                 yield item
@@ -518,7 +516,7 @@ def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
         True
     )
 
- 
+
 def tojs(data, filename):
     '''Function to create a json file'''
     try:

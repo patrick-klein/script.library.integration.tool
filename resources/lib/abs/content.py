@@ -116,27 +116,27 @@ class ABSContentManagerMovie(object):
     # TODO: Make rename on add optional in settings
     # TODO: Save original_label, would be able to rename entire filename using metadata
     def __init__(self, jsondata):
-        self._link_stream_path = None
+        self._file = None
         # mediatype
-        self._movie_title = None
+        self._title = None
         self._year = None
 
 
     def __str__(self):
         '''return str title formated with file path'''
         return '[B]%s[/B] - [I]%s[/I]' % (
-            self.movie_title,
-            self.link_stream_path
+            self.title,
+            self.file
         )
 
 
     @abc.abstractproperty
-    def link_stream_path(self):
+    def file(self):
         '''Path to the episode_title_with_id directory for the item'''
 
 
     @abc.abstractproperty
-    def movie_title(self):
+    def title(self):
         '''Path to the show_dir directory for the item'''
 
 

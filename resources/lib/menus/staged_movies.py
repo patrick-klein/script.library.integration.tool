@@ -38,10 +38,16 @@ class StagedMoviesMenu(object):
         '''Add all staged movies to library'''
         STR_ADDING_ALL_MOVIES = getlocalizedstring(32042)
         STR_ALL_MOVIES_ADDED = getlocalizedstring(32043)
-        self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_ADDING_ALL_MOVIES
+        )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            self.progressdialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(
+                int(percent),
+                item.title
+            )
             item.add_to_library()
         self.progressdialog.close()
         notification(STR_ALL_MOVIES_ADDED)
@@ -54,11 +60,17 @@ class StagedMoviesMenu(object):
         # TODO: Remove code duplication with MovieItem.add_to_library_if_metadata
         STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
         STR_ALL_MOVIES_WITH_METADTA_ADDED = getlocalizedstring(32045)
-        self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_MOVIES_WITH_METADATA)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_ADDING_ALL_MOVIES_WITH_METADATA
+        )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             if os.path.exists(item.movie_nfo[0]):
-                self.progressdialog.update(int(percent), item.movie_title)
+                self.progressdialog.update(
+                    int(percent),
+                    item.title
+                )
                 item.add_to_library()
             # self.progressdialog.update(int(percent), ' ') # TODO: remove it?
         self.progressdialog.close()
@@ -88,10 +100,16 @@ class StagedMoviesMenu(object):
         '''Generate metadata items for all staged movies'''
         STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
         STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
-        self.progressdialog.create(ADDON_NAME, STR_GENERATING_ALL_MOVIE_METADATA)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_GENERATING_ALL_MOVIE_METADATA
+        )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
-            self.progressdialog.update(int(percent), item.movie_title)
+            self.progressdialog.update(
+                int(percent),
+                item.title
+            )
             item.create_metadata_item()
         self.progressdialog.close()
         notification(STR_ALL_MOVIE_METADTA_CREATED)
@@ -100,7 +118,10 @@ class StagedMoviesMenu(object):
     def rename_dialog(item):
         '''Prompt input for new name, and rename if non-empty string'''
         # TODO: move to utils or parent class so it's not duplicated
-        input_ret = xbmcgui.Dialog().input("Title", defaultt=item.movie_title)
+        input_ret = xbmcgui.Dialog().input(
+            "Title",
+            defaultt=item.title
+        )
         if input_ret:
             item.rename(input_ret)
 
@@ -128,7 +149,7 @@ class StagedMoviesMenu(object):
             '{0} - {1} - {2}'.format(
                 ADDON_NAME,
                 STR_STAGED_MOVIE_OPTIONS,
-                item.movie_title),
+                item.title),
             lines
         )
         if ret >= 0:
