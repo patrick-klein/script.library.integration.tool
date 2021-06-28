@@ -33,7 +33,7 @@ def build_json_item(item):
 
 
 def build_contentitem(jsonitem):
-    '''Shortcut to return a MovieItem or EpisodeItem json'''
+    """Shortcut to return a MovieItem or EpisodeItem json"""
     if jsonitem['type'] == 'movie':
         return MovieItem(
             jsonitem=jsonitem

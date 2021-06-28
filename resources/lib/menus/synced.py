@@ -29,6 +29,7 @@ class SyncedMenu(object):
     # IDEA: new "find all directories" context item that finds and consolidates directories
 
     def __init__(self, database):
+        """SyncedMenu class"""
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
 
@@ -431,7 +432,7 @@ class SyncedMenu(object):
 
 
     def update_movies(self):
-        '''Update all synced movie directories'''
+        """Update all synced movie directories"""
         STR_FINDING_ITEMS_TO_REMOVE = getlocalizedstring(32090)
         STR_FINDING_ITEMS_TO_ADD = getlocalizedstring(32092)
         STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getlocalizedstring(32093)
