@@ -88,14 +88,6 @@ def entrypoint(func):
     return wrapper
 
 
-def utf8_args(func):
-    '''Decorator for encoding utf8 on all unicode arguments'''
-    def wrapper(*args, **kwargs):
-        '''function wrapper'''
-        return func(*args, **kwargs)
-    return wrapper
-
-
 def execute_json_rpc(method, _path):
     '''Execute a JSON-RPC command with specified method and params (as keyword arguments)
     See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params'''

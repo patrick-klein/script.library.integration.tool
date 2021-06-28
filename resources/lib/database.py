@@ -21,7 +21,6 @@ from resources.lib import build_contentmanager
 
 from resources.lib.log import logged_function
 
-from resources.lib.utils import utf8_args
 from resources.lib.utils import MANAGED_FOLDER
 
 from resources.lib.items.blocked import BlockedItem
@@ -33,9 +32,6 @@ class Database(object):
 
     #TODO: Reimplement blocked keywords
     #TODO: Combine remove_content_item functions using **kwargs
-    #TODO: use movie, tvshow as a table_name,
-    #the __init__ method to create tables need be updated,
-    #the objective is reduce the if's in all plaves
     def __init__(self):
         # Connect to database
         self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
@@ -90,7 +86,6 @@ class Database(object):
         self.conn.close()
 
 
-    @utf8_args
     @logged_function
     def add_blocked_item(self, value, _type):
         '''Add an item to blocked with the specified values'''
@@ -100,7 +95,6 @@ class Database(object):
             self.conn.commit()
 
 
-    @utf8_args
     @logged_function
     def add_content_item(self, jsondata):
         '''Add content to library'''
@@ -177,7 +171,6 @@ class Database(object):
             )
 
 
-    @utf8_args
     @logged_function
     def add_synced_dir(self, label, path, _type):
         '''Create an entry in synced with specified values'''
@@ -190,7 +183,6 @@ class Database(object):
         self.conn.commit()
 
 
-    @utf8_args
     @logged_function
     def check_blocked(self, value, _type):
         '''Return True if the given entry is in blocked'''
@@ -317,7 +309,6 @@ class Database(object):
             yield build_contentmanager(self, build_contentitem(json_item))
 
 
-    @utf8_args
     @logged_function
     def get_synced_dirs(self, synced_type=None):
         '''Get all items in synced cast as a list of dicts'''
@@ -345,7 +336,6 @@ class Database(object):
         return [SyncedItem(*x) for x in self.cur.fetchall()]
 
 
-    @utf8_args
     @logged_function
     def load_item(self, path):
         '''Query a single item and return as a json'''
@@ -358,7 +348,6 @@ class Database(object):
         return build_json_item(self.cur.fetchone())
 
 
-    @utf8_args
     @logged_function
     def path_exists(self, file):
         '''Return True if path is already in database (with given status)
@@ -381,7 +370,6 @@ class Database(object):
         return tables
 
 
-    @utf8_args
     @logged_function
     def remove_from(self,
                     status=None,
@@ -430,7 +418,6 @@ class Database(object):
         self.conn.commit()
 
 
-    @utf8_args
     @logged_function
     def remove_blocked(self, value, _type):
         '''Remove the item in blocked with the specified parameters'''
@@ -444,7 +431,6 @@ class Database(object):
         self.conn.commit()
 
 
-    @utf8_args
     @logged_function
     def remove_synced_dir(self, path):
         '''Remove the entry in synced with the specified file'''
@@ -456,7 +442,6 @@ class Database(object):
         self.conn.commit()
 
 
-    @utf8_args
     @logged_function
     def update_content(self, file, _type, status=None, title=None):
         '''Update a single field for item in Content with specified path'''
