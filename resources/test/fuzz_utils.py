@@ -13,8 +13,8 @@ import resources.lib.utils as utils
 
 class UtilsTest(unittest.TestCase):
     '''Class that contains test cases for fuzzing utils module'''
-
-    def test_clean_name(self):
+    @staticmethod
+    def test_clean_name():
         '''Run randomly generated strings through utils.clean_name'''
         keywords = [x[0] for x in utils.MAPPED_STRINGS]
         num_keywords = len(keywords)
