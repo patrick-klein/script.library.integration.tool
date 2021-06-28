@@ -22,55 +22,91 @@ from os.path import exists
 
 
 class CreateNfo(object):
-    
+
     '''Module to create a .nfo file'''
+
     def __init__(self, _type, filepath, jsondata):
         self.type = _type
         self.filepath = filepath
         self.jsondata = jsondata
-
-        try:
-            self.create()
-        except Exception as e:
-            raise e
-
-    def create(self):
-        file = open(self.filepath, "w+")
-        root = ''.join(
+        self.root = ''.join(
             [
                 '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n',
                 '<{0}>\n%s</{1}>'.format(self.type, self.type)
             ]
         )
-        # element root: movie, tvshow or episodedetails
-        # tvshow            title, showtitle
-        # movie             title
-        # episodedetails    title, showtitle
-        if self.type == 'tvshow':
-            # future possible new keys:
-            # title, showtitle, year, runtime, thumb aspect="poster"
-            # thumb aspect="poster" season="1" type="season", id, imdbid
-            body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['show_title']),
-                            '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['show_title']),
-                            '\t<year>{0}</year>\n'.format(self.jsondata['year']),])
-        elif self.type == 'episodedetails':
-            # future possible new keys:
-            # id, uniqueid default="true" type="tvdb", runtime, thumb
-            body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['episode_title']),
-                            '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['show_title']),
-                            '\t<season>{0}</season>\n'.format(self.jsondata['season_number']),
-                            '\t<episode>{0}</episode_number>\n'.format(self.jsondata['season_number']),
-                            '\t<year>{0}</year>\n'.format(self.jsondata['year']),
-                            '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['link_stream_path'])])
-        elif self.type == 'movie':
-            # future possible new keys:
-            # runtime, thumb aspect="poster", fanart, thumb, id, tmdbid
-            body = ''.join(['\t<title>{0}</title>\n'.format(self.jsondata['movie_title']),
+
+        self.create()
+
+
+    def tvshow(self):
+        '''create tvshow nfo
+        future possible new keys:
+        title, showtitle, year, runtime, thumb aspect="poster"
+        thumb aspect="poster" season="1" type="season", id, imdbid'''
+        try:
+            return ''.join(
+                [
+                    '\t<title>{0}</title>\n'.format(self.jsondata['showtitle']),
+                    '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['showtitle']),
+                    '\t<year>{0}</year>\n'.format(self.jsondata['year'])
+                ]
+            )
+        except KeyError:
+            pass
+
+
+    def episodedetails(self):
+        '''create episodedetails nfo for tvshow
+        future possible new keys:
+        id, uniqueid default="true" type="tvdb", runtime, thumb'''
+        try:
+            return ''.join(
+                [
+                    '\t<title>{0}</title>\n'.format(self.jsondata['title']),
+                    '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['showtitle']),
+                    '\t<season>{0}</season>\n'.format(self.jsondata['season']),
+                    '\t<episode>{0}</episode_number>\n'.format(self.jsondata['season']),
+                    '\t<year>{0}</year>\n'.format(self.jsondata['year']),
+                    '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['file'])
+                ]
+            )
+        except KeyError:
+            pass
+
+
+    def movie(self):
+        '''create movie nfo
+        future possible new keys:
+        runtime, thumb aspect="poster", fanart, thumb, id, tmdbid'''
+        try:
+            return ''.join(
+                    [
+                        '\t<title>{0}</title>\n'.format(self.jsondata['title']),
                         '\t<year>{0}</year>\n'.format(self.jsondata['year']),
-                        '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['link_stream_path'])])
-        root = root % body
-        file.write(root)
-        file.close()
+                        '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['file'])
+                ]
+            )
+        except KeyError:
+            pass
+
+
+    def create(self):
+        '''create the nfo file
+        element root: movie, tvshow or episodedetails
+        tvshow            title, showtitle
+        movie             title
+        episodedetails    title, showtitle'''
+        body = self.tvshow() or self.episodedetails() or self.movie()
+        self.root = self.root % body
+        with open(self.filepath, "w+") as nfofile:
+            try:
+                nfofile.write(self.root)
+            except Exception as e:
+                log_msg(e)
+                raise e
+            finally:
+                nfofile.close()
 
 
 def create_stream_file(plugin_path, filepath):
