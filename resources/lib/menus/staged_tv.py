@@ -192,7 +192,8 @@ class StagedTVMenu(object):
         notification(STR_ALL_x_METADATA_CREATED % showtitle)
 
 
-    def rename_dialog(self, item):
+    @staticmethod
+    def rename_dialog(item):
         '''Prompt input for new name, and rename if non-empty string'''
         input_ret = xbmcgui.Dialog().input(
             "Title",
