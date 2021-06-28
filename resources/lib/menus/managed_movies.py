@@ -24,8 +24,9 @@ class ManagedMoviesMenu(object):
         self.progressdialog = xbmcgui.DialogProgress()
 
 
-    @staticmethod
+
     @logged_function
+    def move_all_to_staged(self, items):
         '''Remove all managed movies from library, and add them to staged'''
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getlocalizedstring(32015)
         self.progressdialog.create(ADDON_NAME, STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
@@ -38,7 +39,6 @@ class ManagedMoviesMenu(object):
         notification(STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
 
 
-    @staticmethod
     @logged_function
     def remove_all(self, items):
         '''Remove all managed movies from library'''
