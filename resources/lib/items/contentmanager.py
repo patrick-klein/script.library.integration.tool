@@ -105,8 +105,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @logged_function
     def add_to_library(self):
-        # TODO: add a return value so Staged will know
-        # if episode wasn't added and can display a relevant notification
+        '''add item to library'''
         # Rename episode if metadata is available
         self.rename_using_metadata()
         # create show dir
@@ -129,6 +128,7 @@ class ContentManagerShow(ABSContentManagerShow):
                 status='managed',
                 _type='tvshow'
             )
+        return True
 
 
     @logged_function
