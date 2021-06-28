@@ -22,6 +22,7 @@ from os.path import exists
 
 
 class CreateNfo(object):
+    
     '''Module to create a .nfo file'''
     def __init__(self, _type, filepath, jsondata):
         self.type = _type
