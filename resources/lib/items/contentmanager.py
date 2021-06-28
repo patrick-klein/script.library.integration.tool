@@ -151,36 +151,27 @@ class ContentManagerShow(ABSContentManagerShow):
         if not exists(self.metadata_season_dir):
             mkdir(self.metadata_season_dir)
         # Create basic tvshow.nfo
-        if not exists(self.metadata_tvshow_nfo):
-            try:
-                CreateNfo(
-                    _type='tvshow',
-                    filepath=self.metadata_tvshow_nfo,
-                    jsondata=self.jsondata
-                )
-            except Exception:
-                pass
+        CreateNfo(
+            _type='tvshow',
+            filepath=self.metadata_tvshow_nfo,
+            jsondata=self.jsondata
+        )
         # Link tvshow.nfo and artwork now, if self.show_dir[0] exists
         for fname in listdir(self.show_dir[0]):
             if isfile(join(self.show_dir[0], fname)):
-                if (not re.match(
-                        r'(?i)s\d{1,5}(?:(?:x|_|.)e|e)\d{1,5}|\d{1,5}x\d{1,5}', fname
-                    ) or '.strm' in fname):
+                _regex = r'(?i)s\d{1,5}(?:(?:x|_|.)e|e)\d{1,5}|\d{1,5}x\d{1,5}'
+                if (not re.match(_regex, fname) or '.strm' in fname):
                     if not exists(join(self.show_dir[1], fname)):
                         softlink_file(
                             join(self.show_dir[0], fname),
                             join(self.show_dir[1], fname)
                         )
         # create a basic episode nfo
-        if not exists(self.episode_nfo[0]):
-            try:
-                CreateNfo(
-                    _type='episodedetails',
-                    filepath=self.episode_nfo[0],
-                    jsondata=self.jsondata
-                )
-            except Exception:
-                pass
+        CreateNfo(
+            _type='episodedetails',
+            filepath=self.episode_nfo[0],
+            jsondata=self.jsondata
+        )
         # Link metadata for episode if it exists
         if USE_SHOW_ARTWORK:
             # Try show landscape or fanart (since Kodi can't generate thumb for strm)
