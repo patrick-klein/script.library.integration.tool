@@ -436,8 +436,12 @@ class Database(object):
     @logged_function
     def remove_blocked(self, value, _type):
         '''Remove the item in blocked with the specified parameters'''
-        self.cur.execute(
-            (value, _type)
+        self.cur.execute('''DELETE FROM
+                                blocked
+                            WHERE
+                                value=?
+                            AND
+                                type=?''', (value, _type)
         )
         self.conn.commit()
 
