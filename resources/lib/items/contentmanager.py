@@ -409,7 +409,9 @@ class ContentManagerMovie(ABSContentManagerMovie):
                 pass
         # Add metadata (optional)
         self.database.update_content(
+            file=self.file,
             _type='movie',
+            title=self.jsondata['title'],
         )
 
 
@@ -423,12 +425,14 @@ class ContentManagerMovie(ABSContentManagerMovie):
     def remove_and_block(self):
         # Add title to blocked
         self.database.add_blocked_item(
+            self.title,
             'movie'
         )
         # Delete metadata items
         remove_dir(self.movie_dir[0])
         # Remove from db
         self.database.remove_from(
+            file=self.file,
             _type='movie'
         )
 
