@@ -108,7 +108,6 @@ You can customize the behavior of this addon from the settings.  The following o
 *   AMAZON VOD - *Works*
 *   CRUNCHYROLL - *Works*
 *   DISNEY+ - *Works*
-*   SEREN - *Works*
 <!-- * ~~ABC Family - by t1m~~ - *Seems to be broken at the moment*
 *   Classic Cinema - by Jonathan Beluch (jbel)
 *   Cooking Channel - by t1m
