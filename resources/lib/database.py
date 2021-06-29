@@ -98,67 +98,41 @@ class Database(object):
     @logged_function
     def add_content_item(self, jsondata):
         '''Add content to library'''
-        query_defs = tuple()
         sql_comm ='''
             INSERT OR IGNORE INTO
                 {table}
                 %s
             VALUES
                 %s'''.format(table=jsondata['type'])
+        query_defs = {
+            'tvshow': (
+                '''(file,title,type,status,year,showtitle,season,episode)''',
+                '''(:file,:title,:type,'staged',:year,:showtitle,:season,:episode))'''
+                ),
+            'episode': (
+                '''(file,title,type,status,year,showtitle,season,episode)''',
+                '''(:file,:title,:type,'staged',:year,:showtitle,:season,:episode))'''
+                ),
+            'movie': (
+                '''(file,title,type,status,year)''',
+                '''(:file,:title,:type,'staged',:year)'''
+                ),
+            'music': ValueError("Not implemented yet, music")
+        }[jsondata['type']]
+        # sqlite named style:
+        self.cur.execute(sql_comm % query_defs, jsondata)
+        self.conn.commit()
         contentmanager = build_contentmanager(
             self,
             jsondata
         )
-        # sqlite named style:
         if jsondata['type'] == 'tvshow':
-            query_defs = (
-                '''(
-                    file,
-                    title,
-                    type,
-                    status,
-                    year,
-                    showtitle,
-                    season,
-                    episode
-                    )''',
-                '''(
-                    :file,
-                    :title,
-                    :type,
-                    'staged',
-                    :year,
-                    :showtitle,
-                    :season,
-                    :episode
-                    )'''
-            )
-            self.cur.execute(sql_comm % query_defs, jsondata)
-            self.conn.commit()
             if AUTO_ADD_TVSHOWS != NEVER:
                 if AUTO_ADD_TVSHOWS == WITH_EPID:
                     contentmanager.add_to_library()
                 elif AUTO_ADD_TVSHOWS == WITH_METADATA:
                     contentmanager.add_to_library_if_metadata()
         elif jsondata['type'] == 'movie':
-            query_defs = (
-                '''(
-                    file,
-                    title,
-                    type,
-                    status,
-                    year
-                    )''',
-                '''(
-                    :file,
-                    :title,
-                    :type,
-                    'staged',
-                    :year
-                    )'''
-            )
-            self.cur.execute(sql_comm % query_defs, jsondata)
-            self.conn.commit()
             if AUTO_ADD_MOVIES != NEVER:
                 if AUTO_ADD_MOVIES == ALWAYS:
                     contentmanager.add_to_library()
