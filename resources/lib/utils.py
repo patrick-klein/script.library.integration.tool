@@ -143,9 +143,8 @@ def skip_filter(contents_json):
     '''Function to check and filter items in a list'''
     try:
         for item in contents_json:
-            if not ('seren' in item['file'] and item['label'] == 'Next'): # TODO: generic and temporary way to skip seren nextpage
-                if not re_search(item['label']):
-                    yield item
+            if not re_search(item[_key], toskip):
+                yield item
     except TypeError:
         yield None
 
@@ -329,53 +328,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                         reordered[item['season'] - 1] = item
                 elif item['filetype'] == 'file':
                     # NETFLIX EPISODE FILE
-                    if (item['type'] == 'episode' and
-                            re_search(item['file'], ['show', 'season', 'episode'])):
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        if item['episode'] != item['number']:
-                            item['episode'] = item['number']
-                            reordered[item['number'] - 1] = item
-                        else:
-                            reordered[item['episode'] - 1] = item
-            # SEREN
-            if 'plugin.video.seren' in item['file']:
-                if item['filetype'] == 'directory':
-                    # SEREN SHOW DIRECTORY
-                    if (re_search(item['type'], ['tvshow']) and not
-                            re_search(item['file'], ['episode']) and
-                            item['filetype'] == 'directory'):
-                        del item['episode']
-                        del item['season']
-                        reordered[item['number'] - 1] = item
-                    # SEREN SEASON DIRECTORY
-                    if (item['type'] == 'unknown' and
-                            re_search(item['file'], ['show', 'season']) and
-                            item['filetype'] == 'directory' and
-                            STR_SEASON_CHECK is True):
-                        item['showtitle'] = showtitle
-                        item['type'] = 'season'
-                        del item['episode']
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        reordered[item['season'] - 1] = item
-                elif item['filetype'] == 'file':
-                    # SEREN EPISODE FILE
-                    if (item['type'] == 'episode' and
-                            re_search(item['file'], ['show', 'season', 'episode'])):
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        if item['episode'] != item['number']:
-                            item['episode'] = item['number']
-                            reordered[item['number'] - 1] = item
-                        else:
-                            reordered[item['episode'] - 1] = item
+                                reordered[item['episode'] - 1] = item
             # this part of code detect episodes with < 30 in season with 'Next Page'
             # works with CRUNCHYROLL, but can work for all
             if (item['filetype'] == 'file' and
