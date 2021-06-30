@@ -144,7 +144,7 @@ def re_search(string, tosearch=None):
     return bool(any(re.search(rgx, string, re.I) for rgx in tosearch))
 
 
-def skip_filter(contents_json, _key, toskip=SKIP_STRINGS):
+def skip_filter(contents_json, _key, toskip):
     """Function to iterate jsons in a list and filter by key with re."""
     try:
         for item in contents_json:
@@ -385,8 +385,11 @@ def selected_list(results):
     selection = xbmcgui.Dialog().multiselect(
         'Escolha:',
         list(
-            x['label'] for x in skip_filter(results, _key='label'
-                                            )
+            x['label'] for x in skip_filter(
+                results,
+                'label',
+                SKIP_STRINGS
+            )
         )
     )
     try:
@@ -409,7 +412,12 @@ def load_directory_items(progressdialog, _path, recursive=False,
         sync_type = 'all_items'
         results = list(selected_list(results))
     try:
-        filtered = list(skip_filter(results, _key='label'))
+        filtered = list(skip_filter(
+            results,
+            'label',
+            SKIP_STRINGS
+        )
+        )
         listofitems = list(
             list_reorder(
                 filtered,
