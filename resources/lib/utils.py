@@ -124,23 +124,22 @@ def videolibrary(method):
         }, ensure_ascii=False)
     )
 
-def re_search(string, strings_to_skip=None):
+SKIP_STRINGS = [
+    'resumo',
+    'suggested',
+    'extras',
+    'trailer',
+    r'(?i)\#(?:\d{1,5}\.\d{1,5}|SP)',
+]
+
+
+def re_search(string, tosearch=None):
     '''Function check if string exist with re'''
-    STR_SKIP_STRINGS = [
-        'resumo',
-        'suggested',
-        'extras',
-        'trailer',
-        r'(?i)\#(?:\d{1,5}\.\d{1,5}|SP)',
-    ]
-
-    if strings_to_skip:
-        STR_SKIP_STRINGS = strings_to_skip
-    return bool(any(re.search(rgx, string, re.I) for rgx in STR_SKIP_STRINGS))
+    return bool(any(re.search(rgx, string, re.I) for rgx in tosearch))
 
 
-def skip_filter(contents_json):
-    '''Function to check and filter items in a list'''
+def skip_filter(contents_json, _key, toskip=SKIP_STRINGS):
+    '''Function to iterate jsons in a list and filter by key with re'''
     try:
         for item in contents_json:
             if not re_search(item[_key], toskip):
