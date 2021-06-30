@@ -1,7 +1,7 @@
 # /usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Contains various constants and utility functions used thoughout the addon'''
+"""Contains various constants and utility functions used thoughout the addon."""
 
 import re
 import simplejson as json
@@ -42,7 +42,7 @@ else:
 
 
 def check_managed_folder():
-    '''Checks if the managed folder is configured'''
+    """Check if the managed folder is configured."""
     if not exists(MANAGED_FOLDER):
         STR_CHOOSE_FOLDER = 'Created managed folder "{}"'.format(MANAGED_FOLDER)
         mkdir(MANAGED_FOLDER)
@@ -50,7 +50,7 @@ def check_managed_folder():
 
 
 def check_subfolders():
-    '''Checks the subfolders in the Managed and Metadata folders'''
+    """Check the subfolders in the Managed and Metadata folders."""
     # Create subfolders if they don't exist
     subfolders = {
         'ManagedMovies': MANAGED_FOLDER,
@@ -78,9 +78,9 @@ def check_subfolders():
 
 
 def entrypoint(func):
-    '''Decorator to perform actions required for entrypoints'''
+    """Decorator to perform actions required for entrypoints."""
     def wrapper(*args, **kwargs):
-        '''function wrapper'''
+        """function wrapper."""
         check_version_file()
         check_managed_folder()
         check_subfolders()
@@ -89,8 +89,11 @@ def entrypoint(func):
 
 
 def execute_json_rpc(method, _path):
-    '''Execute a JSON-RPC command with specified method and params (as keyword arguments)
-    See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params'''
+    """
+    Execute a JSON-RPC command with specified method and params (as keyword arguments).
+
+    See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params.
+    """
     return json.loads(
         xbmc.executeJSONRPC(
             json.dumps({
@@ -115,7 +118,7 @@ def execute_json_rpc(method, _path):
 
 
 def videolibrary(method):
-    '''A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary.Clean'''
+    """A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary."""
     return xbmc.executeJSONRPC(
         json.dumps({
             'jsonrpc': '2.0',
@@ -134,12 +137,12 @@ SKIP_STRINGS = [
 
 
 def re_search(string, tosearch=None):
-    '''Function check if string exist with re'''
+    """Function check if string exist with re."""
     return bool(any(re.search(rgx, string, re.I) for rgx in tosearch))
 
 
 def skip_filter(contents_json, _key, toskip=SKIP_STRINGS):
-    '''Function to iterate jsons in a list and filter by key with re'''
+    """Function to iterate jsons in a list and filter by key with re."""
     try:
         for item in contents_json:
             if not re_search(item[_key], toskip):
@@ -149,7 +152,7 @@ def skip_filter(contents_json, _key, toskip=SKIP_STRINGS):
 
 
 def list_reorder(contents_json, showtitle, year=False, sync_type=False):
-    '''Return a list of elements reordered by number id'''
+    """Return a list of elements reordered by number id."""
     reordered = [''] * len(contents_json)
     years = []
     stored_title = None
@@ -371,6 +374,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
 
 
 def selected_list(results):
+    """Open a dialog and show entries to user select."""
     mapped = dict()
     for index, item in enumerate(results):
         mapped[index] = item
@@ -391,7 +395,7 @@ def selected_list(results):
 def load_directory_items(progressdialog, _path, recursive=False,
                          allow_directories=False, depth=1, showtitle=False,
                          season=False, year=False, sync_type=False):
-    '''Load items in a directory using the JSON-RPC interface'''
+    """Load items in a directory using the JSON-RPC interface."""
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
     results = execute_json_rpc(
@@ -487,7 +491,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
 
 
 def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
-    '''Provide a shorthand for xbmc builtin notification with addon name'''
+    """Provide a shorthand for xbmc builtin notification with addon name."""
     xbmcgui.Dialog().notification(
         ADDON_NAME,
         message,
@@ -498,7 +502,7 @@ def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
 
 
 def tojs(data, filename):
-    '''Function to create a json file'''
+    """Function to create a json file."""
     try:
         with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
             f.write(str(json.dumps(data, indent=4, sort_keys=True)))
@@ -508,12 +512,12 @@ def tojs(data, filename):
 
 
 def getlocalizedstring(string_id):
-    '''Function to get call getLocalizedString and deal with unicodedecodeerrors'''
+    """Function to get call getLocalizedString and deal with unicodedecodeerrors."""
     return str(ADDON.getLocalizedString(string_id))
 
 
 def title_with_color(label, year=None, color='skyblue'):
-    '''Create a string to use in title Dialog().select'''
+    """Create a string to use in title Dialog().select."""
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
     # TODO: this function can be better, maybe led generic,
     # now, this func add color and year to movie title,

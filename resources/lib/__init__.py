@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Group of Shortcut functions to manipulate and create all type of content'''
+"""Group of Shortcut functions to manipulate and create all type of content."""
 
 from resources.lib.log import logged_function
 
@@ -14,7 +14,7 @@ from resources.lib.items.contentmanager import ContentManagerMovie
 
 @logged_function
 def build_json_item(item):
-    '''Shortcut to convert a database item into a json'''
+    """Shortcut to convert a database item into a json."""
     formated_json = dict()
     keys = [
             'file',
@@ -36,7 +36,7 @@ def build_json_item(item):
 
 @logged_function
 def build_contentitem(jsonitem):
-    """Shortcut to return a MovieItem or EpisodeItem json"""
+    """Shortcut to return a MovieItem or EpisodeItem json."""
     try:
         item = EpisodeItem(jsonitem).returasjson()
     except:
@@ -47,7 +47,7 @@ def build_contentitem(jsonitem):
 
 @logged_function
 def build_contentmanager(database, jsonitem):
-    '''Shortcut to create a ContentManager object'''
+    """Shortcut to create a ContentManager object."""
     try:
         content = ContentManagerShow(database, jsonitem)
     except:

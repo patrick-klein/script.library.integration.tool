@@ -1,7 +1,7 @@
 # /usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''LIT initial module whith base variables used in all projetct'''
+"""LIT initial module whith base variables used in all projetct."""
 
 import xbmc # pylint: disable=import-error
 import xbmcaddon # pylint: disable=import-error

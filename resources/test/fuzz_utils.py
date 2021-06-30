@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Defines class for fuzzing utils module'''
+"""Defines class for fuzzing utils module."""
 
 
 import string
@@ -14,10 +14,12 @@ from resources.lib.manipulator import MAPPED_STRINGS
 
 
 class UtilsTest(unittest.TestCase):
-    '''Class that contains test cases for fuzzing utils module'''
+    """Class that contains test cases for fuzzing utils module."""
+
+
     @staticmethod
     def test_clean_name():
-        '''Run randomly generated strings through utils.clean_name'''
+        """Run randomly generated strings through utils.clean_name."""
         keywords = [x[0] for x in MAPPED_STRINGS]
         num_keywords = len(keywords)
         for _ in range(100):

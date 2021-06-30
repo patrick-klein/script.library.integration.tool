@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''This module gets called from the context menu item "Add selected item to library" (32000).
+"""
+This module gets called from the context menu item "Add selected item to library" (32000).
 
-The purpose is to stage the currently selected movie/tvshow, and update synced directories.'''
+The purpose is to stage the currently selected movie/tvshow, and update synced directories.
+"""
 
 import sys
 
@@ -31,7 +33,7 @@ LIST_TYPE_MOVIES = ['movie', 'PlayVideo', 'play&_play']
 
 @entrypoint
 def main():
-    '''Main entrypoint for context menu item'''
+    """Main entrypoint for context menu item."""
     # is more simple and fast ask user about type, many addons don't give this info
     label = sys.listitem.getLabel()  # pylint: disable=E1101
     year = xbmc.getInfoLabel('ListItem.Year')

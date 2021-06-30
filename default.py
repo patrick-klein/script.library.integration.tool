@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''This modules gets called by the main executable'''
+"""This modules gets called by the main executable."""
 
 import sys
 from resources.lib.utils import entrypoint
@@ -10,8 +10,7 @@ from resources.lib.database import Database
 
 @entrypoint
 def main():
-    '''Main entry point for addon'''
-
+    """Main entry point for addon."""
     if len(sys.argv) == 1:
         from resources.lib.menus.main import MainMenu
         MainMenu(database=Database()).view()

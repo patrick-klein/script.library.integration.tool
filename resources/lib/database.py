@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Defines the DatabaseHandler class'''
+"""Defines the DatabaseHandler class."""
 
 import sqlite3
 
@@ -28,11 +28,12 @@ from resources.lib.items.synced import SyncedItem
 
 
 class Database(object):
-    '''Database class with all database methods.'''
+    """Database class with all database methods."""
 
     #TODO: Reimplement blocked keywords
     #TODO: Combine remove_content_item functions using **kwargs
     def __init__(self):
+        """__init__ database."""
         # Connect to database
         self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
         self.conn.text_factory = str
@@ -82,13 +83,13 @@ class Database(object):
 
 
     def __del__(self):
-        # Close connection when deleted
+        """Close database connection."""
         self.conn.close()
 
 
     @logged_function
     def add_blocked_item(self, value, _type):
-        '''Add an item to blocked with the specified values'''
+        """Add an item to blocked with the specified values."""
         # Ignore if already in table
         if not self.check_blocked(value, _type):
             self.cur.execute("INSERT INTO blocked (value, type) VALUES (?, ?)", (value, _type))
@@ -97,7 +98,7 @@ class Database(object):
 
     @logged_function
     def add_content_item(self, jsondata):
-        '''Add content to library'''
+        """Add content to library."""
         sql_comm ='''
             INSERT OR IGNORE INTO
                 {table}
@@ -143,7 +144,7 @@ class Database(object):
 
     @logged_function
     def add_synced_dir(self, label, path, _type):
-        '''Create an entry in synced with specified values'''
+        """Create an entry in synced with specified values."""
         self.cur.execute(
             '''INSERT OR REPLACE INTO
                     synced(file, label, type)
@@ -155,7 +156,7 @@ class Database(object):
 
     @logged_function
     def check_blocked(self, value, _type):
-        '''Return True if the given entry is in blocked'''
+        """Return True if the given entry is in blocked."""
         # TODO: test if fetchone ir realy working
         self.cur.execute('''SELECT
                                (value)
@@ -170,8 +171,7 @@ class Database(object):
 
     @logged_function
     def get_all_shows(self, status):
-        '''Query Content table for all (not null) distinct showtitles
-        and cast results as list of strings'''
+        """Query Content table for all (not null) distinct showtitles and cast results as list of strings."""
         # Query database
         self.cur.execute(
            '''
@@ -200,7 +200,7 @@ class Database(object):
 
     @logged_function
     def get_blocked_items(self):
-        '''Return all items in blocked as a list of BlockedItem objects'''
+        """Return all items in blocked as a list of BlockedItem objects."""
         self.cur.execute(
             '''SELECT
                     *
@@ -215,13 +215,15 @@ class Database(object):
 
     @logged_function
     def get_content_items(self, status=None, _type=None):
-        '''Query Content table for sorted items with given constaints
-        and casts results as contentitem subclasses
-        keyword arguments:
-            status: string, 'managed' or 'staged'
-            _type: string, 'movie' or 'tvshow'
-            showtitle: string, any show title
-            order: string, any single column'''
+        """
+        Query Content table for sorted items with given constaints and casts results as contentitem subclasses.
+
+            keyword arguments:
+                status: string, 'managed' or 'staged'
+                _type: string, 'movie' or 'tvshow'
+                showtitle: string, any show title
+                order: string, any single column.
+        """
         sql_comm = ('''SELECT
                             *
                         FROM
@@ -237,10 +239,11 @@ class Database(object):
 
     @logged_function
     def get_season_items(self, status, showtitle):
+        """Get seasons of a show and return as ContentManager object."""
         self.cur.execute(
             '''
-                SELECT DISTINCT CAST
-                    (season AS INTEGER)
+                SELECT
+                    *
                 FROM
                     tvshow
                 WHERE
@@ -251,11 +254,14 @@ class Database(object):
                     CAST(season AS INTEGER)''' % (status, showtitle)
         )
         for content in self.cur.fetchall():
-            yield int(*content)
+            json_item = build_json_item(content)
+            yield build_contentmanager(self, build_contentitem(json_item))
 
 
     @logged_function
     def get_episode_items(self, status, showtitle, season):
+        """Get episodes of a show and return as a ContentManager object."""
+        # TODO: Revise this function
         sql_comm ='''
                     SELECT
                         *
@@ -281,7 +287,7 @@ class Database(object):
 
     @logged_function
     def get_synced_dirs(self, synced_type=None):
-        '''Get all items in synced cast as a list of dicts'''
+        """Get all items in synced cast as a list of dicts."""
         sql_templ = '''SELECT
                             *
                         FROM
@@ -308,7 +314,7 @@ class Database(object):
 
     @logged_function
     def load_item(self, path):
-        '''Query a single item and return as a json'''
+        """Query a single item and return as a json."""
         self.cur.execute('''SELECT
                                 *
                             FROM
@@ -320,9 +326,11 @@ class Database(object):
 
     @logged_function
     def path_exists(self, file):
-        '''Return True if path is already in database (with given status)
-            This function can return a list with multple values
-            with name of the tables where item exist'''
+        """
+        Return True if path is already in database (with given status).
+
+        This function can return a list with multple values with name of the tables where item exist.
+        """
         tables = list()
         for table in ['movie', 'tvshow']:
             sql_comm = (
@@ -347,7 +355,7 @@ class Database(object):
                     showtitle=None,
                     file=None,
                     season=None):
-        '''Remove all items colected with sqlquerys'''
+        """Remove all items colected with sqlquerys."""
         STR_CMD_QUERY = "DELETE FROM %s" % _type
         if showtitle:
             STR_CMD_QUERY += '''
@@ -382,7 +390,7 @@ class Database(object):
 
     @logged_function
     def remove_all_synced_dirs(self):
-        '''Delete all entries in synced'''
+        """Delete all entries in synced."""
         # remove all rows
         self.cur.execute('DELETE FROM synced')
         self.conn.commit()
@@ -390,7 +398,7 @@ class Database(object):
 
     @logged_function
     def remove_blocked(self, value, _type):
-        '''Remove the item in blocked with the specified parameters'''
+        """Remove the item in blocked with the specified parameters."""
         self.cur.execute('''DELETE FROM
                                 blocked
                             WHERE
@@ -403,7 +411,7 @@ class Database(object):
 
     @logged_function
     def remove_synced_dir(self, path):
-        '''Remove the entry in synced with the specified file'''
+        """Remove the entry in synced with the specified file."""
         # remove entry
         self.cur.execute(
             "DELETE FROM synced WHERE file=?",
@@ -414,7 +422,7 @@ class Database(object):
 
     @logged_function
     def update_content(self, file, _type, status=None, title=None):
-        '''Update a single field for item in Content with specified path'''
+        """Update a single field for item in Content with specified path."""
         #TODO: Verify there's only one entry in kwargs
         sql_comm = (
             '''UPDATE %s SET {0}=(?) WHERE file=?''' % _type
