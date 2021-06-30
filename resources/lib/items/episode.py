@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Defines the EpisodeItem class'''
+"""Defines the EpisodeItem class."""
 from os.path import join
 
 from resources.lib.utils import MANAGED_FOLDER
@@ -13,8 +13,10 @@ from resources.lib.abs.item import ABSItemShow
 
 
 class EpisodeItem(ABSItemShow):
-    '''Class to build information aboult shows'''
+    """Class to build information aboult shows."""
+
     def __init__(self, jsonitem, year=None):
+        """__init__ EpisodeItem."""
         super(EpisodeItem, self).__init__(jsonitem, year)
         self._file = jsonitem['file']
         self._title = jsonitem['title']
@@ -26,23 +28,25 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def file(self):
+        """return file."""
         return self._file
 
 
     @property
     def title(self):
+        """return title."""
         return clean_name(self._title)
 
 
     @property
     def showtitle(self):
-        '''Show title with problematic characters removed'''
+        """Show title with problematic characters removed."""
         return str(clean_name(self._showtitle))
 
 
     @property
     def season(self):
-        '''Show title with problematic characters removed'''
+        """Show title with problematic characters removed."""
         if self._season == None:
             return 1
         else:
@@ -51,7 +55,7 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def episode(self):
-        '''Show title with problematic characters removed'''
+        """Show title with problematic characters removed."""
         if self._episode == None:
             return  1
         else:
@@ -60,17 +64,19 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def year(self):
-        '''Show title with problematic characters removed'''
+        """Show title with problematic characters removed."""
         return self._year
 
 
     @property
     def season_dir(self):
+        """retirn season_dir."""
         return ('Season %s' % (self.season))
 
 
     @property
     def episode_id(self):
+        """return episode_id."""
         if self.season <= 9:
             season = ('S0%s' % self.season)
         else:
@@ -84,6 +90,7 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def managed_show_dir(self):
+        """return managed_show_dir."""
         if not self._managed_dir:
             self._managed_dir = join(
                 MANAGED_FOLDER, 'ManagedTV', self.showtitle
@@ -93,6 +100,7 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def metadata_show_dir(self):
+        """return metadata_show_dir."""
         if not self._metadata_show_dir:
             self._metadata_show_dir = join(METADATA_FOLDER, 'TV', self.showtitle)
         return self._metadata_show_dir
@@ -100,6 +108,7 @@ class EpisodeItem(ABSItemShow):
 
     @logged_function
     def returasjson(self):
+        """return a dict with all information about tvshow."""
         try:
             return {
                 'file': self.file,

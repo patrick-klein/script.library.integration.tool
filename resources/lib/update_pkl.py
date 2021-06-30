@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Script that converts old-style .pkl files to a SQLite database'''
+"""Script that converts old-style .pkl files to a SQLite database."""
 
 import os
 
@@ -17,7 +17,7 @@ from resources.lib.log import logged_function
 # TODO: this module need to be updated
 @logged_function
 def update_managed():
-    '''Convert managed.pkl items to SQLite entries'''
+    """Convert managed.pkl items to SQLite entries."""
     managed_file = os.path.join(MANAGED_FOLDER, 'managed.pkl')
     if os.path.exists(managed_file):
         dbh = Database()
@@ -42,7 +42,7 @@ def update_managed():
 
 @logged_function
 def update_staged():
-    '''Convert staged.pkl items to SQLite entries'''
+    """Convert staged.pkl items to SQLite entries."""
     staged_file = os.path.join(MANAGED_FOLDER, 'staged.pkl')
     if os.path.exists(staged_file):
         dbh = Database()
@@ -66,7 +66,7 @@ def update_staged():
 
 @logged_function
 def update_synced():
-    '''Convert managed.pkl items to SQLite entries'''
+    """Convert managed.pkl items to SQLite entries."""
     #TODO: Actually load paths and try to get new label
     synced_file = os.path.join(MANAGED_FOLDER, 'synced.pkl')
     if os.path.exists(synced_file):
@@ -79,7 +79,7 @@ def update_synced():
 
 @logged_function
 def update_blocked():
-    '''Convert blocked.pkl items to SQLite entries'''
+    """Convert blocked.pkl items to SQLite entries."""
     blocked_file = os.path.join(MANAGED_FOLDER, 'blocked.pkl')
     if os.path.exists(blocked_file):
         dbh = Database()
@@ -92,8 +92,11 @@ def update_blocked():
 
 @logged_function
 def main():
-    '''Main entrypoint for module.
-    Update log and call other functions to update files'''
+    """
+    Main entrypoint for module.
+
+    Update log and call other functions to update files.
+    """
     log_msg('Updating pickle files...', xbmc.LOGINFO)
     update_managed()
     update_staged()
