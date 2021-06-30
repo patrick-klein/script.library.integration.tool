@@ -16,7 +16,6 @@ from resources.lib.manipulator import MAPPED_STRINGS
 class UtilsTest(unittest.TestCase):
     """Class that contains test cases for fuzzing utils module."""
 
-
     @staticmethod
     def test_clean_name():
         """Run randomly generated strings through utils.clean_name."""

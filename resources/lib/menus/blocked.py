@@ -11,17 +11,20 @@ from resources.lib.utils import getlocalizedstring
 
 
 class BlockedMenu(object):
-    """Provide windows for displaying blocked items,
-    and tools for managing them."""
+    """Provide windows for displaying blocked items and tools for managing them."""
 
     def __init__(self, database):
+        """__init__ BlockedMenu."""
         self.database = database
 
 
     @logged_function
     def view(self):
-        """Display all blocked items, which are selectable and lead to options.
-        Also provides additional options at bottom of menu."""
+        """
+        Display all blocked items, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         # TODO?: change blocked movie/episode to just blocked path
         # TODO?: make blocked episode match on both episode AND show
         # TODO: add blocked types: plugin, path

@@ -21,14 +21,14 @@ from resources.lib.utils import getlocalizedstring
 
 
 class StagedMoviesMenu(object):
-    """Provide windows for displaying staged movies,
-    and tools for managing the items."""
+    """Provide windows for displaying staged movies, and tools for managing the items."""
 
     #TODO: don't commit sql changes for "... all" until end
     #TODO: decorator for "...all" commands
     #TODO: load staged movies on init, use as instance variable, refresh as needed
 
     def __init__(self, database):
+        """__init__ StagedMoviesMenu."""
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
 
@@ -191,8 +191,11 @@ class StagedMoviesMenu(object):
 
     @logged_function
     def view_all(self):
-        """Display all staged movies, which are selectable and lead to options.
-        Also provides additional options at bottom of menu."""
+        """
+        Display all staged movies, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         STR_NO_STAGED_MOVIES = getlocalizedstring(32037)
         STR_ADD_ALL_MOVIES = getlocalizedstring(32038)
         STR_ADD_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32039)

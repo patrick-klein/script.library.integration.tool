@@ -23,8 +23,11 @@ from resources.lib.utils import load_directory_items
 
 
 class SyncedMenu(object):
-    """Provides windows for displaying synced directories,
-    and tools for managing them and updating their contents."""
+    """
+    Provide windows for displaying synced directories.
+
+    Provide for managing them and updating their contents.
+    """
 
     # IDEA: new "find all directories" context item that finds and consolidates directories
 
@@ -35,7 +38,7 @@ class SyncedMenu(object):
 
 
     def filter_blocked_items(self, items, _type):
-        """Filters out all blocked items in the list."""
+        """Filter out all blocked items in the list."""
         return [x for x in items if not self.database.check_blocked(x['label'], _type)]
 
 
@@ -282,8 +285,7 @@ class SyncedMenu(object):
 
     @logged_function
     def add_all_items_in_directory(self, sync_type, dir_label, dir_path):
-        """Synchronize all items in a directory (movies/series or all),
-         based on the user's choice and stage items."""
+        """Synchronize all items in a directory (movies/series or all)."""
         # TODO: new notification label to show movies,
         #  TV shows and episodes that have been added
         contentitem = None
@@ -354,9 +356,11 @@ class SyncedMenu(object):
 
 
     def update_all(self):
-        """Get all items from synced directories, and
-        find unavailable items to remove from managed,
-        and new items to stage."""
+        """
+        Get all items from synced directories.
+
+        Find unavailable items to remove from managed and new items to stage.
+        """
         # TODO: bugfix: single-movies won't actually get removed if they become unavailable
         #       maybe load parent dir and check for path or label?  it would be slower though
         # TODO: option to only update specified or managed items
@@ -542,8 +546,11 @@ class SyncedMenu(object):
 
     @logged_function
     def view(self):
-        """Display all synced directories, which are selectable and lead to options.
-        Also provides additional options at bottom of menu."""
+        """
+        Display all synced directories, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         STR_UPDATE_ALL = getlocalizedstring(32081)
         STR_UPDATE_TV_SHOWS = getlocalizedstring(32137)
         STR_UPDATE_MOVIES = getlocalizedstring(32138)

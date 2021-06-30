@@ -15,10 +15,14 @@ from resources.lib.utils import getlocalizedstring
 
 
 class ManagedTVMenu(object):
-    """Provide windows for displaying managed shows and episodes,
-    and tools for manipulating the objects and managed file."""
+    """
+    Provide windows for displaying managed shows and episodes.
+
+    Also tools for manipulating the objects and managed file.
+    """
 
     def __init__(self, database):
+        """__init__ ManagedTVMenu."""
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
 
@@ -213,9 +217,11 @@ class ManagedTVMenu(object):
 
     @logged_function
     def view_episodes(self, showtitle, season):
-        """Displays all managed episodes in the specified show,
-        which are selectable and lead to options.
-        Also provides additional options at bottom of menu."""
+        """
+        Display all managed episodes in the specified show, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         STR_NO_MANAGED_x_EPISODES = getlocalizedstring(32028) % showtitle
         STR_REMOVE_ALL_EPISODES = getlocalizedstring(32029)
         STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = getlocalizedstring(32030)
@@ -264,9 +270,11 @@ class ManagedTVMenu(object):
 
     @logged_function
     def view_seasons(self, showtitle):
-        """Displays all managed seasons in the specified show,
-        which are selectable and lead to options.
-        Also provides additional options at bottom of menu."""
+        """
+        Display all managed seasons in the specified show, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         # TODO: functions to remove all or add all if necessary
         STR_NO_MANAGED_X_SEASONS = getlocalizedstring(32170) % showtitle
         STR_REMOVE_ALL_SEASONS = getlocalizedstring(32171)
@@ -318,8 +326,11 @@ class ManagedTVMenu(object):
 
     @logged_function
     def view_shows(self):
-        """Display all managed tvshows, which are selectable and lead to options.
-        Also provides additional options at bottom of menu."""
+        """
+        Display all managed tvshows, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         STR_NO_MANAGED_TV_SHOWS = getlocalizedstring(32020)
         STR_REMOVE_ALL_TV_SHOWS = getlocalizedstring(32021)
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32022)
