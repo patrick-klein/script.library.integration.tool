@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''This module gets called from the context menu item "Add selected item to library" (32000).
+
 The purpose is to stage the currently selected movie/tvshow, and update synced directories.'''
 
 import sys
