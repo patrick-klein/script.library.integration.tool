@@ -18,6 +18,7 @@ class MainMenu(object):
     '''Perform basic initialization of folder structure
     and displays a window that leads to other menus'''
     def __init__(self, database):
+        '''__init__ MainMenu'''
         self.database = database
     # IDEA: use plugin menu system instead of dialog windows
     # TODO: option to automatically add movies & episodes with epids

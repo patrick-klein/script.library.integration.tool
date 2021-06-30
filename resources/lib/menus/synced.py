@@ -197,7 +197,7 @@ class SyncedMenu(object):
         else:
             # Add item to database
             item = build_json_item([file, title, 'movie', None, year])
-            self.database.add_content_item(item)
+            self.database.add_content_item(build_contentitem(item))
             notification('%s: %s' % (
                 STR_MOVIE_STAGED,
                 title_with_color(title, year)
@@ -321,10 +321,7 @@ class SyncedMenu(object):
                     content_title = contentitem['showtitle']
                 if self.database.check_blocked(content_title, contentitem['type']):
                     continue
-                if self.database.path_exists(
-                        path=contentitem['file'],
-                        status=['staged', 'managed'],
-                        type=contentitem['type']):
+                if self.database.path_exists(file=contentitem['file']):
                     continue
                 # Update progress
                 percent = 100 * index / len(files_list)
@@ -338,7 +335,6 @@ class SyncedMenu(object):
                     # try add tvshow
                     self.database.add_content_item(
                         contentitem,
-                        'tvshow'
                     )
                     xbmc.sleep(300)
                 except KeyError:
@@ -349,7 +345,6 @@ class SyncedMenu(object):
                     # try add movie
                     self.database.add_content_item(
                         contentitem,
-                        'movie'
                     )
                     xbmc.sleep(500)
                 items_to_stage += 1

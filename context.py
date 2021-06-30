@@ -62,14 +62,14 @@ def main():
                     title=label,
                     year=year,
                     file=file
-                    )
+                )
         elif selection == STR_IS_A_SHOW:
             if re_search(file, LIST_TYPE_SERIES):
                 syncedmenu.add_single_tvshow(
                     title=label,
                     year=year,
                     file=file
-                    )
+                )
         elif selection == STR_CANCEL_RED:
             xbmc.sleep(200)
             notification(getlocalizedstring(32158))
