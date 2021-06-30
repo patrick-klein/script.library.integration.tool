@@ -157,14 +157,22 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
     for index, item in enumerate(contents_json):
         # TODO: check if logic is real necessary, test is for all languages eficient
         STR_SEASON_CHECK = re_search(
-            item['label'], ['season', 'temporada', r'S\d{1,4}']
-            )
+            item['label'],
+            ['season', 'temporada', r'S\d{1,4}']
+        )
         if sync_type != 'all_items':
             if sync_type == 'movie' and item['type'] == 'movie':
                 pass
-            elif (sync_type == 'tvshow' and re_search(item['type'],
-                      ['tvshow', 'season', 'episode', 'unknown', 'directory'])):
-                pass
+            elif sync_type == 'tvshow':
+                tvshow_search = [
+                    'tvshow',
+                    'season',
+                    'episode',
+                    'unknown',
+                    'directory'
+                ]
+                if re_search(item['type'], tvshow_search):
+                    pass
             elif sync_type == 'music' and item['type'] == 'music':
                 pass
             else:
@@ -191,28 +199,30 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             if 'crunchyroll' in item['file']:
                 # CRUNCHYROLL SHOW DIRECTORY
                 if item['filetype'] == 'directory':
-                    if (re_search(item['type'], ['tvshow', 'unknown']) and not
-                            re_search(item['file'], [
-                                r'(status|mode)\=(Continuing|status|Completed|series)'
-                            ])):
-                        item['type'] = 'tvshow'
-                        del item['episode']
-                        del item['season']
-                        del item['title']
-                        reordered[item['number'] - 1] = item
+                    if not re_search(item['type'], ['tvshow', 'unknown']):
+                        _regex=[
+                            r'(status|mode)\=(Continuing|status|Completed|series)'
+                        ]
+                        if not re_search(item['file'], _regex):
+                            item['type'] = 'tvshow'
+                            del item['episode']
+                            del item['season']
+                            del item['title']
+
+                            reordered[item['number'] - 1] = item
                     # CRUNCHYROLL SEASON DIRECTORY
-                    if (item['type'] == 'unknown' and
-                            re_search(item['file'], ['season='])):
-                        del item['episode']
-                        item['type'] = 'season'
-                        item['showtitle'] = showtitle
-                        if item['season'] == 0:
-                            item['season'] = 1
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        reordered[item['number'] - 1] = item
+                    if item['type'] == 'unknown':
+                        if re_search(item['file'], ['season=']):
+                            del item['episode']
+                            item['type'] = 'season'
+                            item['showtitle'] = showtitle
+                            if item['season'] == 0:
+                                item['season'] = 1
+                            try:
+                                years.append(item['year'])
+                            except KeyError:
+                                pass
+                            reordered[item['number'] - 1] = item
                 elif item['filetype'] == 'file':
                     # CRUNCHYROLL EPISODE FILE
                     if re_search(item['file'], ['episode=']):
@@ -226,78 +236,76 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             if 'amazon' in item['file']:
                 if item['filetype'] == 'directory':
                     # AMAZON SHOW DIRECTORY
-                    if (re_search(item['type'], ['tvshow']) and
-                            item['episode'] == -1 and
-                            item['season'] == -1 and
-                            STR_SEASON_CHECK is False):
-                        item['type'] = 'tvshow'
-                        item['showtitle'] = item['label']
-                        del item['episode']
-                        del item['season']
-                        reordered[item['number'] - 1] = item
+                    if item['episode'] == -1 and item['season'] == -1:
+                        if STR_SEASON_CHECK is False:
+                            if re_search(item['type'], ['tvshow']):
+                                item['type'] = 'tvshow'
+                                item['showtitle'] = item['label']
+                                del item['episode']
+                                del item['season']
+                                reordered[item['number'] - 1] = item
                     # AMAZON SEASON DIRECTORY
-                    if (item['type'] == 'unknown' and
-                            item['season'] != -1 and
-                            STR_SEASON_CHECK is True):
-                        del item['episode']
-                        del item['number']
-                        item['type'] = 'season'
-                        item['showtitle'] = showtitle
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        reordered[item['season'] - 1] = item
-                        # TODO: Bad method to get seasons without 'Season' in label
-                    elif (item['filetype'] == 'directory' and
-                        item['episode'] == -1 and
-                        item['season'] != -1 and
-                        STR_SEASON_CHECK is False):
-                        del item['episode']
-                        del item['number']
-                        item['type'] = 'season'
-                        item['showtitle'] = showtitle
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        reordered[item['season'] - 1] = item
+                    if item['type'] == 'unknown' and item['season'] != -1:
+                            if STR_SEASON_CHECK is True:
+                                del item['episode']
+                                del item['number']
+                                item['type'] = 'season'
+                                item['showtitle'] = showtitle
+                                try:
+                                    years.append(item['year'])
+                                except KeyError:
+                                    pass
+                                reordered[item['season'] - 1] = item
+                                # TODO: Bad method to get seasons without 'Season' in label
+                    elif item['filetype'] == 'directory':
+                        if item['episode'] == -1:
+                            if item['season'] != -1:
+                                if STR_SEASON_CHECK is False:
+                                    del item['episode']
+                                    del item['number']
+                                    item['type'] = 'season'
+                                    item['showtitle'] = showtitle
+                                    try:
+                                        years.append(item['year'])
+                                    except KeyError:
+                                        pass
+                                    reordered[item['season'] - 1] = item
                 elif item['filetype'] == 'file':
                     # AMAZON EPISODE FILE
-                    if (item['episode'] != -1 and
-                            item['season'] != -1 and
-                            item['type'] == 'episode'):
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        reordered[item['episode'] - 1] = item
+                    if item['episode'] != -1:
+                        if item['season'] != -1:
+                            if item['type'] == 'episode':
+                                try:
+                                    years.append(item['year'])
+                                except KeyError:
+                                    pass
+                                reordered[item['episode'] - 1] = item
             # DISNEY
             if 'disney' in item['file']:
                 # DISNEY SHOW DIRECTORY
                 if item['filetype'] == 'directory':
-                    if (item['type'] == 'tvshow' and
-                            item['season'] == -1 and
-                            STR_SEASON_CHECK is False):
-                        item['showtitle'] = item['title']
-                        item['type'] = 'tvshow'
-                        del item['episode']
-                        del item['season']
-                        reordered[item['number'] - 1] = item
+                    if item['type'] == 'tvshow':
+                        if item['season'] == -1:
+                            if STR_SEASON_CHECK is False:
+                                item['showtitle'] = item['title']
+                                item['type'] = 'tvshow'
+                                del item['episode']
+                                del item['season']
+                                reordered[item['number'] - 1] = item
                     # DISNEY SEASON DIRECTORY
-                    if (item['type'] == 'unknown' and
-                            STR_SEASON_CHECK is True):
-                        item['showtitle'] = showtitle
-                        del item['episode']
-                        item['type'] = 'season'
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        reordered[item['season'] - 1] = item
+                    if item['type'] == 'unknown':
+                        if STR_SEASON_CHECK is True:
+                            item['showtitle'] = showtitle
+                            del item['episode']
+                            item['type'] = 'season'
+                            try:
+                                years.append(item['year'])
+                            except KeyError:
+                                pass
+                            reordered[item['season'] - 1] = item
                 elif item['filetype'] == 'file':
                     # DISNEY EPISODE FILE
-                    if (item['type'] == 'episode'):
+                    if item['type'] == 'episode':
                         try:
                             years.append(item['year'])
                         except KeyError:
@@ -307,31 +315,40 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             if 'netflix' in item['file']:
                 if item['filetype'] == 'directory':
                     # NETFLIX SHOW DIRECTORY
-                    if (re_search(item['type'], ['tvshow']) and not
-                            re_search(item['file'], ['season', 'episode'])):
-                        del item['episode']
-                        del item['season']
-                        reordered[item['number'] - 1] = item
+                    if re_search(item['type'], ['tvshow']):
+                        if not re_search(item['file'], ['season', 'episode']):
+                            del item['episode']
+                            del item['season']
+                            reordered[item['number'] - 1] = item
                     # NETFLIX SEASON DIRECTORY
-                    if (item['type'] == 'unknown' and
-                            re_search(item['file'], ['show', 'season']) and not
-                            re_search(item['file'], ['episode']) and
-                            STR_SEASON_CHECK is True):
-                        item['showtitle'] = showtitle
-                        item['type'] = 'season'
-                        del item['episode']
-                        try:
-                            years.append(item['year'])
-                        except KeyError:
-                            pass
-                        reordered[item['season'] - 1] = item
+                    if item['type'] == 'unknown':
+                        if re_search(item['file'], ['show', 'season']):
+                            if not re_search(item['file'], ['episode']):
+                                if STR_SEASON_CHECK is True:
+                                    item['showtitle'] = showtitle
+                                    item['type'] = 'season'
+                                    del item['episode']
+                                    try:
+                                        years.append(item['year'])
+                                    except KeyError:
+                                        pass
+                                    reordered[item['season'] - 1] = item
                 elif item['filetype'] == 'file':
                     # NETFLIX EPISODE FILE
+                    if item['type'] == 'episode':
+                        if re_search(item['file'], ['show', 'season', 'episode']):
+                            try:
+                                years.append(item['year'])
+                            except KeyError:
+                                pass
+                            if item['episode'] != item['number']:
+                                item['episode'] = item['number']
+                                reordered[item['number'] - 1] = item
+                            else:
                                 reordered[item['episode'] - 1] = item
             # this part of code detect episodes with < 30 in season with 'Next Page'
             # works with CRUNCHYROLL, but can work for all
-            if (item['filetype'] == 'file' and
-                    item['type'] == 'episode'):
+            if item['filetype'] == 'file' and item['type'] == 'episode':
                 if stored_season and stored_title is None:
                     stored_title = item['showtitle']
                     stored_season = item['season']
@@ -358,7 +375,12 @@ def selected_list(results):
     for index, item in enumerate(results):
         mapped[index] = item
     selection = xbmcgui.Dialog().multiselect(
-        'Escolha:', list(x['label'] for x in skip_filter(results)))
+        'Escolha:',
+        list(
+            x['label'] for x in skip_filter(results, _key='label'
+            )
+        )
+    )
     try:
         for index in selection:
             yield mapped[index]
@@ -379,9 +401,15 @@ def load_directory_items(progressdialog, _path, recursive=False,
         sync_type = 'all_items'
         results = list(selected_list(results))
     try:
-        listofitems = list(list_reorder(
-            list(skip_filter(results)
-                ), showtitle=showtitle, year=year, sync_type=sync_type))
+        filtered = list(skip_filter(results, _key='label'))
+        listofitems = list(
+            list_reorder(
+                filtered,
+                showtitle=showtitle,
+                year=year,
+                sync_type=sync_type
+            )
+        )
     except (KeyError, TypeError):
         listofitems = []
 
