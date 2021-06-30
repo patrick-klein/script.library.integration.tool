@@ -107,11 +107,7 @@ class Database(object):
         query_defs = {
             'tvshow': (
                 '''(file,title,type,status,year,showtitle,season,episode)''',
-                '''(:file,:title,:type,'staged',:year,:showtitle,:season,:episode))'''
-                ),
-            'episode': (
-                '''(file,title,type,status,year,showtitle,season,episode)''',
-                '''(:file,:title,:type,'staged',:year,:showtitle,:season,:episode))'''
+                '''(:file,:title,:type,'staged',:year,:showtitle,:season,:episode)'''
                 ),
             'movie': (
                 '''(file,title,type,status,year)''',
