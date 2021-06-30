@@ -148,8 +148,7 @@ def skip_filter(contents_json, _key, toskip):
     """Function to iterate jsons in a list and filter by key with re."""
     try:
         for item in contents_json:
-            if not re_search(item[_key], toskip):
-
+            if not bool(any(re.search(rgx, item[_key], re.I) for rgx in toskip)):
                 yield item
     except TypeError:
         yield None
