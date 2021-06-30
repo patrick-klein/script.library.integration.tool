@@ -40,15 +40,20 @@ class ContentManagerShow(ABSContentManagerShow):
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
         # managed + show dir + season dir
-        self.metadata_season_dir = join(self.show_dir[0], self.jsondata['season_dir'])
-        self.managed_season_dir = join(self.show_dir[1], self.jsondata['season_dir'])
+        self.metadata_season_dir = join(
+            self.show_dir[0], self.jsondata['season_dir'])
+        self.managed_season_dir = join(
+            self.show_dir[1], self.jsondata['season_dir'])
 
         # Full path of episode without extension
-        self.managed_ep_path = join(self.managed_season_dir, self.complete_episode_title)
-        self.metadata_ep_path = join(self.metadata_season_dir, self.complete_episode_title)
+        self.managed_ep_path = join(
+            self.managed_season_dir, self.complete_episode_title)
+        self.metadata_ep_path = join(
+            self.metadata_season_dir, self.complete_episode_title)
         # Full path of muitple files with extension
 
-        self.metadata_thumb_path = ''.join([self.metadata_ep_path, '-thumb.jpg'])
+        self.metadata_thumb_path = ''.join(
+            [self.metadata_ep_path, '-thumb.jpg'])
         self.managed_thumb_path = ''.join([self.managed_ep_path, '-thumb.jpg'])
 
         self.metadata_landscape_path = join(self.show_dir[0], 'landscape.jpg')
@@ -62,12 +67,10 @@ class ContentManagerShow(ABSContentManagerShow):
 
         self.managed_strm_path = ''.join([self.managed_ep_path, '.strm'])
 
-
     @property
     def showtitle(self):
         """Return showtitle."""
         return self.jsondata['showtitle']
-
 
     @property
     def show_dir(self):
@@ -77,12 +80,10 @@ class ContentManagerShow(ABSContentManagerShow):
             ' '.join([self.jsondata['managed_show_dir'], self.formedyear])
         )
 
-
     @property
     def formedyear(self):
         """Return formedyear."""
         return '(%s)' % self.jsondata['year']
-
 
     @property
     def complete_episode_title(self):
@@ -92,26 +93,23 @@ class ContentManagerShow(ABSContentManagerShow):
             self.episode_title_with_id
         )
 
-
     @property
     def file(self):
         """Return file."""
         return self.jsondata['file']
-
 
     @property
     def episode_title_with_id(self):
         """Return episode_title_with_id."""
         return self.jsondata['episode_title_with_id']
 
-
     @property
     def episode_nfo(self):
         """Return episode_nfo."""
         return (
-            ''.join([self.metadata_ep_path, '.nfo']), ''.join([self.managed_ep_path, '.nfo'])
+            ''.join([self.metadata_ep_path, '.nfo']), ''.join(
+                [self.managed_ep_path, '.nfo'])
         )
-
 
     @logged_function
     def add_to_library(self):
@@ -140,14 +138,12 @@ class ContentManagerShow(ABSContentManagerShow):
             )
         return True
 
-
     @logged_function
     def add_to_library_if_metadata(self):
         """Add ato library with metadata."""
         self.read_metadata_item()
         if exists(self.episode_nfo[0]):
             self.add_to_library()
-
 
     @logged_function
     def create_metadata_item(self):
@@ -203,7 +199,6 @@ class ContentManagerShow(ABSContentManagerShow):
             _type='tvshow'
         )
 
-
     @logged_function
     def read_metadata_item(self):
         """Rename the content item based on old .nfo files."""
@@ -215,7 +210,6 @@ class ContentManagerShow(ABSContentManagerShow):
                 title=self.jsondata['title'],
                 _type='tvshow'
             )
-
 
     @logged_function
     def remove_and_block(self):
@@ -234,7 +228,6 @@ class ContentManagerShow(ABSContentManagerShow):
             _type='episode'
         )
 
-
     @logged_function
     def remove_from_library(self):
         """Remove from library."""
@@ -248,7 +241,6 @@ class ContentManagerShow(ABSContentManagerShow):
                     break
             else:
                 remove_dir(self.show_dir[1])
-
 
     # @logged_function
     # def rename(self, name):
@@ -271,8 +263,6 @@ class ContentManagerShow(ABSContentManagerShow):
     #         title=self.showtitle,
     #         _type='tvshow'
     #     )
-
-
 
     @logged_function
     def rename_using_metadata(self):
@@ -298,14 +288,12 @@ class ContentManagerShow(ABSContentManagerShow):
         #         new_title = self.clean_title.replace('-0x0', '')
         #         self.rename(new_title)
 
-
     def delete(self):
         """Remove the item from the database."""
         self.database.remove_from(
             _type='tvshow',
             file=self.file
         )
-
 
     def set_as_staged(self):
         """Set the item status as staged in database."""
@@ -329,30 +317,25 @@ class ContentManagerMovie(ABSContentManagerMovie):
             ''.join([self.title, '.strm'])
         )
 
-
     @property
     def file(self):
         """Return file."""
         return self.jsondata['file']
-
 
     @property
     def title(self):
         """Return title."""
         return ' '.join([self.jsondata['title'], self.formedyear])
 
-
     @property
     def year(self):
         """Return year."""
         return self.jsondata['year']
 
-
     @property
     def formedyear(self):
         """Return formedyear."""
         return '(%s)' % self.jsondata['year']
-
 
     @property
     def movie_dir(self):
@@ -362,7 +345,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
             ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
         )
 
-
     @property
     def movie_nfo(self):
         """retirm movie_nfo."""
@@ -370,7 +352,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
             join(self.movie_dir[0], ''.join([self.title, '.nfo'])),
             join(self.movie_dir[1], ''.join([self.title, '.nfo']))
         )
-
 
     @logged_function
     def add_to_library(self):
@@ -390,7 +371,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
             _type='movie'
         )
 
-
     @logged_function
     def create_metadata_item(self):
         """Create metadata item."""
@@ -409,8 +389,8 @@ class ContentManagerMovie(ABSContentManagerMovie):
                     jsondata=self.jsondata
                 )
                 softlink_files_in_dir(
-                        self.movie_dir[0], self.movie_dir[1]
-                    )
+                    self.movie_dir[0], self.movie_dir[1]
+                )
                 delete_strm(self.movie_dir[1])
             except Exception:
                 pass
@@ -421,13 +401,11 @@ class ContentManagerMovie(ABSContentManagerMovie):
             title=self.jsondata['title'],
         )
 
-
     @logged_function
     def add_to_library_if_metadata(self):
         """Add item to library with metadata."""
         if exists(self.movie_nfo[0]):
             self.add_to_library()
-
 
     @logged_function
     def remove_and_block(self):
@@ -445,33 +423,27 @@ class ContentManagerMovie(ABSContentManagerMovie):
             _type='movie'
         )
 
-
     @logged_function
     def remove_from_library(self):
         """Remove from library."""
         remove_dir(self.movie_dir[1])
-
 
     def rename(self, name):
         """Rename item."""
         # TODO: Implement
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
-
     def rename_using_metadata(self):
         """Rename item using metadata."""
         # TODO: Implement
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
-
     def delete(self):
-        """Rename item item."""
         """Remove the item from the database."""
         self.database.remove_from(
             _type='movie',
             file=self.file
         )
-
 
     def set_as_staged(self):
         """Set the item status as staged in database."""
