@@ -160,6 +160,7 @@ From "View Staged Movies", select the movie you already have. Choose the option
 mind that any metadata files you've generated for items you block will be
 deleted from the Metadata folder.
 
+
 If you change your mind later, you can select any blocked item from the list and
 choose "Remove".
 
