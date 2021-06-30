@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-"""
-This module gets called from the context menu item "Sync directory to library" (32001).
+"""This module gets called from the context menu item "Sync directory to library" (32001).
 
 The purpose is to stage all movies/tvshows in the current directory, and update database.
 """

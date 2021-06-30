@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-"""This modules gets called by the main executable."""
+"""Main exectable module."""
 
 import sys
 from resources.lib.utils import entrypoint
