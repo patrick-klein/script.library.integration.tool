@@ -45,20 +45,20 @@ class CreateNfo(object):
 
         self.create()
 
-
     def tvshow(self):
         """Create tvshow nfo file."""
         try:
             return ''.join(
                 [
-                    '\t<title>{0}</title>\n'.format(self.jsondata['showtitle']),
-                    '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['showtitle']),
+                    '\t<title>{0}</title>\n'.format(
+                        self.jsondata['showtitle']),
+                    '\t<showtitle>{0}</showtitle>\n'.format(
+                        self.jsondata['showtitle']),
                     '\t<year>{0}</year>\n'.format(self.jsondata['year'])
                 ]
             )
         except KeyError:
             pass
-
 
     def episodedetails(self):
         """
@@ -71,16 +71,18 @@ class CreateNfo(object):
             return ''.join(
                 [
                     '\t<title>{0}</title>\n'.format(self.jsondata['title']),
-                    '\t<showtitle>{0}</showtitle>\n'.format(self.jsondata['showtitle']),
+                    '\t<showtitle>{0}</showtitle>\n'.format(
+                        self.jsondata['showtitle']),
                     '\t<season>{0}</season>\n'.format(self.jsondata['season']),
-                    '\t<episode>{0}</episode_number>\n'.format(self.jsondata['season']),
+                    '\t<episode>{0}</episode_number>\n'.format(
+                        self.jsondata['season']),
                     '\t<year>{0}</year>\n'.format(self.jsondata['year']),
-                    '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['file'])
+                    '\t<original_filename>{0}</original_filename>\n'.format(
+                        self.jsondata['file'])
                 ]
             )
         except KeyError:
             pass
-
 
     def movie(self):
         """
@@ -91,15 +93,16 @@ class CreateNfo(object):
         """
         try:
             return ''.join(
-                    [
-                        '\t<title>{0}</title>\n'.format(self.jsondata['title']),
-                        '\t<year>{0}</year>\n'.format(self.jsondata['year']),
-                        '\t<original_filename>{0}</original_filename>\n'.format(self.jsondata['file'])
+                [
+                    '\t<title>{0}</title>\n'.format(
+                        self.jsondata['title']),
+                    '\t<year>{0}</year>\n'.format(self.jsondata['year']),
+                    '\t<original_filename>{0}</original_filename>\n'.format(
+                        self.jsondata['file'])
                 ]
             )
         except KeyError:
             pass
-
 
     def create(self):
         """
@@ -143,7 +146,6 @@ if os.name == 'posix':
         except FileExistsError:
             pass
 
-
     def softlink_files_in_dir(src_dir, dst_dir):
         """Symlink all files in src_dir using wildcard to dst_dir."""
         for file in listdir(src_dir):
@@ -156,7 +158,6 @@ else:
         """Copy file at src to dst."""
         # Can only symlink on unix, just copy file
         copyfile(src, dst)
-
 
     def softlink_files_in_dir(src_dir, dst_dir):
         """Symlink all files in src_dir using wildcard to dst_dir."""

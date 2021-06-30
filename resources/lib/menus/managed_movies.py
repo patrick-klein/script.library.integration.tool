@@ -15,7 +15,7 @@ from resources.lib.utils import getlocalizedstring
 class ManagedMoviesMenu(object):
     """
     Contain window for displaying managed movies.
-    
+
     Provive tools for manipulating the objects and managed file.
     """
 
@@ -25,8 +25,6 @@ class ManagedMoviesMenu(object):
         """__init__ ManagedMoviesMenu."""
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
-
-
 
     @logged_function
     def move_all_to_staged(self, items):
@@ -47,7 +45,6 @@ class ManagedMoviesMenu(object):
         self.progressdialog.close()
         notification(STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
 
-
     @logged_function
     def remove_all(self, items):
         """Remove all managed movies from library."""
@@ -67,7 +64,6 @@ class ManagedMoviesMenu(object):
             item.delete()
         self.progressdialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
-
 
     @logged_function
     def options(self, item):
@@ -97,7 +93,6 @@ class ManagedMoviesMenu(object):
             elif lines[ret] == STR_BACK:
                 return self.view_all()
         return self.view_all()
-
 
     def view_all(self):
         """

@@ -28,13 +28,11 @@ class Version(object):
         """Startup version module."""
         self.version_number = version_number
 
-
     def __eq__(self, other):
         """__eq__."""
         if isinstance(other, Version):
             return self.version_number == other.version_number
         return self.version_number == other
-
 
     def __lt__(self, other):
         """__lt__."""
@@ -49,21 +47,17 @@ class Version(object):
                 return False
         return False
 
-
     def __ne__(self, other):
         """__ne__."""
         return not self == other
-
 
     def __gt__(self, other):
         """__gt__."""
         return not (self < other or self == other)
 
-
     def __le__(self, other):
         """__le__."""
         return self < other or self == other
-
 
     def __ge__(self, other):
         """__ge__."""
@@ -90,7 +84,8 @@ def check_version_file():
         # in future can be moved from utils and imported here
         STR_UPDATING = ADDON.getLocalizedString(32133)
         STR_UPDATED = ADDON.getLocalizedString(32134)
-        xbmcgui.Dialog().notification(ADDON_NAME, STR_UPDATING, join(ADDON_PATH, 'ntf_icon.png'), 5000, True)
+        xbmcgui.Dialog().notification(ADDON_NAME, STR_UPDATING,
+                                      join(ADDON_PATH, 'ntf_icon.png'), 5000, True)
         if version < '0.3.0':
             # Update .pkl files
             import resources.lib.update_pkl as update_pkl
@@ -104,5 +99,6 @@ def check_version_file():
         # Update version file
         with open(version_file_path, 'w+') as version_file:
             version_file.write(ADDON_VERSION)
-        xbmcgui.Dialog().notification(ADDON_NAME, STR_UPDATED, join(ADDON_PATH, 'ntf_icon.png'), 5000, True)
+        xbmcgui.Dialog().notification(ADDON_NAME, STR_UPDATED,
+                                      join(ADDON_PATH, 'ntf_icon.png'), 5000, True)
         sys.exit()

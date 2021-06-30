@@ -8,7 +8,7 @@ import os
 import sys
 import unittest
 
-import xbmc # pylint: disable=import-error
+import xbmc  # pylint: disable=import-error
 import xbmcvfs  # pylint: disable=import-error
 
 import resources.lib.utils as utils
@@ -24,7 +24,8 @@ def test():
     # Add all test modules to suite
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    suite.addTests(loader.discover(os.path.dirname(__file__), pattern='test_*.py'))
+    suite.addTests(loader.discover(
+        os.path.dirname(__file__), pattern='test_*.py'))
     utils.log_msg('All unit tests: %s' % suite)
 
     # Attempt to load and start coverage module

@@ -30,8 +30,8 @@ from resources.lib.items.synced import SyncedItem
 class Database(object):
     """Database class with all database methods."""
 
-    #TODO: Reimplement blocked keywords
-    #TODO: Combine remove_content_item functions using **kwargs
+    # TODO: Reimplement blocked keywords
+    # TODO: Combine remove_content_item functions using **kwargs
     def __init__(self):
         """__init__ database."""
         # Connect to database
@@ -81,25 +81,23 @@ class Database(object):
         )
         self.conn.commit()
 
-
     def __del__(self):
         """Close database connection."""
         self.conn.close()
-
 
     @logged_function
     def add_blocked_item(self, value, _type):
         """Add an item to blocked with the specified values."""
         # Ignore if already in table
         if not self.check_blocked(value, _type):
-            self.cur.execute("INSERT INTO blocked (value, type) VALUES (?, ?)", (value, _type))
+            self.cur.execute(
+                "INSERT INTO blocked (value, type) VALUES (?, ?)", (value, _type))
             self.conn.commit()
-
 
     @logged_function
     def add_content_item(self, jsondata):
         """Add content to library."""
-        sql_comm ='''
+        sql_comm = '''
             INSERT OR IGNORE INTO
                 {table}
                 %s
@@ -109,11 +107,11 @@ class Database(object):
             'tvshow': (
                 '''(file,title,type,status,year,showtitle,season,episode)''',
                 '''(:file,:title,:type,'staged',:year,:showtitle,:season,:episode)'''
-                ),
+            ),
             'movie': (
                 '''(file,title,type,status,year)''',
                 '''(:file,:title,:type,'staged',:year)'''
-                ),
+            ),
             'music': ValueError("Not implemented yet, music")
         }[jsondata['type']]
         # sqlite named style:
@@ -141,7 +139,6 @@ class Database(object):
                 'Not implemented yet'
             )
 
-
     @logged_function
     def add_synced_dir(self, label, path, _type):
         """Create an entry in synced with specified values."""
@@ -152,7 +149,6 @@ class Database(object):
                     (?, ?, ?)''', (path, label, _type)
         )
         self.conn.commit()
-
 
     @logged_function
     def check_blocked(self, value, _type):
@@ -168,13 +164,12 @@ class Database(object):
                                 type=?''', (value, _type))
         return bool(self.cur.fetchone())
 
-
     @logged_function
     def get_all_shows(self, status):
         """Query Content table for all (not null) distinct showtitles and cast results as list of strings."""
         # Query database
         self.cur.execute(
-           '''
+            '''
             SELECT DISTINCT
                 showtitle
             FROM
@@ -197,7 +192,6 @@ class Database(object):
         for item in self.cur.fetchall():
             yield item[0]
 
-
     @logged_function
     def get_blocked_items(self):
         """Return all items in blocked as a list of BlockedItem objects."""
@@ -211,7 +205,6 @@ class Database(object):
                     value'''
         )
         return [BlockedItem(*x) for x in self.cur.fetchall()]
-
 
     @logged_function
     def get_content_items(self, status=None, _type=None):
@@ -230,12 +223,11 @@ class Database(object):
                             %s
                         WHERE
                             status="%s"''' % (_type, status)
-        )
+                    )
         self.cur.execute(sql_comm)
         for content in self.cur.fetchall():
             json_item = build_json_item(content)
             yield build_contentmanager(self, build_contentitem(json_item))
-
 
     @logged_function
     def get_season_items(self, status, showtitle):
@@ -257,12 +249,11 @@ class Database(object):
             json_item = build_json_item(content)
             yield build_contentmanager(self, build_contentitem(json_item))
 
-
     @logged_function
     def get_episode_items(self, status, showtitle, season):
         """Get episodes of a show and return as a ContentManager object."""
         # TODO: Revise this function
-        sql_comm ='''
+        sql_comm = '''
                     SELECT
                         *
                     FROM
@@ -283,7 +274,6 @@ class Database(object):
         for content in self.cur.fetchall():
             json_item = build_json_item(content)
             yield build_contentmanager(self, build_contentitem(json_item))
-
 
     @logged_function
     def get_synced_dirs(self, synced_type=None):
@@ -311,7 +301,6 @@ class Database(object):
         self.cur.execute(sql_templ, params)
         return [SyncedItem(*x) for x in self.cur.fetchall()]
 
-
     @logged_function
     def load_item(self, path):
         """Query a single item and return as a json."""
@@ -323,7 +312,6 @@ class Database(object):
                                 file="%s"''', path)
         return build_json_item(self.cur.fetchone())
 
-
     @logged_function
     def path_exists(self, file):
         """
@@ -334,19 +322,18 @@ class Database(object):
         tables = list()
         for table in ['movie', 'tvshow']:
             sql_comm = (
-               '''
+                '''
                     SELECT
                         status
                     FROM
                         '%s'
                     WHERE
                         file="%s"''' % (table, file)
-                )
+            )
             result = self.cur.execute(sql_comm).fetchone()
             if result:
                 tables.append(*list(result))
         return tables
-
 
     @logged_function
     def remove_from(self,
@@ -387,14 +374,12 @@ class Database(object):
         self.cur.execute(STR_CMD_QUERY)
         self.conn.commit()
 
-
     @logged_function
     def remove_all_synced_dirs(self):
         """Delete all entries in synced."""
         # remove all rows
         self.cur.execute('DELETE FROM synced')
         self.conn.commit()
-
 
     @logged_function
     def remove_blocked(self, value, _type):
@@ -405,9 +390,8 @@ class Database(object):
                                 value=?
                             AND
                                 type=?''', (value, _type)
-        )
+                         )
         self.conn.commit()
-
 
     @logged_function
     def remove_synced_dir(self, path):
@@ -419,11 +403,10 @@ class Database(object):
         )
         self.conn.commit()
 
-
     @logged_function
     def update_content(self, file, _type, status=None, title=None):
         """Update a single field for item in Content with specified path."""
-        #TODO: Verify there's only one entry in kwargs
+        # TODO: Verify there's only one entry in kwargs
         sql_comm = (
             '''UPDATE %s SET {0}=(?) WHERE file=?''' % _type
         )

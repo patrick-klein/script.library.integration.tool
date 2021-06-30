@@ -25,24 +25,20 @@ class EpisodeItem(ABSItemShow):
         self._episode = jsonitem['episode']
         self._year = year if year else jsonitem['year']
 
-
     @property
     def file(self):
         """Return file."""
         return self._file
-
 
     @property
     def title(self):
         """Return title."""
         return clean_name(self._title)
 
-
     @property
     def showtitle(self):
         """Show title with problematic characters removed."""
         return str(clean_name(self._showtitle))
-
 
     @property
     def season(self):
@@ -52,27 +48,23 @@ class EpisodeItem(ABSItemShow):
         else:
             return int(self._season)
 
-
     @property
     def episode(self):
         """Show title with problematic characters removed."""
         if self._episode == None:
-            return  1
+            return 1
         else:
             return int(self._episode)
-
 
     @property
     def year(self):
         """Show title with problematic characters removed."""
         return self._year
 
-
     @property
     def season_dir(self):
         """retirn season_dir."""
         return ('Season %s' % (self.season))
-
 
     @property
     def episode_id(self):
@@ -87,7 +79,6 @@ class EpisodeItem(ABSItemShow):
             ep = ('E%s' % self.episode)
         return ('%s%s' % (season, ep))
 
-
     @property
     def managed_show_dir(self):
         """Return managed_show_dir."""
@@ -97,14 +88,13 @@ class EpisodeItem(ABSItemShow):
             )
         return self._managed_dir
 
-
     @property
     def metadata_show_dir(self):
         """Return metadata_show_dir."""
         if not self._metadata_show_dir:
-            self._metadata_show_dir = join(METADATA_FOLDER, 'TV', self.showtitle)
+            self._metadata_show_dir = join(
+                METADATA_FOLDER, 'TV', self.showtitle)
         return self._metadata_show_dir
-
 
     @logged_function
     def returasjson(self):
