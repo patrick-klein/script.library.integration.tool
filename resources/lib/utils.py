@@ -146,6 +146,7 @@ def skip_filter(contents_json, _key, toskip=SKIP_STRINGS):
     try:
         for item in contents_json:
             if not re_search(item[_key], toskip):
+
                 yield item
     except TypeError:
         yield None
