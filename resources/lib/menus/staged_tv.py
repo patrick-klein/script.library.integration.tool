@@ -9,7 +9,7 @@ import xbmc # pylint: disable=import-error
 import xbmcgui # pylint: disable=import-error
 
 from resources import ADDON_NAME
-from resources.lib.utils import METADATA_FOLDER
+from resources.lib.utils import METADATA_FOLDER, tojs
 
 from resources.lib.log import logged_function
 from resources.lib.filesystem import remove_dir
@@ -57,9 +57,9 @@ class StagedTVMenu(object):
         STR_ADDING_ALL_x_SEASONS = 'Adding all %s seasons...'
         STR_ALL_x_SEASONS_ADDED = 'All %s seasons added'
         staged_seasons = list(
-            self.database.get_content_items(
+            self.database.get_season_items(
                 status='staged',
-                _type='tvshow'
+                showtitle=showtitle
             )
         )
         self.progressdialog.create(
@@ -88,9 +88,9 @@ class StagedTVMenu(object):
         STR_ADDING_ALL_x_SEASONS_WITH_METADATA = 'Adding all %s seasons with metadata...'
         STR_ALL_x_SEASONS_WITH_METADATA_ADDED = 'All %s seasons with metadata added'
         staged_seasons = list(
-            self.database.get_content_items(
+            self.database.get_season_items(
                 status='staged',
-                _type='tvshow'
+                showtitle=showtitle
             )
         )
         self.progressdialog.create(

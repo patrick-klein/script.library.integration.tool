@@ -28,8 +28,10 @@ STR_NOT_SELECTED = getlocalizedstring(32163)
 STR_CHOOSE_CONTENT_TYPE = getlocalizedstring(32159)
 
 # possible values ​​that content can have
-LIST_TYPE_SERIES = ['series', 'directory', 'show', 'browse', 'root', 'mode=series']
+LIST_TYPE_SERIES = ['series', 'directory',
+                    'show', 'browse', 'root', 'mode=series']
 LIST_TYPE_MOVIES = ['movie', 'PlayVideo', 'play&_play']
+
 
 @entrypoint
 def main():
@@ -39,7 +41,7 @@ def main():
     year = xbmc.getInfoLabel('ListItem.Year')
     # if year is False, load load_directory_items will use json year
     year = int(year) if year != '' else False
-    file = sys.listitem.getPath() # pylint: disable=E1101
+    file = sys.listitem.getPath()  # pylint: disable=E1101
     STR_FORMED_TYPE_OF_CONTENT = '%s - %s' % (
         title_with_color(label=label, year=year), STR_CHOOSE_CONTENT_TYPE)
     # Using the Dialog().select method is better as
@@ -53,8 +55,9 @@ def main():
     # I tried to add as many checks to determine the type,
     # maybe the dialog can be removed, but I prefer mater
     typeofcontent = xbmcgui.Dialog().select(
-        STR_FORMED_TYPE_OF_CONTENT, lines
-        )
+        STR_FORMED_TYPE_OF_CONTENT,
+        lines
+    )
     selection = lines[typeofcontent]
     if selection:
         syncedmenu = SyncedMenu(database=Database())
@@ -78,8 +81,11 @@ def main():
             notification(getlocalizedstring(32158))
         else:
             notification(
-                '%s %s' % (title_with_color(label=label,year=year),
-                STR_NOT_SELECTED
+                '%s %s' % (
+                    title_with_color(
+                        label=label,
+                        year=year),
+                    STR_NOT_SELECTED
                 )
             )
 

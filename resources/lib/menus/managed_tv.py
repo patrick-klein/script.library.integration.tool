@@ -309,7 +309,7 @@ class ManagedTVMenu(object):
             elif selection == STR_BACK:
                 self.view_shows()
                 return self.view_shows()
-            else:  # managed item
+            else:
                 return self.view_episodes(
                     showtitle=showtitle,
                     season=''.join(filter(str.isdigit, selection)))
