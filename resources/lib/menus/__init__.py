@@ -1,1 +1,1 @@
-"""Menus module"""
+"""Menus module."""

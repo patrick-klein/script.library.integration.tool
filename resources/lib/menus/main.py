@@ -14,8 +14,12 @@ from resources.lib.utils import getlocalizedstring
 
 
 class MainMenu(object):
-    """Perform basic initialization of folder structure
-    and displays a window that leads to other menus."""
+    """
+    Perform basic initialization of folder structure.
+
+    Display displays a window that leads to other menus.
+    """
+
     def __init__(self, database):
         """__init__ MainMenu."""
         self.database = database
@@ -33,7 +37,7 @@ class MainMenu(object):
     # TODO: Put all classes in their own file, change menu classes to ManagedMenu, StagedMenu, etc.
 
     def view(self):
-        """Displays main menu which leads to other menus."""
+        """Display main menu which leads to other menus."""
         # TODO: fix update library to only update path
         # TODO: remove extraneous tv show folders in Metadata
         # TODO: add parameter for location in list -

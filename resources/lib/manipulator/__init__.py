@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Module dedicate to manipulate title'''
+"""Module dedicate to manipulate title."""
 
 import os
 
@@ -52,7 +52,7 @@ if os.name == 'nt':
 
 
 def clean_name(title):
-    '''Remove/replace problematic characters/substrings for filenames'''
+    """Remove/replace problematic characters/substrings for filenames."""
     # IDEA: Replace in title directly, not just filename
 
     # TODO: use this function to remove from Show/episode title on,

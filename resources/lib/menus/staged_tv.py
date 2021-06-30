@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Defines the StagedTVMenu class'''
+"""Defines the StagedTVMenu class."""
 
 import os.path
 
@@ -20,17 +20,21 @@ from resources.lib.utils import getlocalizedstring
 
 
 class StagedTVMenu(object):
-    '''Provide windows for displaying staged tvshows and episodes,
-    and tools for managing the items'''
+    """
+    Provide windows for displaying staged tvshows and episodes.
+
+    Provide tools for managing the items.
+    """
 
     def __init__(self, database):
+        """__init__ StagedTVMenu."""
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
 
 
     @logged_function
     def add_all_episodes(self, items):
-        '''Add all episodes from specified show to library'''
+        """Add all episodes from specified show to library."""
         STR_ADDING_ALL_x_EPISODES = getlocalizedstring(32071)
         STR_ALL_x_EPISODES_ADDED = getlocalizedstring(32072)
         showtitle = items[0].showtitle
@@ -53,7 +57,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def add_all_seasons(self, showtitle):
-        '''Add all episodes from specified show to library'''
+        """Add all episodes from specified show to library."""
         STR_ADDING_ALL_x_SEASONS = 'Adding all %s seasons...'
         STR_ALL_x_SEASONS_ADDED = 'All %s seasons added'
         staged_seasons = list(
@@ -84,7 +88,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def add_all_seasons_with_metadata(self, showtitle):
-        '''Add all seasons in the specified show with metadata to the library'''
+        """Add all seasons in the specified show with metadata to the library."""
         STR_ADDING_ALL_x_SEASONS_WITH_METADATA = 'Adding all %s seasons with metadata...'
         STR_ALL_x_SEASONS_WITH_METADATA_ADDED = 'All %s seasons with metadata added'
         staged_seasons = list(
@@ -115,7 +119,7 @@ class StagedTVMenu(object):
     @logged_function
     # TODO: revise this function >> add_all_episodes_with_metadata
     def add_all_episodes_with_metadata(self, staged_episodes, showtitle):
-        '''Add all episodes in the specified show with metadata to the library'''
+        """Add all episodes in the specified show with metadata to the library."""
         STR_ADDING_ALL_x_EPISODES_WITH_METADATA = getlocalizedstring(32073)
         STR_ALL_x_EPISODES_WITH_METADATA_ADDED = getlocalizedstring(32074)
         showtitle = staged_episodes[0]
@@ -142,7 +146,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def generate_all_episodes_metadata(self, items):
-        '''Generate metadata items for all episodes in show'''
+        """Generate metadata items for all episodes in show."""
         STR_GENERATING_ALL_x_METADATA = getlocalizedstring(32077)
         STR_ALL_x_METADATA_CREATED = getlocalizedstring(32078)
         showtitle = items[0].showtitle
@@ -165,7 +169,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def generate_all_seasons_metadata(self, showtitle):
-        '''Generate metadata items for all seasons in show'''
+        """Generate metadata items for all seasons in show."""
         STR_GENERATING_ALL_x_METADATA = 'Generating all %s metadata...'
         STR_ALL_x_METADATA_CREATED = 'All %s metadata created'
         staged_seasons = list(
@@ -194,7 +198,7 @@ class StagedTVMenu(object):
 
     @staticmethod
     def rename_dialog(item):
-        '''Prompt input for new name, and rename if non-empty string'''
+        """Prompt input for new name, and rename if non-empty string."""
         input_ret = xbmcgui.Dialog().input(
             "Title",
             defaultt=item.showtitle
@@ -205,7 +209,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def rename_episodes_using_metadata(self, items):
-        '''Rename all episodes in show using nfo files'''
+        """Rename all episodes in show using nfo files."""
         STR_RENAMING_x_EPISODES_USING_METADATA = getlocalizedstring(32075)
         STR_x_EPISODES_RENAMED_USING_METADATA = getlocalizedstring(32076)
         showtitle = items[0].showtitle
@@ -230,7 +234,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def add_all_shows(self):
-        '''Add all tvshow items to library'''
+        """Add all tvshow items to library."""
         STR_ADDING_ALL_TV_SHOWS = getlocalizedstring(32059)
         STR_ALL_TV_SHOWS_ADDED = getlocalizedstring(32060)
         self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_TV_SHOWS)
@@ -255,7 +259,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def add_all_with_metadata(self):
-        '''Add all tvshow items with nfo file to library'''
+        """Add all tvshow items with nfo file to library."""
         STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA = getlocalizedstring(32061)
         STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED = getlocalizedstring(32062)
         self.progressdialog.create(ADDON_NAME, STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA)
@@ -282,7 +286,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def generate_all_metadata(self):
-        '''Create metadata for all staged tvshow items'''
+        """Create metadata for all staged tvshow items."""
         STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
         STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
         self.progressdialog.create(
@@ -310,7 +314,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def read_all_metadata(self):
-        '''Read metadata for all staged tvshow items'''
+        """Read metadata for all staged tvshow items."""
         STR_READING_ALL_TV_SHOW_METADATA = getlocalizedstring(32145)
         STR_ALL_TV_SHOW_METADATA_READ = getlocalizedstring(32146)
         self.progressdialog.create(
@@ -338,7 +342,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def remove_all(self):
-        '''Remove all staged tvshow items'''
+        """Remove all staged tvshow items."""
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
         STR_ALL_TV_SHOW_REMOVED = getlocalizedstring(32025)
         self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_TV_SHOWS)
@@ -352,7 +356,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def remove_all_seasons(self, showtitle):
-        '''Remove all seasons from the specified show'''
+        """Remove all seasons from the specified show."""
         STR_REMOVING_ALL_x_SEASONS = getlocalizedstring(32032) % showtitle
         STR_ALL_x_SEASONS_REMOVED = getlocalizedstring(32033) % showtitle
         self.progressdialog.create(
@@ -370,7 +374,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def remove_all_episodes(self, showtitle):
-        '''Remove all episodes from the specified show'''
+        """Remove all episodes from the specified show."""
         STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032) % showtitle
         STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033) % showtitle
         self.progressdialog.create(
@@ -388,8 +392,11 @@ class StagedTVMenu(object):
 
     @logged_function
     def remove_and_block_show(self, showtitle):
-        '''Remove all seasons from specified show from the library,
-        delete metadata, and add to blocked list'''
+        """
+        Remove all seasons from specified show from the library.
+
+        Delete metadata, and add to blocked list.
+        """
         # Remove from staged
         self.remove_all_seasons(showtitle)
         # Delete metadata folder
@@ -409,7 +416,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def episode_options(self, item, season):
-        '''Provide options for a single staged episode in a dialog window'''
+        """Provide options for a single staged episode in a dialog window."""
         #TODO: rename associated metadata when renaming
         #TODO: rename show title
         #TODO: remove item (including metadata)
@@ -462,9 +469,11 @@ class StagedTVMenu(object):
 
     @logged_function
     def view_episodes(self, showtitle, season):
-        '''Display all staged episodes in the specified show,
-        which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        """
+        Display all staged episodes in the specified show, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         STR_NO_STAGED_x_EPISODES = getlocalizedstring(32065) % showtitle
         STR_ADD_ALL_EPISODES = getlocalizedstring(32066)
         STR_ADD_ALL_EPISODES_WITH_METADATA = getlocalizedstring(32067)
@@ -542,9 +551,11 @@ class StagedTVMenu(object):
 
     @logged_function
     def view_seasons(self, showtitle):
-        '''Display all staged seasons in the specified show,
-        which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        """
+        Display all staged seasons in the specified show, which are selectable and lead to options.
+
+        Also provides additional options at bottom of menu.
+        """
         STR_NO_STAGED_x_SEASONS = 'No staged %s seasons' % showtitle
         STR_ADD_ALL_SEASONS = 'Add all seasons'
         STR_ADD_ALL_SEASONS_WITH_METADATA = 'Add all seasons with metadata'
@@ -619,7 +630,7 @@ class StagedTVMenu(object):
 
     @logged_function
     def view_shows(self):
-        '''Display all managed tvshows, which are selectable and lead to options.'''
+        """Display all managed tvshows, which are selectable and lead to options."""
         STR_NO_STAGED_TV_SHOWS = getlocalizedstring(32054)
         STR_ADD_ALL_TV_SHOWS = getlocalizedstring(32055)
         STR_ADD_ALL_ITEMS_WITH_METADTA = getlocalizedstring(32056)

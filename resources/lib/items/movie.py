@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Defines the MovieItem class'''
+"""Defines the MovieItem class."""
 
 from os.path import join
 
@@ -13,8 +13,10 @@ from resources.lib.utils import METADATA_FOLDER
 
 
 class MovieItem(ABSItemMovie):
-    '''Class to build information aboult movies'''
+    """Class to build information aboult movies."""
+
     def __init__(self, jsonitem, year=None):
+        """__init__ MovieItem."""
         super(MovieItem, self).__init__(jsonitem, year)
         self._file = jsonitem['file']
         self._title = jsonitem['title']
@@ -23,25 +25,25 @@ class MovieItem(ABSItemMovie):
 
     @property
     def file(self):
-        '''return url from strm'''
+        """return url from strm."""
         return self._file
 
 
     @property
     def title(self):
-        '''return the title from content'''
+        """return the title from content."""
         return self._title
 
 
     @property
     def year(self):
-        '''return the year from content'''
+        """return the year from content."""
         return self._year
 
 
     @property
     def managed_movie_dir(self):
-        """return the managed_movie_dir from content"""
+        """return the managed_movie_dir from content."""
         if not self._managed_dir:
             self._managed_dir = join(
                 MANAGED_FOLDER, 'ManagedMovies', self.title
@@ -51,7 +53,7 @@ class MovieItem(ABSItemMovie):
 
     @property
     def metadata_movie_dir(self):
-        '''return the metadata_movie_dir from content'''
+        """return the metadata_movie_dir from content."""
         if not self._metadata_movie_dir:
             self._metadata_movie_dir = join(METADATA_FOLDER, 'Movies', self.title)
         return self._metadata_movie_dir
@@ -59,7 +61,7 @@ class MovieItem(ABSItemMovie):
 
     @logged_function
     def returasjson(self):
-        """return the json with information from content"""
+        """return the json with information from content."""
         try:
             return {
                 'file': self.file,

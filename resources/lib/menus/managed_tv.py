@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Defines the ManagedTVMenu class'''
+"""Defines the ManagedTVMenu class."""
 
 import xbmc # pylint: disable=import-error
 import xbmcgui # pylint: disable=import-error
@@ -15,8 +15,8 @@ from resources.lib.utils import getlocalizedstring
 
 
 class ManagedTVMenu(object):
-    '''Provide windows for displaying managed shows and episodes,
-    and tools for manipulating the objects and managed file'''
+    """Provide windows for displaying managed shows and episodes,
+    and tools for manipulating the objects and managed file."""
 
     def __init__(self, database):
         self.database = database
@@ -25,7 +25,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def move_episodes_to_staged(self, items):
-        '''Remove all managed episodes in specified show from library, and add them to staged'''
+        """Remove all managed episodes in specified show from library, and add them to staged."""
         STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = getlocalizedstring(32034)
         STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(32035)
         showtitle = items[0].showtitle
@@ -47,7 +47,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def move_all_seasons_to_staged(self, showtitle):
-        '''Remove all managed episodes in specified show from library, and add them to staged'''
+        """Remove all managed episodes in specified show from library, and add them to staged."""
         STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172) % showtitle
         STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173)
         self.progressdialog.create(
@@ -75,7 +75,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def move_all_to_staged(self):
-        '''Remove all managed tvshow items from library, and add them to staged'''
+        """Remove all managed tvshow items from library, and add them to staged."""
         STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32026)
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = getlocalizedstring(32027)
         self.progressdialog.create(
@@ -104,7 +104,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def remove_episodes(self, items):
-        '''Remove all episodes in specified show from library'''
+        """Remove all episodes in specified show from library."""
         STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032)
         STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033)
         showtitle = items[0].showtitle
@@ -126,7 +126,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def remove_seasons(self, items, showtitle):
-        '''Remove all seasons in specified show from library'''
+        """Remove all seasons in specified show from library."""
         STR_REMOVING_ALL_X_SEASONS = getlocalizedstring(32168)
         STR_ALL_X_SEASONS_REMOVED = getlocalizedstring(32169)
         seasons = items[0]
@@ -153,7 +153,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def remove_all(self):
-        '''Remove all managed tvshow items from library'''
+        """Remove all managed tvshow items from library."""
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
         STR_ALL_TV_SHOWS_REMOVED = getlocalizedstring(32025)
         self.progressdialog.create(
@@ -180,7 +180,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def episode_options(self, item, season):
-        '''Provide options for a single managed episode in a dialog window'''
+        """Provide options for a single managed episode in a dialog window."""
         STR_REMOVE = getlocalizedstring(32017)
         STR_MOVE_BACK_TO_STAGED = getlocalizedstring(32018)
         STR_BACK = getlocalizedstring(32011)
@@ -213,9 +213,9 @@ class ManagedTVMenu(object):
 
     @logged_function
     def view_episodes(self, showtitle, season):
-        '''Displays all managed episodes in the specified show,
+        """Displays all managed episodes in the specified show,
         which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        Also provides additional options at bottom of menu."""
         STR_NO_MANAGED_x_EPISODES = getlocalizedstring(32028) % showtitle
         STR_REMOVE_ALL_EPISODES = getlocalizedstring(32029)
         STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = getlocalizedstring(32030)
@@ -264,9 +264,9 @@ class ManagedTVMenu(object):
 
     @logged_function
     def view_seasons(self, showtitle):
-        '''Displays all managed seasons in the specified show,
+        """Displays all managed seasons in the specified show,
         which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        Also provides additional options at bottom of menu."""
         # TODO: functions to remove all or add all if necessary
         STR_NO_MANAGED_X_SEASONS = getlocalizedstring(32170) % showtitle
         STR_REMOVE_ALL_SEASONS = getlocalizedstring(32171)
@@ -318,8 +318,8 @@ class ManagedTVMenu(object):
 
     @logged_function
     def view_shows(self):
-        '''Display all managed tvshows, which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        """Display all managed tvshows, which are selectable and lead to options.
+        Also provides additional options at bottom of menu."""
         STR_NO_MANAGED_TV_SHOWS = getlocalizedstring(32020)
         STR_REMOVE_ALL_TV_SHOWS = getlocalizedstring(32021)
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32022)

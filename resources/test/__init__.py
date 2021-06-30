@@ -1,1 +1,1 @@
-'''teste module'''
+"""teste module."""

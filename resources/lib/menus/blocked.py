@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the BlockedMenu class
-'''
+
+"""Defines the BlockedMenu class."""
+
 import xbmcgui  # pylint: disable=import-error
 
 from resources import ADDON_NAME
@@ -11,8 +11,8 @@ from resources.lib.utils import getlocalizedstring
 
 
 class BlockedMenu(object):
-    '''Provide windows for displaying blocked items,
-    and tools for managing them'''
+    """Provide windows for displaying blocked items,
+    and tools for managing them."""
 
     def __init__(self, database):
         self.database = database
@@ -20,8 +20,8 @@ class BlockedMenu(object):
 
     @logged_function
     def view(self):
-        '''Display all blocked items, which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        """Display all blocked items, which are selectable and lead to options.
+        Also provides additional options at bottom of menu."""
         # TODO?: change blocked movie/episode to just blocked path
         # TODO?: make blocked episode match on both episode AND show
         # TODO: add blocked types: plugin, path
@@ -50,7 +50,7 @@ class BlockedMenu(object):
 
     @logged_function
     def options(self, item):
-        '''Provide options for a single blocked item in a dialog window'''
+        """Provide options for a single blocked item in a dialog window."""
         STR_REMOVE = getlocalizedstring(32017)
         STR_BACK = getlocalizedstring(32011)
         STR_BLOCKED_ITEM_OPTIONS = getlocalizedstring(32099)

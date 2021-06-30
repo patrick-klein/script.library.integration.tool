@@ -1,24 +1,24 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''Defines BlockedItem class'''
+"""Defines BlockedItem class."""
 
 from resources.lib.utils import getlocalizedstring
 
 
 class BlockedItem(dict):
-    '''Dictionary-like class that contains information about
-    a blocked item in the database'''
+    """Dictionary-like class that contains information about a blocked item in the database."""
 
     # TODO: Don't inherit from dict
 
     def __init__(self, value, blocked_type):
+        """__init__ BlockedItem."""
         super(BlockedItem, self).__init__()
         self['value'] = value
         self['type'] = blocked_type
         self._localized_type = None
 
     def localize_type(self):
-        '''Localize tags used for identifying mediatype'''
+        """Localize tags used for identifying mediatype."""
         if not self._localized_type:
             if self['type'] == 'movie':  # Movie
                 return getlocalizedstring(32102)

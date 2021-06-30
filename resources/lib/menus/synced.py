@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-'''Defines the SyncedMenu class'''
+"""Defines the SyncedMenu class."""
 
 # TODO: Different notifications depending on whether items were staged vs. automatically added
 import sys
@@ -23,25 +23,25 @@ from resources.lib.utils import load_directory_items
 
 
 class SyncedMenu(object):
-    '''Provides windows for displaying synced directories,
-    and tools for managing them and updating their contents'''
+    """Provides windows for displaying synced directories,
+    and tools for managing them and updating their contents."""
 
     # IDEA: new "find all directories" context item that finds and consolidates directories
 
     def __init__(self, database):
-        """SyncedMenu class"""
+        """SyncedMenu class."""
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
 
 
     def filter_blocked_items(self, items, _type):
-        '''Filters out all blocked items in the list'''
+        """Filters out all blocked items in the list."""
         return [x for x in items if not self.database.check_blocked(x['label'], _type)]
 
 
     @logged_function
     def find_items_to_stage(self, all_items):
-        '''Find items in the list not present in database'''
+        """Find items in the list not present in database."""
         items_to_stage = []
         for jsonitem in all_items:
             file = jsonitem['file']
@@ -58,7 +58,7 @@ class SyncedMenu(object):
 
     @logged_function
     def find_paths_to_remove(self, all_paths, **kwargs):
-        '''Find paths in database no longer available'''
+        """Find paths in database no longer available."""
         #TODO: update this func in future
         managed_items = self.database.get_content_items(**kwargs)
         return [x.path for x in managed_items if x.path not in all_paths]
@@ -66,7 +66,7 @@ class SyncedMenu(object):
 
     @logged_function
     def get_movies_in_directory(self, directory):
-        '''Get all movies in the directory and tags them'''
+        """Get all movies in the directory and tags them."""
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
@@ -84,7 +84,7 @@ class SyncedMenu(object):
 
     @logged_function
     def get_single_tvshow(self, directory, showtitle):
-        '''Get the single TV show in the directory, and tag the items'''
+        """Get the single TV show in the directory, and tag the items."""
         show_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
@@ -103,7 +103,7 @@ class SyncedMenu(object):
 
     @logged_function
     def get_tvshows_in_directory(self, directory):
-        '''Get all TV shows in the directory, and tag the items'''
+        """Get all TV shows in the directory, and tag the items."""
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
                 progressdialog=None,
@@ -136,7 +136,7 @@ class SyncedMenu(object):
 
 
     def options(self, item):
-        '''Provide options for a single synced directory in a dialog window'''
+        """Provide options for a single synced directory in a dialog window."""
         # TODO: Remove all from plugin
         # TODO: Rename label
         STR_REMOVE = getlocalizedstring(32017)
@@ -155,7 +155,7 @@ class SyncedMenu(object):
 
 
     def remove_all(self):
-        '''Remove all synced directories'''
+        """Remove all synced directories."""
         STR_REMOVE_ALL_SYNCED_DIRS = getlocalizedstring(32086)
         STR_ALL_SYNCED_DIRS_REMOVED = getlocalizedstring(32087)
         STR_ARE_YOU_SURE = getlocalizedstring(32088)
@@ -166,7 +166,7 @@ class SyncedMenu(object):
 
 
     def remove_paths(self, paths_to_remove):
-        '''Remove and delete all items with the given paths'''
+        """Remove and delete all items with the given paths."""
         for path in paths_to_remove:
             item = self.database.load_item(path)
             item.remove_from_library()
@@ -174,14 +174,14 @@ class SyncedMenu(object):
 
 
     def stage_items(self, items_to_stage):
-        '''Stage all items in the list'''
+        """Stage all items in the list."""
         for item in items_to_stage:
             self.database.add_content_item(*item)
 
 
     @logged_function
     def add_single_movie(self, title, year, file):
-        '''Sync single movie path and stage item'''
+        """Sync single movie path and stage item."""
         STR_MOVIE_STAGED = getlocalizedstring(32105)
         STR_ITEM_IS_ALREADY_STAGED = getlocalizedstring(32103)
         STR_ITEM_IS_ALREADY_MANAGED = getlocalizedstring(32104)
@@ -207,7 +207,7 @@ class SyncedMenu(object):
 
     @logged_function
     def add_single_tvshow(self, title, year, file):
-        '''Sync single tvshow directory and stage items'''
+        """Sync single tvshow directory and stage items."""
         STR_i_NEW = getlocalizedstring(32107)
         STR_i_NEW_i_STAGED_i_MANAGED = getlocalizedstring(32106)
         STR_GETTING_ITEMS_IN_DIR = getlocalizedstring(32125)
@@ -282,8 +282,8 @@ class SyncedMenu(object):
 
     @logged_function
     def add_all_items_in_directory(self, sync_type, dir_label, dir_path):
-        '''Synchronize all items in a directory (movies/series or all),
-         based on the user's choice and stage items'''
+        """Synchronize all items in a directory (movies/series or all),
+         based on the user's choice and stage items."""
         # TODO: new notification label to show movies,
         #  TV shows and episodes that have been added
         contentitem = None
@@ -354,9 +354,9 @@ class SyncedMenu(object):
 
 
     def update_all(self):
-        '''Get all items from synced directories, and
+        """Get all items from synced directories, and
         find unavailable items to remove from managed,
-        and new items to stage'''
+        and new items to stage."""
         # TODO: bugfix: single-movies won't actually get removed if they become unavailable
         #       maybe load parent dir and check for path or label?  it would be slower though
         # TODO: option to only update specified or managed items
@@ -427,7 +427,7 @@ class SyncedMenu(object):
 
 
     def update_movies(self):
-        """Update all synced movie directories"""
+        """Update all synced movie directories."""
         STR_FINDING_ITEMS_TO_REMOVE = getlocalizedstring(32090)
         STR_FINDING_ITEMS_TO_ADD = getlocalizedstring(32092)
         STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getlocalizedstring(32093)
@@ -486,7 +486,7 @@ class SyncedMenu(object):
 
 
     def update_tvshows(self):
-        '''Update all TV show directories'''
+        """Update all TV show directories."""
         STR_FINDING_ITEMS_TO_REMOVE = getlocalizedstring(32090)
         STR_FINDING_ITEMS_TO_ADD = getlocalizedstring(32092)
         STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getlocalizedstring(32093)
@@ -542,8 +542,8 @@ class SyncedMenu(object):
 
     @logged_function
     def view(self):
-        '''Display all synced directories, which are selectable and lead to options.
-        Also provides additional options at bottom of menu'''
+        """Display all synced directories, which are selectable and lead to options.
+        Also provides additional options at bottom of menu."""
         STR_UPDATE_ALL = getlocalizedstring(32081)
         STR_UPDATE_TV_SHOWS = getlocalizedstring(32137)
         STR_UPDATE_MOVIES = getlocalizedstring(32138)
