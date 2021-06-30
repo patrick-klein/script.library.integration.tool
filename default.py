@@ -1,20 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-This modules gets called by the main executable
-'''
+
+"""Main exectable module."""
 
 import sys
-import resources.lib.utils as utils
+from resources.lib.utils import entrypoint
 
+from resources.lib.database import Database
 
-@utils.entrypoint
+@entrypoint
 def main():
-    ''' Main entry point for addon '''
-
+    """Main entry point for addon."""
     if len(sys.argv) == 1:
         from resources.lib.menus.main import MainMenu
-        MainMenu().view()
+        MainMenu(database=Database()).view()
 
     elif sys.argv[1] == 'test':
         from resources.test.test import test

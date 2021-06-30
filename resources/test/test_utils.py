@@ -1,29 +1,34 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines class for testing utils module
-'''
+
+"""Defines class for testing utils module."""
 
 import unittest
 import xbmcaddon # pylint: disable=import-error
-import resources.lib.utils as utils
+
+from resources.lib.version import Version
+from resources.lib.manipulator import clean_name
+
+from resources import ADDON_NAME, ADDON_VERSION
 
 class TestUtils(unittest.TestCase):
-    ''' Test cases for utils module '''
+    """Test cases for utils module."""
 
     def test_constants(self):
-        ''' Check values returned by constants in utils '''
+        """Check values returned by constants in utils."""
         addon = xbmcaddon.Addon(id='script.library.integration.tool')
         self.assertEqual(
-            utils.ADDON_NAME, addon.getAddonInfo('name')
-            )
+            ADDON_NAME,
+            addon.getAddonInfo('name')
+        )
         self.assertEqual(
-            utils.ADDON_VERSION, addon.getAddonInfo('version')
-            )
+            ADDON_VERSION,
+            addon.getAddonInfo('version')
+        )
         # TODO: test all contants, including type
 
     def test_clean_name(self):
-        ''' Test keywords in clean_name '''
+        """Test keywords in clean_name."""
         # TODO: Use MAPPED_STRINGS here
         test_names = {
             'test1.': 'test1',
@@ -42,11 +47,11 @@ class TestUtils(unittest.TestCase):
             'test14$': 'test14',
         }
         for key, value in test_names.items():
-            self.assertEqual(utils.clean_name(key), value)
+            self.assertEqual(clean_name(key), value)
 
     def test_version_comparison(self):
-        ''' Test the comparison operators for the Version class '''
-        reference = utils.Version('1.2.3')
+        """Test the comparison operators for the Version class."""
+        reference = Version('1.2.3')
         self.assertEqual(reference, '1.2.3')
         self.assertNotEqual(reference, '3.2.1')
         self.assertGreater(reference, '0.10.0')

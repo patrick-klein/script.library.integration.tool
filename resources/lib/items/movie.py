@@ -1,57 +1,71 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'''
-Defines the MovieItem class
-'''
 
-from os.path import join, isdir
+"""Defines the MovieItem class."""
 
-import resources.lib.utils as utils
-from .content import ContentItemMovies
+from os.path import join
+
+from resources.lib.log import logged_function
+from resources.lib.abs.item import ABSItemMovie
+
+from resources.lib.utils import MANAGED_FOLDER
+from resources.lib.utils import METADATA_FOLDER
 
 
-class MovieItem(ContentItemMovies):
-    ''' Contains information about a TV show episode from the database,
-    and has necessary functions for managing item '''
-    def __init__(self, link_stream_path, title, mediatype, year=None):
-        super(MovieItem, self).__init__(link_stream_path, title, mediatype, year)
-        self._link_stream_path = link_stream_path
-        self._movie_title = title
-        self._year = year
+class MovieItem(ABSItemMovie):
+    """Class to build information aboult movies."""
+
+    def __init__(self, jsonitem, year=None):
+        """__init__ MovieItem."""
+        super(MovieItem, self).__init__(jsonitem, year)
+        self._file = jsonitem['file']
+        self._title = jsonitem['title']
+        self._year = year if year else jsonitem['year']
+
 
     @property
-    def link_stream_path(self):
-        return self._link_stream_path
+    def file(self):
+        """Return url from strm."""
+        return self._file
+
 
     @property
-    def movie_title(self):
-        return self._movie_title
+    def title(self):
+        """Return the title from content."""
+        return self._title
+
 
     @property
     def year(self):
-        ''' Show title with problematic characters removed '''
-        return self._year    
+        """Return the year from content."""
+        return self._year
+
 
     @property
     def managed_movie_dir(self):
+        """Return the managed_movie_dir from content."""
         if not self._managed_dir:
             self._managed_dir = join(
-                utils.MANAGED_FOLDER, 'ManagedMovies', self.movie_title
+                MANAGED_FOLDER, 'ManagedMovies', self.title
             )
         return self._managed_dir
 
+
     @property
     def metadata_movie_dir(self):
+        """Return the metadata_movie_dir from content."""
         if not self._metadata_movie_dir:
-            self._metadata_movie_dir = join(utils.METADATA_FOLDER, 'Movies', self.movie_title)
+            self._metadata_movie_dir = join(METADATA_FOLDER, 'Movies', self.title)
         return self._metadata_movie_dir
 
-    @utils.logged_function
+
+    @logged_function
     def returasjson(self):
+        """Return the json with information from content."""
         try:
             return {
-                'link_stream_path': self.link_stream_path,
-                'movie_title': self.movie_title,
+                'file': self.file,
+                'title': self.title,
                 'managed_movie_dir': self.managed_movie_dir,
                 'metadata_movie_dir': self.metadata_movie_dir,
                 'year': self.year,
