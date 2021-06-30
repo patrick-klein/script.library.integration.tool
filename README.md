@@ -122,7 +122,6 @@ You can customize the behavior of this addon from the settings.  The following o
 *   WABC Programs - by t1m - *Do not sync entire directory due to infinite load times for some items, but works well with individual TV shows*
 *   WNBC Programs - by t1m - *Huge amount of content, but slow to update*
  -->
- 
 ### Other Addons
 
 **Skin Helper Service Widgets BETA** by marcelveldt - *The latest versions include a new recommendation system that dynamically shows you personalized content on your homescreen.  So if you decide to add every possible directory and end up with 4000+ new items in your library, this addon will help ensure you only see the most relevant titles*
