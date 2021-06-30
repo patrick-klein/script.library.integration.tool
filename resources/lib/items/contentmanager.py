@@ -65,13 +65,13 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @property
     def showtitle(self):
-        """return showtitle."""
+        """Return showtitle."""
         return self.jsondata['showtitle']
 
 
     @property
     def show_dir(self):
-        """return show_dir."""
+        """Return show_dir."""
         return (
             ' '.join([self.jsondata['metadata_show_dir'], self.formedyear]),
             ' '.join([self.jsondata['managed_show_dir'], self.formedyear])
@@ -80,13 +80,13 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @property
     def formedyear(self):
-        """return formedyear."""
+        """Return formedyear."""
         return '(%s)' % self.jsondata['year']
 
 
     @property
     def complete_episode_title(self):
-        """return complete_episode_title."""
+        """Return complete_episode_title."""
         return '%s - %s' % (
             ' '.join([self.showtitle, self.formedyear]),
             self.episode_title_with_id
@@ -95,19 +95,19 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @property
     def file(self):
-        """return file."""
+        """Return file."""
         return self.jsondata['file']
 
 
     @property
     def episode_title_with_id(self):
-        """return episode_title_with_id."""
+        """Return episode_title_with_id."""
         return self.jsondata['episode_title_with_id']
 
 
     @property
     def episode_nfo(self):
-        """return episode_nfo."""
+        """Return episode_nfo."""
         return (
             ''.join([self.metadata_ep_path, '.nfo']), ''.join([self.managed_ep_path, '.nfo'])
         )
@@ -115,7 +115,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @logged_function
     def add_to_library(self):
-        """add item to library."""
+        """Add item to library."""
         # Rename episode if metadata is available
         self.rename_using_metadata()
         # create show dir
@@ -143,7 +143,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @logged_function
     def add_to_library_if_metadata(self):
-        """add ato library with metadata."""
+        """Add ato library with metadata."""
         self.read_metadata_item()
         if exists(self.episode_nfo[0]):
             self.add_to_library()
@@ -151,7 +151,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @logged_function
     def create_metadata_item(self):
-        """create metadata."""
+        """Create metadata."""
         # IDEA: automatically call this when staging
         # IDEA: actually create basic nfo file with name and episode number, and thumb if possible
         # IDEA: could probably just rename based on existing strm file instead of nfo file
@@ -237,7 +237,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @logged_function
     def remove_from_library(self):
-        """remove from library."""
+        """Remove from library."""
         # Delete stream & episode nfo
         delete_with_wildcard(self.managed_strm_path)
         # Check if last stream file, and remove entire dir if so
@@ -276,7 +276,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     @logged_function
     def rename_using_metadata(self):
-        """rename using metadata."""
+        """Rename using metadata."""
         # TODO?: Rename showtitle too
         # Read old metadata items to rename self
         self.read_metadata_item()
@@ -332,31 +332,31 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     @property
     def file(self):
-        """return file."""
+        """Return file."""
         return self.jsondata['file']
 
 
     @property
     def title(self):
-        """return title."""
+        """Return title."""
         return ' '.join([self.jsondata['title'], self.formedyear])
 
 
     @property
     def year(self):
-        """return year."""
+        """Return year."""
         return self.jsondata['year']
 
 
     @property
     def formedyear(self):
-        """return formedyear."""
+        """Return formedyear."""
         return '(%s)' % self.jsondata['year']
 
 
     @property
     def movie_dir(self):
-        """return movie_dir."""
+        """Return movie_dir."""
         return (
             ' '.join([self.jsondata['metadata_movie_dir'], self.formedyear]),
             ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
@@ -374,7 +374,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     @logged_function
     def add_to_library(self):
-        """add item to library."""
+        """Add item to library."""
         # create managed_movie_dir
         if not isdir(self.movie_dir[1]):
             mkdir(self.movie_dir[1])
@@ -393,7 +393,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     @logged_function
     def create_metadata_item(self):
-        """create metadata item."""
+        """Create metadata item."""
         # IDEA: automatically call this when staging
         # IDEA: could probably just rename based on existing strm file instead of nfo file
         # Create show_dir in Metadata/TV if it doesn't already exist
@@ -424,14 +424,14 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     @logged_function
     def add_to_library_if_metadata(self):
-        """add item to library with metadata."""
+        """Add item to library with metadata."""
         if exists(self.movie_nfo[0]):
             self.add_to_library()
 
 
     @logged_function
     def remove_and_block(self):
-        """remove item and block."""
+        """Remove item and block."""
         # Add title to blocked
         self.database.add_blocked_item(
             self.title,
@@ -448,24 +448,24 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     @logged_function
     def remove_from_library(self):
-        """remove from library."""
+        """Remove from library."""
         remove_dir(self.movie_dir[1])
 
 
     def rename(self, name):
-        """rename item."""
+        """Rename item."""
         # TODO: Implement
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
 
     def rename_using_metadata(self):
-        """rename item using metadata."""
+        """Rename item using metadata."""
         # TODO: Implement
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
 
     def delete(self):
-        """rename item item."""
+        """Rename item item."""
         """Remove the item from the database."""
         self.database.remove_from(
             _type='movie',

@@ -25,25 +25,25 @@ class MovieItem(ABSItemMovie):
 
     @property
     def file(self):
-        """return url from strm."""
+        """Return url from strm."""
         return self._file
 
 
     @property
     def title(self):
-        """return the title from content."""
+        """Return the title from content."""
         return self._title
 
 
     @property
     def year(self):
-        """return the year from content."""
+        """Return the year from content."""
         return self._year
 
 
     @property
     def managed_movie_dir(self):
-        """return the managed_movie_dir from content."""
+        """Return the managed_movie_dir from content."""
         if not self._managed_dir:
             self._managed_dir = join(
                 MANAGED_FOLDER, 'ManagedMovies', self.title
@@ -53,7 +53,7 @@ class MovieItem(ABSItemMovie):
 
     @property
     def metadata_movie_dir(self):
-        """return the metadata_movie_dir from content."""
+        """Return the metadata_movie_dir from content."""
         if not self._metadata_movie_dir:
             self._metadata_movie_dir = join(METADATA_FOLDER, 'Movies', self.title)
         return self._metadata_movie_dir
@@ -61,7 +61,7 @@ class MovieItem(ABSItemMovie):
 
     @logged_function
     def returasjson(self):
-        """return the json with information from content."""
+        """Return the json with information from content."""
         try:
             return {
                 'file': self.file,

@@ -28,13 +28,13 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def file(self):
-        """return file."""
+        """Return file."""
         return self._file
 
 
     @property
     def title(self):
-        """return title."""
+        """Return title."""
         return clean_name(self._title)
 
 
@@ -76,7 +76,7 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def episode_id(self):
-        """return episode_id."""
+        """Return episode_id."""
         if self.season <= 9:
             season = ('S0%s' % self.season)
         else:
@@ -90,7 +90,7 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def managed_show_dir(self):
-        """return managed_show_dir."""
+        """Return managed_show_dir."""
         if not self._managed_dir:
             self._managed_dir = join(
                 MANAGED_FOLDER, 'ManagedTV', self.showtitle
@@ -100,7 +100,7 @@ class EpisodeItem(ABSItemShow):
 
     @property
     def metadata_show_dir(self):
-        """return metadata_show_dir."""
+        """Return metadata_show_dir."""
         if not self._metadata_show_dir:
             self._metadata_show_dir = join(METADATA_FOLDER, 'TV', self.showtitle)
         return self._metadata_show_dir
@@ -108,7 +108,7 @@ class EpisodeItem(ABSItemShow):
 
     @logged_function
     def returasjson(self):
-        """return a dict with all information about tvshow."""
+        """Return a dict with all information about tvshow."""
         try:
             return {
                 'file': self.file,

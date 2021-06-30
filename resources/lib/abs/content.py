@@ -23,7 +23,7 @@ class ABSContentManagerShow(object):
         self._year = None
 
     def __str__(self):
-        """return str title formated with file path."""
+        """Return str title formated with file path."""
         return '[B]%s[/B] - [I]%s[/I]' % (
             self.episode_title_with_id,
             self.file
@@ -116,7 +116,7 @@ class ABSContentManagerMovie(object):
 
 
     def __str__(self):
-        """return str title formated with file path."""
+        """Return str title formated with file path."""
         return '[B]%s[/B] - [I]%s[/I]' % (
             self.title,
             self.file
