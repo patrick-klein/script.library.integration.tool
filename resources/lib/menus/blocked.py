@@ -17,7 +17,6 @@ class BlockedMenu(object):
         """__init__ BlockedMenu."""
         self.database = database
 
-
     @logged_function
     def view(self):
         """
@@ -37,7 +36,8 @@ class BlockedMenu(object):
         if not blocked_items:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_BLOCKED_ITEMS)
             return
-        lines = ['{0} - [B]{1}[/B]'.format(x.localize_type(), x['value']) for x in blocked_items]
+        lines = [
+            '{0} - [B]{1}[/B]'.format(x.localize_type(), x['value']) for x in blocked_items]
         lines += [STR_BACK]
         ret = xbmcgui.Dialog().select(
             '{0} - {1}'.format(ADDON_NAME, STR_BLOCKED_ITEMS), lines
@@ -59,7 +59,8 @@ class BlockedMenu(object):
         STR_BLOCKED_ITEM_OPTIONS = getlocalizedstring(32099)
         lines = [STR_REMOVE, STR_BACK]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(ADDON_NAME, STR_BLOCKED_ITEM_OPTIONS, item['value']),
+            '{0} - {1} - {2}'.format(ADDON_NAME,
+                                     STR_BLOCKED_ITEM_OPTIONS, item['value']),
             lines
         )
         if ret >= 0:

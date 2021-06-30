@@ -23,7 +23,8 @@ def fuzz():
     # Add all test modules to fuzz suite
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    suite.addTests(loader.discover(os.path.dirname(__file__), pattern='fuzz_*.py'))
+    suite.addTests(loader.discover(
+        os.path.dirname(__file__), pattern='fuzz_*.py'))
     log_msg('All fuzz tests: %s' % suite)
 
     # Run all unit tests and save to text file

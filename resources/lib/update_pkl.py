@@ -6,7 +6,7 @@
 import os
 
 import cPickle as pickle
-import xbmc # pylint: disable=import-error
+import xbmc  # pylint: disable=import-error
 
 from resources.lib.utils import MANAGED_FOLDER
 from resources.lib.database import Database
@@ -15,6 +15,8 @@ from resources.lib.log import log_msg
 from resources.lib.log import logged_function
 
 # TODO: this module need to be updated
+
+
 @logged_function
 def update_managed():
     """Convert managed.pkl items to SQLite entries."""
@@ -67,7 +69,7 @@ def update_staged():
 @logged_function
 def update_synced():
     """Convert managed.pkl items to SQLite entries."""
-    #TODO: Actually load paths and try to get new label
+    # TODO: Actually load paths and try to get new label
     synced_file = os.path.join(MANAGED_FOLDER, 'synced.pkl')
     if os.path.exists(synced_file):
         dbh = Database()

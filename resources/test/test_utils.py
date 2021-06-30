@@ -4,12 +4,13 @@
 """Defines class for testing utils module."""
 
 import unittest
-import xbmcaddon # pylint: disable=import-error
+import xbmcaddon  # pylint: disable=import-error
 
 from resources.lib.version import Version
 from resources.lib.manipulator import clean_name
 
 from resources import ADDON_NAME, ADDON_VERSION
+
 
 class TestUtils(unittest.TestCase):
     """Test cases for utils module."""

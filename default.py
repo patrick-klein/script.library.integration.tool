@@ -8,6 +8,7 @@ from resources.lib.utils import entrypoint
 
 from resources.lib.database import Database
 
+
 @entrypoint
 def main():
     """Main entry point for addon."""

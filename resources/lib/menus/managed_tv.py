@@ -3,8 +3,8 @@
 
 """Defines the ManagedTVMenu class."""
 
-import xbmc # pylint: disable=import-error
-import xbmcgui # pylint: disable=import-error
+import xbmc  # pylint: disable=import-error
+import xbmcgui  # pylint: disable=import-error
 
 
 from resources import ADDON_NAME
@@ -25,7 +25,6 @@ class ManagedTVMenu(object):
         """__init__ ManagedTVMenu."""
         self.database = database
         self.progressdialog = xbmcgui.DialogProgress()
-
 
     @logged_function
     def move_episodes_to_staged(self, items):
@@ -48,11 +47,11 @@ class ManagedTVMenu(object):
         self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED % showtitle)
 
-
     @logged_function
     def move_all_seasons_to_staged(self, showtitle):
         """Remove all managed episodes in specified show from library, and add them to staged."""
-        STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172) % showtitle
+        STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = getlocalizedstring(
+            32172) % showtitle
         STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173)
         self.progressdialog.create(
             ADDON_NAME,
@@ -62,8 +61,8 @@ class ManagedTVMenu(object):
             self.database.get_content_items(
                 status='managed',
                 _type='tvshow'
-                )
             )
+        )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             self.progressdialog.update(
@@ -75,7 +74,6 @@ class ManagedTVMenu(object):
             item.set_as_staged()
         self.progressdialog.close()
         notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED % showtitle)
-
 
     @logged_function
     def move_all_to_staged(self):
@@ -97,14 +95,13 @@ class ManagedTVMenu(object):
             self.progressdialog.update(
                 int(percent),
                 message='\n'.join([item.showtitle, item.episode_title_with_id]
-                )
+                                  )
             )
             xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close()
         notification(STR_ALL_TV_SHOWS_MOVED_TO_STAGED)
-
 
     @logged_function
     def remove_episodes(self, items):
@@ -127,7 +124,6 @@ class ManagedTVMenu(object):
         self.progressdialog.close()
         notification(STR_ALL_x_EPISODES_REMOVED % showtitle)
 
-
     @logged_function
     def remove_seasons(self, items, showtitle):
         """Remove all seasons in specified show from library."""
@@ -143,7 +139,7 @@ class ManagedTVMenu(object):
             self.progressdialog.update(
                 int(percent),
                 message='\n'.join([showtitle,
-                str("Season: %s" % season)])
+                                   str("Season: %s" % season)])
             )
             self.database.remove_from(
                 _type='tvshow',
@@ -153,7 +149,6 @@ class ManagedTVMenu(object):
             xbmc.sleep(300)
         self.progressdialog.close()
         notification(STR_ALL_X_SEASONS_REMOVED % showtitle)
-
 
     @logged_function
     def remove_all(self):
@@ -180,7 +175,6 @@ class ManagedTVMenu(object):
             item.delete()
         self.progressdialog.close()
         notification(STR_ALL_TV_SHOWS_REMOVED)
-
 
     @logged_function
     def episode_options(self, item, season):
@@ -213,7 +207,6 @@ class ManagedTVMenu(object):
             elif lines[ret] == STR_BACK:
                 return self.view_episodes(item.showtitle, season)
         return self.view_episodes(item.showtitle, season)
-
 
     @logged_function
     def view_episodes(self, showtitle, season):
@@ -266,7 +259,6 @@ class ManagedTVMenu(object):
             elif lines[ret] == STR_BACK:
                 return self.view_seasons(showtitle)
         return self.view_seasons(showtitle)
-
 
     @logged_function
     def view_seasons(self, showtitle):
@@ -322,7 +314,6 @@ class ManagedTVMenu(object):
                     showtitle=showtitle,
                     season=''.join(filter(str.isdigit, selection)))
         return self.view_shows()
-
 
     @logged_function
     def view_shows(self):

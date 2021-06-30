@@ -12,7 +12,6 @@ from resources.lib.manipulator import clean_name
 from resources.lib.manipulator import MAPPED_STRINGS
 
 
-
 class UtilsTest(unittest.TestCase):
     """Class that contains test cases for fuzzing utils module."""
 

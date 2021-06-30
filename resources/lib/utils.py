@@ -12,7 +12,7 @@ from os.path import join
 from os.path import exists
 from os.path import expanduser
 
-import xbmc # pylint: disable=import-error
+import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 import xbmcvfs  # pylint: disable=import-error
 
@@ -44,7 +44,8 @@ else:
 def check_managed_folder():
     """Check if the managed folder is configured."""
     if not exists(MANAGED_FOLDER):
-        STR_CHOOSE_FOLDER = 'Created managed folder "{}"'.format(MANAGED_FOLDER)
+        STR_CHOOSE_FOLDER = 'Created managed folder "{}"'.format(
+            MANAGED_FOLDER)
         mkdir(MANAGED_FOLDER)
         log_msg(STR_CHOOSE_FOLDER, xbmc.LOGERROR)
 
@@ -66,7 +67,8 @@ def check_subfolders():
     for basepath, diretory in subfolders.items():
         dest_dir = join(diretory, basepath)
         if not exists(dest_dir):
-            log_msg('Creating subfolder {}'.format(dest_dir), loglevel=xbmc.LOGINFO)
+            log_msg('Creating subfolder {}'.format(
+                dest_dir), loglevel=xbmc.LOGINFO)
             mkdir(dest_dir)
             created_folders = True
 
@@ -110,9 +112,9 @@ def execute_json_rpc(method, _path):
                         'year',
                         'episode',
                     ],
-                    },
+                },
                 'id': 1
-            }, ensure_ascii=False) # ensure_ascii ONLY scape charters in python3
+            }, ensure_ascii=False)  # ensure_ascii ONLY scape charters in python3
         )
     )
 
@@ -126,6 +128,7 @@ def videolibrary(method):
             'id': 1
         }, ensure_ascii=False)
     )
+
 
 SKIP_STRINGS = [
     'resumo',
@@ -204,7 +207,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                 # CRUNCHYROLL SHOW DIRECTORY
                 if item['filetype'] == 'directory':
                     if not re_search(item['type'], ['tvshow', 'unknown']):
-                        _regex=[
+                        _regex = [
                             r'(status|mode)\=(Continuing|status|Completed|series)'
                         ]
                         if not re_search(item['file'], _regex):
@@ -250,17 +253,17 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                                 reordered[item['number'] - 1] = item
                     # AMAZON SEASON DIRECTORY
                     if item['type'] == 'unknown' and item['season'] != -1:
-                            if STR_SEASON_CHECK is True:
-                                del item['episode']
-                                del item['number']
-                                item['type'] = 'season'
-                                item['showtitle'] = showtitle
-                                try:
-                                    years.append(item['year'])
-                                except KeyError:
-                                    pass
-                                reordered[item['season'] - 1] = item
-                                # TODO: Bad method to get seasons without 'Season' in label
+                        if STR_SEASON_CHECK is True:
+                            del item['episode']
+                            del item['number']
+                            item['type'] = 'season'
+                            item['showtitle'] = showtitle
+                            try:
+                                years.append(item['year'])
+                            except KeyError:
+                                pass
+                            reordered[item['season'] - 1] = item
+                            # TODO: Bad method to get seasons without 'Season' in label
                     elif item['filetype'] == 'directory':
                         if item['episode'] == -1:
                             if item['season'] != -1:
@@ -383,7 +386,7 @@ def selected_list(results):
         'Escolha:',
         list(
             x['label'] for x in skip_filter(results, _key='label'
-            )
+                                            )
         )
     )
     try:
@@ -447,12 +450,14 @@ def load_directory_items(progressdialog, _path, recursive=False,
                     item['type'] == 'tvshow' or
                     item['type'] == 'season'):
                 showtitle = item['showtitle']
-                progressdialog.update(int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
+                progressdialog.update(
+                    int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
                 xbmc.sleep(200)
                 directories.append(item)
                 # if content is a episode, will be stored with yeld
             if item['type'] == 'episode':
-                progressdialog.update(int(percent), 'Processando items:\n%s' % item['label'])
+                progressdialog.update(
+                    int(percent), 'Processando items:\n%s' % item['label'])
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle
                 if item:
@@ -485,7 +490,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 season=season,
                 year=year,
                 sync_type=sync_type
-                ))
+            ))
             for new in new_items:
                 if item:
                     yield new

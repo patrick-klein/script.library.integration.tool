@@ -17,7 +17,6 @@ class SyncedItem(dict):
         self['type'] = synced_type
         self._localized_type = None
 
-
     def localize_type(self):
         """Localize tags used for identifying mediatype."""
         if not self._localized_type:

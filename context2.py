@@ -41,7 +41,7 @@ def main():
     typeofcontent = xbmcgui.Dialog().select(
         STR_CHOOSE_CONTENT_TYPE,
         lines
-        )
+    )
     # Call corresponding method
     selection = lines[typeofcontent]
     if selection:

@@ -22,24 +22,20 @@ class MovieItem(ABSItemMovie):
         self._title = jsonitem['title']
         self._year = year if year else jsonitem['year']
 
-
     @property
     def file(self):
         """Return url from strm."""
         return self._file
-
 
     @property
     def title(self):
         """Return the title from content."""
         return self._title
 
-
     @property
     def year(self):
         """Return the year from content."""
         return self._year
-
 
     @property
     def managed_movie_dir(self):
@@ -50,14 +46,13 @@ class MovieItem(ABSItemMovie):
             )
         return self._managed_dir
 
-
     @property
     def metadata_movie_dir(self):
         """Return the metadata_movie_dir from content."""
         if not self._metadata_movie_dir:
-            self._metadata_movie_dir = join(METADATA_FOLDER, 'Movies', self.title)
+            self._metadata_movie_dir = join(
+                METADATA_FOLDER, 'Movies', self.title)
         return self._metadata_movie_dir
-
 
     @logged_function
     def returasjson(self):
