@@ -42,7 +42,7 @@ class MovieItem(ABSItemMovie):
         """Return the managed_movie_dir from content."""
         if not self._managed_dir:
             self._managed_dir = join(
-                MANAGED_FOLDER, 'ManagedMovies', self.title
+                MANAGED_FOLDER, 'movies', self.title
             )
         return self._managed_dir
 

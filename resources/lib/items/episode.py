@@ -84,7 +84,7 @@ class EpisodeItem(ABSItemShow):
         """Return managed_show_dir."""
         if not self._managed_dir:
             self._managed_dir = join(
-                MANAGED_FOLDER, 'ManagedTV', self.showtitle
+                MANAGED_FOLDER, 'tvshows', self.showtitle
             )
         return self._managed_dir
 

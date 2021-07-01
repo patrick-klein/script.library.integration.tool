@@ -54,10 +54,8 @@ def check_subfolders():
     """Check the subfolders in the Managed and Metadata folders."""
     # Create subfolders if they don't exist
     subfolders = {
-        'ManagedMovies': MANAGED_FOLDER,
-        'ManagedTV': MANAGED_FOLDER,
-        'Movies': METADATA_FOLDER,
-        'TV': METADATA_FOLDER,
+        'movies': MANAGED_FOLDER,
+        'tvshows': MANAGED_FOLDER,
     }
 
     if not USING_CUSTOM_METADATA_FOLDER:
