@@ -529,7 +529,7 @@ def getlocalizedstring(string_id):
     return str(ADDON.getLocalizedString(string_id))
 
 
-def title_with_color(label, year=None, color='skyblue'):
+def title_with_color(label, year=None, color='mediumslateblue'):
     """Create a string to use in title Dialog().select."""
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
     # TODO: this function can be better, maybe led generic,
