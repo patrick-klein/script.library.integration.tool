@@ -9,6 +9,7 @@ import xbmcgui  # pylint: disable=import-error
 
 from resources import ADDON_NAME
 
+from resources.lib.utils import colored_str
 from resources.lib.utils import videolibrary
 from resources.lib.utils import getlocalizedstring
 
@@ -43,10 +44,15 @@ class MainMenu(object):
         # TODO: add parameter for location in list -
         #       useful when returning here after doing something on an item
         #       (preselect is broken when pressing cancel)
-        STR_VIEW_MANAGED_MOVIES = getlocalizedstring(32002)
-        STR_VIEW_MANAGED_TV_SHOWS = getlocalizedstring(32003)
-        STR_VIEW_STAGED_MOVIES = getlocalizedstring(32004)
-        STR_VIEW_STAGED_TV_SHOWS = getlocalizedstring(32005)
+
+        STR_VIEW_MANAGED_MOVIES = colored_str(
+            getlocalizedstring(32002), 'darkslateblue')
+        STR_VIEW_MANAGED_TV_SHOWS = colored_str(
+            getlocalizedstring(32003), 'darkslateblue')
+        STR_VIEW_STAGED_MOVIES = colored_str(
+            getlocalizedstring(32004), 'darkolivegreen')
+        STR_VIEW_STAGED_TV_SHOWS = colored_str(
+            getlocalizedstring(32005), 'darkolivegreen')
         STR_VIEW_SYNCED_DIRS = getlocalizedstring(32006)
         STR_VIEW_BLOCKED_ITEMS = getlocalizedstring(32007)
         STR_UPDATE_LIBRARY = xbmc.getLocalizedString(653).title()
@@ -62,7 +68,7 @@ class MainMenu(object):
             STR_CLEAN_LIBRARY
         ]
         ret = xbmcgui.Dialog().select(
-            ADDON_NAME,
+            '[B]%s[/B]' % ADDON_NAME,
             lines
         )
         if ret >= 0:
