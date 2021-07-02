@@ -7,11 +7,32 @@ import sys
 import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
+from resources import ADDON_ID
 from resources import ADDON_NAME
 
-from resources.lib.utils import colored_str
+from resources.lib.utils import bold
+from resources.lib.utils import color
 from resources.lib.utils import videolibrary
 from resources.lib.utils import getlocalizedstring
+
+from resources.lib.menus.managed_movies import ManagedMoviesMenu
+from resources.lib.menus.staged_movies import StagedMoviesMenu
+from resources.lib.menus.managed_tv import ManagedTVMenu
+from resources.lib.menus.staged_tv import StagedTVMenu
+from resources.lib.menus.synced import SyncedMenu
+from resources.lib.menus.blocked import BlockedMenu
+
+# TODO: automatically clean & update when adding/removing based in type and path
+# TODO: support a centralized managed_folder that's shared over network
+# TODO: rebuild library option
+#   1. FLAG all itens in managed
+#   2. move all all to staged
+#   3. delete all managed itens
+#   4. re-add all FLAGGED itens
+# TODO: integrate WatchedList
+# TODO: option to call WatchedList if it's installed after updating library
+# IDEA: use plugin menu system instead of dialog windows
+# TODO: Put all classes in their own file, change menu classes to ManagedMenu, StagedMenu, etc.
 
 
 class MainMenu(object):
@@ -24,76 +45,65 @@ class MainMenu(object):
     def __init__(self, database):
         """__init__ MainMenu."""
         self.database = database
-    # IDEA: use plugin menu system instead of dialog windows
-    # TODO: option to automatically add movies & episodes with epids
-    # TODO: option to automatically clean & update when adding/removing
-    # TODO: new screenshots / tutorial / documentation
-    # TODO: automatically check if item is already in library when staging? (or when adding)
-    # TODO: option to call WatchedList if it's installed after updating library
-    # TODO: support a centralized managed_folder that's shared over network
-    # TODO: rebuild library option (flag currently managed items, move to staged,
-    #      delete managed folder contents, then re-add flagged items)
-    # TODO: multiple managed folders for split libraries
-    # TODO: integrate WatchedList
-    # TODO: Put all classes in their own file, change menu classes to ManagedMenu, StagedMenu, etc.
+        self.lastchoice = False
+
+    def library(self):
+        """Display dedicated menu to Library functions."""
+        OPTIONS = {
+            653: 'scan',
+            14247: 'clean',
+        }
+        selection = xbmcgui.Dialog().select(
+            heading='%s - %s' % (ADDON_NAME, color(bold('Library options'))),
+            list=[xbmc.getLocalizedString(x).title() for x in OPTIONS],
+            useDetails=True,
+            preselect=self.lastchoice
+        )
+        self.lastchoice = selection
+        if selection >= 0:
+            arg = OPTIONS[list(OPTIONS.keys())[selection]]
+            if arg:
+                videolibrary(arg)
+                # sleep to wait library update, whithout this
+                xbmc.sleep(4000)
+            self.view()
+        else:
+            sys.exit()
 
     def view(self):
         """Display main menu which leads to other menus."""
-        # TODO: fix update library to only update path
-        # TODO: remove extraneous tv show folders in Metadata
-        # TODO: add parameter for location in list -
-        #       useful when returning here after doing something on an item
-        #       (preselect is broken when pressing cancel)
-
-        STR_VIEW_MANAGED_MOVIES = colored_str(
-            getlocalizedstring(32002), 'darkslateblue')
-        STR_VIEW_MANAGED_TV_SHOWS = colored_str(
-            getlocalizedstring(32003), 'darkslateblue')
-        STR_VIEW_STAGED_MOVIES = colored_str(
-            getlocalizedstring(32004), 'darkolivegreen')
-        STR_VIEW_STAGED_TV_SHOWS = colored_str(
-            getlocalizedstring(32005), 'darkolivegreen')
-        STR_VIEW_SYNCED_DIRS = getlocalizedstring(32006)
-        STR_VIEW_BLOCKED_ITEMS = getlocalizedstring(32007)
-        STR_UPDATE_LIBRARY = xbmc.getLocalizedString(653).title()
-        STR_CLEAN_LIBRARY = xbmc.getLocalizedString(14247).title()
-        lines = [
-            STR_VIEW_MANAGED_MOVIES,
-            STR_VIEW_STAGED_MOVIES,
-            STR_VIEW_MANAGED_TV_SHOWS,
-            STR_VIEW_STAGED_TV_SHOWS,
-            STR_VIEW_SYNCED_DIRS,
-            STR_VIEW_BLOCKED_ITEMS,
-            STR_UPDATE_LIBRARY,
-            STR_CLEAN_LIBRARY
-        ]
-        ret = xbmcgui.Dialog().select(
-            '[B]%s[/B]' % ADDON_NAME,
-            lines
+        OPTIONS_LIST = list()
+        OPTIONS = {
+            32002: ManagedMoviesMenu(database=self.database).view_all,
+            32003: StagedMoviesMenu(database=self.database).view_all,
+            32004: ManagedTVMenu(database=self.database).view_shows,
+            32005: StagedTVMenu(database=self.database).view_shows,
+            32006: SyncedMenu(database=self.database).view,
+            32007: BlockedMenu(database=self.database).view,
+            32179: xbmc.executebuiltin,
+            32180: self.library,
+        }
+        # TODO: This is not my favorite way to format options in bold,
+        # but i will use per hour
+        for index, opt in enumerate(OPTIONS):
+            if index <= 3:
+                OPTIONS_LIST.append(bold((getlocalizedstring(opt))))
+            else:
+                OPTIONS_LIST.append(getlocalizedstring(opt))
+        selection = xbmcgui.Dialog().select(
+            heading=bold(ADDON_NAME),
+            list=OPTIONS_LIST,
+            useDetails=True,
+            preselect=self.lastchoice
         )
-        if ret >= 0:
-            if lines[ret] == STR_VIEW_MANAGED_MOVIES:
-                from resources.lib.menus.managed_movies import ManagedMoviesMenu
-                ManagedMoviesMenu(database=self.database).view_all()
-            elif lines[ret] == STR_VIEW_STAGED_MOVIES:
-                from resources.lib.menus.staged_movies import StagedMoviesMenu
-                StagedMoviesMenu(database=self.database).view_all()
-            elif lines[ret] == STR_VIEW_MANAGED_TV_SHOWS:
-                from resources.lib.menus.managed_tv import ManagedTVMenu
-                ManagedTVMenu(database=self.database).view_shows()
-            elif lines[ret] == STR_VIEW_STAGED_TV_SHOWS:
-                from resources.lib.menus.staged_tv import StagedTVMenu
-                StagedTVMenu(database=self.database).view_shows()
-            elif lines[ret] == STR_VIEW_SYNCED_DIRS:
-                from resources.lib.menus.synced import SyncedMenu
-                SyncedMenu(database=self.database).view()
-            elif lines[ret] == STR_VIEW_BLOCKED_ITEMS:
-                from resources.lib.menus.blocked import BlockedMenu
-                BlockedMenu(database=self.database).view()
-            elif lines[ret] == STR_UPDATE_LIBRARY:
-                videolibrary('scan')
-                sys.exit()
-            elif lines[ret] == STR_CLEAN_LIBRARY:
-                videolibrary('clean')
-                sys.exit()
+        self.lastchoice = selection
+        if selection >= 0:
+            command = OPTIONS[list(OPTIONS.keys())[selection]]
+            if command:
+                if xbmc.executebuiltin == command:
+                    command('Addon.OpenSettings(%s)' % ADDON_ID)
+                    return
+                command()
             self.view()
+        else:
+            sys.exit()
