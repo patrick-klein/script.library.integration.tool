@@ -117,15 +117,13 @@ def execute_json_rpc(method, _path):
     )
 
 
-def videolibrary(method):
+def videolibrary(method, database='video', path=None):
     """A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary."""
-    return xbmc.executeJSONRPC(
-        json.dumps({
-            'jsonrpc': '2.0',
-            "method": 'VideoLibrary.Scan' if method == 'scan' else 'VideoLibrary.Clean',
-            'id': 1
-        }, ensure_ascii=False)
-    )
+    command = {
+        'scan': 'CleanLibrary(%s)' % database,
+        'clean': 'UpdateLibrary(%s)' % database
+    }
+    xbmc.executebuiltin(command[method])
 
 
 SKIP_STRINGS = [
