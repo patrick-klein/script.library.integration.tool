@@ -537,12 +537,17 @@ def title_with_color(label, year=None, color='mediumslateblue'):
         return str('[COLOR %s][B]%s (%s)[/B][/COLOR]' % (color, label, year))
     return str('[COLOR %s][B]%s[/B][/COLOR]' % (color, label))
 
-
-def colored_str(string, color='mediumslateblue'):
+def color(string, colorname='mediumslateblue'):
     """
     Return string formated with a selected color.
     lawngreen
     mediumseagreen
     """
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
-    return str('[COLOR %s][B]%s[/B][/COLOR]' % (color, string))
+    return str('[COLOR %s]%s[/COLOR]' % (colorname, string))
+
+def bold(string):
+    """
+    Return string formated with a bold.
+    """
+    return str('[B]%s[/B]' % (string))
