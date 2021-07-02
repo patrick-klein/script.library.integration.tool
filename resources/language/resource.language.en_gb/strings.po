@@ -700,6 +700,38 @@ msgctxt "#32171"
 msgid "Remove all seasons"
 msgstr ""
 
+msgctxt "#32173"
+msgid "All seasons of %s moved to staged"
+msgstr ""
+
+msgctxt "#32174"
+msgid "Clean up metadata for all itens"
+msgstr ""
+
+msgctxt "#32175"
+msgid "Managed seasons of %s"
+msgstr ""
+
+msgctxt "#32176"
+msgid "Staged seasons of %s"
+msgstr ""
+
+msgctxt "#32177"
+msgid "Add all seasons"
+msgstr ""
+
+msgctxt "#32178"
+msgid "Add all seasons with metadata"
+msgstr ""
+
+msgctxt "#32179"
+msgid "Library Integration Tool settings"
+msgstr ""
+
+msgctxt "#32180"
+msgid "Library options"
+msgstr ""
+
 msgctxt "#32172"
 msgid "Move all %s seasons back to staged"
 msgstr ""
