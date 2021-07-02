@@ -38,20 +38,18 @@ def build_json_item(item):
 @logged_function
 def build_contentitem(jsonitem):
     """Shortcut to return a MovieItem or EpisodeItem json."""
-    try:
-        item = EpisodeItem(jsonitem).returasjson()
-    except KeyError:
-        item = MovieItem(jsonitem).returasjson()
-        # item = ValueError("Not implemented yet, music")
-    return item
+    command = {
+        'tvshow': EpisodeItem,
+        'movie': MovieItem
+    }
+    return command[jsonitem['type']](jsonitem).returasjson()
 
 
 @logged_function
 def build_contentmanager(database, jsonitem):
     """Shortcut to create a ContentManager object."""
-    try:
-        content = ContentManagerShow(database, jsonitem)
-    except KeyError:
-        content = ContentManagerMovie(database, jsonitem)
-    #     content = ValueError("Not implemented yet, music")
-    return content
+    command = {
+        'tvshow': ContentManagerShow,
+        'movie': ContentManagerMovie
+    }
+    return command[jsonitem['type']](database, jsonitem)
