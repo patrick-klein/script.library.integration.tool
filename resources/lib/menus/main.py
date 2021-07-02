@@ -80,8 +80,8 @@ class MainMenu(object):
             32005: StagedTVMenu(database=self.database).view_shows,
             32006: SyncedMenu(database=self.database).view,
             32007: BlockedMenu(database=self.database).view,
-            32179: xbmc.executebuiltin,
             32180: self.library,
+            32179: xbmc.executebuiltin,
         }
         # TODO: This is not my favorite way to format options in bold,
         # but i will use per hour
