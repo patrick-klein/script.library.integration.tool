@@ -65,6 +65,40 @@ class ManagedMoviesMenu(object):
         self.progressdialog.close()
         notification(STR_ALL_MOVIES_REMOVED)
 
+    @staticmethod
+    @logged_function
+    def clean_up_managed_metadata():
+        """Remove all unused metadata."""
+        STR_MOVIE_METADATA_CLEANED = getlocalizedstring(32136)
+        managed_movies_dir = join(MANAGED_FOLDER, 'movies')
+        for movie_dir in listdir(managed_movies_dir):
+            full_path = join(managed_movies_dir, movie_dir)
+            if isdir(full_path):
+                folder_contents = listdir(full_path)
+                for filepath in folder_contents:
+                    if '.nfo' in filepath:
+                        remove(join(full_path, filepath))
+        notification(STR_MOVIE_METADATA_CLEANED)
+
+    @logged_function
+    def generate_all_managed_metadata(self, items):
+        """Generate metadata items for all managed movies."""
+        STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
+        STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_GENERATING_ALL_MOVIE_METADATA
+        )
+        for index, item in enumerate(items):
+            percent = 100 * index / len(items)
+            self.progressdialog.update(
+                int(percent),
+                item.title
+            )
+            item.create_metadata_item()
+        self.progressdialog.close()
+        notification(STR_ALL_MOVIE_METADTA_CREATED)
+
     @logged_function
     def options(self, item):
         """Provide options for a single managed movie in a dialog window."""

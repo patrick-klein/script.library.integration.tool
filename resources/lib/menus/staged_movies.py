@@ -73,42 +73,6 @@ class StagedMoviesMenu(object):
         notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
     @staticmethod
-    @logged_function
-    def clean_up_metadata():
-        """Remove all unused metadata."""
-        STR_MOVIE_METADATA_CLEANED = getlocalizedstring(32136)
-        metadata_dir = os.path.join(METADATA_FOLDER, 'Movies')
-        for folder in os.listdir(metadata_dir):
-            full_path = os.path.join(metadata_dir, folder)
-            if os.path.isdir(full_path):
-                folder_contents = os.listdir(full_path)
-                if len(folder_contents) == 1 and fnmatch(folder_contents[0], '*.strm'):
-                    log_msg(
-                        'Removing metadata folder {}'.format(full_path), loglevel=xbmc.LOGINFO
-                    )
-                shutil.rmtree(full_path)
-        notification(STR_MOVIE_METADATA_CLEANED)
-
-    @logged_function
-    def generate_all_metadata(self, items):
-        """Generate metadata items for all staged movies."""
-        STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
-        STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_GENERATING_ALL_MOVIE_METADATA
-        )
-        for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
-                item.title
-            )
-            item.create_metadata_item()
-        self.progressdialog.close()
-        notification(STR_ALL_MOVIE_METADTA_CREATED)
-
-    @staticmethod
     def rename_dialog(item):
         """Prompt input for new name, and rename if non-empty string."""
         # TODO: move to utils or parent class so it's not duplicated
