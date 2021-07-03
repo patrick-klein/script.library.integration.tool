@@ -293,12 +293,15 @@ class SyncedMenu(object):
             )
             # query json-rpc to get files in directory
             self.progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
-            files_list = list(load_directory_items(
-                progressdialog=self.progressdialog,
-                _path=dir_path,
-                allow_directories=True,
-                recursive=True,
-                sync_type=sync_type))
+            files_list = list(
+                load_directory_items(
+                    progressdialog=self.progressdialog,
+                    _path=dir_path,
+                    allow_directories=True,
+                    recursive=True,
+                    sync_type=sync_type
+                )
+            )
             items_to_stage = 0
             for index, jsonitem in enumerate(files_list):
                 if self.progressdialog.iscanceled() is True:
