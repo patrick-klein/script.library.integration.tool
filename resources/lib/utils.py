@@ -29,11 +29,11 @@ from resources.lib.version import check_version_file
 
 
 if USING_CUSTOM_MANAGED_FOLDER:
-    MANAGED_FOLDER = ADDON.getSetting('managed_folder')
+    MANAGED_FOLDER = xbmcvfs.validatePath(ADDON.getSetting('managed_folder'))
 else:
     MANAGED_FOLDER = xbmcvfs.translatePath(
-        'special://userdata/addon_data/{}/'.format(ADDON_ID))
-
+        'special://userdata/addon_data/{}/'.format(ADDON_ID)
+    )
 
 
 def check_managed_folder():
