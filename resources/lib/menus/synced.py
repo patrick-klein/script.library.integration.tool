@@ -82,11 +82,11 @@ class SyncedMenu(object):
         return dir_items
 
     @logged_function
-    def get_single_tvshow(self, directory, showtitle):
+    def get_single_tvshow(self, directory, showtitle, progressdialog=None):
         """Get the single TV show in the directory, and tag the items."""
         show_items = self.filter_blocked_items(
             list(load_directory_items(
-                progressdialog=None,
+                progressdialog=progressdialog,
                 _path=directory,
                 recursive=True,
                 sync_type='tvshow'
@@ -98,11 +98,11 @@ class SyncedMenu(object):
         return show_items
 
     @logged_function
-    def get_tvshows_in_directory(self, directory):
+    def get_tvshows_in_directory(self, directory, progressdialog=None):
         """Get all TV shows in the directory, and tag the items."""
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
-                progressdialog=None,
+                progressdialog=progressdialog,
                 _path=directory,
                 allow_directories=True,
                 recursive=True,
@@ -386,6 +386,7 @@ class SyncedMenu(object):
                     all_items += self.get_single_tvshow(
                         diretory['file'],
                         diretory['label'],
+                        progressdialog=self.progressdialog
                     )
                 elif diretory['type'] == 'movie':
                     # Directory is a path to list of movies
@@ -505,7 +506,10 @@ class SyncedMenu(object):
                     int(99 * index / total_num_dirs),
                     synced_dir['label']
                 )
-                all_items += self.get_tvshows_in_directory(synced_dir['file'])
+                all_items += self.get_tvshows_in_directory(
+                    synced_dir['file'],
+                    self.progressdialog
+                )
             for index, synced_dir in enumerate(single_show_dirs):
                 self.progressdialog.update(
                     int(99. * (index + len(show_dirs)) / total_num_dirs),
