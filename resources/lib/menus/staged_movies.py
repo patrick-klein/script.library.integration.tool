@@ -4,15 +4,11 @@
 """Defines the StagedMoviesMenu class."""
 
 import os
-import shutil
-from fnmatch import fnmatch
 
-import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
 
 from resources import ADDON_NAME
-from resources.lib.log import log_msg
 from resources.lib.log import logged_function
 
 from resources.lib.utils import notification
@@ -91,13 +87,13 @@ class StagedMoviesMenu(object):
         STR_REMOVE_AND_BLOCK = getlocalizedstring(32049)
         STR_RENAME = getlocalizedstring(32050)
         STR_STAGED_MOVIE_OPTIONS = getlocalizedstring(32053)
+        STR_BACK = getlocalizedstring(32011)
         lines = [
             STR_ADD,
             STR_REMOVE,
             STR_REMOVE_AND_BLOCK,
             # STR_RENAME,
-            # STR_AUTOMATICALLY_RENAME_USING_METADTA,
-            STR_GENERATE_METADATA_ITEM
+            STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
@@ -119,12 +115,9 @@ class StagedMoviesMenu(object):
             elif lines[ret] == STR_RENAME:
                 self.rename_dialog(item)
                 self.options(item)
-            elif lines[ret] == STR_GENERATE_METADATA_ITEM:
-                item.create_metadata_item()
-                self.options(item)
-            elif lines[ret] == STR_AUTOMATICALLY_RENAME_USING_METADTA:
-                item.rename_using_metadata()
-                self.options(item)
+            elif lines[ret] == STR_BACK:
+                return
+
         else:
             self.view_all()
 
@@ -152,10 +145,8 @@ class StagedMoviesMenu(object):
         STR_ADD_ALL_MOVIES = getlocalizedstring(32038)
         STR_ADD_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32039)
         STR_REMOVE_ALL_MOVIES = getlocalizedstring(32009)
-        STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_MOVIES = getlocalizedstring(32041)
-        STR_CLEAN_UP_METADATA = getlocalizedstring(32135)
         staged_movies = list(
             self.database.get_content_items(
                 status='staged',
@@ -167,8 +158,10 @@ class StagedMoviesMenu(object):
             return
         lines = [str(x) for x in staged_movies]
         lines += [
-            STR_ADD_ALL_MOVIES, STR_ADD_ALL_MOVIES_WITH_METADATA, STR_REMOVE_ALL_MOVIES,
-            STR_GENERATE_ALL_METADATA_ITEMS, STR_CLEAN_UP_METADATA, STR_BACK
+            STR_ADD_ALL_MOVIES,
+            STR_ADD_ALL_MOVIES_WITH_METADATA,
+            STR_REMOVE_ALL_MOVIES,
+            STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1}'.format(ADDON_NAME, STR_STAGED_MOVIES), lines
@@ -186,11 +179,5 @@ class StagedMoviesMenu(object):
                 self.view_all()
             elif lines[ret] == STR_REMOVE_ALL_MOVIES:
                 self.remove_all()
-            elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
-                self.generate_all_metadata(staged_movies)
-                self.view_all()
-            elif lines[ret] == STR_CLEAN_UP_METADATA:
-                self.clean_up_metadata()
-                self.view_all()
             elif lines[ret] == STR_BACK:
                 return

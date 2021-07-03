@@ -2,12 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """Defines the ManagedMoviesMenu class."""
+import os
+
+from os import remove
+from os import listdir
+from os.path import join
+from os.path import isdir
+
 import xbmcgui  # pylint: disable=import-error
 
 from resources import ADDON_NAME
+from resources.lib.utils import MANAGED_FOLDER
 
 from resources.lib.log import logged_function
 
+from resources.lib.utils import bold
+from resources.lib.utils import color
 from resources.lib.utils import notification
 from resources.lib.utils import getlocalizedstring
 
@@ -106,13 +116,20 @@ class ManagedMoviesMenu(object):
         # TODO: add reload metadata option
         STR_REMOVE = getlocalizedstring(32017)
         STR_MOVE_BACK_TO_STAGED = getlocalizedstring(32018)
+        STR_GENERATE_METADATA_ITEM = getlocalizedstring(32052)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_MOVIE_OPTIONS = getlocalizedstring(32019)
-        lines = [STR_REMOVE, STR_MOVE_BACK_TO_STAGED, STR_BACK]
+        lines = [
+            STR_REMOVE,
+            STR_MOVE_BACK_TO_STAGED,
+            STR_GENERATE_METADATA_ITEM,
+            STR_BACK
+        ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
-                ADDON_NAME, STR_MANAGED_MOVIE_OPTIONS,
-                item.title
+                ADDON_NAME,
+                STR_MANAGED_MOVIE_OPTIONS,
+                bold(color(item.title, colorname='skyblue'))
             ), lines
         )
         if ret >= 0:
@@ -124,6 +141,9 @@ class ManagedMoviesMenu(object):
                 item.remove_from_library()
                 item.set_as_staged()
                 return self.view_all()
+            elif lines[ret] == STR_GENERATE_METADATA_ITEM:
+                item.create_metadata_item()
+                self.options(item)
             elif lines[ret] == STR_BACK:
                 return self.view_all()
         return self.view_all()
@@ -139,6 +159,8 @@ class ManagedMoviesMenu(object):
         STR_MOVE_ALL_BACK_TO_STAGED = getlocalizedstring(32010)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_MOVIES = getlocalizedstring(32012)
+        STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
+        STR_CLEANUP_ALL_METADATA_ITEMS = getlocalizedstring(32174)
         managed_movies = list(
             self.database.get_content_items(
                 status='managed',
@@ -153,7 +175,12 @@ class ManagedMoviesMenu(object):
             return
 
         lines = [str(x) for x in managed_movies]
-        lines += [STR_REMOVE_ALL_MOVIES, STR_MOVE_ALL_BACK_TO_STAGED, STR_BACK]
+        lines += [
+            STR_REMOVE_ALL_MOVIES,
+            STR_MOVE_ALL_BACK_TO_STAGED,
+            STR_GENERATE_ALL_METADATA_ITEMS,
+            STR_CLEANUP_ALL_METADATA_ITEMS,
+            STR_BACK]
         ret = xbmcgui.Dialog().select(
             '{0} - {1}'.format(ADDON_NAME, STR_MANAGED_MOVIES), lines
         )
@@ -167,5 +194,11 @@ class ManagedMoviesMenu(object):
                 self.remove_all(managed_movies)
             elif lines[ret] == STR_MOVE_ALL_BACK_TO_STAGED:
                 self.move_all_to_staged(managed_movies)
+            elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
+                self.generate_all_managed_metadata(managed_movies)
+                self.view_all()
+            elif lines[ret] == STR_CLEANUP_ALL_METADATA_ITEMS:
+                self.clean_up_managed_metadata()
+                self.view_all()
             elif lines[ret] == STR_BACK:
                 return
