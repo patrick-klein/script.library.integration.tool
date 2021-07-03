@@ -12,22 +12,18 @@ class SyncedItem(dict):
     def __init__(self, directory, label, synced_type):
         """SyncedItem __init__."""
         super(SyncedItem, self).__init__()
-        self['dir'] = directory
+        self['file'] = directory
         self['label'] = label
         self['type'] = synced_type
         self._localized_type = None
 
     def localize_type(self):
-        """Localize tags used for identifying mediatype."""
-        if not self._localized_type:
-            if self['type'] == 'movie':  # Movies
-                self._localized_type = getlocalizedstring(32109)
-            elif self['type'] == 'tvshow':  # TV Shows
-                self._localized_type = getlocalizedstring(32108)
-            elif self['type'] == 'single-movie':  # Single Movie
-                self._localized_type = getlocalizedstring(32116)
-            elif self['type'] == 'single-tvshow':  # Single TV Show
-                self._localized_type = getlocalizedstring(32115)
-            else:
-                self._localized_type = self['type']
+        """Localize tags used for identifying type."""
+        _TYPES = {
+            'movie': 32109,
+            'tvshow': 32108,
+            'single-movie': 32116,
+            'single-tvshow': 32115
+        }
+        self._localized_type = getlocalizedstring(_TYPES[self['type']])
         return self._localized_type
