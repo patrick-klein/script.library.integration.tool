@@ -416,23 +416,25 @@ def load_directory_items(progressdialog, _path, recursive=False,
             if item:
                 yield item
         else:
-            if season is not False:
+            if season:
                 item['season'] = season
-            if year is not False:
+            if year:
                 item['year'] = year
-                # if content is a directory will be added to directories list
-            if (item['filetype'] == 'directory' and
-                    item['type'] == 'tvshow' or
-                    item['type'] == 'season'):
-                showtitle = item['showtitle']
-                progressdialog.update(
-                    int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
-                xbmc.sleep(200)
-                directories.append(item)
-                # if content is a episode, will be stored with yeld
+            # if content is a directory will be added to directories list
+            if item['filetype'] == 'directory':
+                if re_search(item['type'], ['season', 'tvshow']):
+                    showtitle = item['showtitle']
+                    progressdialog.update(
+                        int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
+                    xbmc.sleep(200)
+                    directories.append(item)
+            # if content is a episode, will be stored with yeld
             if item['type'] == 'episode':
+                # change type to 'tvshow' to padronize in build_contentitem
+                item['type'] = 'tvshow'
                 progressdialog.update(
-                    int(percent), 'Processando items:\n%s' % item['label'])
+                    int(percent), 'Processando items:\n%s' % item['label']
+                )
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle
                 if item:
