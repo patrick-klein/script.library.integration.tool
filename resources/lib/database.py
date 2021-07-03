@@ -232,19 +232,18 @@ class Database(object):
     @logged_function
     def get_season_items(self, status, showtitle):
         """Get seasons of a show and return as ContentManager object."""
-        self.cur.execute(
-            '''
-                SELECT
-                    *
-                FROM
-                    tvshow
-                WHERE
-                    status='%s'
-                AND
-                    showtitle='%s'
-                ORDER BY
-                    CAST(season AS INTEGER)''' % (status, showtitle)
-        )
+        self.cur.execute('''
+                            SELECT
+                                *
+                            FROM
+                                tvshow
+                            WHERE
+                                status = '%s'
+                            AND
+                                showtitle = '%s'
+                            ORDER BY
+                            CAST(season AS INTEGER)''' % (status, showtitle)
+                         )
         for content in self.cur.fetchall():
             json_item = build_json_item(content)
             yield build_contentmanager(self, build_contentitem(json_item))
@@ -286,7 +285,7 @@ class Database(object):
         if synced_type:
             sql_templ += ' WHERE type=?'
             params = (synced_type, )
-        sql_templ += '''ORDER BY
+        sql_templ += ''' ORDER BY
                             (
                                 CASE WHEN
                                     label
@@ -370,7 +369,6 @@ class Database(object):
                         AND
                             season="%s"
                         ''' % (showtitle, season)
-
         self.cur.execute(STR_CMD_QUERY)
         self.conn.commit()
 

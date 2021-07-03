@@ -34,6 +34,10 @@ class ABSContentManagerShow(object):
         """Path to the show_dir directory for the item."""
 
     @abc.abstractproperty
+    def season(self):
+        """Path to the season for the item."""
+
+    @abc.abstractproperty
     def show_dir(self):
         """Path to the show_dir directory for the item."""
 
@@ -71,17 +75,13 @@ class ABSContentManagerShow(object):
         """Remove its content from the library, does NOT change/remove item in database."""
         # TODO: remove from library using json-rpc
 
-    # @abc.abstractmethod
-    # def remove_and_block(self):
-    #     """Remove content from the library, deletes metadata, and adds to blocked list."""
+    @abc.abstractmethod
+    def remove_and_block(self):
+        """Remove content from the library, deletes metadata, and adds to blocked list."""
 
     @abc.abstractmethod
     def create_metadata_item(self):
         """Add relevent files to metadata folder."""
-
-    @abc.abstractmethod
-    def rename_using_metadata(self):
-        """Automatically rename using nfo file."""
 
     @abc.abstractmethod
     def rename(self, name):
@@ -110,7 +110,7 @@ class ABSContentManagerMovie(object):
     def __init__(self, jsondata):
         """__init__ ABSContentManagerMovie."""
         self._file = None
-        # mediatype
+        # type
         self._title = None
         self._year = None
 
@@ -144,18 +144,6 @@ class ABSContentManagerMovie(object):
     @abc.abstractproperty
     def movie_nfo(self):
         """Path to the movie_nfo for the item."""
-    # @abc.abstractproperty
-    # def show_dir(self):
-    #     """Path to the show_dir directory for the item."""
-    # @abc.abstractproperty
-    # def formedyear(self):
-    #     """Path to the formedyear directory for the item."""
-    # @abc.abstractproperty
-    # def complete_episode_title(self):
-    #     """Path to the complete_episode_title directory for the item."""
-    # @abc.abstractproperty
-    # def episode_nfo(self):
-    #     """Path to the episode_nfo directory for the item."""
 
     @abc.abstractmethod
     def add_to_library(self):
@@ -171,18 +159,14 @@ class ABSContentManagerMovie(object):
         """Remove its content from the library, does NOT change/remove item in database."""
         # TODO: remove from library using json-rpc
 
-    # @abc.abstractmethod
-    # def remove_and_block(self):
-    #     """Remove content from the library, deletes metadata, and adds to blocked list."""
+    @abc.abstractmethod
+    def remove_and_block(self):
+        """Remove content from the library, deletes metadata, and adds to blocked list."""
 
     @abc.abstractmethod
     def create_metadata_item(self):
         """Add relevent files to metadata folder."""
-
-    @abc.abstractmethod
-    def rename_using_metadata(self):
-        """Automatically rename using nfo file."""
-
+        
     @abc.abstractmethod
     def rename(self, name):
         """Rename title and files."""

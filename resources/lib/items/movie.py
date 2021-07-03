@@ -9,7 +9,6 @@ from resources.lib.log import logged_function
 from resources.lib.abs.item import ABSItemMovie
 
 from resources.lib.utils import MANAGED_FOLDER
-from resources.lib.utils import METADATA_FOLDER
 
 
 class MovieItem(ABSItemMovie):
@@ -42,19 +41,11 @@ class MovieItem(ABSItemMovie):
         """Return the managed_movie_dir from content."""
         if not self._managed_dir:
             self._managed_dir = join(
-                MANAGED_FOLDER, 'ManagedMovies', self.title
+                MANAGED_FOLDER, 'movies', self.title
             )
         return self._managed_dir
 
-    @property
-    def metadata_movie_dir(self):
-        """Return the metadata_movie_dir from content."""
-        if not self._metadata_movie_dir:
-            self._metadata_movie_dir = join(
-                METADATA_FOLDER, 'Movies', self.title)
-        return self._metadata_movie_dir
-
-    @logged_function
+      @logged_function
     def returasjson(self):
         """Return the json with information from content."""
         try:
@@ -62,7 +53,6 @@ class MovieItem(ABSItemMovie):
                 'file': self.file,
                 'title': self.title,
                 'managed_movie_dir': self.managed_movie_dir,
-                'metadata_movie_dir': self.metadata_movie_dir,
                 'year': self.year,
                 'type': 'movie'
             }

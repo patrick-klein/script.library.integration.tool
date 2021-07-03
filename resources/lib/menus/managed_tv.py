@@ -6,10 +6,11 @@
 import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
-
 from resources import ADDON_NAME
 from resources.lib.log import logged_function
 
+from resources.lib.utils import bold
+from resources.lib.utils import color
 from resources.lib.utils import notification
 from resources.lib.utils import getlocalizedstring
 
@@ -29,33 +30,34 @@ class ManagedTVMenu(object):
     @logged_function
     def move_episodes_to_staged(self, items):
         """Remove all managed episodes in specified show from library, and add them to staged."""
-        STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED = getlocalizedstring(32034)
-        STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(32035)
-        showtitle = items[0].showtitle
+        STR_MOVING_ALL_x_EPISODES_TO_STAGED = getlocalizedstring(32034)
+        STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(
+            32035)
         self.progressdialog.create(
-            ADDON_NAME, STR_MOVING_ALL_x_EPISODES_BACK_TO_STAGED % showtitle
+            ADDON_NAME,
+            STR_MOVING_ALL_x_EPISODES_TO_STAGED % color(items[0].showtitle)
         )
         for index, item in enumerate(items):
             percent = 100 * index / len(items)
             self.progressdialog.update(
                 int(percent),
-                message='\n'.join([item.showtitle, item.episode_title_with_id])
+                message='\n'.join([color(item.showtitle), item.episode_title_with_id])
             )
             xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close()
-        notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED % showtitle)
+        notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED %
+                     color(item.showtitle, 'skyblue'))
 
     @logged_function
     def move_all_seasons_to_staged(self, showtitle):
         """Remove all managed episodes in specified show from library, and add them to staged."""
-        STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED = getlocalizedstring(
-            32172) % showtitle
-        STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173)
+        STR_MOVING_ALL_x_SEASONS_TO_STAGED = getlocalizedstring(32026)
+        STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173) % color(showtitle, 'skyblue')
         self.progressdialog.create(
             ADDON_NAME,
-            STR_MOVING_ALL_x_SEASONS_BACK_TO_STAGED
+            STR_MOVING_ALL_x_SEASONS_TO_STAGED % color(showtitle)
         )
         items = list(
             self.database.get_content_items(
@@ -67,22 +69,22 @@ class ManagedTVMenu(object):
             percent = 100 * index / len(items)
             self.progressdialog.update(
                 int(percent),
-                message='\n'.join([item.showtitle, item.episode_title_with_id])
+                message='\n'.join([color(item.showtitle), item.episode_title_with_id])
             )
             xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close()
-        notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED % showtitle)
+        notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED)
 
     @logged_function
     def move_all_to_staged(self):
         """Remove all managed tvshow items from library, and add them to staged."""
-        STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32026)
+        STR_MOVING_ALL_TV_SHOWS_TO_STAGED = getlocalizedstring(32026)
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = getlocalizedstring(32027)
         self.progressdialog.create(
             ADDON_NAME,
-            STR_MOVING_ALL_TV_SHOWS_BACK_TO_STAGED
+            STR_MOVING_ALL_TV_SHOWS_TO_STAGED
         )
         managed_tv_items = list(
             self.database.get_content_items(
@@ -94,7 +96,7 @@ class ManagedTVMenu(object):
             percent = 100 * index / len(managed_tv_items)
             self.progressdialog.update(
                 int(percent),
-                message='\n'.join([item.showtitle, item.episode_title_with_id]
+                message='\n'.join([color(item.showtitle), item.episode_title_with_id]
                                   )
             )
             xbmc.sleep(200)
@@ -138,7 +140,7 @@ class ManagedTVMenu(object):
             percent = 100 * season / len(seasons)
             self.progressdialog.update(
                 int(percent),
-                message='\n'.join([showtitle,
+                message='\n'.join([color(showtitle),
                                    str("Season: %s" % season)])
             )
             self.database.remove_from(
@@ -149,6 +151,33 @@ class ManagedTVMenu(object):
             xbmc.sleep(300)
         self.progressdialog.close()
         notification(STR_ALL_X_SEASONS_REMOVED % showtitle)
+
+    @logged_function
+    def generate_all_managed_metadata(self):
+        """Create metadata for all staged tvshow items."""
+        STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
+        STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_GENERATING_ALL_TV_SHOW_METADATA
+        )
+        staged_tv_items = list(
+            self.database.get_content_items(
+                status='staged',
+                _type='tvshow'
+            )
+        )
+        for index, item in enumerate(staged_tv_items):
+            percent = 100 * index / len(staged_tv_items)
+            self.progressdialog.update(
+                int(percent),
+                '\n'.join([item.showtitle]
+                          )
+            )
+            xbmc.sleep(200)
+            item.create_metadata_item()
+        self.progressdialog.close()
+        notification(STR_ALL_TV_SHOW_METADATA_CREATED)
 
     @logged_function
     def remove_all(self):
@@ -169,7 +198,7 @@ class ManagedTVMenu(object):
             percent = 100 * index / len(managed_tv_items)
             self.progressdialog.update(
                 int(percent),
-                message='\n'.join([item.showtitle, item.episode_title_with_id])
+                message='\n'.join([color(item.showtitle), item.episode_title_with_id])
             )
             item.remove_from_library()
             item.delete()
@@ -190,23 +219,24 @@ class ManagedTVMenu(object):
         ]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
-                ADDON_NAME,
                 STR_MANAGED_EPISODE_OPTIONS,
-                item.episode_title_with_id
+                color(item.showtitle, 'skyblue'),
+                color(item.episode_title_with_id.split(
+                    ' - ')[0], colorname='green')
             ), lines
         )
         if ret >= 0:
             if lines[ret] == STR_REMOVE:
                 item.remove_from_library()
                 item.delete()
-                return self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle, season)
             elif lines[ret] == STR_MOVE_BACK_TO_STAGED:
                 item.remove_from_library()
                 item.set_as_staged()
-                return self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle, season)
             elif lines[ret] == STR_BACK:
-                return self.view_episodes(item.showtitle, season)
-        return self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle, season)
+        self.view_episodes(item.showtitle, season)
 
     @logged_function
     def view_episodes(self, showtitle, season):
@@ -215,11 +245,11 @@ class ManagedTVMenu(object):
 
         Also provides additional options at bottom of menu.
         """
-        STR_NO_MANAGED_x_EPISODES = getlocalizedstring(32028) % showtitle
+        STR_NO_MANAGED_x_EPISODES = getlocalizedstring(32028)
         STR_REMOVE_ALL_EPISODES = getlocalizedstring(32029)
-        STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = getlocalizedstring(32030)
+        STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = getlocalizedstring(32172)
         STR_BACK = getlocalizedstring(32011)
-        STR_MANAGED_x_EPISODES = getlocalizedstring(32031) % showtitle
+        STR_MANAGED_x_EPISODES = getlocalizedstring(32031)
         managed_episodes = list(
             self.database.get_episode_items(
                 status='managed',
@@ -230,9 +260,10 @@ class ManagedTVMenu(object):
         if not managed_episodes:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,
-                STR_NO_MANAGED_x_EPISODES
+                STR_NO_MANAGED_x_EPISODES % color(showtitle, 'skyblue')
             )
-            return self.view_shows()
+            self.view_shows()
+            return
         lines = [str(x) for x in managed_episodes]
         lines += [
             STR_REMOVE_ALL_EPISODES,
@@ -242,23 +273,24 @@ class ManagedTVMenu(object):
         ret = xbmcgui.Dialog().select(
             '%s - %s' % (
                 ADDON_NAME,
-                STR_MANAGED_x_EPISODES
+                STR_MANAGED_x_EPISODES % color(showtitle, 'skyblue')
             ), lines
         )
         if ret >= 0:
             if ret < len(managed_episodes):  # managed item
                 for i, item in enumerate(managed_episodes):
                     if ret == i:
-                        return self.episode_options(item, season)
+                        self.episode_options(item, season)
             elif lines[ret] == STR_REMOVE_ALL_EPISODES:
                 self.remove_episodes(managed_episodes)
-                return self.view_shows()
+                self.view_shows()
             elif lines[ret] == STR_MOVE_ALL_EPISODES_BACK_TO_STAGED:
                 self.move_episodes_to_staged(managed_episodes)
-                return self.view_shows()
+                self.view_shows()
             elif lines[ret] == STR_BACK:
-                return self.view_seasons(showtitle)
-        return self.view_seasons(showtitle)
+                self.view_seasons(showtitle)
+        else:
+            self.view_seasons(showtitle)
 
     @logged_function
     def view_seasons(self, showtitle):
@@ -267,12 +299,11 @@ class ManagedTVMenu(object):
 
         Also provides additional options at bottom of menu.
         """
-        # TODO: functions to remove all or add all if necessary
-        STR_NO_MANAGED_X_SEASONS = getlocalizedstring(32170) % showtitle
+        STR_NO_MANAGED_X_SEASONS = getlocalizedstring(32170)
         STR_REMOVE_ALL_SEASONS = getlocalizedstring(32171)
         STR_MOVE_ALL_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172)
         STR_BACK = getlocalizedstring(32011)
-        STR_MANAGED_X_SEASONS = str('Managed %s Seasons') % showtitle
+        STR_MANAGED_X_SEASONS = getlocalizedstring(32175)
         managed_seasons = list(
             self.database.get_season_items(
                 status='managed',
@@ -282,38 +313,45 @@ class ManagedTVMenu(object):
         if not managed_seasons:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,
-                STR_NO_MANAGED_X_SEASONS
+                STR_NO_MANAGED_X_SEASONS % color(showtitle, 'skyblue')
             )
-            return self.view_shows()
-        lines = [str('[B]Season %s[/B]' % x) for x in managed_seasons]
+            self.view_shows()
+            return
+        season_interger_list = list(set([x.season for x in managed_seasons]))
+        lines = [str('[B]Season %s[/B]' % x) for x in season_interger_list]
         lines += [
             STR_REMOVE_ALL_SEASONS,
             STR_MOVE_ALL_SEASONS_BACK_TO_STAGED,
             STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1}'.format(
+            '%s - %s' % (
                 ADDON_NAME,
-                STR_MANAGED_X_SEASONS
+                STR_MANAGED_X_SEASONS % color(showtitle, 'skyblue')
             ), lines
         )
         selection = lines[ret]
         if ret >= 0:
             if selection == STR_REMOVE_ALL_SEASONS:
-                # TODO: remove by title only
                 self.remove_seasons(managed_seasons, showtitle)
-                return self.view_shows()
+                self.view_shows()
             elif selection == STR_MOVE_ALL_SEASONS_BACK_TO_STAGED:
                 self.move_all_seasons_to_staged(showtitle)
-                return self.view_shows()
+                self.view_shows()
             elif selection == STR_BACK:
                 self.view_shows()
-                return self.view_shows()
             else:
-                return self.view_episodes(
+                self.view_episodes(
                     showtitle=showtitle,
-                    season=''.join(filter(str.isdigit, selection)))
-        return self.view_shows()
+                    season=''.join(
+                        filter(
+                            str.isdigit,
+                            selection
+                        )
+                    )
+                )
+        else:
+            self.view_shows()
 
     @logged_function
     def view_shows(self):
@@ -325,6 +363,7 @@ class ManagedTVMenu(object):
         STR_NO_MANAGED_TV_SHOWS = getlocalizedstring(32020)
         STR_REMOVE_ALL_TV_SHOWS = getlocalizedstring(32021)
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32022)
+        STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_TV_SHOWS = getlocalizedstring(32023)
         managed_tvshows = list(
@@ -336,16 +375,17 @@ class ManagedTVMenu(object):
                 STR_NO_MANAGED_TV_SHOWS
             )
             return
-        lines = ['[B]%s[/B]' % x for x in managed_tvshows]
+        lines = [bold(x) for x in managed_tvshows]
         lines += [
             STR_REMOVE_ALL_TV_SHOWS,
             STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED,
+            STR_GENERATE_ALL_METADATA_ITEMS,
             STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
             '%s - %s' % (
                 ADDON_NAME,
-                STR_MANAGED_TV_SHOWS
+                bold(STR_MANAGED_TV_SHOWS)
             ), lines
         )
         if ret >= 0:
@@ -358,5 +398,8 @@ class ManagedTVMenu(object):
                 self.remove_all()
             elif lines[ret] == STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED:
                 self.move_all_to_staged()
+            elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
+                self.generate_all_managed_metadata()
+                self.view_shows()
             elif lines[ret] == STR_BACK:
                 return

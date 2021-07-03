@@ -25,13 +25,13 @@ def update_managed():
         dbh = Database()
         items = pickle.load(open(managed_file, 'rb'))
         for item in items:
-            if item.mediatype == 'movie':
+            if item.type == 'movie':
                 dbh.add_content_item(
                     item.path,
                     item.title,
                     'movie'
                 )
-            elif item.mediatype == 'tvshow':
+            elif item.type == 'tvshow':
                 dbh.add_content_item(
                     item.path,
                     item.title,
@@ -50,13 +50,13 @@ def update_staged():
         dbh = Database()
         items = pickle.load(open(staged_file, 'rb'))
         for item in items:
-            if item.mediatype == 'movie':
+            if item.type == 'movie':
                 dbh.add_content_item(
                     item.path,
                     item.title,
                     'movie'
                 )
-            elif item.mediatype == 'tvshow':
+            elif item.type == 'tvshow':
                 dbh.add_content_item(
                     item.path,
                     item.title,
@@ -75,7 +75,7 @@ def update_synced():
         dbh = Database()
         items = pickle.load(open(synced_file, 'rb'))
         for item in items:
-            dbh.add_synced_dir('NULL', item['dir'], item['mediatype'])
+            dbh.add_synced_dir('NULL', item['file'], item['type'])
         os.remove(synced_file)
 
 

@@ -6,10 +6,6 @@
             default="false" />
         <setting id="managed_folder" label="32141" type="folder"
             enable="eq(-1,true)" source="video" option="writeable" />
-        <setting id="custom_metadata_folder" label="32142" type="bool"
-            default="false" />
-        <setting id="metadata_folder" label="32143" type="folder"
-            enable="eq(-1,true)" source="video" option="writeable" />
         <setting id="recursion_limit" label="32139" type="number"
             default="10" />
     </category>
@@ -17,14 +13,11 @@
     <category label="32109">
         <setting id="auto_add_movies" label="32152" type="enum"
             lvalues="32148|32149|32150"/>
-        <!-- TODO: Automatically create movie metadata -->
     </category>
     <!-- TV -->
     <category label="32108">
         <setting id="auto_add_tvshows" label="32153" type="enum"
             lvalues="32148|32151|32150"/>
-        <!-- TODO: Automatically read TV show metadata -->
-        <!-- TODO: Automatically create TV show metadata -->
         <setting id="use_show_artwork" label="32129" type="bool"
             default="false" />
     </category>

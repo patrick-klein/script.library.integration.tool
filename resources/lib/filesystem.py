@@ -4,17 +4,13 @@
 
 import os
 from os import remove
-from os import listdir
-from os import symlink
 
 from pathlib import Path
 from shutil import rmtree
-from shutil import copyfile
 
 from os.path import dirname
 from os.path import basename
 
-from os.path import join
 from os.path import isdir
 from os.path import isfile
 from os.path import exists
@@ -136,35 +132,6 @@ def create_stream_file(plugin_path, filepath):
         finally:
             strm.close()
     return True
-
-
-if os.name == 'posix':
-    def softlink_file(src, dst):
-        """Symlink file at src to dst."""
-        try:
-            symlink(src, dst)
-        except FileExistsError:
-            pass
-
-    def softlink_files_in_dir(src_dir, dst_dir):
-        """Symlink all files in src_dir using wildcard to dst_dir."""
-        for file in listdir(src_dir):
-            try:
-                symlink(join(src_dir, file), join(dst_dir, file))
-            except OSError:
-                pass
-else:
-    def softlink_file(src, dst):
-        """Copy file at src to dst."""
-        # Can only symlink on unix, just copy file
-        copyfile(src, dst)
-
-    def softlink_files_in_dir(src_dir, dst_dir):
-        """Symlink all files in src_dir using wildcard to dst_dir."""
-        # Can only symlink on unix, just copy files
-        for file in listdir(src_dir):
-            copyfile(join(src_dir, file), join(dst_dir, file))
-
 
 def mkdir(dir_path):
     """Create a directory."""

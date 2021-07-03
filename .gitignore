@@ -5,3 +5,5 @@ resources/test/coverage/
 pylint
 .vscode
 lit.code-workspace
+resources/test/test_report.txt
+resources/test/fuzz_report.txt
