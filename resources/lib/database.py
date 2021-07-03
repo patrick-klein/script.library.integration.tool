@@ -286,7 +286,7 @@ class Database(object):
         if synced_type:
             sql_templ += ' WHERE type=?'
             params = (synced_type, )
-        sql_templ += '''ORDER BY
+        sql_templ += ''' ORDER BY
                             (
                                 CASE WHEN
                                     label
