@@ -52,6 +52,11 @@ class ContentManagerShow(ABSContentManagerShow):
         return self.jsondata['showtitle']
 
     @property
+    def season(self):
+        """Return season."""
+        return int(self.jsondata['season'])
+
+    @property
     def show_dir(self):
         """Return show_dir."""
         return ' '.join(

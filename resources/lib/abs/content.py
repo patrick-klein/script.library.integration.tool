@@ -34,6 +34,10 @@ class ABSContentManagerShow(object):
         """Path to the show_dir directory for the item."""
 
     @abc.abstractproperty
+    def season(self):
+        """Path to the season for the item."""
+
+    @abc.abstractproperty
     def show_dir(self):
         """Path to the show_dir directory for the item."""
 
