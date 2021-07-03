@@ -226,40 +226,25 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             if 'amazon' in item['file']:
                 if item['filetype'] == 'directory':
                     # AMAZON SHOW DIRECTORY
-                    if item['episode'] == -1 and item['season'] == -1:
-                        if STR_SEASON_CHECK is False:
-                            if re_search(item['type'], ['tvshow']):
+                    if item['episode'] == -1:
+                        if not IS_A_SEASON:
+                            if re_search(item['type'], ['tvshow', 'unknown']):
                                 item['type'] = 'tvshow'
                                 item['showtitle'] = item['label']
                                 del item['episode']
                                 del item['season']
                                 reordered[item['number'] - 1] = item
                     # AMAZON SEASON DIRECTORY
-                    if item['type'] == 'unknown' and item['season'] != -1:
-                        if STR_SEASON_CHECK is True:
-                            del item['episode']
-                            del item['number']
-                            item['type'] = 'season'
-                            item['showtitle'] = showtitle
-                            try:
-                                years.append(item['year'])
-                            except KeyError:
-                                pass
-                            reordered[item['season'] - 1] = item
-                            # TODO: Bad method to get seasons without 'Season' in label
-                    elif item['filetype'] == 'directory':
-                        if item['episode'] == -1:
-                            if item['season'] != -1:
-                                if STR_SEASON_CHECK is False:
-                                    del item['episode']
-                                    del item['number']
-                                    item['type'] = 'season'
-                                    item['showtitle'] = showtitle
-                                    try:
-                                        years.append(item['year'])
-                                    except KeyError:
-                                        pass
-                                    reordered[item['season'] - 1] = item
+                    if IS_A_SEASON is True:
+                        del item['episode']
+                        del item['number']
+                        item['type'] = 'season'
+                        item['showtitle'] = showtitle
+                        try:
+                            years.append(item['year'])
+                        except KeyError:
+                            pass
+                        reordered[item['season'] - 1] = item
                 elif item['filetype'] == 'file':
                     # AMAZON EPISODE FILE
                     if item['episode'] != -1:
