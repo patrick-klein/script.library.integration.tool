@@ -58,11 +58,11 @@ class SyncedMenu(object):
         return items_to_stage
 
     @logged_function
-    def find_paths_to_remove(self, all_paths, **kwargs):
+    def find_paths_to_remove(self, all_paths, _type):
         """Find paths in database no longer available."""
-        # TODO: update this func in future
-        managed_items = self.database.get_content_items(**kwargs)
-        return [x.path for x in managed_items if x.path not in all_paths]
+        managed_items = self.database.get_content_items(
+            status='managed', _type=_type)
+        return [x.file for x in managed_items if x.file not in all_paths]
 
     @logged_function
     def get_movies_in_directory(self, directory):
