@@ -137,8 +137,8 @@ msgid "Move all episodes to staged"
 msgstr "Mover todos os episodios para armazenados"
 
 msgctxt "#32031"
-msgid "Managed %s Episodes"
-msgstr ""
+msgid "Managed episodes of %s"
+msgstr "Episodios gerenciados de %s"
 
 msgctxt "#32032"
 msgid "Removing all %s episodes..."
@@ -173,8 +173,8 @@ msgid "Add all movies with metadata"
 msgstr ""
 
 msgctxt "#32040"
-msgid "Generate all metadata items"
-msgstr ""
+msgid "Create metadata for all itens"
+msgstr "Criar metadados para todos os itens"
 
 msgctxt "#32041"
 msgid "Staged Movies"
@@ -217,8 +217,8 @@ msgid "Rename"
 msgstr ""
 
 msgctxt "#32052"
-msgid "Generate metadata item"
-msgstr ""
+msgid "Create metadata item"
+msgstr "Criar metadado do item"
 
 msgctxt "#32053"
 msgid "Staged Movie Options"
@@ -290,7 +290,7 @@ msgstr ""
 
 msgctxt "#32070"
 msgid "Staged %s Episodes"
-msgstr ""
+msgstr "Episodios armazenados de %s"
 
 msgctxt "#32071"
 msgid "Adding all %s episodes..."

@@ -136,7 +136,7 @@ msgid "Move all episodes to staged"
 msgstr ""
 
 msgctxt "#32031"
-msgid "Managed %s Episodes"
+msgid "Managed episodes of %s"
 msgstr ""
 
 msgctxt "#32032"
@@ -172,7 +172,7 @@ msgid "Add all movies with metadata"
 msgstr ""
 
 msgctxt "#32040"
-msgid "Generate all metadata items"
+msgid "Create metadata for all itens"
 msgstr ""
 
 msgctxt "#32041"
@@ -216,7 +216,7 @@ msgid "Rename"
 msgstr ""
 
 msgctxt "#32052"
-msgid "Generate metadata item"
+msgid "Create metadata item"
 msgstr ""
 
 msgctxt "#32053"
