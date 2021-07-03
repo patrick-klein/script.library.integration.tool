@@ -375,7 +375,8 @@ def load_directory_items(progressdialog, _path, recursive=False,
         yield []
     results = execute_json_rpc(
         'Files.GetDirectory',
-        _path=_path)['result']['files']
+        _path=_path
+    )['result']['files']
     if sync_type == 'filter':
         sync_type = 'all_items'
         results = list(selected_list(results))
@@ -396,12 +397,10 @@ def load_directory_items(progressdialog, _path, recursive=False,
         )
     except (KeyError, TypeError):
         listofitems = []
-
     if not allow_directories:
         for item in listofitems:
             if item and item['filetype'] == 'file':
                 yield item
-
     directories = []
     for index, item in enumerate(listofitems):
         if progressdialog.iscanceled() is True:
@@ -456,17 +455,19 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 recursive = True
             except KeyError:
                 year = False
-            new_items = list(load_directory_items(
-                progressdialog=progressdialog,
-                _path=_dir['file'],
-                recursive=recursive,
-                allow_directories=allow_directories,
-                depth=depth + 1,
-                showtitle=title,
-                season=season,
-                year=year,
-                sync_type=sync_type
-            ))
+            new_items = list(
+                load_directory_items(
+                    progressdialog=progressdialog,
+                    _path=_dir['file'],
+                    recursive=recursive,
+                    allow_directories=allow_directories,
+                    depth=depth + 1,
+                    showtitle=title,
+                    season=season,
+                    year=year,
+                    sync_type=sync_type
+                )
+            )
             for new in new_items:
                 if item:
                     yield new
@@ -497,6 +498,7 @@ def getlocalizedstring(string_id):
     """Function to get call getLocalizedString and deal with unicodedecodeerrors."""
     return str(ADDON.getLocalizedString(string_id))
 
+
 def title_with_color(label, year=None, color='mediumslateblue'):
     """Create a string to use in title Dialog().select."""
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
@@ -507,6 +509,7 @@ def title_with_color(label, year=None, color='mediumslateblue'):
         return str('[COLOR %s][B]%s (%s)[/B][/COLOR]' % (color, label, year))
     return str('[COLOR %s][B]%s[/B][/COLOR]' % (color, label))
 
+
 def color(string, colorname='mediumslateblue'):
     """
     Return string formated with a selected color.
@@ -515,6 +518,7 @@ def color(string, colorname='mediumslateblue'):
     """
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
     return str('[COLOR %s]%s[/COLOR]' % (colorname, string))
+
 
 def bold(string):
     """
