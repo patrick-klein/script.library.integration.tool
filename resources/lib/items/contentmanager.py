@@ -38,11 +38,9 @@ class ContentManagerShow(ABSContentManagerShow):
             self.show_dir, self.jsondata['season_dir'])
         self.managed_episode_path = join(
             self.managed_season_dir, self.complete_episode_title)
-
         self.managed_thumb_path = ''.join(
             [self.managed_episode_path, '-thumb.jpg'])
         self.managed_landscape_path = join(self.show_dir, 'landscape.jpg')
-
         self.managed_tvshow_nfo = join(self.show_dir, 'tvshow.nfo')
         self.managed_strm_path = ''.join([self.managed_episode_path, '.strm'])
 
@@ -185,6 +183,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     # TODO: in future, rename can be usefull to rename showtitle and title (episode_title),
     # store a table with file, original_title and newtitle can be a more easily way to performe this
+
     # @logged_function
     # def rename(self, name):
     #     # Rename files if they exist
@@ -257,6 +256,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         return '(%s)' % self.jsondata['year']
 
     @property
+
     def managed_movie_dir(self):
         """Return managed_movie_dir."""
         return ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
@@ -293,6 +293,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
             filepath=self.movie_nfo,
             jsondata=self.jsondata
         )
+
         self.database.update_content(
             file=self.file,
             _type='movie',
@@ -326,7 +327,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
     @logged_function
     def remove_from_library(self):
         """Remove from library."""
-        remove_dir(self.managed_movie_dir)
 
     def rename(self, name):
         """Rename item."""
