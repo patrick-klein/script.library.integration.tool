@@ -246,60 +246,6 @@ class StagedTVMenu(object):
         notification(STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED)
 
     @logged_function
-    def generate_all_metadata(self):
-        """Create metadata for all staged tvshow items."""
-        STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
-        STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_GENERATING_ALL_TV_SHOW_METADATA
-        )
-        staged_tv_items = list(
-            self.database.get_content_items(
-                status='staged',
-                _type='tvshow'
-            )
-        )
-        for index, item in enumerate(staged_tv_items):
-            percent = 100 * index / len(staged_tv_items)
-            self.progressdialog.update(
-                int(percent),
-                '\n'.join([item.showtitle]
-                          )
-            )
-            xbmc.sleep(200)
-            item.create_metadata_item()
-        self.progressdialog.close()
-        notification(STR_ALL_TV_SHOW_METADATA_CREATED)
-
-    @logged_function
-    def read_all_metadata(self):
-        """Read metadata for all staged tvshow items."""
-        STR_READING_ALL_TV_SHOW_METADATA = getlocalizedstring(32145)
-        STR_ALL_TV_SHOW_METADATA_READ = getlocalizedstring(32146)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_READING_ALL_TV_SHOW_METADATA
-        )
-        staged_tv_items = list(
-            self.database.get_content_items(
-                status='staged',
-                _type='tvshow'
-            )
-        )
-        for index, item in enumerate(staged_tv_items):
-            percent = 100 * index / len(staged_tv_items)
-            self.progressdialog.update(
-                int(percent),
-                '\n'.join([item.showtitle]
-                          )
-            )
-            xbmc.sleep(200)
-            # item.read_metadata_item()
-        self.progressdialog.close()
-        notification(STR_ALL_TV_SHOW_METADATA_READ)
-
-    @logged_function
     def remove_all(self):
         """Remove all staged tvshow items."""
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)

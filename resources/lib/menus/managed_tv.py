@@ -151,6 +151,33 @@ class ManagedTVMenu(object):
         notification(STR_ALL_X_SEASONS_REMOVED % showtitle)
 
     @logged_function
+    def generate_all_managed_metadata(self):
+        """Create metadata for all staged tvshow items."""
+        STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
+        STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
+        self.progressdialog.create(
+            ADDON_NAME,
+            STR_GENERATING_ALL_TV_SHOW_METADATA
+        )
+        staged_tv_items = list(
+            self.database.get_content_items(
+                status='staged',
+                _type='tvshow'
+            )
+        )
+        for index, item in enumerate(staged_tv_items):
+            percent = 100 * index / len(staged_tv_items)
+            self.progressdialog.update(
+                int(percent),
+                '\n'.join([item.showtitle]
+                          )
+            )
+            xbmc.sleep(200)
+            item.create_metadata_item()
+        self.progressdialog.close()
+        notification(STR_ALL_TV_SHOW_METADATA_CREATED)
+
+    @logged_function
     def remove_all(self):
         """Remove all managed tvshow items from library."""
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
