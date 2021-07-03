@@ -376,7 +376,7 @@ msgid "Finding items to add..."
 msgstr ""
 
 msgctxt "#32093"
-msgid "%i items to remove. %i items to stage.  Proceed?"
+msgid "%i items to remove. %i items to stage. Proceed?"
 msgstr ""
 
 msgctxt "#32094"
@@ -428,7 +428,7 @@ msgid "Movie staged"
 msgstr ""
 
 msgctxt "#32106"
-msgid "%i new episodes staged.  %i were already staged, and %i were already managed"
+msgid "%i new episodes staged. %i were already staged, and %i were already managed"
 msgstr ""
 
 msgctxt "#32107"
@@ -444,7 +444,7 @@ msgid "Movies"
 msgstr ""
 
 msgctxt "#32110"
-msgid "Current directory already synced.  Looking for new items..."
+msgid "Current directory already synced. Looking for new items..."
 msgstr ""
 
 msgctxt "#32111"
@@ -492,7 +492,7 @@ msgid "All items are up-to-date"
 msgstr ""
 
 msgctxt "#32122"
-msgid "All items were successfully updated.  Please clean library and review staged items."
+msgid "All items were successfully updated. Please clean library and review staged items."
 msgstr ""
 
 msgctxt "#32123"
@@ -540,7 +540,7 @@ msgid "Updating addon settings..."
 msgstr ""
 
 msgctxt "#32134"
-msgid "Add-on updated.  See change log for details."
+msgid "Add-on updated. See change log for details."
 msgstr ""
 
 msgctxt "#32135"

@@ -377,7 +377,7 @@ msgid "Finding items to add..."
 msgstr ""
 
 msgctxt "#32093"
-msgid "%i items to remove. %i items to stage.  Proceed?"
+msgid "%i items to remove. %i items to stage. Proceed?"
 msgstr ""
 
 msgctxt "#32094"
@@ -445,7 +445,7 @@ msgid "Movies"
 msgstr "Filmes"
 
 msgctxt "#32110"
-msgid "Current directory already synced.  Looking for new items..."
+msgid "Current directory already synced. Looking for new items..."
 msgstr "Diretório atual já está sincronizado. Procurando por novos itens..."
 
 msgctxt "#32111"
@@ -550,7 +550,7 @@ msgstr "Limpar metadados do filme"
 
 msgctxt "#32136"
 msgid "All metadata for movies cleaned"
-msgstr "Todos os metadados de filmes foram limpos"
+msgstr "Todos os metadados de filmes deletados"
 
 msgctxt "#32137"
 msgid "Update TV shows"
@@ -664,7 +664,6 @@ msgctxt "#32167"
 msgid "Filter items"
 msgstr "Filtrar itens"
 
-
 msgctxt "#32168"
 msgid "Removing seasons from: %s"
 msgstr "Removendo temporadas de: %s"
@@ -679,11 +678,11 @@ msgstr "Nenhuma %s temporada gerenciada"
 
 msgctxt "#32171"
 msgid "Remove all seasons"
-msgstr "Remova todas as temporadas"
+msgstr "Remover todas as temporadas"
 
 msgctxt "#32172"
-msgid "Move all %s seasons back to staged"
-msgstr "Mover todas as temporadas de %s devolta para armazenados"
+msgid "Move all seasons to staged"
+msgstr "Mover todas as temporadas para armazenados"
 
 msgctxt "#32173"
 msgid "All seasons of %s moved to staged"
@@ -708,4 +707,3 @@ msgstr "Adicionar todas as temporadas"
 msgctxt "#32178"
 msgid "Add all seasons with metadata"
 msgstr "Adicionar todas as temporadas com metadados"
-
