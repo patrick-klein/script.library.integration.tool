@@ -184,8 +184,6 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             del item['episode']
             del item['season']
             del item['showtitle']
-            if item['label'] == item['title']:
-                del item['label']
             reordered[item['number'] - 1] = item
         else:
             # CRUNCHYROLL
