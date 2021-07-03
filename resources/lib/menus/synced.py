@@ -305,10 +305,16 @@ class SyncedMenu(object):
                     self.progressdialog.close()
                     break
                 contentitem = build_contentitem(jsonitem)
-                if 'title' in contentitem:
+                try:
                     content_title = contentitem['title']
-                if 'showtitle' in contentitem:
+                except KeyError:
+                    pass
+
+                try:
                     content_title = contentitem['showtitle']
+                except KeyError:
+                    pass
+
                 if self.database.check_blocked(content_title, contentitem['type']):
                     continue
                 if self.database.path_exists(file=contentitem['file']):
