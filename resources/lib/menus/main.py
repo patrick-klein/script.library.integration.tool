@@ -75,8 +75,8 @@ class MainMenu(object):
         OPTIONS_LIST = list()
         OPTIONS = {
             32002: ManagedMoviesMenu(database=self.database).view_all,
-            32003: StagedMoviesMenu(database=self.database).view_all,
-            32004: ManagedTVMenu(database=self.database).view_shows,
+            32004: StagedMoviesMenu(database=self.database).view_all,
+            32003: ManagedTVMenu(database=self.database).view_shows,
             32005: StagedTVMenu(database=self.database).view_shows,
             32006: SyncedMenu(database=self.database).view,
             32007: BlockedMenu(database=self.database).view,
