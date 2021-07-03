@@ -216,10 +216,6 @@ msgctxt "#32050"
 msgid "Rename"
 msgstr ""
 
-msgctxt "#32051"
-msgid "Automatically rename using metadata"
-msgstr ""
-
 msgctxt "#32052"
 msgid "Generate metadata item"
 msgstr ""
@@ -587,18 +583,6 @@ msgstr "Selecione a pasta de metadados"
 msgctxt "#32144"
 msgid "Enable development options"
 msgstr "Habilitar opções de desenvolvimento"
-
-msgctxt "#32145"
-msgid "Reading all TV show metadata..."
-msgstr "Lendo todos os metadados do programa de TV ..."
-
-msgctxt "#32146"
-msgid "All TV show metadata read"
-msgstr "Todos os metadados de programas de TV lidos"
-
-msgctxt "#32147"
-msgid "Read all TV show metadata"
-msgstr "Leia todos os metadados do programa de TV"
 
 msgctxt "#32148"
 msgid "Never"

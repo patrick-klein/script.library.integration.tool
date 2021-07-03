@@ -215,10 +215,6 @@ msgctxt "#32050"
 msgid "Rename"
 msgstr ""
 
-msgctxt "#32051"
-msgid "Automatically rename using metadata"
-msgstr ""
-
 msgctxt "#32052"
 msgid "Generate metadata item"
 msgstr ""
@@ -585,18 +581,6 @@ msgstr ""
 
 msgctxt "#32144"
 msgid "Enable development options"
-msgstr ""
-
-msgctxt "#32145"
-msgid "Reading all TV show metadata..."
-msgstr ""
-
-msgctxt "#32146"
-msgid "All TV show metadata read"
-msgstr ""
-
-msgctxt "#32147"
-msgid "Read all TV show metadata"
 msgstr ""
 
 msgctxt "#32148"
