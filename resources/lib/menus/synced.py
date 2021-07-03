@@ -58,11 +58,11 @@ class SyncedMenu(object):
         return items_to_stage
 
     @logged_function
-    def find_paths_to_remove(self, all_paths, **kwargs):
+    def find_paths_to_remove(self, all_paths, _type):
         """Find paths in database no longer available."""
-        # TODO: update this func in future
-        managed_items = self.database.get_content_items(**kwargs)
-        return [x.path for x in managed_items if x.path not in all_paths]
+        managed_items = self.database.get_content_items(
+            status='managed', _type=_type)
+        return [x.file for x in managed_items if x.file not in all_paths]
 
     @logged_function
     def get_movies_in_directory(self, directory):
@@ -82,29 +82,27 @@ class SyncedMenu(object):
         return dir_items
 
     @logged_function
-    def get_single_tvshow(self, directory, showtitle):
+    def get_single_tvshow(self, directory, showtitle, progressdialog=None):
         """Get the single TV show in the directory, and tag the items."""
         show_items = self.filter_blocked_items(
             list(load_directory_items(
-                progressdialog=None,
+                progressdialog=progressdialog,
                 _path=directory,
                 recursive=True,
                 sync_type='tvshow'
             )), _type='episode'
         )
         for item in show_items:
-            # Add tag to items
-            # TODO: this loop aparently not realy work
             item['type'] = 'tvshow'
             item['showtitle'] = showtitle
         return show_items
 
     @logged_function
-    def get_tvshows_in_directory(self, directory):
+    def get_tvshows_in_directory(self, directory, progressdialog=None):
         """Get all TV shows in the directory, and tag the items."""
         dir_items = self.filter_blocked_items(
             list(load_directory_items(
-                progressdialog=None,
+                progressdialog=progressdialog,
                 _path=directory,
                 allow_directories=True,
                 recursive=True,
@@ -146,7 +144,7 @@ class SyncedMenu(object):
         )
         if ret >= 0:
             if lines[ret] == STR_REMOVE:
-                self.database.remove_synced_dir(item['dir'])
+                self.database.remove_synced_dir(item['file'])
             elif lines[ret] == STR_BACK:
                 pass
         self.view()
@@ -295,22 +293,31 @@ class SyncedMenu(object):
             )
             # query json-rpc to get files in directory
             self.progressdialog.update(0, STR_GETTING_ITEMS_IN_DIR)
-            files_list = list(load_directory_items(
-                progressdialog=self.progressdialog,
-                _path=dir_path,
-                allow_directories=True,
-                recursive=True,
-                sync_type=sync_type))
+            files_list = list(
+                load_directory_items(
+                    progressdialog=self.progressdialog,
+                    _path=dir_path,
+                    allow_directories=True,
+                    recursive=True,
+                    sync_type=sync_type
+                )
+            )
             items_to_stage = 0
             for index, jsonitem in enumerate(files_list):
                 if self.progressdialog.iscanceled() is True:
                     self.progressdialog.close()
                     break
                 contentitem = build_contentitem(jsonitem)
-                if 'title' in contentitem:
+                try:
                     content_title = contentitem['title']
-                if 'showtitle' in contentitem:
+                except KeyError:
+                    pass
+
+                try:
                     content_title = contentitem['showtitle']
+                except KeyError:
+                    pass
+
                 if self.database.check_blocked(content_title, contentitem['type']):
                     continue
                 if self.database.path_exists(file=contentitem['file']):
@@ -362,39 +369,44 @@ class SyncedMenu(object):
         STR_STAGING_ITEMS = getlocalizedstring(32095)
         STR_ALL_ITEMS_UPTODATE = getlocalizedstring(32121)
         STR_SUCCESS = getlocalizedstring(32122)
-        self.progressdialog = xbmcgui.DialogProgressBG()
         self.progressdialog.create(ADDON_NAME)
         try:
             # Get current items in all directories
             synced_dirs = self.database.get_synced_dirs()
             all_items = []
-            for index, synced_dir in enumerate(synced_dirs):
+            for index, diretory in enumerate(synced_dirs):
                 self.progressdialog.update(
-                    99 * index / len(synced_dirs),
+                    int(99 * index / len(synced_dirs)),
                     '{label} - {type}'.format(
-                        label=synced_dir['label'], type=synced_dir.localize_type(
+                        label=diretory['label'],
+                        type=diretory.localize_type(
                         )
                     )
                 )
-                if synced_dir['type'] == 'single-movie':
+                if diretory['type'] == 'single-movie':
                     # Directory is just a path to a single movie
                     all_items.append({
-                        'file': synced_dir['dir'],
-                        'label': synced_dir['label'],
+                        'file': diretory['file'],
+                        'label': diretory['label'],
                         'type': 'movie'
                     })
-                elif synced_dir['type'] == 'single-tvshow':
+                elif diretory['type'] == 'single-tvshow':
                     # Directory is a path to a tv show folder
                     all_items += self.get_single_tvshow(
-                        synced_dir['dir'], synced_dir['label'])
-                elif synced_dir['type'] == 'movie':
+                        diretory['file'],
+                        diretory['label'],
+                        progressdialog=self.progressdialog
+                    )
+                elif diretory['type'] == 'movie':
                     # Directory is a path to list of movies
                     all_items += self.get_movies_in_directory(
-                        synced_dir['dir'])
-                elif synced_dir['type'] == 'tvshow':
+                        diretory['file'])
+                elif diretory['type'] == 'tvshow':
                     # Directory is a path to a list of tv shows
                     all_items += self.get_tvshows_in_directory(
-                        synced_dir['dir'])
+                        diretory['file'],
+                        self.progressdialog
+                    )
             # Find managed paths not in dir_items, and prepare to remove
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
@@ -458,7 +470,7 @@ class SyncedMenu(object):
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(
-                all_paths, type='movie')
+                all_paths, _type='movie')
             # Find dir_items not in managed_items or staged_items, and prepare to add
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
@@ -503,7 +515,10 @@ class SyncedMenu(object):
                     int(99 * index / total_num_dirs),
                     synced_dir['label']
                 )
-                all_items += self.get_tvshows_in_directory(synced_dir['file'])
+                all_items += self.get_tvshows_in_directory(
+                    synced_dir['file'],
+                    self.progressdialog
+                )
             for index, synced_dir in enumerate(single_show_dirs):
                 self.progressdialog.update(
                     int(99. * (index + len(show_dirs)) / total_num_dirs),
@@ -517,7 +532,7 @@ class SyncedMenu(object):
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_REMOVE)
             all_paths = [x['file'] for x in all_items]
             paths_to_remove = self.find_paths_to_remove(
-                all_paths, type='tvshow')
+                all_paths, _type='tvshow')
             # Find dir_items not in managed_items or staged_items, and prepare to add
             self.progressdialog.update(99, STR_FINDING_ITEMS_TO_ADD)
             items_to_stage = self.find_items_to_stage(all_items)
@@ -560,8 +575,11 @@ class SyncedMenu(object):
             )
             return
         lines = [
-            '[B]%s[/B] - %s - [I]%s[/I]' %
-            (x['label'], x.localize_type(), x['dir']) for x in synced_dirs
+            '[B]%s[/B] - %s - [I]%s[/I]' % (
+                x['label'],
+                x.localize_type(),
+                x['file']
+            ) for x in synced_dirs
         ]
         lines += [STR_UPDATE_ALL, STR_UPDATE_MOVIES,
                   STR_UPDATE_TV_SHOWS, STR_REMOVE_ALL, STR_BACK]

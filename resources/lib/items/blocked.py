@@ -18,16 +18,16 @@ class BlockedItem(dict):
         self._localized_type = None
 
     def localize_type(self):
-        """Localize tags used for identifying mediatype."""
+        """Localize tags used for identifying type."""
+        _TYPES = {
+            'movie': 32102,
+            'tvshow': 32101,
+            'keyword': 32113,
+            'episode': 32114
+        }
         if not self._localized_type:
-            if self['type'] == 'movie':  # Movie
-                return getlocalizedstring(32102)
-            elif self['type'] == 'tvshow':  # TV Show
-                return getlocalizedstring(32101)
-            elif self['type'] == 'keyword':  # Keyword
-                return getlocalizedstring(32113)
-            elif self['type'] == 'episode':  # Episode
-                return getlocalizedstring(32114)
-            else:
+            try:
+                return getlocalizedstring(_TYPES[self['type']])
+            except KeyError:
                 self._localized_type = self['type']
         return self._localized_type

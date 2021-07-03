@@ -25,27 +25,27 @@ msgid "Sync directory to library"
 msgstr ""
 
 msgctxt "#32002"
-msgid "View Managed Movies"
+msgid "Managed Movies"
 msgstr ""
 
 msgctxt "#32003"
-msgid "View Managed TV Shows"
+msgid "Managed TV Shows"
 msgstr ""
 
 msgctxt "#32004"
-msgid "View Staged Movies"
+msgid "Staged Movies"
 msgstr ""
 
 msgctxt "#32005"
-msgid "View Staged TV Shows"
+msgid "Staged TV Shows"
 msgstr ""
 
 msgctxt "#32006"
-msgid "View Synced Directories"
+msgid "Synced Directories"
 msgstr ""
 
 msgctxt "#32007"
-msgid "View Blocked Items"
+msgid "Blocked Items"
 msgstr ""
 
 msgctxt "#32008"
@@ -57,7 +57,7 @@ msgid "Remove all movies"
 msgstr ""
 
 msgctxt "#32010"
-msgid "Move all movies back to staged"
+msgid "Move all movies to staged"
 msgstr ""
 
 msgctxt "#32011"
@@ -77,13 +77,8 @@ msgid "All movies removed"
 msgstr ""
 
 msgctxt "#32015"
-msgid "Moving all movies back to staged..."
+msgid "Moving all movies to staged..."
 msgstr ""
-
-msgctxt "#32016"
-msgid "Moving all movies back to staged..."
-msgstr ""
-
 msgctxt "#32017"
 msgid "Remove"
 msgstr ""
@@ -105,7 +100,7 @@ msgid "Remove all TV shows"
 msgstr ""
 
 msgctxt "#32022"
-msgid "Move all TV shows back to staged"
+msgid "Move all TV shows to staged"
 msgstr ""
 
 msgctxt "#32023"
@@ -121,7 +116,7 @@ msgid "All TV shows removed"
 msgstr ""
 
 msgctxt "#32026"
-msgid "Moving all TV shows back to staged..."
+msgid "Moving all %s TV shows to staged..."
 msgstr ""
 
 msgctxt "#32027"
@@ -137,11 +132,11 @@ msgid "Remove all episodes"
 msgstr ""
 
 msgctxt "#32030"
-msgid "Move all episodes back to staged"
+msgid "Move all episodes to staged"
 msgstr ""
 
 msgctxt "#32031"
-msgid "Managed %s Episodes"
+msgid "Managed episodes of %s"
 msgstr ""
 
 msgctxt "#32032"
@@ -153,7 +148,7 @@ msgid "All %s episodes removed"
 msgstr ""
 
 msgctxt "#32034"
-msgid "Moving all %s episodes back to staged..."
+msgid "Moving all %s episodes to staged..."
 msgstr ""
 
 msgctxt "#32035"
@@ -177,7 +172,7 @@ msgid "Add all movies with metadata"
 msgstr ""
 
 msgctxt "#32040"
-msgid "Generate all metadata items"
+msgid "Create metadata for all itens"
 msgstr ""
 
 msgctxt "#32041"
@@ -220,12 +215,8 @@ msgctxt "#32050"
 msgid "Rename"
 msgstr ""
 
-msgctxt "#32051"
-msgid "Automatically rename using metadata"
-msgstr ""
-
 msgctxt "#32052"
-msgid "Generate metadata item"
+msgid "Create metadata item"
 msgstr ""
 
 msgctxt "#32053"
@@ -385,7 +376,7 @@ msgid "Finding items to add..."
 msgstr ""
 
 msgctxt "#32093"
-msgid "%i items to remove. %i items to stage.  Proceed?"
+msgid "%i items to remove. %i items to stage. Proceed?"
 msgstr ""
 
 msgctxt "#32094"
@@ -437,7 +428,7 @@ msgid "Movie staged"
 msgstr ""
 
 msgctxt "#32106"
-msgid "%i new episodes staged.  %i were already staged, and %i were already managed"
+msgid "%i new episodes staged. %i were already staged, and %i were already managed"
 msgstr ""
 
 msgctxt "#32107"
@@ -453,7 +444,7 @@ msgid "Movies"
 msgstr ""
 
 msgctxt "#32110"
-msgid "Current directory already synced.  Looking for new items..."
+msgid "Current directory already synced. Looking for new items..."
 msgstr ""
 
 msgctxt "#32111"
@@ -501,7 +492,7 @@ msgid "All items are up-to-date"
 msgstr ""
 
 msgctxt "#32122"
-msgid "All items were successfully updated.  Please clean library and review staged items."
+msgid "All items were successfully updated. Please clean library and review staged items."
 msgstr ""
 
 msgctxt "#32123"
@@ -549,7 +540,7 @@ msgid "Updating addon settings..."
 msgstr ""
 
 msgctxt "#32134"
-msgid "Add-on updated.  See change log for details."
+msgid "Add-on updated. See change log for details."
 msgstr ""
 
 msgctxt "#32135"
@@ -590,18 +581,6 @@ msgstr ""
 
 msgctxt "#32144"
 msgid "Enable development options"
-msgstr ""
-
-msgctxt "#32145"
-msgid "Reading all TV show metadata..."
-msgstr ""
-
-msgctxt "#32146"
-msgid "All TV show metadata read"
-msgstr ""
-
-msgctxt "#32147"
-msgid "Read all TV show metadata"
 msgstr ""
 
 msgctxt "#32148"
@@ -700,6 +679,38 @@ msgctxt "#32171"
 msgid "Remove all seasons"
 msgstr ""
 
+msgctxt "#32173"
+msgid "All seasons of %s moved to staged"
+msgstr ""
+
+msgctxt "#32174"
+msgid "Clean up metadata for all itens"
+msgstr ""
+
+msgctxt "#32175"
+msgid "Managed seasons of %s"
+msgstr ""
+
+msgctxt "#32176"
+msgid "Staged seasons of %s"
+msgstr ""
+
+msgctxt "#32177"
+msgid "Add all seasons"
+msgstr ""
+
+msgctxt "#32178"
+msgid "Add all seasons with metadata"
+msgstr ""
+
+msgctxt "#32179"
+msgid "Library Integration Tool settings"
+msgstr ""
+
+msgctxt "#32180"
+msgid "Library options"
+msgstr ""
+
 msgctxt "#32172"
-msgid "Move all %s seasons back to staged"
+msgid "Move all seasons to staged"
 msgstr ""

@@ -22,7 +22,6 @@ from resources import ADDON_NAME
 from resources import ADDON_PATH
 from resources import RECURSION_LIMIT
 from resources import USING_CUSTOM_MANAGED_FOLDER
-from resources import USING_CUSTOM_METADATA_FOLDER
 
 from resources.lib.log import log_msg
 from resources.lib.filesystem import mkdir
@@ -30,15 +29,11 @@ from resources.lib.version import check_version_file
 
 
 if USING_CUSTOM_MANAGED_FOLDER:
-    MANAGED_FOLDER = ADDON.getSetting('managed_folder')
+    MANAGED_FOLDER = xbmcvfs.validatePath(ADDON.getSetting('managed_folder'))
 else:
     MANAGED_FOLDER = xbmcvfs.translatePath(
-        'special://userdata/addon_data/{}/'.format(ADDON_ID))
-
-if USING_CUSTOM_METADATA_FOLDER:
-    METADATA_FOLDER = ADDON.getSetting('metadata_folder')
-else:
-    METADATA_FOLDER = join(MANAGED_FOLDER, 'Metadata')
+        'special://userdata/addon_data/{}/'.format(ADDON_ID)
+    )
 
 
 def check_managed_folder():
@@ -54,15 +49,9 @@ def check_subfolders():
     """Check the subfolders in the Managed and Metadata folders."""
     # Create subfolders if they don't exist
     subfolders = {
-        'ManagedMovies': MANAGED_FOLDER,
-        'ManagedTV': MANAGED_FOLDER,
-        'Movies': METADATA_FOLDER,
-        'TV': METADATA_FOLDER,
+        'movies': MANAGED_FOLDER,
+        'tvshows': MANAGED_FOLDER,
     }
-
-    if not USING_CUSTOM_METADATA_FOLDER:
-        subfolders['Metadata'] = MANAGED_FOLDER
-
     created_folders = False
     for basepath, diretory in subfolders.items():
         dest_dir = join(diretory, basepath)
@@ -119,15 +108,14 @@ def execute_json_rpc(method, _path):
     )
 
 
-def videolibrary(method):
+def videolibrary(method, database='video', path=None):
     """A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary."""
-    return xbmc.executeJSONRPC(
-        json.dumps({
-            'jsonrpc': '2.0',
-            "method": 'VideoLibrary.Scan' if method == 'scan' else 'VideoLibrary.Clean',
-            'id': 1
-        }, ensure_ascii=False)
-    )
+    command = {
+        'scan': 'CleanLibrary(%s)' % database,
+        'clean': 'UpdateLibrary(%s)' % database
+    }
+    xbmc.executebuiltin(command[method])
+
 
 
 SKIP_STRINGS = [
@@ -162,7 +150,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
     stored_season = None
     for index, item in enumerate(contents_json):
         # TODO: check if logic is real necessary, test is for all languages eficient
-        STR_SEASON_CHECK = re_search(
+        IS_A_SEASON = re_search(
             item['label'],
             ['season', 'temporada', r'S\d{1,4}']
         )
@@ -197,42 +185,39 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             del item['episode']
             del item['season']
             del item['showtitle']
-            if item['label'] == item['title']:
-                del item['label']
             reordered[item['number'] - 1] = item
         else:
             # CRUNCHYROLL
             if 'crunchyroll' in item['file']:
                 # CRUNCHYROLL SHOW DIRECTORY
                 if item['filetype'] == 'directory':
-                    if not re_search(item['type'], ['tvshow', 'unknown']):
-                        _regex = [
-                            r'(status|mode)\=(Continuing|status|Completed|series)'
-                        ]
-                        if not re_search(item['file'], _regex):
+                    if re_search(item['type'], ['tvshow', 'unknown']):
+                        if re_search(item['file'], [r'mode\=series']):
                             item['type'] = 'tvshow'
                             del item['episode']
                             del item['season']
                             del item['title']
-
                             reordered[item['number'] - 1] = item
                     # CRUNCHYROLL SEASON DIRECTORY
                     if item['type'] == 'unknown':
-                        if re_search(item['file'], ['season=']):
-                            del item['episode']
-                            item['type'] = 'season'
-                            item['showtitle'] = showtitle
-                            if item['season'] == 0:
-                                item['season'] = 1
-                            try:
-                                years.append(item['year'])
-                            except KeyError:
-                                pass
-                            reordered[item['number'] - 1] = item
+                        if not re_search(item['file'], [r'mode\=series']):
+                            if not re_search(item['file'], [r'episode\=']):
+                                del item['episode']
+                                item['type'] = 'season'
+                                item['showtitle'] = showtitle
+                                if item['season'] == 0:
+                                    item['season'] = 1
+                                try:
+                                    years.append(item['year'])
+                                except KeyError:
+                                    pass
+                                reordered[item['number'] - 1] = item
                 elif item['filetype'] == 'file':
                     # CRUNCHYROLL EPISODE FILE
-                    if re_search(item['file'], ['episode=']):
+                    if re_search(item['file'], [r'episode\=']):
                         item['type'] = 'episode'
+                        if item['season'] == 0:
+                            item['season'] = 1
                         try:
                             years.append(item['year'])
                         except KeyError:
@@ -242,40 +227,25 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             if 'amazon' in item['file']:
                 if item['filetype'] == 'directory':
                     # AMAZON SHOW DIRECTORY
-                    if item['episode'] == -1 and item['season'] == -1:
-                        if STR_SEASON_CHECK is False:
-                            if re_search(item['type'], ['tvshow']):
+                    if item['episode'] == -1:
+                        if not IS_A_SEASON:
+                            if re_search(item['type'], ['tvshow', 'unknown']):
                                 item['type'] = 'tvshow'
                                 item['showtitle'] = item['label']
                                 del item['episode']
                                 del item['season']
                                 reordered[item['number'] - 1] = item
                     # AMAZON SEASON DIRECTORY
-                    if item['type'] == 'unknown' and item['season'] != -1:
-                        if STR_SEASON_CHECK is True:
-                            del item['episode']
-                            del item['number']
-                            item['type'] = 'season'
-                            item['showtitle'] = showtitle
-                            try:
-                                years.append(item['year'])
-                            except KeyError:
-                                pass
-                            reordered[item['season'] - 1] = item
-                            # TODO: Bad method to get seasons without 'Season' in label
-                    elif item['filetype'] == 'directory':
-                        if item['episode'] == -1:
-                            if item['season'] != -1:
-                                if STR_SEASON_CHECK is False:
-                                    del item['episode']
-                                    del item['number']
-                                    item['type'] = 'season'
-                                    item['showtitle'] = showtitle
-                                    try:
-                                        years.append(item['year'])
-                                    except KeyError:
-                                        pass
-                                    reordered[item['season'] - 1] = item
+                    if IS_A_SEASON is True:
+                        del item['episode']
+                        del item['number']
+                        item['type'] = 'season'
+                        item['showtitle'] = showtitle
+                        try:
+                            years.append(item['year'])
+                        except KeyError:
+                            pass
+                        reordered[item['season'] - 1] = item
                 elif item['filetype'] == 'file':
                     # AMAZON EPISODE FILE
                     if item['episode'] != -1:
@@ -292,7 +262,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                 if item['filetype'] == 'directory':
                     if item['type'] == 'tvshow':
                         if item['season'] == -1:
-                            if STR_SEASON_CHECK is False:
+                            if IS_A_SEASON is False:
                                 item['showtitle'] = item['title']
                                 item['type'] = 'tvshow'
                                 del item['episode']
@@ -300,7 +270,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                                 reordered[item['number'] - 1] = item
                     # DISNEY SEASON DIRECTORY
                     if item['type'] == 'unknown':
-                        if STR_SEASON_CHECK is True:
+                        if IS_A_SEASON is True:
                             item['showtitle'] = showtitle
                             del item['episode']
                             item['type'] = 'season'
@@ -330,7 +300,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                     if item['type'] == 'unknown':
                         if re_search(item['file'], ['show', 'season']):
                             if not re_search(item['file'], ['episode']):
-                                if STR_SEASON_CHECK is True:
+                                if IS_A_SEASON is True:
                                     item['showtitle'] = showtitle
                                     item['type'] = 'season'
                                     del item['episode']
@@ -406,7 +376,8 @@ def load_directory_items(progressdialog, _path, recursive=False,
         yield []
     results = execute_json_rpc(
         'Files.GetDirectory',
-        _path=_path)['result']['files']
+        _path=_path
+    )['result']['files']
     if sync_type == 'filter':
         sync_type = 'all_items'
         results = list(selected_list(results))
@@ -427,12 +398,10 @@ def load_directory_items(progressdialog, _path, recursive=False,
         )
     except (KeyError, TypeError):
         listofitems = []
-
     if not allow_directories:
         for item in listofitems:
             if item and item['filetype'] == 'file':
                 yield item
-
     directories = []
     for index, item in enumerate(listofitems):
         if progressdialog.iscanceled() is True:
@@ -448,23 +417,25 @@ def load_directory_items(progressdialog, _path, recursive=False,
             if item:
                 yield item
         else:
-            if season is not False:
+            if season:
                 item['season'] = season
-            if year is not False:
+            if year:
                 item['year'] = year
-                # if content is a directory will be added to directories list
-            if (item['filetype'] == 'directory' and
-                    item['type'] == 'tvshow' or
-                    item['type'] == 'season'):
-                showtitle = item['showtitle']
-                progressdialog.update(
-                    int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
-                xbmc.sleep(200)
-                directories.append(item)
-                # if content is a episode, will be stored with yeld
+            # if content is a directory will be added to directories list
+            if item['filetype'] == 'directory':
+                if re_search(item['type'], ['season', 'tvshow']):
+                    showtitle = item['showtitle']
+                    progressdialog.update(
+                        int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
+                    xbmc.sleep(200)
+                    directories.append(item)
+            # if content is a episode, will be stored with yeld
             if item['type'] == 'episode':
+                # change type to 'tvshow' to padronize in build_contentitem
+                item['type'] = 'tvshow'
                 progressdialog.update(
-                    int(percent), 'Processando items:\n%s' % item['label'])
+                    int(percent), 'Processando items:\n%s' % item['label']
+                )
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle
                 if item:
@@ -487,17 +458,19 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 recursive = True
             except KeyError:
                 year = False
-            new_items = list(load_directory_items(
-                progressdialog=progressdialog,
-                _path=_dir['file'],
-                recursive=recursive,
-                allow_directories=allow_directories,
-                depth=depth + 1,
-                showtitle=title,
-                season=season,
-                year=year,
-                sync_type=sync_type
-            ))
+            new_items = list(
+                load_directory_items(
+                    progressdialog=progressdialog,
+                    _path=_dir['file'],
+                    recursive=recursive,
+                    allow_directories=allow_directories,
+                    depth=depth + 1,
+                    showtitle=title,
+                    season=season,
+                    year=year,
+                    sync_type=sync_type
+                )
+            )
             for new in new_items:
                 if item:
                     yield new
@@ -529,7 +502,7 @@ def getlocalizedstring(string_id):
     return str(ADDON.getLocalizedString(string_id))
 
 
-def title_with_color(label, year=None, color='skyblue'):
+def title_with_color(label, year=None, color='mediumslateblue'):
     """Create a string to use in title Dialog().select."""
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
     # TODO: this function can be better, maybe led generic,
@@ -538,3 +511,20 @@ def title_with_color(label, year=None, color='skyblue'):
     if year:
         return str('[COLOR %s][B]%s (%s)[/B][/COLOR]' % (color, label, year))
     return str('[COLOR %s][B]%s[/B][/COLOR]' % (color, label))
+
+
+def color(string, colorname='mediumslateblue'):
+    """
+    Return string formated with a selected color.
+    lawngreen
+    mediumseagreen
+    """
+    # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
+    return str('[COLOR %s]%s[/COLOR]' % (colorname, string))
+
+
+def bold(string):
+    """
+    Return string formated with a bold.
+    """
+    return str('[B]%s[/B]' % (string))

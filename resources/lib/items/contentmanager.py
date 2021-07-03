@@ -11,19 +11,14 @@ from os.path import exists
 from os.path import isfile
 from os.path import splitext
 
-# from bs4 import BeautifulSoup
-
 from resources import USE_SHOW_ARTWORK
 from resources.lib.log import logged_function
 
 from resources.lib.filesystem import mkdir
 from resources.lib.filesystem import CreateNfo
 from resources.lib.filesystem import remove_dir
-from resources.lib.filesystem import delete_strm
-from resources.lib.filesystem import softlink_file
 from resources.lib.filesystem import create_stream_file
 from resources.lib.filesystem import delete_with_wildcard
-from resources.lib.filesystem import softlink_files_in_dir
 
 from resources.lib.abs.content import ABSContentManagerShow
 from resources.lib.abs.content import ABSContentManagerMovie
@@ -39,33 +34,15 @@ class ContentManagerShow(ABSContentManagerShow):
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
-        # managed + show dir + season dir
-        self.metadata_season_dir = join(
-            self.show_dir[0], self.jsondata['season_dir'])
         self.managed_season_dir = join(
-            self.show_dir[1], self.jsondata['season_dir'])
-
-        # Full path of episode without extension
-        self.managed_ep_path = join(
+            self.show_dir, self.jsondata['season_dir'])
+        self.managed_episode_path = join(
             self.managed_season_dir, self.complete_episode_title)
-        self.metadata_ep_path = join(
-            self.metadata_season_dir, self.complete_episode_title)
-        # Full path of muitple files with extension
-
-        self.metadata_thumb_path = ''.join(
-            [self.metadata_ep_path, '-thumb.jpg'])
-        self.managed_thumb_path = ''.join([self.managed_ep_path, '-thumb.jpg'])
-
-        self.metadata_landscape_path = join(self.show_dir[0], 'landscape.jpg')
-        self.managed_landscape_path = join(self.show_dir[1], 'landscape.jpg')
-
-        self.metadata_fanart_path = join(self.show_dir[0], 'fanart.jpg')
-        self.metadata_fanart_path = join(self.show_dir[1], 'fanart.jpg')
-
-        self.metadata_tvshow_nfo = join(self.show_dir[0], 'tvshow.nfo')
-        self.managed_tvshow_nfo = join(self.show_dir[1], 'tvshow.nfo')
-
-        self.managed_strm_path = ''.join([self.managed_ep_path, '.strm'])
+        self.managed_thumb_path = ''.join(
+            [self.managed_episode_path, '-thumb.jpg'])
+        self.managed_landscape_path = join(self.show_dir, 'landscape.jpg')
+        self.managed_tvshow_nfo = join(self.show_dir, 'tvshow.nfo')
+        self.managed_strm_path = ''.join([self.managed_episode_path, '.strm'])
 
     @property
     def showtitle(self):
@@ -73,11 +50,15 @@ class ContentManagerShow(ABSContentManagerShow):
         return self.jsondata['showtitle']
 
     @property
+    def season(self):
+        """Return season."""
+        return int(self.jsondata['season'])
+
+    @property
     def show_dir(self):
         """Return show_dir."""
-        return (
-            ' '.join([self.jsondata['metadata_show_dir'], self.formedyear]),
-            ' '.join([self.jsondata['managed_show_dir'], self.formedyear])
+        return ' '.join(
+            [self.jsondata['managed_show_dir'], self.formedyear]
         )
 
     @property
@@ -104,33 +85,20 @@ class ContentManagerShow(ABSContentManagerShow):
         return self.jsondata['episode_title_with_id']
 
     @property
-    def episode_nfo(self):
-        """Return episode_nfo."""
-        return (
-            ''.join([self.metadata_ep_path, '.nfo']), ''.join(
-                [self.managed_ep_path, '.nfo'])
-        )
+    def managed_episode_nfo_path(self):
+        """Return managed_episode_nfo_path."""
+        return ''.join([self.managed_episode_path, '.nfo'])
 
     @logged_function
     def add_to_library(self):
         """Add item to library."""
-        # Rename episode if metadata is available
-        self.rename_using_metadata()
-        # create show dir
-        if not exists(self.show_dir[0]):
-            mkdir(self.show_dir[0])
-        if not exists(self.show_dir[1]):
-            mkdir(self.show_dir[1])
-        # create season_dir managed season dir
-        if not exists(self.managed_season_dir):
-            mkdir(self.managed_season_dir)
-        # create season_dir metadata season dir
-        if not exists(self.metadata_season_dir):
-            mkdir(self.metadata_season_dir)
+        # Create show_dir (tv show folder) in managed/tvshow/ diretory
+        mkdir(self.show_dir)
+        # Create season_dir (tv show season folder) in managed/tvshow/show_dir/
+        mkdir(self.managed_season_dir)
         # Create stream file
         if create_stream_file(self.file, self.managed_strm_path):
-            self.create_metadata_item()
-            softlink_file(self.episode_nfo[0], self.episode_nfo[1])
+            # self.create_metadata_item()
             self.database.update_content(
                 file=self.file,
                 status='managed',
@@ -139,77 +107,48 @@ class ContentManagerShow(ABSContentManagerShow):
         return True
 
     @logged_function
+    # TODO: maybe this method is not necessay
+    # whem item is added from staged, the nfo and strm will be created
     def add_to_library_if_metadata(self):
-        """Add ato library with metadata."""
-        self.read_metadata_item()
-        if exists(self.episode_nfo[0]):
+        # """Add to library with metadata."""
+        if exists(self.managed_episode_nfo_path):
             self.add_to_library()
 
     @logged_function
     def create_metadata_item(self):
         """Create metadata."""
-        # IDEA: automatically call this when staging
-        # IDEA: actually create basic nfo file with name and episode number, and thumb if possible
-        # IDEA: could probably just rename based on existing strm file instead of nfo file
-        # Create show_dir in Metadata/TV if it doesn't already exist
-        # Create Metadate Show Dir
-        if not exists(self.show_dir[0]):
-            mkdir(self.show_dir[0])
-        # Create Metadata Season dir
-        if not exists(self.metadata_season_dir):
-            mkdir(self.metadata_season_dir)
-        # Create basic tvshow.nfo
+        # Create show_dir (tv show folder) in managed/tvshow/ diretory
+        mkdir(self.show_dir)
+        # Create tvshow.nfo in managed/tvshow
         CreateNfo(
             _type='tvshow',
-            filepath=self.metadata_tvshow_nfo,
+            filepath=self.managed_tvshow_nfo,
             jsondata=self.jsondata
         )
-        # Link tvshow.nfo and artwork now, if self.show_dir[0] exists
-        for fname in listdir(self.show_dir[0]):
-            if isfile(join(self.show_dir[0], fname)):
-                _regex = r'(?i)s\d{1,5}(?:(?:x|_|.)e|e)\d{1,5}|\d{1,5}x\d{1,5}'
-                if (not re.match(_regex, fname) or '.strm' in fname):
-                    if not exists(join(self.show_dir[1], fname)):
-                        softlink_file(
-                            join(self.show_dir[0], fname),
-                            join(self.show_dir[1], fname)
-                        )
-        # create a basic episode nfo
+        # Create a episode nfo in managed/tvshow/show_dir/Season X
         CreateNfo(
             _type='episodedetails',
-            filepath=self.episode_nfo[0],
+            filepath=self.managed_episode_nfo_path,
             jsondata=self.jsondata
         )
-        # Link metadata for episode if it exists
-        if USE_SHOW_ARTWORK:
-            # Try show landscape or fanart (since Kodi can't generate thumb for strm)
-            if exists(self.metadata_landscape_path):
-                softlink_file(
-                    self.metadata_landscape_path,
-                    self.managed_landscape_path
-                )
-            elif exists(self.metadata_fanart_path):
-                softlink_file(
-                    self.metadata_fanart_path,
-                    self.metadata_fanart_path
-                )
+        # # Link metadata for episode if it exists
+        # if USE_SHOW_ARTWORK:
+        #     # Try show landscape or fanart (since Kodi can't generate thumb for strm)
+        #     if exists(self.metadata_landscape_path):
+        #         softlink_file(
+        #             self.metadata_landscape_path,
+        #             self.managed_landscape_path
+        #         )
+        #     elif exists(self.metadata_fanart_path):
+        #         softlink_file(
+        #             self.metadata_fanart_path,
+        #             self.metadata_fanart_path
+        #         )
         self.database.update_content(
             self.file,
             title=self.jsondata['title'],
             _type='tvshow'
         )
-
-    @logged_function
-    def read_metadata_item(self):
-        """Rename the content item based on old .nfo files."""
-        # TODO: resolve overlap/duplication with create_metadata_item
-        # Check for existing nfo file
-        if isdir(self.show_dir[1]):
-            self.database.update_content(
-                file=self.file,
-                title=self.jsondata['title'],
-                _type='tvshow'
-            )
 
     @logged_function
     def remove_and_block(self):
@@ -221,7 +160,7 @@ class ContentManagerShow(ABSContentManagerShow):
             'episode'
         )
         # Delete nfo items
-        delete_with_wildcard(splitext(self.episode_nfo[0])[0])
+        delete_with_wildcard(splitext(self.managed_episode_nfo_path)[0])
         # Remove from db
         self.database.remove_from(
             file=self.file,
@@ -234,23 +173,26 @@ class ContentManagerShow(ABSContentManagerShow):
         # Delete stream & episode nfo
         delete_with_wildcard(self.managed_strm_path)
         # Check if last stream file, and remove entire dir if so
-        if isdir(self.show_dir[1]):
-            files = listdir(self.show_dir[1])
+        if isdir(self.show_dir):
+            files = listdir(self.show_dir)
             for fname in files:
                 if '.strm' in fname:
                     break
             else:
-                remove_dir(self.show_dir[1])
+                remove_dir(self.show_dir)
+
+    # TODO: in future, rename can be usefull to rename showtitle and title (episode_title),
+    # store a table with file, original_title and newtitle can be a more easily way to performe this
 
     # @logged_function
     # def rename(self, name):
     #     # Rename files if they exist
     #     # TODO: I supose this function is working, but not change the name,
     #     # becouse the new_title is equal the original
-    #     if exists(self.show_dir[0]):
+    #     if exists(self.show_dir):
     #         # Define "title paths" (paths without extensions)
-    #         title_path = join(self.show_dir[0], self.showtitle)
-    #         new_title_path = join(self.show_dir[0], self.showtitle)
+    #         title_path = join(self.show_dir, self.showtitle)
+    #         new_title_path = join(self.show_dir, self.showtitle)
     #         # Rename stream placeholder, nfo file, and thumb
     #         mv_with_type(title_path, '.strm', new_title_path)
     #         mv_with_type(title_path, '.nfo', new_title_path)
@@ -263,30 +205,6 @@ class ContentManagerShow(ABSContentManagerShow):
     #         title=self.showtitle,
     #         _type='tvshow'
     #     )
-
-    @logged_function
-    def rename_using_metadata(self):
-        """Rename using metadata."""
-        # TODO?: Rename showtitle too
-        # Read old metadata items to rename self
-        self.read_metadata_item()
-        # # Only rename if nfo file exists
-        # if exists(self.episode_nfo[0]):
-        #     # Open nfo file and get xml soup
-        #     with open(self.episode_nfo[0]) as nfo_file:
-        #         soup = BeautifulSoup(nfo_file)
-        #     # Check for season & episode tags
-        #     season = int(soup.find('season').get_text())
-        #     episode = int(soup.find('episode').get_text())
-        #     # Format into episode id
-        #     epid = '{0:02}x{1:02} - '.format(season, episode)
-        #     # Only rename if epid not already in name (otherwise it would get duplicated)
-        #     if epid not in self.clean_title:
-        #         new_title = epid + self.clean_title.replace('-0x0', '')
-        #         self.rename(new_title)
-        #     elif '-0x0' in self.clean_title:
-        #         new_title = self.clean_title.replace('-0x0', '')
-        #         self.rename(new_title)
 
     def delete(self):
         """Remove the item from the database."""
@@ -313,7 +231,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         self.database = database
         self.jsondata = jsondata
         self.managed_strm_path = join(
-            self.movie_dir[1],
+            self.managed_movie_dir,
             ''.join([self.title, '.strm'])
         )
 
@@ -338,28 +256,22 @@ class ContentManagerMovie(ABSContentManagerMovie):
         return '(%s)' % self.jsondata['year']
 
     @property
-    def movie_dir(self):
-        """Return movie_dir."""
-        return (
-            ' '.join([self.jsondata['metadata_movie_dir'], self.formedyear]),
-            ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
-        )
+
+    def managed_movie_dir(self):
+        """Return managed_movie_dir."""
+        return ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
 
     @property
     def movie_nfo(self):
-        """retirm movie_nfo."""
-        return (
-            join(self.movie_dir[0], ''.join([self.title, '.nfo'])),
-            join(self.movie_dir[1], ''.join([self.title, '.nfo']))
-        )
+        """Return movie_nfo."""
+        return join(self.managed_movie_dir, ''.join([self.title, '.nfo']))
 
     @logged_function
     def add_to_library(self):
         """Add item to library."""
-        # create managed_movie_dir
-        if not isdir(self.movie_dir[1]):
-            mkdir(self.movie_dir[1])
-        # Add stream file to self.managed_dir
+        # Create managed_movie_dir (movie folder) in managed/movies/ diretory
+        mkdir(self.managed_movie_dir)
+        # Create stream_file in managed/movies/managed_movie_dir
         self.create_metadata_item()
         create_stream_file(
             self.file,
@@ -373,28 +285,15 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     @logged_function
     def create_metadata_item(self):
-        """Create metadata item."""
-        # IDEA: automatically call this when staging
-        # IDEA: could probably just rename based on existing strm file instead of nfo file
-        # Create show_dir in Metadata/TV if it doesn't already exist
+        """Create metadata movie item."""
+        # Create managed_movie_dir (movie folder) in managed/movies/ diretory
+        mkdir(self.managed_movie_dir)
+        CreateNfo(
+            _type='movie',
+            filepath=self.movie_nfo,
+            jsondata=self.jsondata
+        )
 
-        if not exists(self.movie_dir[0]):
-            mkdir(self.movie_dir[0])
-        # create a blank title.nfo
-        if not exists(self.movie_nfo[0]):
-            try:
-                CreateNfo(
-                    _type='movie',
-                    filepath=self.movie_nfo[0],
-                    jsondata=self.jsondata
-                )
-                softlink_files_in_dir(
-                    self.movie_dir[0], self.movie_dir[1]
-                )
-                delete_strm(self.movie_dir[1])
-            except Exception:
-                pass
-        # Add metadata (optional)
         self.database.update_content(
             file=self.file,
             _type='movie',
@@ -402,9 +301,11 @@ class ContentManagerMovie(ABSContentManagerMovie):
         )
 
     @logged_function
+    # TODO: maybe this method is not necessay
+    # whem item is added from staged, the nfo and strm will be created
     def add_to_library_if_metadata(self):
-        """Add item to library with metadata."""
-        if exists(self.movie_nfo[0]):
+        # """Add item to library with metadata."""
+        if exists(self.movie_nfo):
             self.add_to_library()
 
     @logged_function
@@ -416,7 +317,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
             'movie'
         )
         # Delete metadata items
-        remove_dir(self.movie_dir[0])
+        remove_dir(self.managed_movie_dir)
         # Remove from db
         self.database.remove_from(
             file=self.file,
@@ -426,7 +327,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
     @logged_function
     def remove_from_library(self):
         """Remove from library."""
-        remove_dir(self.movie_dir[1])
 
     def rename(self, name):
         """Rename item."""
@@ -434,7 +334,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
     def rename_using_metadata(self):
-        """Rename item using metadata."""
+        # """Rename item using metadata."""
         # TODO: Implement
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
