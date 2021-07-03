@@ -9,7 +9,6 @@ import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
 from resources import ADDON_NAME
-from resources.lib.utils import METADATA_FOLDER, tojs
 
 from resources.lib.log import logged_function
 from resources.lib.filesystem import remove_dir

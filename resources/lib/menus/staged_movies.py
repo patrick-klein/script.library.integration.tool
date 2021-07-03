@@ -16,7 +16,7 @@ from resources.lib.log import log_msg
 from resources.lib.log import logged_function
 
 from resources.lib.utils import notification
-from resources.lib.utils import METADATA_FOLDER
+from resources.lib.utils import MANAGED_FOLDER
 from resources.lib.utils import getlocalizedstring
 
 
@@ -54,7 +54,6 @@ class StagedMoviesMenu(object):
     @logged_function
     def add_all_with_metadata(self, items):
         """Add all movies with nfo files to the library."""
-        # TODO: Remove code duplication with MovieItem.add_to_library_if_metadata
         STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
         STR_ALL_MOVIES_WITH_METADTA_ADDED = getlocalizedstring(32045)
         self.progressdialog.create(
@@ -123,13 +122,10 @@ class StagedMoviesMenu(object):
     @logged_function
     def options(self, item):
         """Provide options for a single staged movie in a dialog window."""
-        # TODO: add a back button
         STR_ADD = getlocalizedstring(32048)
         STR_REMOVE = getlocalizedstring(32017)
         STR_REMOVE_AND_BLOCK = getlocalizedstring(32049)
         STR_RENAME = getlocalizedstring(32050)
-        STR_AUTOMATICALLY_RENAME_USING_METADTA = getlocalizedstring(32051)
-        STR_GENERATE_METADATA_ITEM = getlocalizedstring(32052)
         STR_STAGED_MOVIE_OPTIONS = getlocalizedstring(32053)
         lines = [
             STR_ADD,

@@ -5,7 +5,6 @@
 from os.path import join
 
 from resources.lib.utils import MANAGED_FOLDER
-from resources.lib.utils import METADATA_FOLDER
 from resources.lib.manipulator import clean_name
 from resources.lib.log import logged_function
 
@@ -88,14 +87,6 @@ class EpisodeItem(ABSItemShow):
             )
         return self._managed_dir
 
-    @property
-    def metadata_show_dir(self):
-        """Return metadata_show_dir."""
-        if not self._metadata_show_dir:
-            self._metadata_show_dir = join(
-                METADATA_FOLDER, 'TV', self.showtitle)
-        return self._metadata_show_dir
-
     @logged_function
     def returasjson(self):
         """Return a dict with all information about tvshow."""
@@ -110,7 +101,6 @@ class EpisodeItem(ABSItemShow):
                 'season': self.season,
                 'season_dir': self.season_dir,
                 'managed_show_dir': self.managed_show_dir,
-                'metadata_show_dir': self.metadata_show_dir,
                 'year': self.year,
                 'type': 'tvshow'
             }

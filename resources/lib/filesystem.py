@@ -138,32 +138,32 @@ def create_stream_file(plugin_path, filepath):
     return True
 
 
-if os.name == 'posix':
-    def softlink_file(src, dst):
-        """Symlink file at src to dst."""
-        try:
-            symlink(src, dst)
-        except FileExistsError:
-            pass
+# if os.name == 'posix':
+#     def softlink_file(src, dst):
+#         """Symlink file at src to dst."""
+#         try:
+#             symlink(src, dst)
+#         except FileExistsError:
+#             pass
 
-    def softlink_files_in_dir(src_dir, dst_dir):
-        """Symlink all files in src_dir using wildcard to dst_dir."""
-        for file in listdir(src_dir):
-            try:
-                symlink(join(src_dir, file), join(dst_dir, file))
-            except OSError:
-                pass
-else:
-    def softlink_file(src, dst):
-        """Copy file at src to dst."""
-        # Can only symlink on unix, just copy file
-        copyfile(src, dst)
+#     def softlink_files_in_dir(src_dir, dst_dir):
+#         """Symlink all files in src_dir using wildcard to dst_dir."""
+#         for file in listdir(src_dir):
+#             try:
+#                 symlink(join(src_dir, file), join(dst_dir, file))
+#             except OSError:
+#                 pass
+# else:
+#     def softlink_file(src, dst):
+#         """Copy file at src to dst."""
+#         # Can only symlink on unix, just copy file
+#         copyfile(src, dst)
 
-    def softlink_files_in_dir(src_dir, dst_dir):
-        """Symlink all files in src_dir using wildcard to dst_dir."""
-        # Can only symlink on unix, just copy files
-        for file in listdir(src_dir):
-            copyfile(join(src_dir, file), join(dst_dir, file))
+#     def softlink_files_in_dir(src_dir, dst_dir):
+#         """Symlink all files in src_dir using wildcard to dst_dir."""
+#         # Can only symlink on unix, just copy files
+#         for file in listdir(src_dir):
+#             copyfile(join(src_dir, file), join(dst_dir, file))
 
 
 def mkdir(dir_path):

@@ -22,7 +22,6 @@ from resources import ADDON_NAME
 from resources import ADDON_PATH
 from resources import RECURSION_LIMIT
 from resources import USING_CUSTOM_MANAGED_FOLDER
-from resources import USING_CUSTOM_METADATA_FOLDER
 
 from resources.lib.log import log_msg
 from resources.lib.filesystem import mkdir
@@ -35,10 +34,6 @@ else:
     MANAGED_FOLDER = xbmcvfs.translatePath(
         'special://userdata/addon_data/{}/'.format(ADDON_ID))
 
-if USING_CUSTOM_METADATA_FOLDER:
-    METADATA_FOLDER = ADDON.getSetting('metadata_folder')
-else:
-    METADATA_FOLDER = join(MANAGED_FOLDER, 'Metadata')
 
 
 def check_managed_folder():
@@ -57,10 +52,6 @@ def check_subfolders():
         'movies': MANAGED_FOLDER,
         'tvshows': MANAGED_FOLDER,
     }
-
-    if not USING_CUSTOM_METADATA_FOLDER:
-        subfolders['Metadata'] = MANAGED_FOLDER
-
     created_folders = False
     for basepath, diretory in subfolders.items():
         dest_dir = join(diretory, basepath)
@@ -523,7 +514,6 @@ def tojs(data, filename):
 def getlocalizedstring(string_id):
     """Function to get call getLocalizedString and deal with unicodedecodeerrors."""
     return str(ADDON.getLocalizedString(string_id))
-
 
 def title_with_color(label, year=None, color='mediumslateblue'):
     """Create a string to use in title Dialog().select."""
