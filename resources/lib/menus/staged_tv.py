@@ -112,33 +112,6 @@ class StagedTVMenu(object):
         notification(STR_ALL_x_SEASONS_WITH_METADATA_ADDED % showtitle)
 
     @logged_function
-    # TODO: revise this function >> add_all_episodes_with_metadata
-    def add_all_episodes_with_metadata(self, staged_episodes, showtitle):
-        """Add all episodes in the specified show with metadata to the library."""
-        STR_ADDING_ALL_x_EPISODES_WITH_METADATA = getlocalizedstring(32073)
-        STR_ALL_x_EPISODES_WITH_METADATA_ADDED = getlocalizedstring(32074)
-        showtitle = staged_episodes[0]
-
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_ADDING_ALL_x_EPISODES_WITH_METADATA % showtitle
-        )
-        for index, item in enumerate(staged_episodes):
-            percent = 100 * index / len(staged_episodes)
-            # nfo_path = os.path.join(metadata_dir, item.clean_title + '.nfo')
-            if os.path.exists(item.episode_nfo[0]):
-                self.progressdialog.update(
-                    int(percent),
-                    item.showtitle,
-                    item.episode_title_with_id
-                )
-                xbmc.sleep(200)
-                item.add_to_library()
-            self.progressdialog.update(int(percent), '\n'.join([' ', ' ']))
-        self.progressdialog.close()
-        notification(STR_ALL_x_EPISODES_WITH_METADATA_ADDED % showtitle)
-
-    @logged_function
     def generate_all_episodes_metadata(self, items):
         """Generate metadata items for all episodes in show."""
         STR_GENERATING_ALL_x_METADATA = getlocalizedstring(32077)
