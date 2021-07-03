@@ -45,7 +45,7 @@ class MovieItem(ABSItemMovie):
             )
         return self._managed_dir
 
-    @logged_function
+      @logged_function
     def returasjson(self):
         """Return the json with information from content."""
         try:

@@ -133,7 +133,6 @@ def create_stream_file(plugin_path, filepath):
             strm.close()
     return True
 
-
 def mkdir(dir_path):
     """Create a directory."""
     try:

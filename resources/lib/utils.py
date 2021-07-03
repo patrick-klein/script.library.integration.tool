@@ -117,6 +117,7 @@ def videolibrary(method, database='video', path=None):
     xbmc.executebuiltin(command[method])
 
 
+
 SKIP_STRINGS = [
     'resumo',
     'suggested',
