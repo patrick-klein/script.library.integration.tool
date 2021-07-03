@@ -57,7 +57,7 @@ msgid "Remove all movies"
 msgstr ""
 
 msgctxt "#32010"
-msgid "Move all movies back to staged"
+msgid "Move all movies to staged"
 msgstr ""
 
 msgctxt "#32011"
@@ -77,13 +77,8 @@ msgid "All movies removed"
 msgstr ""
 
 msgctxt "#32015"
-msgid "Moving all movies back to staged..."
+msgid "Moving all movies to staged..."
 msgstr ""
-
-msgctxt "#32016"
-msgid "Moving all movies back to staged..."
-msgstr ""
-
 msgctxt "#32017"
 msgid "Remove"
 msgstr ""
@@ -105,7 +100,7 @@ msgid "Remove all TV shows"
 msgstr ""
 
 msgctxt "#32022"
-msgid "Move all TV shows back to staged"
+msgid "Move all TV shows to staged"
 msgstr ""
 
 msgctxt "#32023"
@@ -121,7 +116,7 @@ msgid "All TV shows removed"
 msgstr ""
 
 msgctxt "#32026"
-msgid "Moving all TV shows back to staged..."
+msgid "Moving all %s TV shows to staged..."
 msgstr ""
 
 msgctxt "#32027"
@@ -137,7 +132,7 @@ msgid "Remove all episodes"
 msgstr ""
 
 msgctxt "#32030"
-msgid "Move all episodes back to staged"
+msgid "Move all episodes to staged"
 msgstr ""
 
 msgctxt "#32031"
@@ -153,7 +148,7 @@ msgid "All %s episodes removed"
 msgstr ""
 
 msgctxt "#32034"
-msgid "Moving all %s episodes back to staged..."
+msgid "Moving all %s episodes to staged..."
 msgstr ""
 
 msgctxt "#32035"
@@ -733,5 +728,5 @@ msgid "Library options"
 msgstr ""
 
 msgctxt "#32172"
-msgid "Move all %s seasons back to staged"
+msgid "Move all seasons to staged"
 msgstr ""

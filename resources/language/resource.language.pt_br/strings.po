@@ -57,8 +57,8 @@ msgid "Remove all movies"
 msgstr "Remover Todos Os Filmes"
 
 msgctxt "#32010"
-msgid "Move all movies back to staged"
-msgstr "Mover todos os Filmes de volta para Armazenados"
+msgid "Move all movies to staged"
+msgstr "Mover todos os Filmes para Armazenados"
 
 msgctxt "#32011"
 msgid "Back..."
@@ -77,7 +77,7 @@ msgid "All movies removed"
 msgstr "Todos os Filmes foram Removidos"
 
 msgctxt "#32015"
-msgid "Moving all movies back to staged..."
+msgid "Moving all movies to staged..."
 msgstr "Movendo todos os Filmes para Armazenados..."
 
 msgctxt "#32017"
@@ -101,8 +101,8 @@ msgid "Remove all TV shows"
 msgstr ""
 
 msgctxt "#32022"
-msgid "Move all TV shows back to staged"
-msgstr ""
+msgid "Move all TV shows to staged"
+msgstr "Mover todas as series de TV para armazenados"
 
 msgctxt "#32023"
 msgid "Managed TV Shows"
@@ -117,8 +117,8 @@ msgid "All TV shows removed"
 msgstr ""
 
 msgctxt "#32026"
-msgid "Moving all TV shows back to staged..."
-msgstr ""
+msgid "Moving all TV shows to staged..."
+msgstr "Movendo todas as series de TV para armazenados..."
 
 msgctxt "#32027"
 msgid "All TV shows moved to staged"
@@ -133,8 +133,8 @@ msgid "Remove all episodes"
 msgstr ""
 
 msgctxt "#32030"
-msgid "Move all episodes back to staged"
-msgstr ""
+msgid "Move all episodes to staged"
+msgstr "Mover todos os episodios para armazenados"
 
 msgctxt "#32031"
 msgid "Managed %s Episodes"
@@ -149,8 +149,8 @@ msgid "All %s episodes removed"
 msgstr ""
 
 msgctxt "#32034"
-msgid "Moving all %s episodes back to staged..."
-msgstr ""
+msgid "Moving all episodes to staged..."
+msgstr "Movendo todos os episodios para armazenados..."
 
 msgctxt "#32035"
 msgid "All %s episodes moved to staged"
