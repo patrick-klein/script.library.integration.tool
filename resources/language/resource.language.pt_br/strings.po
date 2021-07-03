@@ -25,27 +25,27 @@ msgid "Sync directory to library"
 msgstr "Sincronizar diretório com à Biblioteca"
 
 msgctxt "#32002"
-msgid "View Managed Movies"
+msgid "Managed Movies"
 msgstr "Filmes Gerenciados"
 
 msgctxt "#32003"
-msgid "View Managed TV Shows"
+msgid "Managed TV Shows"
 msgstr "Séries Gerenciados"
 
 msgctxt "#32004"
-msgid "View Staged Movies"
+msgid "Staged Movies"
 msgstr "Filmes Armazenados"
 
 msgctxt "#32005"
-msgid "View Staged TV Shows"
+msgid "Staged TV Shows"
 msgstr "Séries Armazenados"
 
 msgctxt "#32006"
-msgid "View Synced Directories"
+msgid "Synced Directories"
 msgstr "Diretórios Sincronizados"
 
 msgctxt "#32007"
-msgid "View Blocked Items"
+msgid "Blocked Items"
 msgstr "Itens Bloqueados"
 
 msgctxt "#32008"

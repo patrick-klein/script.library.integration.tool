@@ -25,27 +25,27 @@ msgid "Sync directory to library"
 msgstr ""
 
 msgctxt "#32002"
-msgid "View Managed Movies"
+msgid "Managed Movies"
 msgstr ""
 
 msgctxt "#32003"
-msgid "View Managed TV Shows"
+msgid "Managed TV Shows"
 msgstr ""
 
 msgctxt "#32004"
-msgid "View Staged Movies"
+msgid "Staged Movies"
 msgstr ""
 
 msgctxt "#32005"
-msgid "View Staged TV Shows"
+msgid "Staged TV Shows"
 msgstr ""
 
 msgctxt "#32006"
-msgid "View Synced Directories"
+msgid "Synced Directories"
 msgstr ""
 
 msgctxt "#32007"
-msgid "View Blocked Items"
+msgid "Blocked Items"
 msgstr ""
 
 msgctxt "#32008"
