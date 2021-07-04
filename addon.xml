@@ -6,11 +6,9 @@
     <import addon="script.module.beautifulsoup4" version="4.9.3"/>
     <import addon="script.module.simplejson" version="3.17.0"/>
   </requires>
-
   <extension point="xbmc.python.script" library="default.py">
     <provides>executable</provides>
   </extension>
-
   <extension point="kodi.context.item">
     <menu id="kodi.core.main">
       <item library="default.py">
