@@ -29,7 +29,7 @@ class ProgressBar(xbmcgui.DialogProgress):
         if self.iscanceled():
             xbmc.sleep(100)
             self._iscanceled_close()
-        self.update(int(perc), msg)
+        self.update(int(100 * perc), msg)
 
     def _iscanceled_close(self):
         """Close method to close progress by cancel button."""
