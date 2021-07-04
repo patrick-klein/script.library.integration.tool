@@ -22,10 +22,10 @@ class ManagedTVMenu(object):
     Also tools for manipulating the objects and managed file.
     """
 
-    def __init__(self, database):
+    def __init__(self, database, progressdialog):
         """__init__ ManagedTVMenu."""
         self.database = database
-        self.progressdialog = xbmcgui.DialogProgress()
+        self.progressdialog = progressdialog
 
     @logged_function
     def move_episodes_to_staged(self, items):
@@ -33,20 +33,18 @@ class ManagedTVMenu(object):
         STR_MOVING_ALL_x_EPISODES_TO_STAGED = getlocalizedstring(32034)
         STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(
             32035)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_MOVING_ALL_x_EPISODES_TO_STAGED % color(items[0].showtitle)
+        self.progressdialog._create(
+            msg=STR_MOVING_ALL_x_EPISODES_TO_STAGED % color(items[0].showtitle)
         )
         for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
-                message='\n'.join([color(item.showtitle), item.episode_title_with_id])
+            self.progressdialog._update(
+                index / len(items),
+                message='\n'.join([color(item.showtitle), item.episode_title_with_id]
+                )
             )
-            xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED %
                      color(item.showtitle, 'skyblue'))
 
@@ -54,10 +52,10 @@ class ManagedTVMenu(object):
     def move_all_seasons_to_staged(self, showtitle):
         """Remove all managed episodes in specified show from library, and add them to staged."""
         STR_MOVING_ALL_x_SEASONS_TO_STAGED = getlocalizedstring(32026)
-        STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173) % color(showtitle, 'skyblue')
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_MOVING_ALL_x_SEASONS_TO_STAGED % color(showtitle)
+        STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(
+            32173) % color(showtitle, 'skyblue')
+        self.progressdialog._create(
+            msg=STR_MOVING_ALL_x_SEASONS_TO_STAGED % color(showtitle)
         )
         items = list(
             self.database.get_content_items(
@@ -66,15 +64,13 @@ class ManagedTVMenu(object):
             )
         )
         for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
+            self.progressdialog._update(
+                index / len(items),
                 message='\n'.join([color(item.showtitle), item.episode_title_with_id])
             )
-            xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED)
 
     @logged_function
@@ -82,9 +78,8 @@ class ManagedTVMenu(object):
         """Remove all managed tvshow items from library, and add them to staged."""
         STR_MOVING_ALL_TV_SHOWS_TO_STAGED = getlocalizedstring(32026)
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = getlocalizedstring(32027)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_MOVING_ALL_TV_SHOWS_TO_STAGED
+        self.progressdialog._create(
+            msg=STR_MOVING_ALL_TV_SHOWS_TO_STAGED
         )
         managed_tv_items = list(
             self.database.get_content_items(
@@ -93,16 +88,14 @@ class ManagedTVMenu(object):
             )
         )
         for index, item in enumerate(managed_tv_items):
-            percent = 100 * index / len(managed_tv_items)
-            self.progressdialog.update(
-                int(percent),
-                message='\n'.join([color(item.showtitle), item.episode_title_with_id]
-                                  )
+            self.progressdialog._update(
+                index / len(managed_tv_items),
+                msg='\n'.join([color(item.showtitle), item.episode_title_with_id]
+                    )
             )
-            xbmc.sleep(200)
             item.remove_from_library()
             item.set_as_staged()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_TV_SHOWS_MOVED_TO_STAGED)
 
     @logged_function
@@ -111,19 +104,17 @@ class ManagedTVMenu(object):
         STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032)
         STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033)
         showtitle = items[0].showtitle
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_REMOVING_ALL_x_EPISODES % showtitle
+        self.progressdialog._create(
+            msg=STR_REMOVING_ALL_x_EPISODES % showtitle
         )
         for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
+            self.progressdialog._update(
+                index / len(items),
                 message='\n'.join([item.showtitle, item.episode_title_with_id])
             )
             item.remove_from_library()
             item.delete()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_x_EPISODES_REMOVED % showtitle)
 
     @logged_function
@@ -132,16 +123,13 @@ class ManagedTVMenu(object):
         STR_REMOVING_ALL_X_SEASONS = getlocalizedstring(32168)
         STR_ALL_X_SEASONS_REMOVED = getlocalizedstring(32169)
         seasons = items[0]
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_REMOVING_ALL_X_SEASONS % showtitle
+        self.progressdialog._create(
+            msg=STR_REMOVING_ALL_X_SEASONS % showtitle
         )
         for season in seasons:
-            percent = 100 * season / len(seasons)
-            self.progressdialog.update(
-                int(percent),
-                message='\n'.join([color(showtitle),
-                                   str("Season: %s" % season)])
+            self.progressdialog._update(
+                season / len(seasons),
+                message='\n'.join([color(showtitle), str("Season: %s" % season)])
             )
             self.database.remove_from(
                 _type='tvshow',
@@ -149,7 +137,7 @@ class ManagedTVMenu(object):
                 season=season
             )
             xbmc.sleep(300)
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_X_SEASONS_REMOVED % showtitle)
 
     @logged_function
@@ -157,9 +145,8 @@ class ManagedTVMenu(object):
         """Create metadata for all staged tvshow items."""
         STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
         STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_GENERATING_ALL_TV_SHOW_METADATA
+        self.progressdialog._create(
+            msg=STR_GENERATING_ALL_TV_SHOW_METADATA
         )
         staged_tv_items = list(
             self.database.get_content_items(
@@ -168,15 +155,12 @@ class ManagedTVMenu(object):
             )
         )
         for index, item in enumerate(staged_tv_items):
-            percent = 100 * index / len(staged_tv_items)
-            self.progressdialog.update(
-                int(percent),
-                '\n'.join([item.showtitle]
-                          )
+            self.progressdialog._update(
+                index / len(staged_tv_items),
+                '\n'.join([item.showtitle])
             )
-            xbmc.sleep(200)
             item.create_metadata_item()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_TV_SHOW_METADATA_CREATED)
 
     @logged_function
@@ -184,9 +168,8 @@ class ManagedTVMenu(object):
         """Remove all managed tvshow items from library."""
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
         STR_ALL_TV_SHOWS_REMOVED = getlocalizedstring(32025)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_REMOVING_ALL_TV_SHOWS
+        self.progressdialog._create(
+            msg=STR_REMOVING_ALL_TV_SHOWS
         )
         managed_tv_items = list(
             self.database.get_content_items(
@@ -195,14 +178,14 @@ class ManagedTVMenu(object):
             )
         )
         for index, item in enumerate(managed_tv_items):
-            percent = 100 * index / len(managed_tv_items)
-            self.progressdialog.update(
-                int(percent),
-                message='\n'.join([color(item.showtitle), item.episode_title_with_id])
+            self.progressdialog._update(
+                index / len(managed_tv_items),
+                message='\n'.join([color(item.showtitle), item.episode_title_with_id]
+                )
             )
             item.remove_from_library()
             item.delete()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_TV_SHOWS_REMOVED)
 
     @logged_function

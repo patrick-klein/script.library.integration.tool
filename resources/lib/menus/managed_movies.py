@@ -31,28 +31,26 @@ class ManagedMoviesMenu(object):
 
     # TODO: context menu for managed items in library
     # TODO: synced watched status with plugin item
-    def __init__(self, database):
+    def __init__(self, database, progressdialog):
         """__init__ ManagedMoviesMenu."""
         self.database = database
-        self.progressdialog = xbmcgui.DialogProgress()
+        self.progressdialog = progressdialog
 
     @logged_function
     def move_all_to_staged(self, items):
         """Remove all managed movies from library, and add them to staged."""
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getlocalizedstring(32015)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_MOVING_ALL_MOVIES_BACK_TO_STAGED
+        self.progressdialog._create(
+            msg=STR_MOVING_ALL_MOVIES_BACK_TO_STAGED
         )
         for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
+            self.progressdialog._update(
+                index / len(items),
                 item.title
             )
             item.remove_from_library()
             item.set_as_staged()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
 
     @logged_function
@@ -60,19 +58,17 @@ class ManagedMoviesMenu(object):
         """Remove all managed movies from library."""
         STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
         STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_REMOVING_ALL_MOVIES
+        self.progressdialog._create(
+            msg=STR_REMOVING_ALL_MOVIES
         )
         for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
+            self.progressdialog._update(
+                index / len(items),
                 item.title
             )
             item.remove_from_library()
             item.delete()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_MOVIES_REMOVED)
 
     @staticmethod
@@ -95,18 +91,16 @@ class ManagedMoviesMenu(object):
         """Generate metadata items for all managed movies."""
         STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
         STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_GENERATING_ALL_MOVIE_METADATA
+        self.progressdialog._create(
+            msg=STR_GENERATING_ALL_MOVIE_METADATA
         )
         for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
+            self.progressdialog._update(
+                index / len(items),
                 item.title
             )
             item.create_metadata_item()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_MOVIE_METADTA_CREATED)
 
     @logged_function

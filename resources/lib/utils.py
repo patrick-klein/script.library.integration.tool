@@ -404,16 +404,11 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 yield item
     directories = []
     for index, item in enumerate(listofitems):
-        if progressdialog.iscanceled() is True:
-            progressdialog.close()
-            break
-        percent = 100 * index / len(listofitems)
         if item['type'] == 'movie':
-            progressdialog.update(
-                int(percent),
+            progressdialog._update(
+                index / len(listofitems),
                 'Processando items:\n%s' % item['title']
             )
-            xbmc.sleep(200)
             if item:
                 yield item
         else:
@@ -425,16 +420,18 @@ def load_directory_items(progressdialog, _path, recursive=False,
             if item['filetype'] == 'directory':
                 if re_search(item['type'], ['season', 'tvshow']):
                     showtitle = item['showtitle']
-                    progressdialog.update(
-                        int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
-                    xbmc.sleep(200)
+                    progressdialog._update(
+                        index / len(listofitems),
+                        'Coletando itens no diretorio!\n%s' % item['label']
+                    )
                     directories.append(item)
             # if content is a episode, will be stored with yeld
             if item['type'] == 'episode':
                 # change type to 'tvshow' to padronize in build_contentitem
                 item['type'] = 'tvshow'
-                progressdialog.update(
-                    int(percent), 'Processando items:\n%s' % item['label']
+                progressdialog._update(
+                    index / len(listofitems),
+                    'Processando items:\n%s' % item['label']
                 )
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle

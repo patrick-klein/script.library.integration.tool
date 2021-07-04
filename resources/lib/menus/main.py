@@ -42,9 +42,10 @@ class MainMenu(object):
     Display displays a window that leads to other menus.
     """
 
-    def __init__(self, database):
+    def __init__(self, database, progressbar):
         """__init__ MainMenu."""
         self.database = database
+        self.progressbar = progressbar
         self.lastchoice = False
 
     def library(self):
@@ -74,12 +75,12 @@ class MainMenu(object):
         """Display main menu which leads to other menus."""
         OPTIONS_LIST = list()
         OPTIONS = {
-            32002: ManagedMoviesMenu(database=self.database).view_all,
-            32004: StagedMoviesMenu(database=self.database).view_all,
-            32003: ManagedTVMenu(database=self.database).view_shows,
-            32005: StagedTVMenu(database=self.database).view_shows,
-            32006: SyncedMenu(database=self.database).view,
-            32007: BlockedMenu(database=self.database).view,
+            32002: ManagedMoviesMenu(self.database, self.progressbar).view_all,
+            32004: StagedMoviesMenu(self.database, self.progressbar).view_all,
+            32003: ManagedTVMenu(self.database, self.progressbar).view_shows,
+            32005: StagedTVMenu(self.database, self.progressbar).view_shows,
+            32006: SyncedMenu(self.database, self.progressbar).view,
+            32007: BlockedMenu(self.database, self.progressbar).view,
             32180: self.library,
             32179: xbmc.executebuiltin,
         }

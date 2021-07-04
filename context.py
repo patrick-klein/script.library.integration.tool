@@ -14,6 +14,7 @@ import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
 from resources.lib.database import Database
+from resources.lib.progressbar import ProgressBar
 from resources.lib.menus.synced import SyncedMenu
 
 from resources.lib.utils import re_search
@@ -61,7 +62,10 @@ def main():
     )
     selection = lines[typeofcontent]
     if selection:
-        syncedmenu = SyncedMenu(database=Database())
+        syncedmenu = SyncedMenu(
+            database=Database(),
+            progressdialog=ProgressBar()
+        )
         # Call corresponding method
         if selection == STR_IS_A_MOVIE:
             if re_search(file, LIST_TYPE_MOVIES):
@@ -78,7 +82,7 @@ def main():
                     file=file
                 )
         elif selection == STR_CANCEL_RED:
-            xbmc.sleep(200)
+            xbmc.sleep(300)
             notification(getlocalizedstring(32158))
         else:
             notification(

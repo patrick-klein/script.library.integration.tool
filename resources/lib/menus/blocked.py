@@ -13,7 +13,7 @@ from resources.lib.utils import getlocalizedstring
 class BlockedMenu(object):
     """Provide windows for displaying blocked items and tools for managing them."""
 
-    def __init__(self, database):
+    def __init__(self, database, progressdialog):
         """__init__ BlockedMenu."""
         self.database = database
 

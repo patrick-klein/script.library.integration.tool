@@ -6,6 +6,7 @@
 import sys
 from resources.lib.utils import entrypoint
 
+from resources.lib.progressbar import ProgressBar
 from resources.lib.database import Database
 
 
@@ -14,7 +15,10 @@ def main():
     """Main entry point for addon."""
     if len(sys.argv) == 1:
         from resources.lib.menus.main import MainMenu
-        MainMenu(database=Database()).view()
+        MainMenu(
+            database=Database(),
+            progressbar=ProgressBar()
+        ).view()
 
     elif sys.argv[1] == 'test':
         from resources.test.test import test
