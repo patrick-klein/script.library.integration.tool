@@ -9,63 +9,50 @@ The purpose is to stage all movies/tvshows in the current directory, and update 
 import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
-import resources.lib.utils as utils
-from resources.lib.menus.synced import SyncedMenu
+from resources.lib.utils import entrypoint
+from resources.lib.utils import notification
+from resources.lib.utils import getlocalizedstring
 
 from resources.lib.database import Database
+from resources.lib.progressbar import ProgressBar
 
-STR_SYNC_ALL_ITEMS = utils.getlocalizedstring(32160)
-STR_SYNC_ONLY_MOVIES = utils.getlocalizedstring(32161)
-STR_SYNC_ONLY_SHOWS = utils.getlocalizedstring(32162)
-STR_FILTER_ITEMS = utils.getlocalizedstring(32167)
-STR_CANCEL_RED = utils.getlocalizedstring(32157)
-STR_NOT_SELECTED = utils.getlocalizedstring(32158)
+from resources.lib.menus.synced import SyncedMenu
 
-
-@utils.entrypoint
+@entrypoint
 def main():
     """Main entrypoint for context menu item."""
     sync_type = False
-    dir_path = xbmc.getInfoLabel('Container.FolderPath')
-    dir_label = xbmc.getInfoLabel('Container.FolderName')
-    # Get content type
-    STR_CHOOSE_CONTENT_TYPE = utils.getlocalizedstring(32164)
-
-    lines = [
-        STR_SYNC_ALL_ITEMS,
-        STR_SYNC_ONLY_MOVIES,
-        STR_SYNC_ONLY_SHOWS,
-        STR_FILTER_ITEMS,
-        STR_CANCEL_RED
-    ]
-    typeofcontent = xbmcgui.Dialog().select(
-        STR_CHOOSE_CONTENT_TYPE,
-        lines
+    file = xbmc.getInfoLabel('Container.FolderPath')
+    label = xbmc.getInfoLabel('Container.FolderName')
+    STR_CHOOSE_CONTENT_TYPE = getlocalizedstring(32164)
+    OPTIONS = {
+        32160: 'all_items',
+        32161: 'movie',
+        32162: 'tvshow',
+        32167: 'filter',
+        32157: 'cancel'
+    }
+    selection = xbmcgui.Dialog().select(
+        heading=STR_CHOOSE_CONTENT_TYPE,
+        list=[getlocalizedstring(x) for x in OPTIONS],
+        useDetails=False,
+        preselect=False
     )
-    # Call corresponding method
-    selection = lines[typeofcontent]
-    if selection:
-        if selection == STR_SYNC_ALL_ITEMS:
-            sync_type = 'all_items'
-        elif selection == STR_SYNC_ONLY_MOVIES:
-            sync_type = 'movie'
-        elif selection == STR_SYNC_ONLY_SHOWS:
-            sync_type = 'tvshow'
-        elif selection == STR_FILTER_ITEMS:
-            sync_type = 'filter'
-        elif selection == STR_CANCEL_RED:
-            utils.notification(STR_NOT_SELECTED, 4000)
-
-    if sync_type:
-        try:
-            SyncedMenu(database=Database()).add_all_items_in_directory(
-                sync_type,
-                dir_label,
-                dir_path
+    if selection == 'cancel':
+        STR_NOT_SELECTED = getlocalizedstring(32158)
+        notification(STR_NOT_SELECTED, 4000)
+    else:
+        sync_type = OPTIONS[list(OPTIONS.keys())[selection]]
+        if sync_type:
+            syncedmenu = SyncedMenu(
+                database=Database(),
+                progressdialog=ProgressBar()
             )
-        except Exception as genericexception:
-            # TODO: A generic except, in furure, can be updated
-            raise genericexception
+            syncedmenu.add_all_items_in_directory(
+                sync_type,
+                label,
+                file
+            )
 
 
 if __name__ == '__main__':
