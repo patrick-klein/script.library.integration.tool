@@ -38,24 +38,17 @@ LIST_TYPE_MOVIES = ['movie', 'PlayVideo', 'play&_play']
 @entrypoint
 def main():
     """Main entrypoint for context menu item."""
-    # is more simple and fast ask user about type, many addons don't give this info
     label = sys.listitem.getLabel()  # pylint: disable=E1101
     year = xbmc.getInfoLabel('ListItem.Year')
-    # if year is False, load load_directory_items will use json year
     year = int(year) if year != '' else False
     file = sys.listitem.getPath()  # pylint: disable=E1101
     STR_FORMED_TYPE_OF_CONTENT = '%s - %s' % (
         title_with_color(label=label, year=year), STR_CHOOSE_CONTENT_TYPE)
-    # Using the Dialog().select method is better as
-    # it allows the user to cancel if they want,
-    # and we can add more options if needed.
     lines = [
         STR_IS_A_MOVIE,
         STR_IS_A_SHOW,
         STR_CANCEL_RED
     ]
-    # I tried to add as many checks to determine the type,
-    # maybe the dialog can be removed, but I prefer mater
     typeofcontent = xbmcgui.Dialog().select(
         STR_FORMED_TYPE_OF_CONTENT,
         lines
