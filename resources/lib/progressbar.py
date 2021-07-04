@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 """Custon xbmcgui.DialogProgress."""
 
-from resources import ADDON_NAME
 import sys
 
-import xbmc
-import xbmcgui
+import xbmc # pylint: disable=import-error
+import xbmcgui # pylint: disable=import-error
 
+from resources import ADDON_NAME
 from resources.lib.log import log_msg
 from resources.lib.utils import notification
 
@@ -27,9 +27,9 @@ class ProgressBar(xbmcgui.DialogProgress):
     def _update(self, perc, msg):
         """Method to update ProgressBar window."""
         if self.iscanceled():
-            xbmc.sleep(100)
             self._iscanceled_close()
         self.update(int(100 * perc), msg)
+        xbmc.sleep(200)
 
     def _iscanceled_close(self):
         """Close method to close progress by cancel button."""
