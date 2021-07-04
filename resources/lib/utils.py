@@ -6,8 +6,6 @@
 import re
 import simplejson as json
 
-from os import name as osname
-
 from os.path import join
 from os.path import exists
 from os.path import expanduser

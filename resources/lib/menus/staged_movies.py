@@ -12,7 +12,6 @@ from resources import ADDON_NAME
 from resources.lib.log import logged_function
 
 from resources.lib.utils import notification
-from resources.lib.utils import MANAGED_FOLDER
 from resources.lib.utils import getlocalizedstring
 
 

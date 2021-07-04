@@ -166,7 +166,7 @@ class ABSContentManagerMovie(object):
     @abc.abstractmethod
     def create_metadata_item(self):
         """Add relevent files to metadata folder."""
-        
+
     @abc.abstractmethod
     def rename(self, name):
         """Rename title and files."""

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """Defines the ManagedMoviesMenu class."""
-import os
 
 from os import remove
 from os import listdir

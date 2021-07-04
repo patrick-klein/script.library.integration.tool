@@ -3,15 +3,13 @@
 
 """Defines the ContentManagerShow class."""
 
-import re
 from os import listdir
 from os.path import join
 from os.path import isdir
 from os.path import exists
-from os.path import isfile
 from os.path import splitext
 
-from resources import USE_SHOW_ARTWORK
+# from resources import USE_SHOW_ARTWORK
 from resources.lib.log import logged_function
 
 from resources.lib.filesystem import mkdir
