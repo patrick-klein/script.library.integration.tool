@@ -40,20 +40,22 @@ def main():
     """Main entrypoint for context menu item."""
     label = sys.listitem.getLabel()  # pylint: disable=E1101
     year = xbmc.getInfoLabel('ListItem.Year')
-    year = int(year) if year != '' else False
+    year = int(year) if year else False
     file = sys.listitem.getPath()  # pylint: disable=E1101
     STR_FORMED_TYPE_OF_CONTENT = '%s - %s' % (
-        title_with_color(label=label, year=year), STR_CHOOSE_CONTENT_TYPE)
+        title_with_color(label=label, year=year),
+        STR_CHOOSE_CONTENT_TYPE
+    )
     lines = [
         STR_IS_A_MOVIE,
         STR_IS_A_SHOW,
         STR_CANCEL_RED
     ]
-    typeofcontent = xbmcgui.Dialog().select(
+    selection = xbmcgui.Dialog().select(
         STR_FORMED_TYPE_OF_CONTENT,
         lines
     )
-    selection = lines[typeofcontent]
+    selection = lines[selection]
     if selection:
         syncedmenu = SyncedMenu(
             database=Database(),
@@ -78,15 +80,12 @@ def main():
             xbmc.sleep(300)
             notification(getlocalizedstring(32158))
         else:
-            notification(
-                '%s %s' % (
-                    title_with_color(
-                        label=label,
-                        year=year),
-                    STR_NOT_SELECTED
+            xbmc.sleep(300)
+            notification('%s %s' % (
+                title_with_color(label=label, year=year),
+                STR_NOT_SELECTED
                 )
             )
-
 
 if __name__ == '__main__':
     main()
