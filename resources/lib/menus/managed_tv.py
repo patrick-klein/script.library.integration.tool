@@ -99,23 +99,29 @@ class ManagedTVMenu(object):
         notification(STR_ALL_TV_SHOWS_MOVED_TO_STAGED)
 
     @logged_function
-    def remove_episodes(self, items):
+    def remove_all_episodes(self, episodes):
         """Remove all episodes in specified show from library."""
         STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032)
         STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033)
-        showtitle = items[0].showtitle
         self.progressdialog._create(
-            msg=STR_REMOVING_ALL_x_EPISODES % showtitle
+            msg=STR_REMOVING_ALL_x_EPISODES % episodes[0].showtitle
         )
-        for index, item in enumerate(items):
+        for index, item in enumerate(episodes):
             self.progressdialog._update(
-                index / len(items),
-                message='\n'.join([item.showtitle, item.episode_title_with_id])
+                index / len(episodes),
+                msg='\n'.join(
+                    [
+                        color(bold(item.showtitle)),
+                        # TODO: add new string
+                        'Removendo episodio:',
+                        item.episode_title_with_id
+                    ]
+                )
             )
             item.remove_from_library()
             item.delete()
         self.progressdialog._close()
-        notification(STR_ALL_x_EPISODES_REMOVED % showtitle)
+        notification(STR_ALL_x_EPISODES_REMOVED % episodes[0].showtitle)
 
     @logged_function
     def remove_all_seasons(self, seasons, showtitle):
@@ -265,7 +271,7 @@ class ManagedTVMenu(object):
                     if ret == i:
                         self.episode_options(item, season)
             elif lines[ret] == STR_REMOVE_ALL_EPISODES:
-                self.remove_episodes(managed_episodes)
+                self.remove_all_episodes(managed_episodes)
                 self.view_shows()
             elif lines[ret] == STR_MOVE_ALL_EPISODES_BACK_TO_STAGED:
                 self.move_episodes_to_staged(managed_episodes)
