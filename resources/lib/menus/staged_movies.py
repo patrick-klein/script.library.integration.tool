@@ -44,24 +44,6 @@ class StagedMoviesMenu(object):
         self.progressdialog._close()
         notification(STR_ALL_MOVIES_ADDED)
 
-    @logged_function
-    def add_all_with_metadata(self, items):
-        """Add all movies with nfo files to the library."""
-        STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
-        STR_ALL_MOVIES_WITH_METADTA_ADDED = getlocalizedstring(32045)
-        self.progressdialog._create(
-            msg=STR_ADDING_ALL_MOVIES_WITH_METADATA
-        )
-        for index, item in enumerate(items):
-            if os.path.exists(item.movie_nfo[0]):
-                self.progressdialog._update(
-                    index / len(items),
-                    item.title
-                )
-                item.add_to_library()
-        self.progressdialog._close()
-        notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
-
     @staticmethod
     def rename_dialog(item):
         """Prompt input for new name, and rename if non-empty string."""
@@ -139,7 +121,6 @@ class StagedMoviesMenu(object):
         """
         STR_NO_STAGED_MOVIES = getlocalizedstring(32037)
         STR_ADD_ALL_MOVIES = getlocalizedstring(32038)
-        STR_ADD_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32039)
         STR_REMOVE_ALL_MOVIES = getlocalizedstring(32009)
         STR_BACK = getlocalizedstring(32011)
         STR_STAGED_MOVIES = getlocalizedstring(32041)
@@ -155,7 +136,6 @@ class StagedMoviesMenu(object):
         lines = [str(x) for x in staged_movies]
         lines += [
             STR_ADD_ALL_MOVIES,
-            STR_ADD_ALL_MOVIES_WITH_METADATA,
             STR_REMOVE_ALL_MOVIES,
             STR_BACK
         ]
@@ -170,9 +150,6 @@ class StagedMoviesMenu(object):
                         break
             elif lines[ret] == STR_ADD_ALL_MOVIES:
                 self.add_all(staged_movies)
-            elif lines[ret] == STR_ADD_ALL_MOVIES_WITH_METADATA:
-                self.add_all_with_metadata(staged_movies)
-                self.view_all()
             elif lines[ret] == STR_REMOVE_ALL_MOVIES:
                 self.remove_all()
             elif lines[ret] == STR_BACK:

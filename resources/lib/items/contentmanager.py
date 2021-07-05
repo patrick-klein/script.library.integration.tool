@@ -105,14 +105,6 @@ class ContentManagerShow(ABSContentManagerShow):
         return True
 
     @logged_function
-    # TODO: maybe this method is not necessay
-    # whem item is added from staged, the nfo and strm will be created
-    def add_to_library_if_metadata(self):
-        # """Add to library with metadata."""
-        if exists(self.managed_episode_nfo_path):
-            self.add_to_library()
-
-    @logged_function
     def create_metadata_item(self):
         """Create metadata."""
         # Create show_dir (tv show folder) in managed/tvshow/ diretory
@@ -129,19 +121,6 @@ class ContentManagerShow(ABSContentManagerShow):
             filepath=self.managed_episode_nfo_path,
             jsondata=self.jsondata
         )
-        # # Link metadata for episode if it exists
-        # if USE_SHOW_ARTWORK:
-        #     # Try show landscape or fanart (since Kodi can't generate thumb for strm)
-        #     if exists(self.metadata_landscape_path):
-        #         softlink_file(
-        #             self.metadata_landscape_path,
-        #             self.managed_landscape_path
-        #         )
-        #     elif exists(self.metadata_fanart_path):
-        #         softlink_file(
-        #             self.metadata_fanart_path,
-        #             self.metadata_fanart_path
-        #         )
         self.database.update_content(
             self.file,
             title=self.jsondata['title'],
@@ -254,7 +233,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
         return '(%s)' % self.jsondata['year']
 
     @property
-
     def managed_movie_dir(self):
         """Return managed_movie_dir."""
         return ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
@@ -297,14 +275,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
             _type='movie',
             title=self.jsondata['title'],
         )
-
-    @logged_function
-    # TODO: maybe this method is not necessay
-    # whem item is added from staged, the nfo and strm will be created
-    def add_to_library_if_metadata(self):
-        # """Add item to library with metadata."""
-        if exists(self.movie_nfo):
-            self.add_to_library()
 
     @logged_function
     def remove_and_block(self):

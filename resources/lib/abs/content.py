@@ -67,10 +67,6 @@ class ABSContentManagerShow(object):
         # TODO: add to library using json-rpc
 
     @abc.abstractmethod
-    def add_to_library_if_metadata(self):
-        """Add content to the library only if it has metadata."""
-
-    @abc.abstractmethod
     def remove_from_library(self):
         """Remove its content from the library, does NOT change/remove item in database."""
         # TODO: remove from library using json-rpc
@@ -149,10 +145,6 @@ class ABSContentManagerMovie(object):
     def add_to_library(self):
         """Add content to the library."""
         # TODO: add to library using json-rpc
-
-    @abc.abstractmethod
-    def add_to_library_if_metadata(self):
-        """Add content to the library only if it has metadata."""
 
     @abc.abstractmethod
     def remove_from_library(self):

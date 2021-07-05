@@ -192,30 +192,6 @@ class StagedTVMenu(object):
         notification(STR_ALL_TV_SHOWS_ADDED)
 
     @logged_function
-    def add_all_with_metadata(self):
-        """Add all tvshow items with nfo file to library."""
-        STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA = getlocalizedstring(32061)
-        STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED = getlocalizedstring(32062)
-        self.progressdialog._create(
-            msg=STR_ADDING_ALL_TV_SHOW_ITEMS_WITH_METADATA
-        )
-        staged_tv_items = list(
-            self.database.get_content_items(
-                status='staged',
-                _type='tvshow'
-            )
-        )
-        for index, item in enumerate(staged_tv_items):
-            if os.path.exists(item.episode_nfo[0]):
-                self.progressdialog._update(
-                    index / len(staged_tv_items),
-                    '\n'.join([item.showtitle, item.episode_title_with_id])
-                )
-                item.add_to_library()
-        self.progressdialog._close()
-        notification(STR_ALL_TV_SHOW_ITEMS_WITH_METADATA_ADDED)
-
-    @logged_function
     def remove_all(self):
         """Remove all staged tvshow items."""
         STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
@@ -418,7 +394,6 @@ class StagedTVMenu(object):
         """
         STR_NO_STAGED_x_SEASONS = getlocalizedstring(32170)
         STR_ADD_ALL_SEASONS = getlocalizedstring(32177)
-        STR_ADD_ALL_SEASONS_WITH_METADATA = getlocalizedstring(32178)
         STR_REMOVE_ALL_SEASONS = getlocalizedstring(32171)
         STR_REMOVE_AND_BLOCK_TV_SHOW = getlocalizedstring(32068)
         STR_BACK = getlocalizedstring(32011)
@@ -440,7 +415,6 @@ class StagedTVMenu(object):
         lines = [str('[B]Season %s[/B]' % x) for x in season_interger_list]
         lines += [
             STR_ADD_ALL_SEASONS,
-            STR_ADD_ALL_SEASONS_WITH_METADATA,
             STR_REMOVE_ALL_SEASONS,
             STR_REMOVE_AND_BLOCK_TV_SHOW,
             STR_BACK
@@ -456,9 +430,6 @@ class StagedTVMenu(object):
             if selection == STR_ADD_ALL_SEASONS:
                 self.add_all_seasons(showtitle)
                 self.view_shows()
-            elif selection == STR_ADD_ALL_SEASONS_WITH_METADATA:
-                self.add_all_seasons_with_metadata(showtitle)
-                self.view_seasons(showtitle)
             elif selection == STR_REMOVE_ALL_SEASONS:
                 self.remove_all_seasons(showtitle)
                 self.view_shows()
@@ -486,7 +457,6 @@ class StagedTVMenu(object):
         STR_NO_STAGED_TV_SHOWS = getlocalizedstring(32054)
         STR_STAGED_TV_SHOWS = getlocalizedstring(32058)
         STR_ADD_ALL_TV_SHOWS = getlocalizedstring(32055)
-        STR_ADD_ALL_ITEMS_WITH_METADTA = getlocalizedstring(32056)
         STR_REMOVE_ALL_TV_SHOWS = getlocalizedstring(32057)
         STR_BACK = getlocalizedstring(32011)
         staged_tvshows = list(
@@ -501,7 +471,6 @@ class StagedTVMenu(object):
         lines = [bold(x) for x in staged_tvshows]
         lines += [
             STR_ADD_ALL_TV_SHOWS,
-            STR_ADD_ALL_ITEMS_WITH_METADTA,
             STR_REMOVE_ALL_TV_SHOWS,
             STR_BACK
         ]
@@ -519,9 +488,6 @@ class StagedTVMenu(object):
                         break
             elif lines[ret] == STR_ADD_ALL_TV_SHOWS:
                 self.add_all_shows()
-            elif lines[ret] == STR_ADD_ALL_ITEMS_WITH_METADTA:
-                self.add_all_with_metadata()
-                self.view_shows()
             elif lines[ret] == STR_REMOVE_ALL_TV_SHOWS:
                 self.remove_all()
             elif lines[ret] == STR_BACK:
