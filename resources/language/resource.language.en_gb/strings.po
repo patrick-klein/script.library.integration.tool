@@ -95,10 +95,6 @@ msgctxt "#32020"
 msgid "No managed TV shows"
 msgstr ""
 
-msgctxt "#32021"
-msgid "Remove all TV shows"
-msgstr ""
-
 msgctxt "#32022"
 msgid "Move all TV shows to staged"
 msgstr ""

@@ -170,31 +170,6 @@ class ManagedTVMenu(object):
         notification(STR_ALL_TV_SHOW_METADATA_CREATED)
 
     @logged_function
-    def remove_all(self):
-        """Remove all managed tvshow items from library."""
-        STR_REMOVING_ALL_TV_SHOWS = getlocalizedstring(32024)
-        STR_ALL_TV_SHOWS_REMOVED = getlocalizedstring(32025)
-        self.progressdialog._create(
-            msg=STR_REMOVING_ALL_TV_SHOWS
-        )
-        managed_tv_items = list(
-            self.database.get_content_items(
-                status='managed',
-                _type='tvshow'
-            )
-        )
-        for index, item in enumerate(managed_tv_items):
-            self.progressdialog._update(
-                index / len(managed_tv_items),
-                message='\n'.join([color(item.showtitle), item.episode_title_with_id]
-                )
-            )
-            item.remove_from_library()
-            item.delete()
-        self.progressdialog._close()
-        notification(STR_ALL_TV_SHOWS_REMOVED)
-
-    @logged_function
     def episode_options(self, item, season):
         """Provide options for a single managed episode in a dialog window."""
         STR_REMOVE = getlocalizedstring(32017)
@@ -350,7 +325,6 @@ class ManagedTVMenu(object):
         Also provides additional options at bottom of menu.
         """
         STR_NO_MANAGED_TV_SHOWS = getlocalizedstring(32020)
-        STR_REMOVE_ALL_TV_SHOWS = getlocalizedstring(32021)
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = getlocalizedstring(32022)
         STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
         STR_BACK = getlocalizedstring(32011)
@@ -366,7 +340,6 @@ class ManagedTVMenu(object):
             return
         lines = [bold(x) for x in managed_tvshows]
         lines += [
-            STR_REMOVE_ALL_TV_SHOWS,
             STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED,
             STR_GENERATE_ALL_METADATA_ITEMS,
             STR_BACK
@@ -383,8 +356,6 @@ class ManagedTVMenu(object):
                     if managed_tvshows[ret] == showtitle:
                         self.view_seasons(showtitle)
                         break
-            elif lines[ret] == STR_REMOVE_ALL_TV_SHOWS:
-                self.remove_all()
             elif lines[ret] == STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED:
                 self.move_all_to_staged()
             elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
