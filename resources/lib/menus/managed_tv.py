@@ -28,7 +28,7 @@ class ManagedTVMenu(object):
         self.progressdialog = progressdialog
 
     @logged_function
-    def move_episodes_to_staged(self, items):
+    def move_all_episodes_to_staged(self, items):
         """Remove staged spisodes from library and move to staged."""
         STR_MOVING_ALL_x_EPISODES_TO_STAGED = getlocalizedstring(32034)
         STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(
@@ -74,6 +74,7 @@ class ManagedTVMenu(object):
         notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED)
 
     @logged_function
+    def move_all_tvshows_to_staged(self):
         """Remove all managed tvshow from library, move to staged."""
         STR_MOVING_ALL_TV_SHOWS_TO_STAGED = getlocalizedstring(32026)
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = getlocalizedstring(32027)
@@ -250,7 +251,7 @@ class ManagedTVMenu(object):
                 self.generate_all_managed_episodes_metadata(managed_episodes)
                 self.view_shows()
             elif lines[ret] == STR_MOVE_ALL_EPISODES_BACK_TO_STAGED:
-                self.move_episodes_to_staged(managed_episodes)
+                self.move_all_episodes_to_staged(managed_episodes)
                 self.view_shows()
             elif lines[ret] == STR_BACK:
                 self.view_seasons(showtitle)
@@ -358,7 +359,7 @@ class ManagedTVMenu(object):
                         self.view_seasons(showtitle)
                         break
             elif lines[ret] == STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED:
-                self.move_all_to_staged()
+                self.move_all_tvshows_to_staged()
             elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
                 self.generate_all_managed_tvshows_metadata()
                 self.view_shows()
