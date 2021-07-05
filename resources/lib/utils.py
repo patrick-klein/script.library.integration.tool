@@ -60,7 +60,7 @@ def check_subfolders():
             created_folders = True
 
     if created_folders:
-        STR_SUBFOLDERS_CREATED = getlocalizedstring(32127)
+        STR_SUBFOLDERS_CREATED = getstring(32127)
         notification(STR_SUBFOLDERS_CREATED)
         # TODO: Add video sources here
         xbmc.sleep(1)
@@ -492,8 +492,8 @@ def tojs(data, filename):
         pass
 
 
-def getlocalizedstring(string_id):
-    """Function to get call getLocalizedString and deal with unicodedecodeerrors."""
+def getstring(string_id):
+    """Function to get call getLocalizedString."""
     return str(ADDON.getLocalizedString(string_id))
 
 

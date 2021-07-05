@@ -10,7 +10,7 @@ from resources import ADDON_NAME
 from resources.lib.log import logged_function
 
 from resources.lib.utils import notification
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
 
 class StagedMoviesMenu(object):
@@ -28,8 +28,8 @@ class StagedMoviesMenu(object):
     @logged_function
     def add_all(self, items):
         """Add all staged movies to library."""
-        STR_ADDING_ALL_MOVIES = getlocalizedstring(32042)
-        STR_ALL_MOVIES_ADDED = getlocalizedstring(32043)
+        STR_ADDING_ALL_MOVIES = getstring(32042)
+        STR_ALL_MOVIES_ADDED = getstring(32043)
         self.progressdialog._create(
             msg=STR_ADDING_ALL_MOVIES
         )
@@ -56,12 +56,12 @@ class StagedMoviesMenu(object):
     @logged_function
     def options(self, item):
         """Provide options for a single staged movie in a dialog window."""
-        STR_ADD = getlocalizedstring(32048)
-        STR_REMOVE = getlocalizedstring(32017)
-        STR_REMOVE_AND_BLOCK = getlocalizedstring(32049)
-        STR_RENAME = getlocalizedstring(32050)
-        STR_STAGED_MOVIE_OPTIONS = getlocalizedstring(32053)
-        STR_BACK = getlocalizedstring(32011)
+        STR_ADD = getstring(32048)
+        STR_REMOVE = getstring(32017)
+        STR_REMOVE_AND_BLOCK = getstring(32049)
+        STR_RENAME = getstring(32050)
+        STR_STAGED_MOVIE_OPTIONS = getstring(32053)
+        STR_BACK = getstring(32011)
         lines = [
             STR_ADD,
             STR_REMOVE,
@@ -98,8 +98,8 @@ class StagedMoviesMenu(object):
     @logged_function
     def remove_all(self):
         """Remove all staged movies."""
-        STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
-        STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
+        STR_REMOVING_ALL_MOVIES = getstring(32013)
+        STR_ALL_MOVIES_REMOVED = getstring(32014)
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_MOVIES
         )
@@ -117,11 +117,11 @@ class StagedMoviesMenu(object):
 
         Also provides additional options at bottom of menu.
         """
-        STR_NO_STAGED_MOVIES = getlocalizedstring(32037)
-        STR_ADD_ALL_MOVIES = getlocalizedstring(32038)
-        STR_REMOVE_ALL_MOVIES = getlocalizedstring(32009)
-        STR_BACK = getlocalizedstring(32011)
-        STR_STAGED_MOVIES = getlocalizedstring(32041)
+        STR_NO_STAGED_MOVIES = getstring(32037)
+        STR_ADD_ALL_MOVIES = getstring(32038)
+        STR_REMOVE_ALL_MOVIES = getstring(32009)
+        STR_BACK = getstring(32011)
+        STR_STAGED_MOVIES = getstring(32041)
         staged_movies = list(
             self.database.get_content_items(
                 status='staged',

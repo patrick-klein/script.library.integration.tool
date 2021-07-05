@@ -21,13 +21,13 @@ from resources.lib.utils import re_search
 from resources.lib.utils import entrypoint
 from resources.lib.utils import notification
 from resources.lib.utils import title_with_color
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
-STR_IS_A_MOVIE = getlocalizedstring(32155)
-STR_IS_A_SHOW = getlocalizedstring(32156)
-STR_CANCEL_RED = getlocalizedstring(32157)
-STR_NOT_SELECTED = getlocalizedstring(32163)
-STR_CHOOSE_CONTENT_TYPE = getlocalizedstring(32159)
+STR_IS_A_MOVIE = getstring(32155)
+STR_IS_A_SHOW = getstring(32156)
+STR_CANCEL_RED = getstring(32157)
+STR_NOT_SELECTED = getstring(32163)
+STR_CHOOSE_CONTENT_TYPE = getstring(32159)
 
 # possible values ​​that content can have
 LIST_TYPE_SERIES = ['series', 'directory',
@@ -78,7 +78,7 @@ def main():
                 )
         elif selection == STR_CANCEL_RED:
             xbmc.sleep(300)
-            notification(getlocalizedstring(32158))
+            notification(getstring(32158))
         else:
             xbmc.sleep(300)
             notification('%s %s' % (

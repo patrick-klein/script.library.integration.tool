@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Defines BlockedItem class."""
 
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
 
 class BlockedItem(dict):
@@ -27,7 +27,7 @@ class BlockedItem(dict):
         }
         if not self._localized_type:
             try:
-                return getlocalizedstring(_TYPES[self['type']])
+                return getstring(_TYPES[self['type']])
             except KeyError:
                 self._localized_type = self['type']
         return self._localized_type

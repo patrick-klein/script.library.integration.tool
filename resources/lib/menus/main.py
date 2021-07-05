@@ -13,7 +13,7 @@ from resources import ADDON_NAME
 from resources.lib.utils import bold
 from resources.lib.utils import color
 from resources.lib.utils import videolibrary
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
 from resources.lib.menus.managed_movies import ManagedMoviesMenu
 from resources.lib.menus.staged_movies import StagedMoviesMenu
@@ -85,7 +85,7 @@ class MainMenu(object):
         }
         selection = xbmcgui.Dialog().select(
             heading=bold(ADDON_NAME),
-            list=[getlocalizedstring(x) for x in OPTIONS],
+            list=[getstring(x) for x in OPTIONS],
             useDetails=True,
             preselect=self.lastchoice
         )

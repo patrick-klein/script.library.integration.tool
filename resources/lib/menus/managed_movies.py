@@ -19,7 +19,7 @@ from resources.lib.log import logged_function
 from resources.lib.utils import bold
 from resources.lib.utils import color
 from resources.lib.utils import notification
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
 
 class ManagedMoviesMenu(object):
@@ -39,7 +39,7 @@ class ManagedMoviesMenu(object):
     @logged_function
     def move_all_to_staged(self, items):
         """Remove all managed movies from library, and add them to staged."""
-        STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getlocalizedstring(32015)
+        STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getstring(32015)
         self.progressdialog._create(
             msg=STR_MOVING_ALL_MOVIES_BACK_TO_STAGED
         )
@@ -56,8 +56,8 @@ class ManagedMoviesMenu(object):
     @logged_function
     def remove_all(self, items):
         """Remove all managed movies from library."""
-        STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
-        STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
+        STR_REMOVING_ALL_MOVIES = getstring(32013)
+        STR_ALL_MOVIES_REMOVED = getstring(32014)
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_MOVIES
         )
@@ -75,7 +75,7 @@ class ManagedMoviesMenu(object):
     @logged_function
     def clean_up_managed_metadata():
         """Remove all unused metadata."""
-        STR_MOVIE_METADATA_CLEANED = getlocalizedstring(32136)
+        STR_MOVIE_METADATA_CLEANED = getstring(32136)
         managed_movies_dir = join(MANAGED_FOLDER, 'movies')
         for movie_dir in listdir(managed_movies_dir):
             full_path = join(managed_movies_dir, movie_dir)
@@ -89,8 +89,8 @@ class ManagedMoviesMenu(object):
     @logged_function
     def generate_all_managed_metadata(self, items):
         """Generate metadata items for all managed movies."""
-        STR_GENERATING_ALL_MOVIE_METADATA = getlocalizedstring(32046)
-        STR_ALL_MOVIE_METADTA_CREATED = getlocalizedstring(32047)
+        STR_GENERATING_ALL_MOVIE_METADATA = getstring(32046)
+        STR_ALL_MOVIE_METADTA_CREATED = getstring(32047)
         self.progressdialog._create(
             msg=STR_GENERATING_ALL_MOVIE_METADATA
         )
@@ -108,11 +108,11 @@ class ManagedMoviesMenu(object):
         """Provide options for a single managed movie in a dialog window."""
         # TODO: add rename option
         # TODO: add reload metadata option
-        STR_REMOVE = getlocalizedstring(32017)
-        STR_MOVE_BACK_TO_STAGED = getlocalizedstring(32018)
-        STR_GENERATE_METADATA_ITEM = getlocalizedstring(32052)
-        STR_BACK = getlocalizedstring(32011)
-        STR_MANAGED_MOVIE_OPTIONS = getlocalizedstring(32019)
+        STR_REMOVE = getstring(32017)
+        STR_MOVE_BACK_TO_STAGED = getstring(32018)
+        STR_GENERATE_METADATA_ITEM = getstring(32052)
+        STR_BACK = getstring(32011)
+        STR_MANAGED_MOVIE_OPTIONS = getstring(32019)
         lines = [
             STR_REMOVE,
             STR_MOVE_BACK_TO_STAGED,
@@ -148,8 +148,8 @@ class ManagedMoviesMenu(object):
 
         Also provides additional options at bottom of menu.
         """
-        STR_NO_MANAGED_MOVIES = getlocalizedstring(32008)
-        STR_MANAGED_MOVIES = getlocalizedstring(32012)
+        STR_NO_MANAGED_MOVIES = getstring(32008)
+        STR_MANAGED_MOVIES = getstring(32012)
         OPTIONS = {
             32009: self.remove_all,
             32010: self.move_all_to_staged,
@@ -169,7 +169,7 @@ class ManagedMoviesMenu(object):
             )
         )
         sel.items([str(x) for x in managed_movies])
-        sel.extraopts([getlocalizedstring(x) for x in OPTIONS])
+        sel.extraopts([getstring(x) for x in OPTIONS])
         if not managed_movies:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,
@@ -180,7 +180,7 @@ class ManagedMoviesMenu(object):
             useDetails=False,
             preselect=False,
             back=True,
-            back_value=getlocalizedstring(32011)
+            back_value=getstring(32011)
         )
         if selection:
             if selection['type'] == 'item':

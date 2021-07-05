@@ -18,7 +18,7 @@ from resources.lib.log import logged_function
 
 from resources.lib.utils import notification
 from resources.lib.utils import title_with_color
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 from resources.lib.utils import load_directory_items
 
 from resources.lib.progressbar import BGProgressBar
@@ -135,9 +135,9 @@ class SyncedMenu(object):
         """Provide options for a single synced directory in a dialog window."""
         # TODO: Remove all from plugin
         # TODO: Rename label
-        STR_REMOVE = getlocalizedstring(32017)
-        STR_SYNCED_DIR_OPTIONS = getlocalizedstring(32085)
-        STR_BACK = getlocalizedstring(32011)
+        STR_REMOVE = getstring(32017)
+        STR_SYNCED_DIR_OPTIONS = getstring(32085)
+        STR_BACK = getstring(32011)
         lines = [STR_REMOVE, STR_BACK]
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(ADDON_NAME,
@@ -152,9 +152,9 @@ class SyncedMenu(object):
 
     def remove_all(self):
         """Remove all synced directories."""
-        STR_REMOVE_ALL_SYNCED_DIRS = getlocalizedstring(32086)
-        STR_ALL_SYNCED_DIRS_REMOVED = getlocalizedstring(32087)
-        STR_ARE_YOU_SURE = getlocalizedstring(32088)
+        STR_REMOVE_ALL_SYNCED_DIRS = getstring(32086)
+        STR_ALL_SYNCED_DIRS_REMOVED = getstring(32087)
+        STR_ARE_YOU_SURE = getstring(32088)
         if xbmcgui.Dialog().yesno('{0} - {1}'.format(ADDON_NAME, STR_REMOVE_ALL_SYNCED_DIRS),
                                   STR_ARE_YOU_SURE):
             self.database.remove_all_synced_dirs()
@@ -175,9 +175,9 @@ class SyncedMenu(object):
     @logged_function
     def add_single_movie(self, title, year, file):
         """Sync single movie path and stage item."""
-        STR_MOVIE_STAGED = getlocalizedstring(32105)
-        STR_ITEM_IS_ALREADY_STAGED = getlocalizedstring(32103)
-        STR_ITEM_IS_ALREADY_MANAGED = getlocalizedstring(32104)
+        STR_MOVIE_STAGED = getstring(32105)
+        STR_ITEM_IS_ALREADY_STAGED = getstring(32103)
+        STR_ITEM_IS_ALREADY_MANAGED = getstring(32104)
         # Add synced directory to database
         # TODO: add single-movie to synced is necessary? revise this
         self.database.add_synced_dir(title, file, 'single-movie')
@@ -200,10 +200,10 @@ class SyncedMenu(object):
     @logged_function
     def add_single_tvshow(self, title, year, file):
         """Sync single tvshow directory and stage items."""
-        STR_i_NEW = getlocalizedstring(32107)
-        STR_i_NEW_i_STAGED_i_MANAGED = getlocalizedstring(32106)
-        STR_GETTING_ITEMS_IN_DIR = getlocalizedstring(32125)
-        # STR_GETTING_ITEMS_IN_x = getlocalizedstring(32126)
+        STR_i_NEW = getstring(32107)
+        STR_i_NEW_i_STAGED_i_MANAGED = getstring(32106)
+        STR_GETTING_ITEMS_IN_DIR = getstring(32125)
+        # STR_GETTING_ITEMS_IN_x = getstring(32126)
         self.progressdialog._create(head=ADDON_NAME)
         # Add synced directory to database
         self.database.add_synced_dir(
@@ -272,10 +272,10 @@ class SyncedMenu(object):
         #  TV shows and episodes that have been added
         contentitem = None
         content_title = None
-        STR_MOVIE_STAGED = getlocalizedstring(32165)
-        STR_GETTING_ITEMS_IN_x = getlocalizedstring(32126)
-        STR_i_EPISODES_STAGED = getlocalizedstring(32112)
-        STR_GETTING_ITEMS_IN_DIR = getlocalizedstring(32125)
+        STR_MOVIE_STAGED = getstring(32165)
+        STR_GETTING_ITEMS_IN_x = getstring(32126)
+        STR_i_EPISODES_STAGED = getstring(32112)
+        STR_GETTING_ITEMS_IN_DIR = getstring(32125)
         self.progressdialog._create(head=ADDON_NAME)
         try:
             # add synced directory to database
@@ -355,13 +355,13 @@ class SyncedMenu(object):
         # TODO: option to only update specified or managed items
         # TODO: option to add update frequencies for specific directories (i.e. weekly/monthly/etc.)
         # TODO: better error handling when plugins dont load during update
-        STR_FINDING_ITEMS_TO_REMOVE = getlocalizedstring(32090)
-        STR_FINDING_ITEMS_TO_ADD = getlocalizedstring(32092)
-        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getlocalizedstring(32093)
-        STR_REMOVING_ITEMS = getlocalizedstring(32094)
-        STR_STAGING_ITEMS = getlocalizedstring(32095)
-        STR_ALL_ITEMS_UPTODATE = getlocalizedstring(32121)
-        STR_SUCCESS = getlocalizedstring(32122)
+        STR_FINDING_ITEMS_TO_REMOVE = getstring(32090)
+        STR_FINDING_ITEMS_TO_ADD = getstring(32092)
+        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getstring(32093)
+        STR_REMOVING_ITEMS = getstring(32094)
+        STR_STAGING_ITEMS = getstring(32095)
+        STR_ALL_ITEMS_UPTODATE = getstring(32121)
+        STR_SUCCESS = getstring(32122)
         self.progressdialog = BGProgressBar()
         self.progressdialog.create(ADDON_NAME)
         try:
@@ -430,13 +430,13 @@ class SyncedMenu(object):
 
     def update_movies(self):
         """Update all synced movie directories."""
-        STR_FINDING_ITEMS_TO_REMOVE = getlocalizedstring(32090)
-        STR_FINDING_ITEMS_TO_ADD = getlocalizedstring(32092)
-        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getlocalizedstring(32093)
-        STR_REMOVING_ITEMS = getlocalizedstring(32094)
-        STR_STAGING_ITEMS = getlocalizedstring(32095)
-        STR_ALL_ITEMS_UPTODATE = getlocalizedstring(32121)
-        STR_SUCCESS = getlocalizedstring(32122)
+        STR_FINDING_ITEMS_TO_REMOVE = getstring(32090)
+        STR_FINDING_ITEMS_TO_ADD = getstring(32092)
+        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getstring(32093)
+        STR_REMOVING_ITEMS = getstring(32094)
+        STR_STAGING_ITEMS = getstring(32095)
+        STR_ALL_ITEMS_UPTODATE = getstring(32121)
+        STR_SUCCESS = getstring(32122)
         self.progressdialog = BGProgressBar()
         self.progressdialog.create(ADDON_NAME)
         try:
@@ -490,13 +490,13 @@ class SyncedMenu(object):
 
     def update_tvshows(self):
         """Update all TV show directories."""
-        STR_FINDING_ITEMS_TO_REMOVE = getlocalizedstring(32090)
-        STR_FINDING_ITEMS_TO_ADD = getlocalizedstring(32092)
-        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getlocalizedstring(32093)
-        STR_REMOVING_ITEMS = getlocalizedstring(32094)
-        STR_STAGING_ITEMS = getlocalizedstring(32095)
-        STR_ALL_ITEMS_UPTODATE = getlocalizedstring(32121)
-        STR_SUCCESS = getlocalizedstring(32122)
+        STR_FINDING_ITEMS_TO_REMOVE = getstring(32090)
+        STR_FINDING_ITEMS_TO_ADD = getstring(32092)
+        STR_i_TO_REMOVE_i_TO_STAGE_PROCEED = getstring(32093)
+        STR_REMOVING_ITEMS = getstring(32094)
+        STR_STAGING_ITEMS = getstring(32095)
+        STR_ALL_ITEMS_UPTODATE = getstring(32121)
+        STR_SUCCESS = getstring(32122)
         self.progressdialog.create(ADDON_NAME)
         try:
             all_items = []
@@ -554,13 +554,13 @@ class SyncedMenu(object):
 
         Also provides additional options at bottom of menu.
         """
-        STR_UPDATE_ALL = getlocalizedstring(32081)
-        STR_UPDATE_TV_SHOWS = getlocalizedstring(32137)
-        STR_UPDATE_MOVIES = getlocalizedstring(32138)
-        STR_REMOVE_ALL = getlocalizedstring(32082)
-        STR_BACK = getlocalizedstring(32011)
-        STR_SYNCED_DIRECTORIES = getlocalizedstring(32128)
-        STR_NO_SYNCED_DIRS = getlocalizedstring(32120)
+        STR_UPDATE_ALL = getstring(32081)
+        STR_UPDATE_TV_SHOWS = getstring(32137)
+        STR_UPDATE_MOVIES = getstring(32138)
+        STR_REMOVE_ALL = getstring(32082)
+        STR_BACK = getstring(32011)
+        STR_SYNCED_DIRECTORIES = getstring(32128)
+        STR_NO_SYNCED_DIRS = getstring(32120)
         synced_dirs = self.database.get_synced_dirs()
         if not synced_dirs:
             xbmcgui.Dialog().ok(
