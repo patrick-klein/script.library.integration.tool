@@ -704,21 +704,29 @@ msgctxt "#32178"
 msgid "Add all seasons with metadata"
 msgstr "Adicionar todas as temporadas com metadados"
 
+msgctxt "#32179"
+msgid "Library Integration Tool settings"
+msgstr "Library Integration Tool configurações"
+
+msgctxt "#32180"
+msgid "Library options"
+msgstr "Opções da biblioteca"
 
 msgctxt "#32181"
 msgid "Generating all seasons metadata..."
 msgstr "Gerando metadados de todas as temporadas"
 
 msgctxt "#32182"
-msgid "All TV seasons metadata created"
+msgid "All seasons metadata created"
 msgstr "Os metadados de todas as temporadas foram criados"
 
 msgctxt "#32183"
 msgid "Generating all episodes metadata..."
-msgstr ""
+msgstr "Gerando metadados de todas os episodios"
 
 msgctxt "#32184"
 msgid "All episodes metadata created"
+msgstr "Os metadados de todas os episodios foram criados"
 
 msgctxt "#32185"
 msgid "Create metadada for episode"

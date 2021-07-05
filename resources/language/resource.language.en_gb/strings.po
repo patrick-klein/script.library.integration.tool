@@ -675,6 +675,10 @@ msgctxt "#32171"
 msgid "Remove all seasons"
 msgstr ""
 
+msgctxt "#32172"
+msgid "Move all seasons to staged"
+msgstr ""
+
 msgctxt "#32173"
 msgid "All seasons of %s moved to staged"
 msgstr ""
@@ -701,17 +705,20 @@ msgstr ""
 
 msgctxt "#32179"
 msgid "Library Integration Tool settings"
-msgstr ""
+msgstr "Library Integration Tool configurações"
 
 msgctxt "#32180"
 msgid "Library options"
-msgstr ""
+msgstr "Opções da biblioteca"
 
 msgctxt "#32181"
 msgid "Generating all seasons metadata..."
 msgstr ""
 
 msgctxt "#32182"
+msgid "All seasons metadata created"
+msgstr ""
+
 msgctxt "#32183"
 msgid "Generating all episodes metadata..."
 msgstr ""
