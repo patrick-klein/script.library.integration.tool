@@ -7,8 +7,10 @@ from os import listdir
 from os.path import join
 from os.path import isdir
 from os.path import splitext
+from resources import AUTO_CREATE_NFO_SHOWS
+from resources import AUTO_CREATE_NFO_MOVIES
 
-# from resources import USE_SHOW_ARTWORK
+# from resources import USE_SHOW_ARTWORK_SHOW
 from resources.lib.log import logged_function
 
 from resources.lib.filesystem import mkdir
@@ -100,7 +102,10 @@ class ContentManagerShow(ABSContentManagerShow):
         mkdir(self.managed_season_dir)
         # Create stream file
         create_stream_file(self.file, self.managed_strm_path)
-        self.create_metadata_item()
+        if AUTO_CREATE_NFO_MOVIES:
+            self.create_metadata_item()
+        if AUTO_CREATE_NFO_SHOWS:
+            self.create_metadata_item()
         self.database.update_content(
             file=self.file,
             status='managed',

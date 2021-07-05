@@ -122,17 +122,11 @@ class Database(object):
             jsondata
         )
         if jsondata['type'] == 'tvshow':
-            if AUTO_ADD_TVSHOWS != NEVER:
-                if AUTO_ADD_TVSHOWS == WITH_EPID:
-                    contentmanager.add_to_library()
-                elif AUTO_ADD_TVSHOWS == WITH_METADATA:
-                    contentmanager.add_to_library_if_metadata()
+            if AUTO_ADD_TVSHOWS:
+                contentmanager.add_to_library()
         elif jsondata['type'] == 'movie':
-            if AUTO_ADD_MOVIES != NEVER:
-                if AUTO_ADD_MOVIES == ALWAYS:
-                    contentmanager.add_to_library()
-                elif AUTO_ADD_MOVIES == WITH_METADATA:
-                    contentmanager.add_to_library_if_metadata()
+            if AUTO_ADD_MOVIES:
+                contentmanager.add_to_library()
         elif jsondata['type'] == 'music':
             # TODO: Music params
             raise NotImplementedError(

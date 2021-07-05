@@ -580,29 +580,9 @@ msgctxt "#32144"
 msgid "Enable development options"
 msgstr "Habilitar opções de desenvolvimento"
 
-msgctxt "#32148"
-msgid "Never"
-msgstr "Nunca"
-
-msgctxt "#32149"
-msgid "Always"
-msgstr "Sempre"
-
-msgctxt "#32150"
-msgid "Only items with metadata"
-msgstr "Apenas itens com metadados"
-
-msgctxt "#32151"
-msgid "Only items with episode ID"
-msgstr "Apenas itens com ID de episódio"
-
-msgctxt "#32152"
-msgid "Add movies without staging"
-msgstr "Adicione filmes sem armazenar"
-
 msgctxt "#32153"
-msgid "Add TV show items without staging"
-msgstr "Adicionar itens de programas de TV sem armazenar"
+msgid "Automatically add to library?"
+msgstr "Adicionar automaticamente a biblioteca?"
 
 msgctxt "#32154"
 msgid "[B]Library Integration Tool Menu[/B]"
@@ -731,3 +711,7 @@ msgstr "Os metadados de todas os episodios foram criados"
 msgctxt "#32185"
 msgid "Create metadada for episode"
 msgstr "Criar metadado para o episódio"
+
+msgctxt "#32186"
+msgid "Create nfo automatically?"
+msgstr "Criar nfo de forma automatica?"

@@ -6,20 +6,28 @@
             default="false" />
         <setting id="managed_folder" label="32141" type="folder"
             enable="eq(-1,true)" source="video" option="writeable" />
-        <setting id="recursion_limit" label="32139" type="number"
-            default="10" />
+        <!-- <setting id="recursion_limit" label="32139" type="number"
+            default="10" /> -->
     </category>
     <!-- Movies -->
     <category label="32109">
-        <setting id="auto_add_movies" label="32152" type="enum"
-            lvalues="32148|32149|32150"/>
+        <setting id="auto_add_movies" label="32153" type="bool"
+            default="false" />
+        <setting id="auto_create_nfo_movies" label="32186" type="bool"
+            default="true" />
+        <!-- TODO: replace label 32129 whith label for movies -->
+        <!-- FUTURE: get all artworks from jsonrpc from streaming addon and insert in nfo -->
+        <!-- <setting id="use_show_artwork_movie" label="32129" type="bool"
+            default="false" /> -->
     </category>
     <!-- TV -->
     <category label="32108">
-        <setting id="auto_add_tvshows" label="32153" type="enum"
-            lvalues="32148|32151|32150"/>
-        <setting id="use_show_artwork" label="32129" type="bool"
+        <setting id="auto_add_tvshows" label="32153" type="bool"
             default="false" />
+        <setting id="auto_create_nfo_shows" label="32186" type="bool"
+            default="true" />
+        <!-- <setting id="use_show_artwork_show" label="32129" type="bool"
+            default="false" /> -->
     </category>
     <!-- Development -->
     <category label="32130">

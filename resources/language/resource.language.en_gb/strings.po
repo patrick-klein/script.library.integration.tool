@@ -579,28 +579,8 @@ msgctxt "#32144"
 msgid "Enable development options"
 msgstr ""
 
-msgctxt "#32148"
-msgid "Never"
-msgstr ""
-
-msgctxt "#32149"
-msgid "Always"
-msgstr ""
-
-msgctxt "#32150"
-msgid "Only items with metadata"
-msgstr ""
-
-msgctxt "#32151"
-msgid "Only items with episode ID"
-msgstr ""
-
-msgctxt "#32152"
-msgid "Add movies without staging"
-msgstr ""
-
 msgctxt "#32153"
-msgid "Add TV show items without staging"
+msgid "Automatically add to library?"
 msgstr ""
 
 msgctxt "#32154"
@@ -729,4 +709,8 @@ msgstr ""
 
 msgctxt "#32185"
 msgid "Create metadada for episode"
+msgstr ""
+
+msgctxt "#32186"
+msgid "Create nfo automatically?"
 msgstr ""
