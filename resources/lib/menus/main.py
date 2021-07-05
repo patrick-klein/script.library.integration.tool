@@ -73,7 +73,6 @@ class MainMenu(object):
 
     def view(self):
         """Display main menu which leads to other menus."""
-        OPTIONS_LIST = list()
         OPTIONS = {
             32002: ManagedMoviesMenu(self.database, self.progressbar).view_all,
             32004: StagedMoviesMenu(self.database, self.progressbar).view_all,

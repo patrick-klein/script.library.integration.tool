@@ -7,11 +7,6 @@ import sqlite3
 
 from os.path import join
 
-from resources import NEVER
-from resources import ALWAYS
-from resources import WITH_EPID
-from resources import WITH_METADATA
-
 from resources import AUTO_ADD_MOVIES
 from resources import AUTO_ADD_TVSHOWS
 

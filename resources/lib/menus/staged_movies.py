@@ -3,8 +3,6 @@
 
 """Defines the StagedMoviesMenu class."""
 
-import os
-
 import xbmcgui  # pylint: disable=import-error
 
 
