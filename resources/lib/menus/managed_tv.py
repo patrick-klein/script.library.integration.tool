@@ -147,27 +147,33 @@ class ManagedTVMenu(object):
         notification(STR_ALL_X_SEASONS_REMOVED % showtitle)
 
     @logged_function
-    def generate_all_managed_metadata(self):
-        """Create metadata for all staged tvshow items."""
-        STR_GENERATING_ALL_TV_SHOW_METADATA = getlocalizedstring(32063)
-        STR_ALL_TV_SHOW_METADATA_CREATED = getlocalizedstring(32064)
+    def generate_all_managed_tvshows_metadata(self):
+        """Create metadata for all managed tvshows."""
+        STR_GENERATING_ALL_TV_SHOWS_METADATA = getlocalizedstring(32063)
+        STR_ALL_TV_SHOWS_METADATA_CREATED = getlocalizedstring(32064)
         self.progressdialog._create(
-            msg=STR_GENERATING_ALL_TV_SHOW_METADATA
+            msg=STR_GENERATING_ALL_TV_SHOWS_METADATA
         )
-        staged_tv_items = list(
+        managed_tvshows = list(
             self.database.get_content_items(
-                status='staged',
+                status='managed',
                 _type='tvshow'
             )
         )
-        for index, item in enumerate(staged_tv_items):
+        for index, item in enumerate(managed_tvshows):
             self.progressdialog._update(
-                index / len(staged_tv_items),
-                '\n'.join([item.showtitle])
+                index / len(managed_tvshows),
+                '\n'.join(
+                    [
+                        # TODO: add new string
+                        "Criando metadados para: %s" % color(bold(item.showtitle)),
+                        item.episode_title_with_id
+                    ]
+                )
             )
             item.create_metadata_item()
         self.progressdialog._close()
-        notification(STR_ALL_TV_SHOW_METADATA_CREATED)
+        notification(STR_ALL_TV_SHOWS_METADATA_CREATED)
 
     @logged_function
     def episode_options(self, item, season):
@@ -359,7 +365,7 @@ class ManagedTVMenu(object):
             elif lines[ret] == STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED:
                 self.move_all_to_staged()
             elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
-                self.generate_all_managed_metadata()
+                self.generate_all_managed_tvshows_metadata()
                 self.view_shows()
             elif lines[ret] == STR_BACK:
                 return
