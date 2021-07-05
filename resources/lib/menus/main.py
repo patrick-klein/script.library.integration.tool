@@ -84,16 +84,9 @@ class MainMenu(object):
             32180: self.library,
             32179: xbmc.executebuiltin,
         }
-        # TODO: This is not my favorite way to format options in bold,
-        # but i will use per hour
-        for index, opt in enumerate(OPTIONS):
-            if index <= 3:
-                OPTIONS_LIST.append(bold((getlocalizedstring(opt))))
-            else:
-                OPTIONS_LIST.append(getlocalizedstring(opt))
         selection = xbmcgui.Dialog().select(
             heading=bold(ADDON_NAME),
-            list=OPTIONS_LIST,
+            list=[getlocalizedstring(x) for x in OPTIONS],
             useDetails=True,
             preselect=self.lastchoice
         )
