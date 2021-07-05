@@ -6,7 +6,6 @@
 from os import listdir
 from os.path import join
 from os.path import isdir
-from os.path import exists
 from os.path import splitext
 
 # from resources import USE_SHOW_ARTWORK
@@ -100,13 +99,13 @@ class ContentManagerShow(ABSContentManagerShow):
         # Create season_dir (tv show season folder) in managed/tvshow/show_dir/
         mkdir(self.managed_season_dir)
         # Create stream file
-        if create_stream_file(self.file, self.managed_strm_path):
-            # self.create_metadata_item()
-            self.database.update_content(
-                file=self.file,
-                status='managed',
-                _type='tvshow'
-            )
+        create_stream_file(self.file, self.managed_strm_path)
+        self.create_metadata_item()
+        self.database.update_content(
+            file=self.file,
+            status='managed',
+            _type='tvshow'
+        )
         return True
 
     @logged_function
@@ -120,6 +119,7 @@ class ContentManagerShow(ABSContentManagerShow):
             filepath=self.managed_tvshow_nfo,
             jsondata=self.jsondata
         )
+        mkdir(self.managed_season_dir)
         # Create a episode nfo in managed/tvshow/show_dir/Season X
         CreateNfo(
             _type='episodedetails',

@@ -116,7 +116,6 @@ class CreateNfo(object):
                 nfofile.write(self.root)
             except Exception as e:
                 log_msg(e)
-                raise e
             finally:
                 nfofile.close()
 
@@ -128,10 +127,10 @@ def create_stream_file(plugin_path, filepath):
             strm.write(plugin_path)
         except Exception as e:
             log_msg(e)
-            return False
         finally:
             strm.close()
     return True
+
 
 def mkdir(dir_path):
     """Create a directory."""
@@ -143,6 +142,7 @@ def mkdir(dir_path):
         )
     except Exception as e:
         raise e
+    return True
 
 # def mv_with_type(title_path, filetype, title_dst):
 #     """Move files with wildcard between title_path & filetype to title_dst."""
