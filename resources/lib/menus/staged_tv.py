@@ -97,9 +97,7 @@ class StagedTVMenu(object):
                     '\n'.join([item.showtitle, item.episode_title_with_id])
                 )
                 item.add_to_library()
-
-            self.progressdialog.update(int(percent), '\n'.join([' ', ' ']))
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_x_SEASONS_WITH_METADATA_ADDED % showtitle)
 
     @logged_function
