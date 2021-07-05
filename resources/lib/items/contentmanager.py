@@ -83,6 +83,11 @@ class ContentManagerShow(ABSContentManagerShow):
         return self.jsondata['episode_title_with_id']
 
     @property
+    def episode_id(self):
+        """Return episode_id."""
+        return self.jsondata['episode_id']
+
+    @property
     def managed_episode_nfo_path(self):
         """Return managed_episode_nfo_path."""
         return ''.join([self.managed_episode_path, '.nfo'])
