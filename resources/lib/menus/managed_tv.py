@@ -118,25 +118,25 @@ class ManagedTVMenu(object):
         notification(STR_ALL_x_EPISODES_REMOVED % showtitle)
 
     @logged_function
-    def remove_seasons(self, items, showtitle):
+    def remove_all_seasons(self, seasons, showtitle):
         """Remove all seasons in specified show from library."""
         STR_REMOVING_ALL_X_SEASONS = getlocalizedstring(32168)
         STR_ALL_X_SEASONS_REMOVED = getlocalizedstring(32169)
-        seasons = items[0]
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_X_SEASONS % showtitle
         )
-        for season in seasons:
+        for index, season in enumerate(seasons):
             self.progressdialog._update(
-                season / len(seasons),
-                message='\n'.join([color(showtitle), str("Season: %s" % season)])
+                index / len(seasons),
+                msg='\n'.join([
+                    color(bold(showtitle)),
+                    # TODO: add new string
+                    str("Removendo a temporada %s biblioteca..." % color(bold(season.season), 'red'))
+                ]
+                )
             )
-            self.database.remove_from(
-                _type='tvshow',
-                showtitle=showtitle,
-                season=season
-            )
-            xbmc.sleep(300)
+            season.remove_from_library()
+            season.set_as_staged()
         self.progressdialog._close()
         notification(STR_ALL_X_SEASONS_REMOVED % showtitle)
 
@@ -316,7 +316,7 @@ class ManagedTVMenu(object):
         selection = lines[ret]
         if ret >= 0:
             if selection == STR_REMOVE_ALL_SEASONS:
-                self.remove_seasons(managed_seasons, showtitle)
+                self.remove_all_seasons(managed_seasons, showtitle)
                 self.view_shows()
             elif selection == STR_MOVE_ALL_SEASONS_BACK_TO_STAGED:
                 self.move_all_seasons_to_staged(showtitle)
