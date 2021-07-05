@@ -175,12 +175,12 @@ class ManagedTVMenu(object):
     @logged_function
     def episode_options(self, item, season):
         """Provide options for a single managed episode in a dialog window."""
-        STR_REMOVE = getlocalizedstring(32017)
+        STR_GENERATE_EPISODE_METADATA = getlocalizedstring(32017)
         STR_MOVE_BACK_TO_STAGED = getlocalizedstring(32018)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_EPISODE_OPTIONS = getlocalizedstring(32036)
         lines = [
-            STR_REMOVE,
+            STR_GENERATE_EPISODE_METADATA,
             STR_MOVE_BACK_TO_STAGED,
             STR_BACK
         ]
@@ -193,10 +193,8 @@ class ManagedTVMenu(object):
             ), lines
         )
         if ret >= 0:
-            if lines[ret] == STR_REMOVE:
-                item.remove_from_library()
-                item.delete()
-                self.view_episodes(item.showtitle, season)
+            if lines[ret] == STR_GENERATE_EPISODE_METADATA:
+                item.create_metadata_item()
             elif lines[ret] == STR_MOVE_BACK_TO_STAGED:
                 item.remove_from_library()
                 item.set_as_staged()
