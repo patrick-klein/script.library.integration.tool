@@ -703,3 +703,12 @@ msgstr "Adicionar todas as temporadas"
 msgctxt "#32178"
 msgid "Add all seasons with metadata"
 msgstr "Adicionar todas as temporadas com metadados"
+
+
+msgctxt "#32181"
+msgid "Generating all seasons metadata..."
+msgstr "Gerando metadados de todas as temporadas"
+
+msgctxt "#32182"
+msgid "All TV seasons metadata created"
+msgstr "Os metadados de todas as temporadas foram criados"

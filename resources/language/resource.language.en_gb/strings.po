@@ -707,6 +707,10 @@ msgctxt "#32180"
 msgid "Library options"
 msgstr ""
 
-msgctxt "#32172"
-msgid "Move all seasons to staged"
+msgctxt "#32181"
+msgid "Generating all seasons metadata..."
+msgstr ""
+
+msgctxt "#32182"
+msgid "All TV seasons metadata created"
 msgstr ""

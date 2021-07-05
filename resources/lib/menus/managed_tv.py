@@ -123,24 +123,30 @@ class ManagedTVMenu(object):
         notification(STR_ALL_x_EPISODES_REMOVED % episodes[0].showtitle)
 
     @logged_function
+    def generate_all_managed_seasons_metadata(self, showtitle):
         """Create metadata for all managed seasons."""
+        STR_GENERATING_ALL_TV_SEASONS_METADATA = getlocalizedstring(32181)
+        STR_ALL_TV_SEASONS_METADATA_CREATED = getlocalizedstring(32182)
         self.progressdialog._create(
-            msg=STR_REMOVING_ALL_X_SEASONS % showtitle
+            msg=STR_GENERATING_ALL_TV_SEASONS_METADATA
         )
-        for index, season in enumerate(seasons):
+        managed_seasons = list(
+            self.database.get_season_items(
+                status='managed',
+                showtitle=showtitle
+            )
+        )
+        for index, item in enumerate(managed_seasons):
             self.progressdialog._update(
-                index / len(seasons),
-                msg='\n'.join([
-                    color(bold(showtitle)),
-                    # TODO: add new string
-                    str("Removendo a temporada %s biblioteca..." % color(bold(season.season), 'red'))
-                ]
+                index / len(managed_seasons),
+                '\n'.join(
+                    ["Criando metadados para: %s" % color(bold(item.showtitle)),
+                     'Seasons %s' % str (item.season)]
                 )
             )
-            season.remove_from_library()
-            season.set_as_staged()
+            item.create_metadata_item()
         self.progressdialog._close()
-        notification(STR_ALL_X_SEASONS_REMOVED % showtitle)
+        notification(STR_ALL_TV_SEASONS_METADATA_CREATED)
 
     @logged_function
     def generate_all_managed_tvshows_metadata(self):
@@ -266,7 +272,7 @@ class ManagedTVMenu(object):
         Also provides additional options at bottom of menu.
         """
         STR_NO_MANAGED_X_SEASONS = getlocalizedstring(32170)
-        STR_REMOVE_ALL_SEASONS = getlocalizedstring(32171)
+        STR_GENERATING_ALL_TV_SEASONS_METADATA = getlocalizedstring(32181)
         STR_MOVE_ALL_SEASONS_BACK_TO_STAGED = getlocalizedstring(32172)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_X_SEASONS = getlocalizedstring(32175)
@@ -286,8 +292,8 @@ class ManagedTVMenu(object):
         season_interger_list = list(set([x.season for x in managed_seasons]))
         lines = [str('[B]Season %s[/B]' % x) for x in season_interger_list]
         lines += [
-            STR_REMOVE_ALL_SEASONS,
             STR_MOVE_ALL_SEASONS_BACK_TO_STAGED,
+            STR_GENERATING_ALL_TV_SEASONS_METADATA,
             STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
@@ -298,8 +304,8 @@ class ManagedTVMenu(object):
         )
         selection = lines[ret]
         if ret >= 0:
-            if selection == STR_REMOVE_ALL_SEASONS:
-                self.remove_all_seasons(managed_seasons, showtitle)
+            if selection == STR_GENERATING_ALL_TV_SEASONS_METADATA:
+                self.generate_all_managed_seasons_metadata(showtitle)
                 self.view_shows()
             elif selection == STR_MOVE_ALL_SEASONS_BACK_TO_STAGED:
                 self.move_all_seasons_to_staged(showtitle)
