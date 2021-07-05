@@ -21,6 +21,7 @@ from resources.lib.utils import title_with_color
 from resources.lib.utils import getlocalizedstring
 from resources.lib.utils import load_directory_items
 
+from resources.lib.progressbar import BGProgressBar
 
 class SyncedMenu(object):
     """
@@ -361,6 +362,7 @@ class SyncedMenu(object):
         STR_STAGING_ITEMS = getlocalizedstring(32095)
         STR_ALL_ITEMS_UPTODATE = getlocalizedstring(32121)
         STR_SUCCESS = getlocalizedstring(32122)
+        self.progressdialog = BGProgressBar()
         self.progressdialog.create(ADDON_NAME)
         try:
             # Get current items in all directories
@@ -435,7 +437,7 @@ class SyncedMenu(object):
         STR_STAGING_ITEMS = getlocalizedstring(32095)
         STR_ALL_ITEMS_UPTODATE = getlocalizedstring(32121)
         STR_SUCCESS = getlocalizedstring(32122)
-        self.progressdialog = xbmcgui.DialogProgressBG()
+        self.progressdialog = BGProgressBar()
         self.progressdialog.create(ADDON_NAME)
         try:
             all_items = []
