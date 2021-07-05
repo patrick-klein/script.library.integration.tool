@@ -29,7 +29,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def move_episodes_to_staged(self, items):
-        """Remove all managed episodes in specified show from library, and add them to staged."""
+        """Remove staged spisodes from library and move to staged."""
         STR_MOVING_ALL_x_EPISODES_TO_STAGED = getlocalizedstring(32034)
         STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(
             32035)
@@ -50,7 +50,7 @@ class ManagedTVMenu(object):
 
     @logged_function
     def move_all_seasons_to_staged(self, showtitle):
-        """Remove all managed episodes in specified show from library, and add them to staged."""
+        """Remove staged seasons from library and move to staged."""
         STR_MOVING_ALL_x_SEASONS_TO_STAGED = getlocalizedstring(32026)
         STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(
             32173) % color(showtitle, 'skyblue')
@@ -74,8 +74,7 @@ class ManagedTVMenu(object):
         notification(STR_ALL_x_SEASONS_MOVED_TO_STAGED)
 
     @logged_function
-    def move_all_to_staged(self):
-        """Remove all managed tvshow items from library, and add them to staged."""
+        """Remove all managed tvshow from library, move to staged."""
         STR_MOVING_ALL_TV_SHOWS_TO_STAGED = getlocalizedstring(32026)
         STR_ALL_TV_SHOWS_MOVED_TO_STAGED = getlocalizedstring(32027)
         self.progressdialog._create(
@@ -124,10 +123,7 @@ class ManagedTVMenu(object):
         notification(STR_ALL_x_EPISODES_REMOVED % episodes[0].showtitle)
 
     @logged_function
-    def remove_all_seasons(self, seasons, showtitle):
-        """Remove all seasons in specified show from library."""
-        STR_REMOVING_ALL_X_SEASONS = getlocalizedstring(32168)
-        STR_ALL_X_SEASONS_REMOVED = getlocalizedstring(32169)
+        """Create metadata for all managed seasons."""
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_X_SEASONS % showtitle
         )
