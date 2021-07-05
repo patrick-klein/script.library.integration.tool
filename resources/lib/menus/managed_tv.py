@@ -30,32 +30,36 @@ class ManagedTVMenu(object):
     @logged_function
     def move_all_episodes_to_staged(self, items):
         """Remove staged spisodes from library and move to staged."""
+        showtitle = bold(items[0].showtitle)
         STR_MOVING_ALL_x_EPISODES_TO_STAGED = getlocalizedstring(32034)
         STR_ALL_x_EPISODES_MOVED_TO_STAGED = getlocalizedstring(
-            32035)
+            32035) % color(showtitle, 'skyblue')
         self.progressdialog._create(
-            msg=STR_MOVING_ALL_x_EPISODES_TO_STAGED % color(items[0].showtitle)
+            msg=STR_MOVING_ALL_x_EPISODES_TO_STAGED % color(showtitle)
         )
         for index, item in enumerate(items):
             self.progressdialog._update(
                 index / len(items),
-                message='\n'.join([color(item.showtitle), item.episode_title_with_id]
+                msg='\n'.join(
+                    [
+                        color(bold(item.showtitle)),
+                        item.episode_title_with_id
+                    ]
                 )
             )
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog._close()
-        notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED %
-                     color(item.showtitle, 'skyblue'))
+        notification(STR_ALL_x_EPISODES_MOVED_TO_STAGED)
 
     @logged_function
     def move_all_seasons_to_staged(self, showtitle):
         """Remove staged seasons from library and move to staged."""
+        _showtitle = bold(showtitle)
         STR_MOVING_ALL_x_SEASONS_TO_STAGED = getlocalizedstring(32026)
-        STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(
-            32173) % color(showtitle, 'skyblue')
+        STR_ALL_x_SEASONS_MOVED_TO_STAGED = getlocalizedstring(32173) % color(_showtitle, 'skyblue')
         self.progressdialog._create(
-            msg=STR_MOVING_ALL_x_SEASONS_TO_STAGED % color(showtitle)
+            msg=STR_MOVING_ALL_x_SEASONS_TO_STAGED % color(_showtitle)
         )
         items = list(
             self.database.get_content_items(
@@ -66,7 +70,12 @@ class ManagedTVMenu(object):
         for index, item in enumerate(items):
             self.progressdialog._update(
                 index / len(items),
-                message='\n'.join([color(item.showtitle), item.episode_title_with_id])
+                msg='\n'.join(
+                    [
+                        color(bold(item.showtitle)),
+                        item.episode_title_with_id
+                    ]
+                )
             )
             item.remove_from_library()
             item.set_as_staged()
@@ -90,8 +99,12 @@ class ManagedTVMenu(object):
         for index, item in enumerate(managed_tv_items):
             self.progressdialog._update(
                 index / len(managed_tv_items),
-                msg='\n'.join([color(item.showtitle), item.episode_title_with_id]
-                    )
+                msg='\n'.join(
+                    [
+                        color(bold(item.showtitle)),
+                        item.episode_title_with_id
+                    ]
+                )
             )
             item.remove_from_library()
             item.set_as_staged()
@@ -188,9 +201,8 @@ class ManagedTVMenu(object):
         ret = xbmcgui.Dialog().select(
             '{0} - {1} - {2}'.format(
                 STR_MANAGED_EPISODE_OPTIONS,
-                color(item.showtitle, 'skyblue'),
-                color(item.episode_title_with_id.split(
-                    ' - ')[0], colorname='green')
+                color(bold(item.showtitle), 'skyblue'),
+                color(bold(item.episode_id), 'green')
             ), lines
         )
         if ret >= 0:
@@ -226,7 +238,7 @@ class ManagedTVMenu(object):
         if not managed_episodes:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,
-                STR_NO_MANAGED_x_EPISODES % color(showtitle, 'skyblue')
+                STR_NO_MANAGED_x_EPISODES % color(bold(showtitle), 'skyblue')
             )
             self.view_shows()
             return
@@ -239,7 +251,7 @@ class ManagedTVMenu(object):
         ret = xbmcgui.Dialog().select(
             '%s - %s' % (
                 ADDON_NAME,
-                STR_MANAGED_x_EPISODES % color(showtitle, 'skyblue')
+                STR_MANAGED_x_EPISODES % color(bold(showtitle), 'skyblue')
             ), lines
         )
         if ret >= 0:
@@ -279,7 +291,7 @@ class ManagedTVMenu(object):
         if not managed_seasons:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,
-                STR_NO_MANAGED_X_SEASONS % color(showtitle, 'skyblue')
+                STR_NO_MANAGED_X_SEASONS % color(bold(showtitle), 'skyblue')
             )
             self.view_shows()
             return
@@ -293,7 +305,7 @@ class ManagedTVMenu(object):
         ret = xbmcgui.Dialog().select(
             '%s - %s' % (
                 ADDON_NAME,
-                STR_MANAGED_X_SEASONS % color(showtitle, 'skyblue')
+                STR_MANAGED_X_SEASONS % color(bold(showtitle), 'skyblue')
             ), lines
         )
         selection = lines[ret]
