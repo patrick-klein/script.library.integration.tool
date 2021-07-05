@@ -12,6 +12,7 @@ import xbmcgui  # pylint: disable=import-error
 
 from resources import ADDON_NAME
 from resources.lib.utils import MANAGED_FOLDER
+from resources.lib.dialog_select import Select
 
 from resources.lib.log import logged_function
 
@@ -148,50 +149,42 @@ class ManagedMoviesMenu(object):
         Also provides additional options at bottom of menu.
         """
         STR_NO_MANAGED_MOVIES = getlocalizedstring(32008)
-        STR_REMOVE_ALL_MOVIES = getlocalizedstring(32009)
-        STR_MOVE_ALL_BACK_TO_STAGED = getlocalizedstring(32010)
-        STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_MOVIES = getlocalizedstring(32012)
-        STR_GENERATE_ALL_METADATA_ITEMS = getlocalizedstring(32040)
-        STR_CLEANUP_ALL_METADATA_ITEMS = getlocalizedstring(32174)
+        OPTIONS = {
+            32009: self.remove_all,
+            32010: self.move_all_to_staged,
+            32040: self.generate_all_managed_metadata,
+            32174: self.clean_up_managed_metadata,
+        }
         managed_movies = list(
             self.database.get_content_items(
                 status='managed',
                 _type='movie'
             )
         )
+        sel = Select(
+            heading='{0} - {1}'.format(
+                ADDON_NAME,
+                STR_MANAGED_MOVIES
+            )
+        )
+        sel.items([str(x) for x in managed_movies])
+        sel.extraopts([getlocalizedstring(x) for x in OPTIONS])
         if not managed_movies:
             xbmcgui.Dialog().ok(
                 ADDON_NAME,
                 STR_NO_MANAGED_MOVIES
             )
             return
-
-        lines = [str(x) for x in managed_movies]
-        lines += [
-            STR_REMOVE_ALL_MOVIES,
-            STR_MOVE_ALL_BACK_TO_STAGED,
-            STR_GENERATE_ALL_METADATA_ITEMS,
-            STR_CLEANUP_ALL_METADATA_ITEMS,
-            STR_BACK]
-        ret = xbmcgui.Dialog().select(
-            '{0} - {1}'.format(ADDON_NAME, STR_MANAGED_MOVIES), lines
+        selection = sel.show(
+            useDetails=False,
+            preselect=False,
+            back=True,
+            back_value=getlocalizedstring(32011)
         )
-        if ret >= 0:
-            if ret < len(managed_movies):
-                for i, item in enumerate(managed_movies):
-                    if ret == i:
-                        self.options(item)
-                        break
-            elif lines[ret] == STR_REMOVE_ALL_MOVIES:
-                self.remove_all(managed_movies)
-            elif lines[ret] == STR_MOVE_ALL_BACK_TO_STAGED:
-                self.move_all_to_staged(managed_movies)
-            elif lines[ret] == STR_GENERATE_ALL_METADATA_ITEMS:
-                self.generate_all_managed_metadata(managed_movies)
-                self.view_all()
-            elif lines[ret] == STR_CLEANUP_ALL_METADATA_ITEMS:
-                self.clean_up_managed_metadata()
-                self.view_all()
-            elif lines[ret] == STR_BACK:
-                return
+        if selection:
+            if selection['type'] == 'item':
+                self.options(managed_movies[selection['index1']])
+            elif selection['type'] == 'opt':
+                command = OPTIONS[list(OPTIONS.keys())[selection['index1']]]
+                command(managed_movies)
