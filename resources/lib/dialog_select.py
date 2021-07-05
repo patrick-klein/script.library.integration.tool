@@ -16,7 +16,7 @@ class Select(xbmcgui.Dialog):
 
     def items(self, listofitems, bold=True):
         """Add item lines to dialog select."""
-        self.listofitems = [str(i) for i in listofitems]
+        self.listofitems = listofitems
         self._list = self.listofitems
 
     def extraopts(self, listofopts):
