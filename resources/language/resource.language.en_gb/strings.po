@@ -712,5 +712,10 @@ msgid "Generating all seasons metadata..."
 msgstr ""
 
 msgctxt "#32182"
-msgid "All TV seasons metadata created"
+msgctxt "#32183"
+msgid "Generating all episodes metadata..."
+msgstr ""
+
+msgctxt "#32184"
+msgid "All episodes metadata created"
 msgstr ""

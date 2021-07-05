@@ -98,29 +98,24 @@ class ManagedTVMenu(object):
         notification(STR_ALL_TV_SHOWS_MOVED_TO_STAGED)
 
     @logged_function
-    def remove_all_episodes(self, episodes):
-        """Remove all episodes in specified show from library."""
-        STR_REMOVING_ALL_x_EPISODES = getlocalizedstring(32032)
-        STR_ALL_x_EPISODES_REMOVED = getlocalizedstring(32033)
+    def generate_all_managed_episodes_metadata(self, episodes):
+        """Create metadata for all managed episodes."""
+        STR_GENERATING_ALL_TV_EPISODES_METADATA = getlocalizedstring(32181)
+        STR_ALL_TV_EPISODES_METADATA_CREATED = getlocalizedstring(32182)
         self.progressdialog._create(
-            msg=STR_REMOVING_ALL_x_EPISODES % episodes[0].showtitle
+            msg=STR_GENERATING_ALL_TV_EPISODES_METADATA
         )
         for index, item in enumerate(episodes):
             self.progressdialog._update(
                 index / len(episodes),
-                msg='\n'.join(
-                    [
-                        color(bold(item.showtitle)),
-                        # TODO: add new string
-                        'Removendo episodio:',
-                        item.episode_title_with_id
-                    ]
+                '\n'.join(
+                    ["Criando metadados para: %s" % color(bold(item.showtitle)),
+                     'Episode: %s' % item.episode_title_with_id]
                 )
             )
-            item.remove_from_library()
-            item.delete()
+            item.create_metadata_item()
         self.progressdialog._close()
-        notification(STR_ALL_x_EPISODES_REMOVED % episodes[0].showtitle)
+        notification(STR_ALL_TV_EPISODES_METADATA_CREATED)
 
     @logged_function
     def generate_all_managed_seasons_metadata(self, showtitle):
@@ -218,7 +213,7 @@ class ManagedTVMenu(object):
         Also provides additional options at bottom of menu.
         """
         STR_NO_MANAGED_x_EPISODES = getlocalizedstring(32028)
-        STR_REMOVE_ALL_EPISODES = getlocalizedstring(32029)
+        STR_GENERATING_ALL_TV_EPISODES_METADATA = getlocalizedstring(32183)
         STR_MOVE_ALL_EPISODES_BACK_TO_STAGED = getlocalizedstring(32172)
         STR_BACK = getlocalizedstring(32011)
         STR_MANAGED_x_EPISODES = getlocalizedstring(32031)
@@ -238,7 +233,7 @@ class ManagedTVMenu(object):
             return
         lines = [str(x) for x in managed_episodes]
         lines += [
-            STR_REMOVE_ALL_EPISODES,
+            STR_GENERATING_ALL_TV_EPISODES_METADATA,
             STR_MOVE_ALL_EPISODES_BACK_TO_STAGED,
             STR_BACK
         ]
@@ -253,8 +248,8 @@ class ManagedTVMenu(object):
                 for i, item in enumerate(managed_episodes):
                     if ret == i:
                         self.episode_options(item, season)
-            elif lines[ret] == STR_REMOVE_ALL_EPISODES:
-                self.remove_all_episodes(managed_episodes)
+            elif lines[ret] == STR_GENERATING_ALL_TV_EPISODES_METADATA:
+                self.generate_all_managed_episodes_metadata(managed_episodes)
                 self.view_shows()
             elif lines[ret] == STR_MOVE_ALL_EPISODES_BACK_TO_STAGED:
                 self.move_episodes_to_staged(managed_episodes)
