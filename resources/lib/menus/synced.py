@@ -39,7 +39,7 @@ class SyncedMenu(object):
 
     def filter_blocked_items(self, items, _type):
         """Filter out all blocked items in the list."""
-        return [x for x in items if not self.database.check_blocked(x['label'], _type)]
+        return [x for x in items if not self.database.check_if_is_blocked(x['label'], _type)]
 
     @logged_function
     def find_items_to_stage(self, all_items):
@@ -238,7 +238,7 @@ class SyncedMenu(object):
                 elif 'managed' in exist_in_db:
                     num_already_managed += 1
                     continue
-                elif self.database.check_blocked(contentitem['showtitle'], 'episode'):
+                elif self.database.check_if_is_blocked(contentitem['showtitle'], 'episode'):
                     continue
                 self.progressdialog._update(
                     index / len(files_list),
@@ -308,7 +308,7 @@ class SyncedMenu(object):
                 except KeyError:
                     pass
 
-                if self.database.check_blocked(content_title, contentitem['type']):
+                if self.database.check_if_is_blocked(content_title, contentitem['type']):
                     continue
                 if self.database.path_exists(file=contentitem['file']):
                     continue

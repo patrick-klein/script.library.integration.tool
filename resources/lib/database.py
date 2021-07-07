@@ -48,6 +48,14 @@ class Database(object):
             "tvshow": "INSERT OR IGNORE INTO tvshow",
             "music": "INSERT OR IGNORE INTO music",
         }
+        self.SELECT_DICT_QUERY = {
+            'movie': 'SELECT * FROM movie',
+            'tvshow': 'SELECT * FROM tvshow',
+            'music': 'SELECT * FROM music',
+            'blocked': 'SELECT * FROM blocked',
+            'synced': 'SELECT * FROM synced',
+            'content': 'SELECT * FROM content',
+        }
         # Create tables if they doesn't exist
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS movie
@@ -94,6 +102,20 @@ class Database(object):
     def __del__(self):
         """Close database connection."""
         self.conn.close()
+
+    @logged_function
+    def check_if_is_blocked(self, value, _type=None):
+        """Check if value exist in blocked and return True else None """
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.SELECT_DICT_QUERY['blocked'],
+                    "WHERE value=:value",
+                    "AND type=:type" if _type else '',
+                ]
+            ), {'value': value, 'type': _type}
+        )
+        return True if self.cur.fetchone() else None
 
     @logged_function
     def add_blocked_item(self, value, _type):
