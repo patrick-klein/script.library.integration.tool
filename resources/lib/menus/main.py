@@ -19,8 +19,10 @@ from resources.lib.menus.managed_movies import ManagedMoviesMenu
 from resources.lib.menus.staged_movies import StagedMoviesMenu
 from resources.lib.menus.managed_tv import ManagedTVMenu
 from resources.lib.menus.staged_tv import StagedTVMenu
-from resources.lib.menus.synced import SyncedMenu
+# from resources.lib.menus.synced import SyncedMenu
 from resources.lib.menus.blocked import BlockedMenu
+
+from resources.lib.dialog_select import Select
 
 # TODO: automatically clean & update when adding/removing based in type and path
 # TODO: support a centralized managed_folder that's shared over network
@@ -48,7 +50,7 @@ class MainMenu(object):
         self.progressbar = progressbar
         self.lastchoice = False
 
-    def library(self):
+    def library_options(self):
         """Display dedicated menu to Library functions."""
         OPTIONS = {
             653: 'scan',
@@ -66,10 +68,11 @@ class MainMenu(object):
             if arg:
                 videolibrary(arg)
                 # sleep to wait library update, whithout this
-                xbmc.sleep(4000)
+                xbmc.sleep(2500)
             self.view()
         else:
-            sys.exit()
+            self.view()
+        sys.exit()
 
     def view(self):
         """Display main menu which leads to other menus."""
@@ -78,9 +81,9 @@ class MainMenu(object):
             32004: StagedMoviesMenu(self.database, self.progressbar).view_all,
             32003: ManagedTVMenu(self.database, self.progressbar).view_shows,
             32005: StagedTVMenu(self.database, self.progressbar).view_shows,
-            32006: SyncedMenu(self.database, self.progressbar).view,
+            # 32006: SyncedMenu(self.database, self.progressbar).view,
             32007: BlockedMenu(self.database, self.progressbar).view,
-            32180: self.library,
+            32180: self.library_options,
             32179: xbmc.executebuiltin,
         }
         selection = xbmcgui.Dialog().select(
@@ -98,5 +101,4 @@ class MainMenu(object):
                     return
                 command()
             self.view()
-        else:
-            sys.exit()
+        sys.exit()
