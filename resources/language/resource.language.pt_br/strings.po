@@ -25,20 +25,20 @@ msgid "Sync directory to library"
 msgstr "Sincronizar diretório com à Biblioteca"
 
 msgctxt "#32002"
-msgid "Managed Movies"
-msgstr "Filmes Gerenciados"
+msgid "[COLOR darkgreen]Managed Movies[/COLOR]"
+msgstr "[COLOR darkgreen]Filmes Gerenciados[/COLOR]"
 
 msgctxt "#32003"
-msgid "Managed TV Shows"
-msgstr "Séries Gerenciados"
+msgid "[COLOR darkgreen]Managed TV Shows[/COLOR]"
+msgstr "[COLOR darkgreen]Séries Gerenciadas[/COLOR]"
 
 msgctxt "#32004"
-msgid "Staged Movies"
-msgstr "Filmes Armazenados"
+msgid "[COLOR darkslateblue]Staged Movies[/COLOR]"
+msgstr "[COLOR darkslateblue]Filmes Armazenados[/COLOR]"
 
 msgctxt "#32005"
-msgid "Staged TV Shows"
-msgstr "Séries Armazenados"
+msgid "[COLOR darkslateblue]Staged TV Shows[/COLOR]"
+msgstr "[COLOR darkslateblue]Séries Armazenadas[/COLOR]"
 
 msgctxt "#32006"
 msgid "Synced Directories"
@@ -63,10 +63,6 @@ msgstr "Mover todos os Filmes para Armazenados"
 msgctxt "#32011"
 msgid "Back..."
 msgstr "Voltar..."
-
-msgctxt "#32012"
-msgid "Managed Movies"
-msgstr "Filmes Gerenciados"
 
 msgctxt "#32013"
 msgid "Removing all movies..."
@@ -99,10 +95,6 @@ msgstr ""
 msgctxt "#32022"
 msgid "Move all TV shows to staged"
 msgstr "Mover todas as series de TV para armazenados"
-
-msgctxt "#32023"
-msgid "Managed TV Shows"
-msgstr ""
 
 msgctxt "#32024"
 msgid "Removing all TV shows..."
@@ -172,10 +164,6 @@ msgctxt "#32040"
 msgid "Create metadata for all itens"
 msgstr "Criar metadados para todos os itens"
 
-msgctxt "#32041"
-msgid "Staged Movies"
-msgstr ""
-
 msgctxt "#32042"
 msgid "Adding all movies..."
 msgstr ""
@@ -234,10 +222,6 @@ msgstr ""
 
 msgctxt "#32057"
 msgid "Remove all TV shows"
-msgstr ""
-
-msgctxt "#32058"
-msgid "Staged TV Shows"
 msgstr ""
 
 msgctxt "#32059"
