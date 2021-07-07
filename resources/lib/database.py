@@ -186,18 +186,17 @@ class Database(object):
         self.conn.commit()
 
     @logged_function
-    def check_blocked(self, value, _type):
-        """Return True if the given entry is in blocked."""
-        # TODO: test if fetchone ir realy working
-        self.cur.execute('''SELECT
-                               (value)
-                            FROM
-                                blocked
-                            WHERE
-                                value=?
-                            AND
-                                type=?''', (value, _type))
-        return bool(self.cur.fetchone())
+    def get_all_blocked_itens(self):
+        """Return all items in blocked as a list of BlockedItem objects."""
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.SELECT_DICT_QUERY['blocked'],
+                    "ORDER BY type, value"
+                ]
+            )
+        )
+        return [BlockedItem(*x) for x in self.cur.fetchall()]
 
     @logged_function
     def get_all_shows(self, status):
@@ -210,7 +209,7 @@ class Database(object):
             FROM
                 tvshow
             WHERE
-                status=?
+                status=:status
             ORDER BY
                 (
                     CASE WHEN
@@ -222,27 +221,14 @@ class Database(object):
                     ELSE
                         showtitle
                     END
-                ) COLLATE NOCASE''', (status, )
+                ) COLLATE NOCASE''',
+            {'status': status}
         )
         for item in self.cur.fetchall():
             yield item[0]
 
     @logged_function
-    def get_blocked_items(self):
-        """Return all items in blocked as a list of BlockedItem objects."""
-        self.cur.execute(
-            '''SELECT
-                    *
-                FROM
-                    blocked
-                ORDER BY
-                    type,
-                    value'''
-        )
-        return [BlockedItem(*x) for x in self.cur.fetchall()]
-
-    @logged_function
-    def get_content_items(self, status=None, _type=None):
+    def get_content_items(self, status, _type):
         """
         Query Content table for sorted items with given constaints and casts results as contentitem subclasses.
 
@@ -252,14 +238,15 @@ class Database(object):
                 showtitle: string, any show title
                 order: string, any single column.
         """
-        sql_comm = ('''SELECT
-                            *
-                        FROM
-                            %s
-                        WHERE
-                            status="%s"''' % (_type, status)
-                    )
-        self.cur.execute(sql_comm)
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.SELECT_DICT_QUERY[_type],
+                    "WHERE status=:status"
+                ]
+            ),
+            {'status': status}
+        )
         for content in self.cur.fetchall():
             json_item = build_json_item(content)
             yield build_contentmanager(self, build_contentitem(json_item))
@@ -268,16 +255,20 @@ class Database(object):
     def get_season_items(self, status, showtitle):
         """Get seasons of a show and return as ContentManager object."""
         self.cur.execute('''
-                            SELECT
-                                *
-                            FROM
-                                tvshow
-                            WHERE
-                                status = '%s'
-                            AND
-                                showtitle = '%s'
-                            ORDER BY
-                            CAST(season AS INTEGER)''' % (status, showtitle)
+                        SELECT
+                            *
+                        FROM
+                            tvshow
+                        WHERE
+                            status=:status
+                        AND
+                            showtitle=:showtitle
+                        ORDER BY
+                        CAST(season AS INTEGER)''',
+                         {
+                             'status': status,
+                             'showtitle': showtitle,
+                         }
                          )
         for content in self.cur.fetchall():
             json_item = build_json_item(content)
@@ -286,24 +277,28 @@ class Database(object):
     @logged_function
     def get_episode_items(self, status, showtitle, season):
         """Get episodes of a show and return as a ContentManager object."""
-        # TODO: Revise this function
         sql_comm = '''
                     SELECT
                         *
                     FROM
                         tvshow
                     WHERE
-                        status='%s'
+                        status=:status
                     AND
-                        showtitle='%s'
+                        showtitle=:showtitle
                     AND
-                        season=%s
+                        season=:season
                     ORDER BY CAST
                         (season AS INTEGER),
                     CAST
                         (episode AS INTEGER)'''
         self.cur.execute(
-            sql_comm % (status, showtitle, season)
+            sql_comm,
+            {
+                'status': status,
+                'showtitle': showtitle,
+                'season': season
+            }
         )
         for content in self.cur.fetchall():
             json_item = build_json_item(content)
@@ -311,16 +306,8 @@ class Database(object):
 
     @logged_function
     def get_synced_dirs(self, synced_type=None):
-        """Get all items in synced cast as a list of dicts."""
-        sql_templ = '''SELECT
-                            *
-                        FROM
-                            synced'''
-        params = ()
-        if synced_type:
-            sql_templ += ' WHERE type=?'
-            params = (synced_type, )
-        sql_templ += ''' ORDER BY
+        """Get all itens in synced or itens by type."""
+        orderby_str = '''ORDER BY
                             (
                                 CASE WHEN
                                     label
@@ -332,7 +319,15 @@ class Database(object):
                                     label
                                 END
                             ) COLLATE NOCASE'''
-        self.cur.execute(sql_templ, params)
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.SELECT_DICT_QUERY['select'],
+                    "WHERE type=:type" if synced_type else '',
+                    orderby_str
+                ]
+            ), {'type': synced_type}
+        )
         return [SyncedItem(*x) for x in self.cur.fetchall()]
 
     @logged_function
