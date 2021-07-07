@@ -118,6 +118,40 @@ class Database(object):
         return True if self.cur.fetchone() else None
 
     @logged_function
+    def path_exists(self, file):
+        """
+        Check if item exist in all tables.
+
+        If exist return a list with table and type else None.
+        """
+        table = None
+        status = None
+        for table_type in ['movie', 'tvshow']:
+            LOCAL_SELECT_DICT_QUERY = {
+                "movie": "SELECT status FROM movie",
+                "tvshow": "SELECT status FROM tvshow"
+            }
+            sql_comm = (
+                ' '.join(
+                    [
+                        LOCAL_SELECT_DICT_QUERY[table_type],
+                        "WHERE file=:file",
+                    ]
+                )
+            )
+            result = self.cur.execute(
+                sql_comm,
+                {'file': file}
+            ).fetchone()
+            if result:
+                table = table_type
+                status = result[0]
+        if table and status:
+            return [table, status]
+        else:
+            return None
+
+    @logged_function
     def add_blocked_item(self, value, _type):
         """Add an item to blocked with the specified values."""
         # Ignore if already in table

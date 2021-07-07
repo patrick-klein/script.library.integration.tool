@@ -232,10 +232,10 @@ class SyncedMenu(object):
                 contentitem = build_contentitem(jsonitem)
                 exist_in_db = self.database.path_exists(
                     file=contentitem['file'])
-                if 'staged' in exist_in_db:
+                if exist_in_db == ['tvshow', 'staged']:
                     num_already_staged += 1
                     continue
-                elif 'managed' in exist_in_db:
+                elif exist_in_db == ['tvshow', 'managed']:
                     num_already_managed += 1
                     continue
                 elif self.database.check_if_is_blocked(contentitem['showtitle'], 'episode'):
