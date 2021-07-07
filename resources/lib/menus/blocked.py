@@ -32,7 +32,7 @@ class BlockedMenu(object):
         STR_BACK = getstring(32011)
         STR_BLOCKED_ITEMS = getstring(32098)
         STR_NO_BLOCKED_ITEMS = getstring(32119)
-        blocked_items = self.database.get_blocked_items()
+        blocked_items = self.database.get_all_blocked_itens()
         if not blocked_items:
             xbmcgui.Dialog().ok(ADDON_NAME, STR_NO_BLOCKED_ITEMS)
             return
@@ -65,7 +65,10 @@ class BlockedMenu(object):
         )
         if ret >= 0:
             if lines[ret] == STR_REMOVE:
-                self.database.remove_blocked(item['value'], item['type'])
+                self.database.delete_entrie_from_blocked(
+                    item['value'],
+                    item['type']
+                )
                 return self.view()
             elif lines[ret] == STR_BACK:
                 return self.view()
