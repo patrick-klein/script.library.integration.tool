@@ -103,9 +103,9 @@ class StagedMoviesMenu(object):
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_MOVIES
         )
-        self.database.remove_from(
-            status='staged',
-            _type='movie'
+        self.database.delete_item_from_table_with_status_or_showtitle(
+            _type='movie',
+            status='staged'
         )
         self.progressdialog._close()
         notification(STR_ALL_MOVIES_REMOVED)

@@ -199,9 +199,9 @@ class StagedTVMenu(object):
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_TV_SHOWS
         )
-        self.database.remove_from(
-            status='staged',
-            _type='tvshow'
+        self.database.delete_item_from_table_with_status_or_showtitle(
+            _type='tvshow',
+            status='staged'
         )
         self.progressdialog._close()
         notification(STR_ALL_TV_SHOW_REMOVED)
@@ -214,7 +214,8 @@ class StagedTVMenu(object):
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_x_SEASONS
         )
-        self.database.remove_from(
+        self.database.delete_item_from_table_with_status_or_showtitle(
+            _type='tvshow',
             status='staged',
             _type='tvshow',
             showtitle=showtitle
@@ -230,7 +231,8 @@ class StagedTVMenu(object):
         self.progressdialog._create(
             msg=STR_REMOVING_ALL_x_EPISODES
         )
-        self.database.remove_from(
+        self.database.delete_item_from_table_with_status_or_showtitle(
+            _type='tvshow',
             status='staged',
             _type='tvshow',
             showtitle=showtitle

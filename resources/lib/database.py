@@ -33,6 +33,11 @@ class Database(object):
         self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
         self.conn.text_factory = str
         self.cur = self.conn.cursor()
+        self.DELETE_DICT_QUERY = {
+            "movie": "DELETE FROM movie",
+            "tvshow": "DELETE FROM tvshow",
+            "music": "DELETE FROM music",
+        }
         # Create tables if they doesn't exist
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS movie
@@ -290,94 +295,90 @@ class Database(object):
         return [SyncedItem(*x) for x in self.cur.fetchall()]
 
     @logged_function
-    def load_item(self, path):
-        """Query a single item and return as a json."""
-        self.cur.execute('''SELECT
-                                *
-                            FROM
-                                Content
-                            WHERE
-                                file="%s"''', path)
-        return build_json_item(self.cur.fetchone())
-
-    @logged_function
-    def path_exists(self, file):
-        """
-        Return True if path is already in database (with given status).
-
-        This function can return a list with multple values with name of the tables where item exist.
-        """
-        tables = list()
-        for table in ['movie', 'tvshow']:
-            sql_comm = (
-                '''
-                    SELECT
-                        status
-                    FROM
-                        '%s'
-                    WHERE
-                        file="%s"''' % (table, file)
-            )
-            result = self.cur.execute(sql_comm).fetchone()
-            if result:
-                tables.append(*list(result))
-        return tables
-
-    @logged_function
-    def remove_from(self,
-                    status=None,
-                    _type=None,
-                    showtitle=None,
-                    file=None,
-                    season=None):
-        """Remove all items colected with sqlquerys."""
-        STR_CMD_QUERY = "DELETE FROM %s" % _type
-        if showtitle:
-            STR_CMD_QUERY += '''
-                        WHERE
-                            status="%s"
-                        AND
-                            showtitle="%s"
-                        ''' % (status, showtitle)
-        elif showtitle and file:
-            STR_CMD_QUERY += '''
-                        WHERE
-                            status="%s"
-                        AND
-                            type="%s"
-                        ''' % (status, _type)
-        elif file:
-            STR_CMD_QUERY += '''
-                        WHERE
-                            file="%s"
-                        ''' % (file)
-        elif season:
-            STR_CMD_QUERY += '''
-                        WHERE
-                            showtitle="%s"
-                        AND
-                            season="%s"
-                        ''' % (showtitle, season)
-        self.cur.execute(STR_CMD_QUERY)
+    def delete_item_from_table(self, _type, file):
+        """Delete an entry in the table using the 'file' key, regardless of status."""
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.DELETE_DICT_QUERY[_type],
+                    "WHERE file=:file"
+                ]
+            ),
+            {'file': file}
+        )
         self.conn.commit()
 
     @logged_function
-    def remove_all_synced_dirs(self):
-        """Delete all entries in synced."""
-        # remove all rows
+    def delete_item_from_table_with_status_or_showtitle(self, _type, status, showtitle=None):
+        """
+        Delete an entry in the table using the 'status' and 'showtitle', key.
+
+        Without showtitle, all entries will be deleted.
+
+        Keys:
+            - status = ['staged', 'managed']
+        """
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.DELETE_DICT_QUERY[_type],
+                    "WHERE status=:status",
+                    "AND showtitle=:showtitle" if showtitle else '',
+                ]
+            ),
+            {
+                'status': status,
+                'showtitle': showtitle
+            }
+        )
+        self.conn.commit()
+
+    @logged_function
+    def delete_item_from_table_with_season(self, _type, showtitle, season):
+        """Delete an entry in the table using the 'showtitle' and 'season' key."""
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.DELETE_DICT_QUERY[_type],
+                    "WHERE showtitle=:showtitle AND season=:season"
+                ]
+            ),
+            {
+                'season': season,
+                'showtitle': showtitle
+            }
+        )
+        self.conn.commit()
+
+    @logged_function
+    def delete_entrie_from_blocked(self, value, _type):
+        """Delete one entrie from blocked."""
+        self.cur.execute(
+            '''DELETE FROM
+                    blocked
+                WHERE
+                            showtitle="%s"
+                        AND
+                    type=:type''',
+            {'value': value, 'type': _type}
+        )
+        self.conn.commit()
+
+    @logged_function
+    def delete_all_from_synced(self):
+        """Remove all dirs from synced."""
         self.cur.execute('DELETE FROM synced')
         self.conn.commit()
 
     @logged_function
-    def remove_blocked(self, value, _type):
-        """Remove the item in blocked with the specified parameters."""
-        self.cur.execute('''DELETE FROM
-                                blocked
-                            WHERE
-                                value=?
-                            AND
-                                type=?''', (value, _type)
-                         )
+    def delete_dir_from_synced(self, file):
+        """Remove one dir from synced."""
+        self.cur.execute(
+            "DELETE FROM synced WHERE file=?",
+            {'file': file}
+        )
+        self.conn.commit()
+
         self.conn.commit()
 
     @logged_function

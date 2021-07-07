@@ -149,9 +149,9 @@ class ContentManagerShow(ABSContentManagerShow):
         # Delete nfo items
         delete_with_wildcard(splitext(self.managed_episode_nfo_path)[0])
         # Remove from db
-        self.database.remove_from(
+        self.database.delete_item_from_table(
             file=self.file,
-            _type='episode'
+            _type='tvshow'
         )
 
     @logged_function
@@ -195,9 +195,9 @@ class ContentManagerShow(ABSContentManagerShow):
 
     def delete(self):
         """Remove the item from the database."""
-        self.database.remove_from(
-            _type='tvshow',
-            file=self.file
+        self.database.delete_item_from_table(
+            file=self.file,
+            _type='tvshow'
         )
 
     def set_as_staged(self):
@@ -297,7 +297,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         # Delete metadata items
         remove_dir(self.managed_movie_dir)
         # Remove from db
-        self.database.remove_from(
+        self.database.delete_item_from_table(
             file=self.file,
             _type='movie'
         )
@@ -318,9 +318,9 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     def delete(self):
         """Remove the item from the database."""
-        self.database.remove_from(
-            _type='movie',
-            file=self.file
+        self.database.delete_item_from_table(
+            file=self.file,
+            _type='movie'
         )
 
     def set_as_staged(self):
