@@ -106,10 +106,10 @@ class ContentManagerShow(ABSContentManagerShow):
             self.create_metadata_item()
         if AUTO_CREATE_NFO_SHOWS:
             self.create_metadata_item()
-        self.database.update_content(
+        self.database.update_status_in_database(
             file=self.file,
-            status='managed',
-            _type='tvshow'
+            _type='tvshow',
+            status='managed'
         )
         return True
 
@@ -131,10 +131,10 @@ class ContentManagerShow(ABSContentManagerShow):
             filepath=self.managed_episode_nfo_path,
             jsondata=self.jsondata
         )
-        self.database.update_content(
-            self.file,
-            title=self.jsondata['title'],
-            _type='tvshow'
+        self.database.update_title_in_database(
+            file=self.file,
+            _type='tvshow',
+            title=self.jsondata['title']
         )
 
     @logged_function
@@ -202,10 +202,10 @@ class ContentManagerShow(ABSContentManagerShow):
 
     def set_as_staged(self):
         """Set the item status as staged in database."""
-        self.database.update_content(
+        self.database.update_status_in_database(
             file=self.file,
-            status='staged',
-            _type='tvshow'
+            _type='tvshow',
+            status='staged'
         )
 
 
@@ -263,10 +263,10 @@ class ContentManagerMovie(ABSContentManagerMovie):
             self.file,
             self.managed_strm_path
         )
-        self.database.update_content(
+        self.database.update_status_in_database(
             file=self.file,
-            status='managed',
-            _type='movie'
+            _type='movie',
+            status='managed'
         )
 
     @logged_function
@@ -280,10 +280,10 @@ class ContentManagerMovie(ABSContentManagerMovie):
             jsondata=self.jsondata
         )
 
-        self.database.update_content(
+        self.database.update_title_in_database(
             file=self.file,
             _type='movie',
-            title=self.jsondata['title'],
+            title=self.jsondata['title']
         )
 
     @logged_function
@@ -325,8 +325,8 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     def set_as_staged(self):
         """Set the item status as staged in database."""
-        self.database.update_content(
+        self.database.update_status_in_database(
             file=self.file,
-            status='staged',
-            _type='movie'
+            _type='movie',
+            status='staged'
         )

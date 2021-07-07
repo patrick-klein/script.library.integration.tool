@@ -33,6 +33,11 @@ class Database(object):
         self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
         self.conn.text_factory = str
         self.cur = self.conn.cursor()
+        self.UPDATE_DICT_QUERY = {
+            "movie": "UPDATE movie",
+            "tvshow": "UPDATE tvshow",
+            "music": "UPDATE music",
+        }
         self.DELETE_DICT_QUERY = {
             "movie": "DELETE FROM movie",
             "tvshow": "DELETE FROM tvshow",
@@ -379,32 +384,41 @@ class Database(object):
         )
         self.conn.commit()
 
-        self.conn.commit()
-
     @logged_function
-    def remove_synced_dir(self, path):
-        """Remove the entry in synced with the specified file."""
-        # remove entry
+    def update_title_in_database(self, file, _type, title):
+        """Update a title for a single entrie in database."""
         self.cur.execute(
-            "DELETE FROM synced WHERE file=?",
-            (path, )
+            ' '.join(
+                [
+                    self.UPDATE_DICT_QUERY[_type],
+                    'SET title=:title WHERE file=:file',
+                ]
+            ), {'file': file, 'type': _type, 'title': title}
         )
         self.conn.commit()
 
     @logged_function
-    def update_content(self, file, _type, status=None, title=None):
-        """Update a single field for item in Content with specified path."""
-        # TODO: Verify there's only one entry in kwargs
-        sql_comm = (
-            '''UPDATE %s SET {0}=(?) WHERE file=?''' % _type
+    def update_showtitle_in_database(self, file, _type, showtitle):
+        """Update a showtitle for a single entrie in database."""
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.UPDATE_DICT_QUERY[_type],
+                    'SET showtitle=:showtitle WHERE file=:file'
+                ]
+            ), {'file': file, 'type': _type, 'showtitle': showtitle}
         )
-        params = (file, )
-        if status:
-            sql_comm = sql_comm.format('status')
-            params = (status, ) + params
-        elif title:
-            sql_comm = sql_comm.format('title')
-            params = (title, ) + params
-        # update item
-        self.cur.execute(sql_comm, params)
+        self.conn.commit()
+
+    @logged_function
+    def update_status_in_database(self, file, _type, status):
+        """Update a status for a single entrie in database."""
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.UPDATE_DICT_QUERY[_type],
+                    'SET status=:status WHERE file=:file',
+                ]
+            ), {'file': file, 'type': _type, 'status': status}
+        )
         self.conn.commit()
