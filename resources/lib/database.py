@@ -118,6 +118,19 @@ class Database(object):
         return True if self.cur.fetchone() else None
 
     @logged_function
+    def load_item(self, file):
+        """Query a single item and return as a json."""
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.SELECT_DICT_QUERY['content'],
+                    "WHERE file=:file"
+                ]
+            ), {'file': file}
+        )
+        return build_json_item(self.cur.fetchone())
+
+    @logged_function
     def path_exists(self, file):
         """
         Check if item exist in all tables.
