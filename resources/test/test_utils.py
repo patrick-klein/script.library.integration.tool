@@ -13,9 +13,35 @@ from resources.lib.manipulator import clean_name
 
 from resources import ADDON_NAME, ADDON_VERSION
 
+from resources.lib.database import Database
+from resources.lib.log import logged_function
+
+TESTE_BLOCKED_QUERY = '''
+                        INSERT OR IGNORE INTO
+                            "main"."blocked"
+                            ("value", "type")
+                        VALUES
+                            (
+                                'I exist and need to be finded', 'tvshow'
+                            );
+                    '''
+
 
 class TestUtils(unittest.TestCase):
     """Test cases for utils module."""
+    @logged_function
+    def test_db_if_is_blocked(self):
+        db = Database()
+        db.cur.execute(TESTE_BLOCKED_QUERY)
+        db.conn.commit()
+        FAKE_BLOCK_TESTE = {
+            'exist': 'I exist and need to be finded',
+            'notexit': 'I dont exit and need be ignored',
+        }
+        self.assertEqual(db.check_if_is_blocked(FAKE_BLOCK_TESTE['exist']), True)
+        self.assertEqual(db.check_if_is_blocked(FAKE_BLOCK_TESTE['notexit']), None)
+        db.delete_entrie_from_blocked(FAKE_BLOCK_TESTE['exist'], 'tvshow')
+
     @logged_function
     def test_re_search(self):
         item = {
