@@ -493,7 +493,7 @@ def tojs(data, filename):
 
 
 def getstring(string_id):
-    """Function to get call getLocalizedString."""
+    """Shortcut function to return string from String ID."""
     return str(ADDON.getLocalizedString(string_id))
 
 
