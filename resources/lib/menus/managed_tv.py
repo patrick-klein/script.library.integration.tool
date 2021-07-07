@@ -341,7 +341,7 @@ class ManagedTVMenu(object):
         STR_MOVE_ALL_TV_SHOWS_BACK_TO_STAGED = getstring(32022)
         STR_GENERATE_ALL_METADATA_ITEMS = getstring(32040)
         STR_BACK = getstring(32011)
-        STR_MANAGED_TV_SHOWS = getstring(32023)
+        STR_MANAGED_TV_SHOWS = getstring(32003)
         managed_tvshows = list(
             self.database.get_all_shows('managed')
         )
@@ -360,7 +360,7 @@ class ManagedTVMenu(object):
         ret = xbmcgui.Dialog().select(
             '%s - %s' % (
                 ADDON_NAME,
-                bold(STR_MANAGED_TV_SHOWS)
+                color(bold(STR_MANAGED_TV_SHOWS), 'lightgreen')
             ), lines
         )
         if ret >= 0:

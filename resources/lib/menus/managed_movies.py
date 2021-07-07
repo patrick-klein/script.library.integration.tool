@@ -149,7 +149,7 @@ class ManagedMoviesMenu(object):
         Also provides additional options at bottom of menu.
         """
         STR_NO_MANAGED_MOVIES = getstring(32008)
-        STR_MANAGED_MOVIES = getstring(32012)
+        STR_MANAGED_MOVIES = getstring(32002)
         OPTIONS = {
             32009: self.remove_all,
             32010: self.move_all_to_staged,

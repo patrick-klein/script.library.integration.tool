@@ -121,7 +121,7 @@ class StagedMoviesMenu(object):
         STR_ADD_ALL_MOVIES = getstring(32038)
         STR_REMOVE_ALL_MOVIES = getstring(32009)
         STR_BACK = getstring(32011)
-        STR_STAGED_MOVIES = getstring(32041)
+        STR_STAGED_MOVIES = getstring(32004)
         staged_movies = list(
             self.database.get_content_items(
                 status='staged',
