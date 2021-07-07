@@ -180,12 +180,12 @@ class SyncedMenu(object):
         STR_ITEM_IS_ALREADY_MANAGED = getstring(32104)
         # Add synced directory to database
         # TODO: add single-movie to synced is necessary? revise this
-        self.database.add_synced_dir(title, file, 'single-movie')
+        self.database.add_item_to_synced(title, file, 'single-movie')
         # Check for duplicate in database
         exist_in_db = self.database.path_exists(file=file)
-        if exist_in_db == 'staged':
+        if ['movie', 'staged'] == exist_in_db:
             notification(STR_ITEM_IS_ALREADY_STAGED)
-        elif exist_in_db == 'managed':
+        elif ['movie', 'managed'] == exist_in_db:
             notification(STR_ITEM_IS_ALREADY_MANAGED)
         else:
             # Add item to database
@@ -206,7 +206,7 @@ class SyncedMenu(object):
         # STR_GETTING_ITEMS_IN_x = getstring(32126)
         self.progressdialog._create(head=ADDON_NAME)
         # Add synced directory to database
-        self.database.add_synced_dir(
+        self.database.add_item_to_synced(
             title,
             file,
             'single-tvshow'
@@ -279,7 +279,7 @@ class SyncedMenu(object):
         self.progressdialog._create(head=ADDON_NAME)
         try:
             # add synced directory to database
-            self.database.add_synced_dir(
+            self.database.add_item_to_synced(
                 dir_label,
                 dir_path,
                 'tvshow'

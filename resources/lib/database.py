@@ -43,6 +43,11 @@ class Database(object):
             "tvshow": "DELETE FROM tvshow",
             "music": "DELETE FROM music",
         }
+        self.INSERT_DICT_QUERY = {
+            "movie": "INSERT OR IGNORE INTO movie",
+            "tvshow": "INSERT OR IGNORE INTO tvshow",
+            "music": "INSERT OR IGNORE INTO music",
+        }
         # Create tables if they doesn't exist
         self.cur.execute(
             '''CREATE TABLE IF NOT EXISTS movie
@@ -94,7 +99,7 @@ class Database(object):
     def add_blocked_item(self, value, _type):
         """Add an item to blocked with the specified values."""
         # Ignore if already in table
-        if not self.check_blocked(value, _type):
+        if not self.check_if_is_blocked(value, _type):
             self.cur.execute(
                 "INSERT INTO blocked (value, type) VALUES (?, ?)", (value, _type))
             self.conn.commit()
@@ -102,25 +107,27 @@ class Database(object):
     @logged_function
     def add_content_item(self, jsondata):
         """Add content to library."""
-        sql_comm = '''
-            INSERT OR IGNORE INTO
-                {table}
-                %s
-            VALUES
-                %s'''.format(table=jsondata['type'])
+        _type = jsondata['type']
         query_defs = {
             'tvshow': (
-                '''(file,title,type,status,year,showtitle,season,episode)''',
-                '''(:file,:title,:type,'staged',:year,:showtitle,:season,:episode)'''
+                "(file,title,type,status,year,showtitle,season,episode)",
+                "(:file,:title,:type,'staged',:year,:showtitle,:season,:episode)"
             ),
             'movie': (
-                '''(file,title,type,status,year)''',
-                '''(:file,:title,:type,'staged',:year)'''
+                "(file,title,type,status,year)",
+                "(:file,:title,:type,'staged',:year)"
             ),
             'music': ValueError("Not implemented yet, music")
-        }[jsondata['type']]
+        }
         # sqlite named style:
-        self.cur.execute(sql_comm % query_defs, jsondata)
+        self.cur.execute(
+            ' '.join(
+                [
+                    self.INSERT_DICT_QUERY[_type],
+                    '%s VALUES %s' % query_defs[_type],
+                ]
+            ), jsondata
+        )
         self.conn.commit()
         contentmanager = build_contentmanager(
             self,
@@ -139,13 +146,20 @@ class Database(object):
             )
 
     @logged_function
-    def add_synced_dir(self, label, path, _type):
+    def add_item_to_synced(self, label, path, _type):
         """Create an entry in synced with specified values."""
         self.cur.execute(
             '''INSERT OR REPLACE INTO
-                    synced(file, label, type)
+                    synced
+                    (file, label, type)
                 VALUES
-                    (?, ?, ?)''', (path, label, _type)
+                    (:file, :label, :type)
+            ''',
+            {
+                'file': path,
+                'label': label,
+                'type': _type
+            }
         )
         self.conn.commit()
 
