@@ -22,7 +22,7 @@ from resources.lib.menus.staged_tv import StagedTVMenu
 # from resources.lib.menus.synced import SyncedMenu
 from resources.lib.menus.blocked import BlockedMenu
 
-from resources.lib.dialog_select import Select
+# from resources.lib.dialog_select import Select
 
 # TODO: automatically clean & update when adding/removing based in type and path
 # TODO: support a centralized managed_folder that's shared over network
