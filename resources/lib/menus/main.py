@@ -13,14 +13,16 @@ from resources import ADDON_NAME
 from resources.lib.utils import bold
 from resources.lib.utils import color
 from resources.lib.utils import videolibrary
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
 from resources.lib.menus.managed_movies import ManagedMoviesMenu
 from resources.lib.menus.staged_movies import StagedMoviesMenu
 from resources.lib.menus.managed_tv import ManagedTVMenu
 from resources.lib.menus.staged_tv import StagedTVMenu
-from resources.lib.menus.synced import SyncedMenu
+# from resources.lib.menus.synced import SyncedMenu
 from resources.lib.menus.blocked import BlockedMenu
+
+from resources.lib.dialog_select import Select
 
 # TODO: automatically clean & update when adding/removing based in type and path
 # TODO: support a centralized managed_folder that's shared over network
@@ -42,12 +44,13 @@ class MainMenu(object):
     Display displays a window that leads to other menus.
     """
 
-    def __init__(self, database):
+    def __init__(self, database, progressbar):
         """__init__ MainMenu."""
         self.database = database
+        self.progressbar = progressbar
         self.lastchoice = False
 
-    def library(self):
+    def library_options(self):
         """Display dedicated menu to Library functions."""
         OPTIONS = {
             653: 'scan',
@@ -65,34 +68,27 @@ class MainMenu(object):
             if arg:
                 videolibrary(arg)
                 # sleep to wait library update, whithout this
-                xbmc.sleep(4000)
+                xbmc.sleep(2500)
             self.view()
         else:
-            sys.exit()
+            self.view()
+        sys.exit()
 
     def view(self):
         """Display main menu which leads to other menus."""
-        OPTIONS_LIST = list()
         OPTIONS = {
-            32002: ManagedMoviesMenu(database=self.database).view_all,
-            32004: StagedMoviesMenu(database=self.database).view_all,
-            32003: ManagedTVMenu(database=self.database).view_shows,
-            32005: StagedTVMenu(database=self.database).view_shows,
-            32006: SyncedMenu(database=self.database).view,
-            32007: BlockedMenu(database=self.database).view,
-            32180: self.library,
+            32002: ManagedMoviesMenu(self.database, self.progressbar).view_all,
+            32004: StagedMoviesMenu(self.database, self.progressbar).view_all,
+            32003: ManagedTVMenu(self.database, self.progressbar).view_shows,
+            32005: StagedTVMenu(self.database, self.progressbar).view_shows,
+            # 32006: SyncedMenu(self.database, self.progressbar).view,
+            32007: BlockedMenu(self.database, self.progressbar).view,
+            32180: self.library_options,
             32179: xbmc.executebuiltin,
         }
-        # TODO: This is not my favorite way to format options in bold,
-        # but i will use per hour
-        for index, opt in enumerate(OPTIONS):
-            if index <= 3:
-                OPTIONS_LIST.append(bold((getlocalizedstring(opt))))
-            else:
-                OPTIONS_LIST.append(getlocalizedstring(opt))
         selection = xbmcgui.Dialog().select(
             heading=bold(ADDON_NAME),
-            list=OPTIONS_LIST,
+            list=[getstring(x) for x in OPTIONS],
             useDetails=True,
             preselect=self.lastchoice
         )
@@ -105,5 +101,4 @@ class MainMenu(object):
                     return
                 command()
             self.view()
-        else:
-            sys.exit()
+        sys.exit()

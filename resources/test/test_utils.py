@@ -3,7 +3,6 @@
 
 """Defines class for testing utils module."""
 
-from resources.lib.log import logged_function
 import unittest
 import xbmcaddon  # pylint: disable=import-error
 
@@ -13,9 +12,89 @@ from resources.lib.manipulator import clean_name
 
 from resources import ADDON_NAME, ADDON_VERSION
 
+from resources.lib.database import Database
+from resources.lib.log import logged_function
+
+TESTE_MOVIE_QUERY = '''
+                        INSERT OR IGNORE INTO
+                            "movie"
+                            ("file", "title", "type", "status", "year")
+                        VALUES
+                            (
+                                'plugin://plugin.video.amazon-test/?mode=PlayVideo&name=123_movie',
+                                'A Vida em um Ano',
+                                'movie',
+                                'staged',
+                                '2020'
+                            )
+                    '''
+
+TESTE_SHOW_QUERY = '''
+                        INSERT OR IGNORE INTO
+                            "tvshow"
+                            (
+                                "file", "title", "type", "status", "year", "showtitle", "season", "episode"
+                            )
+                        VALUES
+                            (
+                                'plugin://plugin.video.amazon-test/?mode=PlayVideo&name=xyz_tvshow',
+                                'Abram-se as cortinas',
+                                'tvshow',
+                                'staged',
+                                '2019',
+                                'Karakuri Circus',
+                                '1',
+                                '1'
+                            );
+                    '''
+TESTE_BLOCKED_QUERY = '''
+                        INSERT OR IGNORE INTO
+                            "main"."blocked"
+                            ("value", "type")
+                        VALUES
+                            (
+                                'I exist and need to be finded', 'tvshow'
+                            );
+                    '''
+
 
 class TestUtils(unittest.TestCase):
     """Test cases for utils module."""
+    @logged_function
+    def test_db_if_is_blocked(self):
+        db = Database()
+        db.cur.execute(TESTE_BLOCKED_QUERY)
+        db.conn.commit()
+        FAKE_BLOCK_TESTE = {
+            'exist': 'I exist and need to be finded',
+            'notexit': 'I dont exit and need be ignored',
+        }
+        self.assertEqual(db.check_if_is_blocked(FAKE_BLOCK_TESTE['exist']), True)
+        self.assertEqual(db.check_if_is_blocked(FAKE_BLOCK_TESTE['notexit']), None)
+        db.delete_entrie_from_blocked(FAKE_BLOCK_TESTE['exist'], 'tvshow')
+
+    @logged_function
+    def test_db_path_exists(self):
+        db = Database()
+        db.cur.execute(TESTE_MOVIE_QUERY)
+        db.cur.execute(TESTE_SHOW_QUERY)
+        db.conn.commit()
+
+        # ['movie', 'tvshow']
+        FAKE_FILE_TESTE = {
+            'movie': 'plugin://plugin.video.amazon-test/?mode=PlayVideo&name=123_movie',
+            'tvshow': 'plugin://plugin.video.amazon-test/?mode=PlayVideo&name=xyz_tvshow',
+            'notexit': 'plugin://plugin.video.amazon-test/?mode=PlayVideo&name=klx_not_exit',
+        }
+        self.assertEqual(db.path_exists(
+            FAKE_FILE_TESTE['movie']), ['movie', 'staged'])
+        self.assertEqual(db.path_exists(
+            FAKE_FILE_TESTE['tvshow']), ['tvshow', 'staged'])
+        self.assertEqual(db.path_exists(
+            FAKE_FILE_TESTE['notexit']), None)
+        db.delete_item_from_table('movie', FAKE_FILE_TESTE['movie'])
+        db.delete_item_from_table('tvshow', FAKE_FILE_TESTE['tvshow'])
+
     @logged_function
     def test_re_search(self):
         item = {

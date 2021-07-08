@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<<<<<<< HEAD
-<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.7.54" provider-name="patrick-klein">
-=======
 <addon id="script.library.integration.tool" name="Library Integration Tool" version="0.8.14" provider-name="patrick-klein">
->>>>>>> 97a6476... [version] bump to 0.8.14
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="xbmc.addon" version="18.9.701"/>
     <import addon="script.module.beautifulsoup4" version="4.9.3"/>
     <import addon="script.module.simplejson" version="3.17.0"/>
   </requires>
-
   <extension point="xbmc.python.script" library="default.py">
     <provides>executable</provides>
   </extension>
-
   <extension point="kodi.context.item">
     <menu id="kodi.core.main">
       <item library="default.py">
@@ -57,11 +51,7 @@ See the README for a full tutorial.
       <screenshot>resources/media/screenshot-02.jpg</screenshot>
       <screenshot>resources/media/screenshot-03.jpg</screenshot>
     </assets>
-<<<<<<< HEAD
-    <news>v0.7.61 (2021-7-3)
-=======
     <news>v0.8.14 (2021-7-7)
->>>>>>> 97a6476... [version] bump to 0.8.14
     </news>
   </extension>
 

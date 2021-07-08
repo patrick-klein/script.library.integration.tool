@@ -14,19 +14,20 @@ import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
 from resources.lib.database import Database
+from resources.lib.progressbar import ProgressBar
 from resources.lib.menus.synced import SyncedMenu
 
 from resources.lib.utils import re_search
 from resources.lib.utils import entrypoint
 from resources.lib.utils import notification
 from resources.lib.utils import title_with_color
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
-STR_IS_A_MOVIE = getlocalizedstring(32155)
-STR_IS_A_SHOW = getlocalizedstring(32156)
-STR_CANCEL_RED = getlocalizedstring(32157)
-STR_NOT_SELECTED = getlocalizedstring(32163)
-STR_CHOOSE_CONTENT_TYPE = getlocalizedstring(32159)
+STR_IS_A_MOVIE = getstring(32155)
+STR_IS_A_SHOW = getstring(32156)
+STR_CANCEL_RED = getstring(32157)
+STR_NOT_SELECTED = getstring(32163)
+STR_CHOOSE_CONTENT_TYPE = getstring(32159)
 
 # possible values ​​that content can have
 LIST_TYPE_SERIES = ['series', 'directory',
@@ -37,31 +38,29 @@ LIST_TYPE_MOVIES = ['movie', 'PlayVideo', 'play&_play']
 @entrypoint
 def main():
     """Main entrypoint for context menu item."""
-    # is more simple and fast ask user about type, many addons don't give this info
     label = sys.listitem.getLabel()  # pylint: disable=E1101
     year = xbmc.getInfoLabel('ListItem.Year')
-    # if year is False, load load_directory_items will use json year
-    year = int(year) if year != '' else False
+    year = int(year) if year else False
     file = sys.listitem.getPath()  # pylint: disable=E1101
     STR_FORMED_TYPE_OF_CONTENT = '%s - %s' % (
-        title_with_color(label=label, year=year), STR_CHOOSE_CONTENT_TYPE)
-    # Using the Dialog().select method is better as
-    # it allows the user to cancel if they want,
-    # and we can add more options if needed.
+        title_with_color(label=label, year=year),
+        STR_CHOOSE_CONTENT_TYPE
+    )
     lines = [
         STR_IS_A_MOVIE,
         STR_IS_A_SHOW,
         STR_CANCEL_RED
     ]
-    # I tried to add as many checks to determine the type,
-    # maybe the dialog can be removed, but I prefer mater
-    typeofcontent = xbmcgui.Dialog().select(
+    selection = xbmcgui.Dialog().select(
         STR_FORMED_TYPE_OF_CONTENT,
         lines
     )
-    selection = lines[typeofcontent]
+    selection = lines[selection]
     if selection:
-        syncedmenu = SyncedMenu(database=Database())
+        syncedmenu = SyncedMenu(
+            database=Database(),
+            progressdialog=ProgressBar()
+        )
         # Call corresponding method
         if selection == STR_IS_A_MOVIE:
             if re_search(file, LIST_TYPE_MOVIES):
@@ -78,18 +77,15 @@ def main():
                     file=file
                 )
         elif selection == STR_CANCEL_RED:
-            xbmc.sleep(200)
-            notification(getlocalizedstring(32158))
+            xbmc.sleep(300)
+            notification(getstring(32158))
         else:
-            notification(
-                '%s %s' % (
-                    title_with_color(
-                        label=label,
-                        year=year),
-                    STR_NOT_SELECTED
+            xbmc.sleep(300)
+            notification('%s %s' % (
+                title_with_color(label=label, year=year),
+                STR_NOT_SELECTED
                 )
             )
-
 
 if __name__ == '__main__':
     main()

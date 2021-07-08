@@ -31,44 +31,44 @@ class ABSContentManagerShow(object):
 
     @abc.abstractproperty
     def showtitle(self):
-        """Path to the show_dir directory for the item."""
+        """Return showtitle str."""
 
     @abc.abstractproperty
     def season(self):
-        """Path to the season for the item."""
+        """Return season as interger"""
 
     @abc.abstractproperty
     def show_dir(self):
-        """Path to the show_dir directory for the item."""
+        """Return show_dir path."""
 
     @abc.abstractproperty
     def formedyear(self):
-        """Path to the formedyear directory for the item."""
+        """Return formedyear str."""
 
     @abc.abstractproperty
     def complete_episode_title(self):
-        """Path to the complete_episode_title directory for the item."""
+        """Return complete_episode_title str."""
 
     @abc.abstractproperty
     def file(self):
-        """Path to the episode_title_with_id directory for the item."""
+        """Return file (stream link) str."""
 
     @abc.abstractproperty
     def episode_title_with_id(self):
-        """Path to the episode_title_with_id directory for the item."""
+        """Return episode_title_with_id str."""
+
+    @abc.abstractproperty
+    def episode_id(self):
+        """Return episode_id str."""
 
     @abc.abstractproperty
     def episode_nfo(self):
-        """Path to the episode_nfo directory for the item."""
+        """Return episode_nfo str."""
 
     @abc.abstractmethod
     def add_to_library(self):
         """Add content to the library."""
         # TODO: add to library using json-rpc
-
-    @abc.abstractmethod
-    def add_to_library_if_metadata(self):
-        """Add content to the library only if it has metadata."""
 
     @abc.abstractmethod
     def remove_from_library(self):
@@ -123,36 +123,32 @@ class ABSContentManagerMovie(object):
 
     @abc.abstractproperty
     def file(self):
-        """Path to the episode_title_with_id directory for the item."""
+        """Return episode_title_with_id str."""
 
     @abc.abstractproperty
     def title(self):
-        """Path to the show_dir directory for the item."""
+        """Return title str."""
 
     @abc.abstractproperty
     def year(self):
-        """Path to the year for the item."""
+        """Return year str."""
 
     @abc.abstractproperty
     def formedyear(self):
-        """Path to the formedyear for the item."""
+        """Return formedyear str."""
 
     @abc.abstractproperty
     def movie_dir(self):
-        """Path to the movie_nfo for the item."""
+        """Return movie_dir str."""
 
     @abc.abstractproperty
     def movie_nfo(self):
-        """Path to the movie_nfo for the item."""
+        """Return movie_nfo str."""
 
     @abc.abstractmethod
     def add_to_library(self):
         """Add content to the library."""
         # TODO: add to library using json-rpc
-
-    @abc.abstractmethod
-    def add_to_library_if_metadata(self):
-        """Add content to the library only if it has metadata."""
 
     @abc.abstractmethod
     def remove_from_library(self):
@@ -166,7 +162,7 @@ class ABSContentManagerMovie(object):
     @abc.abstractmethod
     def create_metadata_item(self):
         """Add relevent files to metadata folder."""
-        
+
     @abc.abstractmethod
     def rename(self, name):
         """Rename title and files."""

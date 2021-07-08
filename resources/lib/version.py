@@ -86,10 +86,6 @@ def check_version_file():
         STR_UPDATED = ADDON.getLocalizedString(32134)
         xbmcgui.Dialog().notification(ADDON_NAME, STR_UPDATING,
                                       join(ADDON_PATH, 'ntf_icon.png'), 5000, True)
-        if version < '0.3.0':
-            # Update .pkl files
-            import resources.lib.update_pkl as update_pkl
-            update_pkl.main()
         if version < '0.4.0':
             # Maintain previous settings if managed folder is already set
             if ADDON.getSetting('managed_folder'):

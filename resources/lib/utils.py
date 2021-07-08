@@ -6,8 +6,6 @@
 import re
 import simplejson as json
 
-from os import name as osname
-
 from os.path import join
 from os.path import exists
 from os.path import expanduser
@@ -62,7 +60,7 @@ def check_subfolders():
             created_folders = True
 
     if created_folders:
-        STR_SUBFOLDERS_CREATED = getlocalizedstring(32127)
+        STR_SUBFOLDERS_CREATED = getstring(32127)
         notification(STR_SUBFOLDERS_CREATED)
         # TODO: Add video sources here
         xbmc.sleep(1)
@@ -404,16 +402,11 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 yield item
     directories = []
     for index, item in enumerate(listofitems):
-        if progressdialog.iscanceled() is True:
-            progressdialog.close()
-            break
-        percent = 100 * index / len(listofitems)
         if item['type'] == 'movie':
-            progressdialog.update(
-                int(percent),
+            progressdialog._update(
+                index / len(listofitems),
                 'Processando items:\n%s' % item['title']
             )
-            xbmc.sleep(200)
             if item:
                 yield item
         else:
@@ -425,16 +418,18 @@ def load_directory_items(progressdialog, _path, recursive=False,
             if item['filetype'] == 'directory':
                 if re_search(item['type'], ['season', 'tvshow']):
                     showtitle = item['showtitle']
-                    progressdialog.update(
-                        int(percent), 'Coletando itens no diretorio!\n%s' % item['label'])
-                    xbmc.sleep(200)
+                    progressdialog._update(
+                        index / len(listofitems),
+                        'Coletando itens no diretorio!\n%s' % item['label']
+                    )
                     directories.append(item)
             # if content is a episode, will be stored with yeld
             if item['type'] == 'episode':
                 # change type to 'tvshow' to padronize in build_contentitem
                 item['type'] = 'tvshow'
-                progressdialog.update(
-                    int(percent), 'Processando items:\n%s' % item['label']
+                progressdialog._update(
+                    index / len(listofitems),
+                    'Processando items:\n%s' % item['label']
                 )
                 xbmc.sleep(100)
                 item['showtitle'] = showtitle
@@ -497,8 +492,8 @@ def tojs(data, filename):
         pass
 
 
-def getlocalizedstring(string_id):
-    """Function to get call getLocalizedString and deal with unicodedecodeerrors."""
+def getstring(string_id):
+    """Shortcut function to return string from String ID."""
     return str(ADDON.getLocalizedString(string_id))
 
 

@@ -3,8 +3,6 @@
 
 """Defines the StagedMoviesMenu class."""
 
-import os
-
 import xbmcgui  # pylint: disable=import-error
 
 
@@ -12,8 +10,7 @@ from resources import ADDON_NAME
 from resources.lib.log import logged_function
 
 from resources.lib.utils import notification
-from resources.lib.utils import MANAGED_FOLDER
-from resources.lib.utils import getlocalizedstring
+from resources.lib.utils import getstring
 
 
 class StagedMoviesMenu(object):
@@ -23,50 +20,27 @@ class StagedMoviesMenu(object):
     # TODO: decorator for "...all" commands
     # TODO: load staged movies on init, use as instance variable, refresh as needed
 
-    def __init__(self, database):
+    def __init__(self, database, progressdialog):
         """__init__ StagedMoviesMenu."""
         self.database = database
-        self.progressdialog = xbmcgui.DialogProgress()
+        self.progressdialog = progressdialog
 
     @logged_function
     def add_all(self, items):
         """Add all staged movies to library."""
-        STR_ADDING_ALL_MOVIES = getlocalizedstring(32042)
-        STR_ALL_MOVIES_ADDED = getlocalizedstring(32043)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_ADDING_ALL_MOVIES
+        STR_ADDING_ALL_MOVIES = getstring(32042)
+        STR_ALL_MOVIES_ADDED = getstring(32043)
+        self.progressdialog._create(
+            msg=STR_ADDING_ALL_MOVIES
         )
         for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            self.progressdialog.update(
-                int(percent),
+            self.progressdialog._update(
+                index / len(items),
                 item.title
             )
             item.add_to_library()
-        self.progressdialog.close()
+        self.progressdialog._close()
         notification(STR_ALL_MOVIES_ADDED)
-
-    @logged_function
-    def add_all_with_metadata(self, items):
-        """Add all movies with nfo files to the library."""
-        STR_ADDING_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32044)
-        STR_ALL_MOVIES_WITH_METADTA_ADDED = getlocalizedstring(32045)
-        self.progressdialog.create(
-            ADDON_NAME,
-            STR_ADDING_ALL_MOVIES_WITH_METADATA
-        )
-        for index, item in enumerate(items):
-            percent = 100 * index / len(items)
-            if os.path.exists(item.movie_nfo[0]):
-                self.progressdialog.update(
-                    int(percent),
-                    item.title
-                )
-                item.add_to_library()
-            # self.progressdialog.update(int(percent), ' ') # TODO: remove it?
-        self.progressdialog.close()
-        notification(STR_ALL_MOVIES_WITH_METADTA_ADDED)
 
     @staticmethod
     def rename_dialog(item):
@@ -82,12 +56,12 @@ class StagedMoviesMenu(object):
     @logged_function
     def options(self, item):
         """Provide options for a single staged movie in a dialog window."""
-        STR_ADD = getlocalizedstring(32048)
-        STR_REMOVE = getlocalizedstring(32017)
-        STR_REMOVE_AND_BLOCK = getlocalizedstring(32049)
-        STR_RENAME = getlocalizedstring(32050)
-        STR_STAGED_MOVIE_OPTIONS = getlocalizedstring(32053)
-        STR_BACK = getlocalizedstring(32011)
+        STR_ADD = getstring(32048)
+        STR_REMOVE = getstring(32017)
+        STR_REMOVE_AND_BLOCK = getstring(32049)
+        STR_RENAME = getstring(32050)
+        STR_STAGED_MOVIE_OPTIONS = getstring(32053)
+        STR_BACK = getstring(32011)
         lines = [
             STR_ADD,
             STR_REMOVE,
@@ -124,14 +98,16 @@ class StagedMoviesMenu(object):
     @logged_function
     def remove_all(self):
         """Remove all staged movies."""
-        STR_REMOVING_ALL_MOVIES = getlocalizedstring(32013)
-        STR_ALL_MOVIES_REMOVED = getlocalizedstring(32014)
-        self.progressdialog.create(ADDON_NAME, STR_REMOVING_ALL_MOVIES)
-        self.database.remove_from(
-            status='staged',
-            _type='movie'
+        STR_REMOVING_ALL_MOVIES = getstring(32013)
+        STR_ALL_MOVIES_REMOVED = getstring(32014)
+        self.progressdialog._create(
+            msg=STR_REMOVING_ALL_MOVIES
         )
-        self.progressdialog.close()
+        self.database.delete_item_from_table_with_status_or_showtitle(
+            _type='movie',
+            status='staged'
+        )
+        self.progressdialog._close()
         notification(STR_ALL_MOVIES_REMOVED)
 
     @logged_function
@@ -141,12 +117,11 @@ class StagedMoviesMenu(object):
 
         Also provides additional options at bottom of menu.
         """
-        STR_NO_STAGED_MOVIES = getlocalizedstring(32037)
-        STR_ADD_ALL_MOVIES = getlocalizedstring(32038)
-        STR_ADD_ALL_MOVIES_WITH_METADATA = getlocalizedstring(32039)
-        STR_REMOVE_ALL_MOVIES = getlocalizedstring(32009)
-        STR_BACK = getlocalizedstring(32011)
-        STR_STAGED_MOVIES = getlocalizedstring(32041)
+        STR_NO_STAGED_MOVIES = getstring(32037)
+        STR_ADD_ALL_MOVIES = getstring(32038)
+        STR_REMOVE_ALL_MOVIES = getstring(32009)
+        STR_BACK = getstring(32011)
+        STR_STAGED_MOVIES = getstring(32004)
         staged_movies = list(
             self.database.get_content_items(
                 status='staged',
@@ -159,7 +134,6 @@ class StagedMoviesMenu(object):
         lines = [str(x) for x in staged_movies]
         lines += [
             STR_ADD_ALL_MOVIES,
-            STR_ADD_ALL_MOVIES_WITH_METADATA,
             STR_REMOVE_ALL_MOVIES,
             STR_BACK
         ]
@@ -174,9 +148,6 @@ class StagedMoviesMenu(object):
                         break
             elif lines[ret] == STR_ADD_ALL_MOVIES:
                 self.add_all(staged_movies)
-            elif lines[ret] == STR_ADD_ALL_MOVIES_WITH_METADATA:
-                self.add_all_with_metadata(staged_movies)
-                self.view_all()
             elif lines[ret] == STR_REMOVE_ALL_MOVIES:
                 self.remove_all()
             elif lines[ret] == STR_BACK:

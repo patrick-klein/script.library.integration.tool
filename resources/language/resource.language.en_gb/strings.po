@@ -25,19 +25,19 @@ msgid "Sync directory to library"
 msgstr ""
 
 msgctxt "#32002"
-msgid "Managed Movies"
+msgid "[COLOR darkgreen]Managed Movies[/COLOR]"
 msgstr ""
 
 msgctxt "#32003"
-msgid "Managed TV Shows"
+msgid "[COLOR darkgreen]Managed TV Shows[/COLOR]"
 msgstr ""
 
 msgctxt "#32004"
-msgid "Staged Movies"
+msgid "[COLOR darkslateblue]Staged Movies[/COLOR]"
 msgstr ""
 
 msgctxt "#32005"
-msgid "Staged TV Shows"
+msgid "[COLOR darkslateblue]Staged TV Shows[/COLOR]"
 msgstr ""
 
 msgctxt "#32006"
@@ -62,10 +62,6 @@ msgstr ""
 
 msgctxt "#32011"
 msgid "Back..."
-msgstr ""
-
-msgctxt "#32012"
-msgid "Managed Movies"
 msgstr ""
 
 msgctxt "#32013"
@@ -95,16 +91,8 @@ msgctxt "#32020"
 msgid "No managed TV shows"
 msgstr ""
 
-msgctxt "#32021"
-msgid "Remove all TV shows"
-msgstr ""
-
 msgctxt "#32022"
 msgid "Move all TV shows to staged"
-msgstr ""
-
-msgctxt "#32023"
-msgid "Managed TV Shows"
 msgstr ""
 
 msgctxt "#32024"
@@ -175,10 +163,6 @@ msgctxt "#32040"
 msgid "Create metadata for all itens"
 msgstr ""
 
-msgctxt "#32041"
-msgid "Staged Movies"
-msgstr ""
-
 msgctxt "#32042"
 msgid "Adding all movies..."
 msgstr ""
@@ -223,10 +207,6 @@ msgctxt "#32053"
 msgid "Staged Movie Options"
 msgstr ""
 
-msgctxt "#32054"
-msgid "No staged TV shows"
-msgstr ""
-
 msgctxt "#32055"
 msgid "Add all TV shows"
 msgstr ""
@@ -237,10 +217,6 @@ msgstr ""
 
 msgctxt "#32057"
 msgid "Remove all TV shows"
-msgstr ""
-
-msgctxt "#32058"
-msgid "Staged TV Shows"
 msgstr ""
 
 msgctxt "#32059"
@@ -583,28 +559,8 @@ msgctxt "#32144"
 msgid "Enable development options"
 msgstr ""
 
-msgctxt "#32148"
-msgid "Never"
-msgstr ""
-
-msgctxt "#32149"
-msgid "Always"
-msgstr ""
-
-msgctxt "#32150"
-msgid "Only items with metadata"
-msgstr ""
-
-msgctxt "#32151"
-msgid "Only items with episode ID"
-msgstr ""
-
-msgctxt "#32152"
-msgid "Add movies without staging"
-msgstr ""
-
 msgctxt "#32153"
-msgid "Add TV show items without staging"
+msgid "Automatically add to library?"
 msgstr ""
 
 msgctxt "#32154"
@@ -679,6 +635,10 @@ msgctxt "#32171"
 msgid "Remove all seasons"
 msgstr ""
 
+msgctxt "#32172"
+msgid "Move all seasons to staged"
+msgstr ""
+
 msgctxt "#32173"
 msgid "All seasons of %s moved to staged"
 msgstr ""
@@ -705,12 +665,32 @@ msgstr ""
 
 msgctxt "#32179"
 msgid "Library Integration Tool settings"
-msgstr ""
+msgstr "Library Integration Tool configurações"
 
 msgctxt "#32180"
 msgid "Library options"
+msgstr "Opções da biblioteca"
+
+msgctxt "#32181"
+msgid "Generating all seasons metadata..."
 msgstr ""
 
-msgctxt "#32172"
-msgid "Move all seasons to staged"
+msgctxt "#32182"
+msgid "All seasons metadata created"
+msgstr ""
+
+msgctxt "#32183"
+msgid "Generating all episodes metadata..."
+msgstr ""
+
+msgctxt "#32184"
+msgid "All episodes metadata created"
+msgstr ""
+
+msgctxt "#32185"
+msgid "Create metadada for episode"
+msgstr ""
+
+msgctxt "#32186"
+msgid "Create nfo automatically?"
 msgstr ""

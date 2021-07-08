@@ -3,15 +3,14 @@
 
 """Defines the ContentManagerShow class."""
 
-import re
 from os import listdir
 from os.path import join
 from os.path import isdir
-from os.path import exists
-from os.path import isfile
 from os.path import splitext
+from resources import AUTO_CREATE_NFO_SHOWS
+from resources import AUTO_CREATE_NFO_MOVIES
 
-from resources import USE_SHOW_ARTWORK
+# from resources import USE_SHOW_ARTWORK_SHOW
 from resources.lib.log import logged_function
 
 from resources.lib.filesystem import mkdir
@@ -85,6 +84,11 @@ class ContentManagerShow(ABSContentManagerShow):
         return self.jsondata['episode_title_with_id']
 
     @property
+    def episode_id(self):
+        """Return episode_id."""
+        return self.jsondata['episode_id']
+
+    @property
     def managed_episode_nfo_path(self):
         """Return managed_episode_nfo_path."""
         return ''.join([self.managed_episode_path, '.nfo'])
@@ -97,22 +101,17 @@ class ContentManagerShow(ABSContentManagerShow):
         # Create season_dir (tv show season folder) in managed/tvshow/show_dir/
         mkdir(self.managed_season_dir)
         # Create stream file
-        if create_stream_file(self.file, self.managed_strm_path):
-            # self.create_metadata_item()
-            self.database.update_content(
-                file=self.file,
-                status='managed',
-                _type='tvshow'
-            )
+        create_stream_file(self.file, self.managed_strm_path)
+        if AUTO_CREATE_NFO_MOVIES:
+            self.create_metadata_item()
+        if AUTO_CREATE_NFO_SHOWS:
+            self.create_metadata_item()
+        self.database.update_status_in_database(
+            file=self.file,
+            _type='tvshow',
+            status='managed'
+        )
         return True
-
-    @logged_function
-    # TODO: maybe this method is not necessay
-    # whem item is added from staged, the nfo and strm will be created
-    def add_to_library_if_metadata(self):
-        # """Add to library with metadata."""
-        if exists(self.managed_episode_nfo_path):
-            self.add_to_library()
 
     @logged_function
     def create_metadata_item(self):
@@ -125,29 +124,17 @@ class ContentManagerShow(ABSContentManagerShow):
             filepath=self.managed_tvshow_nfo,
             jsondata=self.jsondata
         )
+        mkdir(self.managed_season_dir)
         # Create a episode nfo in managed/tvshow/show_dir/Season X
         CreateNfo(
             _type='episodedetails',
             filepath=self.managed_episode_nfo_path,
             jsondata=self.jsondata
         )
-        # # Link metadata for episode if it exists
-        # if USE_SHOW_ARTWORK:
-        #     # Try show landscape or fanart (since Kodi can't generate thumb for strm)
-        #     if exists(self.metadata_landscape_path):
-        #         softlink_file(
-        #             self.metadata_landscape_path,
-        #             self.managed_landscape_path
-        #         )
-        #     elif exists(self.metadata_fanart_path):
-        #         softlink_file(
-        #             self.metadata_fanart_path,
-        #             self.metadata_fanart_path
-        #         )
-        self.database.update_content(
-            self.file,
-            title=self.jsondata['title'],
-            _type='tvshow'
+        self.database.update_title_in_database(
+            file=self.file,
+            _type='tvshow',
+            title=self.jsondata['title']
         )
 
     @logged_function
@@ -162,9 +149,9 @@ class ContentManagerShow(ABSContentManagerShow):
         # Delete nfo items
         delete_with_wildcard(splitext(self.managed_episode_nfo_path)[0])
         # Remove from db
-        self.database.remove_from(
+        self.database.delete_item_from_table(
             file=self.file,
-            _type='episode'
+            _type='tvshow'
         )
 
     @logged_function
@@ -208,17 +195,17 @@ class ContentManagerShow(ABSContentManagerShow):
 
     def delete(self):
         """Remove the item from the database."""
-        self.database.remove_from(
-            _type='tvshow',
-            file=self.file
+        self.database.delete_item_from_table(
+            file=self.file,
+            _type='tvshow'
         )
 
     def set_as_staged(self):
         """Set the item status as staged in database."""
-        self.database.update_content(
+        self.database.update_status_in_database(
             file=self.file,
-            status='staged',
-            _type='tvshow'
+            _type='tvshow',
+            status='staged'
         )
 
 
@@ -256,7 +243,6 @@ class ContentManagerMovie(ABSContentManagerMovie):
         return '(%s)' % self.jsondata['year']
 
     @property
-
     def managed_movie_dir(self):
         """Return managed_movie_dir."""
         return ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
@@ -277,10 +263,10 @@ class ContentManagerMovie(ABSContentManagerMovie):
             self.file,
             self.managed_strm_path
         )
-        self.database.update_content(
+        self.database.update_status_in_database(
             file=self.file,
-            status='managed',
-            _type='movie'
+            _type='movie',
+            status='managed'
         )
 
     @logged_function
@@ -294,19 +280,11 @@ class ContentManagerMovie(ABSContentManagerMovie):
             jsondata=self.jsondata
         )
 
-        self.database.update_content(
+        self.database.update_title_in_database(
             file=self.file,
             _type='movie',
-            title=self.jsondata['title'],
+            title=self.jsondata['title']
         )
-
-    @logged_function
-    # TODO: maybe this method is not necessay
-    # whem item is added from staged, the nfo and strm will be created
-    def add_to_library_if_metadata(self):
-        # """Add item to library with metadata."""
-        if exists(self.movie_nfo):
-            self.add_to_library()
 
     @logged_function
     def remove_and_block(self):
@@ -319,7 +297,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         # Delete metadata items
         remove_dir(self.managed_movie_dir)
         # Remove from db
-        self.database.remove_from(
+        self.database.delete_item_from_table(
             file=self.file,
             _type='movie'
         )
@@ -340,15 +318,15 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     def delete(self):
         """Remove the item from the database."""
-        self.database.remove_from(
-            _type='movie',
-            file=self.file
+        self.database.delete_item_from_table(
+            file=self.file,
+            _type='movie'
         )
 
     def set_as_staged(self):
         """Set the item status as staged in database."""
-        self.database.update_content(
+        self.database.update_status_in_database(
             file=self.file,
-            status='staged',
-            _type='movie'
+            _type='movie',
+            status='staged'
         )

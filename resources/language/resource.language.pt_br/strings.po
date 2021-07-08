@@ -25,20 +25,20 @@ msgid "Sync directory to library"
 msgstr "Sincronizar diretório com à Biblioteca"
 
 msgctxt "#32002"
-msgid "Managed Movies"
-msgstr "Filmes Gerenciados"
+msgid "[COLOR darkgreen]Managed Movies[/COLOR]"
+msgstr "[COLOR darkgreen]Filmes Gerenciados[/COLOR]"
 
 msgctxt "#32003"
-msgid "Managed TV Shows"
-msgstr "Séries Gerenciados"
+msgid "[COLOR darkgreen]Managed TV Shows[/COLOR]"
+msgstr "[COLOR darkgreen]Séries Gerenciadas[/COLOR]"
 
 msgctxt "#32004"
-msgid "Staged Movies"
-msgstr "Filmes Armazenados"
+msgid "[COLOR darkslateblue]Staged Movies[/COLOR]"
+msgstr "[COLOR darkslateblue]Filmes Armazenados[/COLOR]"
 
 msgctxt "#32005"
-msgid "Staged TV Shows"
-msgstr "Séries Armazenados"
+msgid "[COLOR darkslateblue]Staged TV Shows[/COLOR]"
+msgstr "[COLOR darkslateblue]Séries Armazenadas[/COLOR]"
 
 msgctxt "#32006"
 msgid "Synced Directories"
@@ -63,10 +63,6 @@ msgstr "Mover todos os Filmes para Armazenados"
 msgctxt "#32011"
 msgid "Back..."
 msgstr "Voltar..."
-
-msgctxt "#32012"
-msgid "Managed Movies"
-msgstr "Filmes Gerenciados"
 
 msgctxt "#32013"
 msgid "Removing all movies..."
@@ -96,17 +92,9 @@ msgctxt "#32020"
 msgid "No managed TV shows"
 msgstr ""
 
-msgctxt "#32021"
-msgid "Remove all TV shows"
-msgstr ""
-
 msgctxt "#32022"
 msgid "Move all TV shows to staged"
 msgstr "Mover todas as series de TV para armazenados"
-
-msgctxt "#32023"
-msgid "Managed TV Shows"
-msgstr ""
 
 msgctxt "#32024"
 msgid "Removing all TV shows..."
@@ -176,10 +164,6 @@ msgctxt "#32040"
 msgid "Create metadata for all itens"
 msgstr "Criar metadados para todos os itens"
 
-msgctxt "#32041"
-msgid "Staged Movies"
-msgstr ""
-
 msgctxt "#32042"
 msgid "Adding all movies..."
 msgstr ""
@@ -238,10 +222,6 @@ msgstr ""
 
 msgctxt "#32057"
 msgid "Remove all TV shows"
-msgstr ""
-
-msgctxt "#32058"
-msgid "Staged TV Shows"
 msgstr ""
 
 msgctxt "#32059"
@@ -584,29 +564,9 @@ msgctxt "#32144"
 msgid "Enable development options"
 msgstr "Habilitar opções de desenvolvimento"
 
-msgctxt "#32148"
-msgid "Never"
-msgstr "Nunca"
-
-msgctxt "#32149"
-msgid "Always"
-msgstr "Sempre"
-
-msgctxt "#32150"
-msgid "Only items with metadata"
-msgstr "Apenas itens com metadados"
-
-msgctxt "#32151"
-msgid "Only items with episode ID"
-msgstr "Apenas itens com ID de episódio"
-
-msgctxt "#32152"
-msgid "Add movies without staging"
-msgstr "Adicione filmes sem armazenar"
-
 msgctxt "#32153"
-msgid "Add TV show items without staging"
-msgstr "Adicionar itens de programas de TV sem armazenar"
+msgid "Automatically add to library?"
+msgstr "Adicionar automaticamente a biblioteca?"
 
 msgctxt "#32154"
 msgid "[B]Library Integration Tool Menu[/B]"
@@ -707,3 +667,35 @@ msgstr "Adicionar todas as temporadas"
 msgctxt "#32178"
 msgid "Add all seasons with metadata"
 msgstr "Adicionar todas as temporadas com metadados"
+
+msgctxt "#32179"
+msgid "Library Integration Tool settings"
+msgstr "Library Integration Tool configurações"
+
+msgctxt "#32180"
+msgid "Library options"
+msgstr "Opções da biblioteca"
+
+msgctxt "#32181"
+msgid "Generating all seasons metadata..."
+msgstr "Gerando metadados de todas as temporadas"
+
+msgctxt "#32182"
+msgid "All seasons metadata created"
+msgstr "Os metadados de todas as temporadas foram criados"
+
+msgctxt "#32183"
+msgid "Generating all episodes metadata..."
+msgstr "Gerando metadados de todas os episodios"
+
+msgctxt "#32184"
+msgid "All episodes metadata created"
+msgstr "Os metadados de todas os episodios foram criados"
+
+msgctxt "#32185"
+msgid "Create metadada for episode"
+msgstr "Criar metadado para o episódio"
+
+msgctxt "#32186"
+msgid "Create nfo automatically?"
+msgstr "Criar nfo de forma automatica?"
