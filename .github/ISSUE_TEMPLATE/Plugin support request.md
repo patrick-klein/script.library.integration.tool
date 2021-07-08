@@ -1,8 +1,17 @@
+Hi,
+
+No pirate addons like seren or similar will be supported: [here](https://forum.kodi.tv/showthread.php?tid=327514&page=10).
+
 ---
+
 name: Feature request
+
 about: Suggest an idea for this project
+
 title: ''
+
 labels: ''
+
 assignees: ''
 
 ---
