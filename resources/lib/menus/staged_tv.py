@@ -3,9 +3,6 @@
 
 """Defines the StagedTVMenu class."""
 
-import os.path
-
-import xbmc  # pylint: disable=import-error
 import xbmcgui  # pylint: disable=import-error
 
 from resources import ADDON_NAME
@@ -195,11 +192,12 @@ class StagedTVMenu(object):
         )
         self.progressdialog._close()
         notification(STR_ALL_x_EPISODES_REMOVED)
+
     # TODO: CONTINUE HERE
     @logged_function
     def remove_and_block_show(self, showtitle, season, episode):
         """Remove all itens from staged and add to blocked list."""
-        raise NotImplemented("Not Implemented")
+        raise NotImplementedError("Fix in future")
         # self.remove_all_shows
         # self.remove_all_seasons(showtitle)
         # self.remove_all_episodes
@@ -207,6 +205,7 @@ class StagedTVMenu(object):
         #     showtitle,
         #     'tvshow'
         # )
+
     # TODO: this method need update to follow dict style
     @logged_function
     def episode_options(self, item, season):
