@@ -8,6 +8,7 @@ from os.path import join
 from resources.lib.log import logged_function
 from resources.lib.abs.item import ABSItemMovie
 
+from resources.lib.manipulator import Cleaner
 from resources.lib.utils import MANAGED_FOLDER
 
 
@@ -17,8 +18,9 @@ class MovieItem(ABSItemMovie):
     def __init__(self, jsonitem, year=None):
         """__init__ MovieItem."""
         super(MovieItem, self).__init__(jsonitem, year)
+        self.cleaner = Cleaner()
         self._file = jsonitem['file']
-        self._title = jsonitem['title']
+        self._title = self.cleaner.title(title=jsonitem['title'])
         self._year = year if year else jsonitem['year']
 
     @property

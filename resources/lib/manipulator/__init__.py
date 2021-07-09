@@ -4,40 +4,58 @@
 """Module dedicate to manipulate title."""
 
 import os
+import re
 
 # TODO: Use combined list on all platforms. Would need to be combined with version check
 # to re-add all managed items
-MAPPED_STRINGS = [
-    ('.', ''),
-    (':', ''),
-    ('/', ''),
-    ('"', ''),
-    ('$', ''),
-    ('é', 'e'),
-    (' [cc]', ''),
-    ('Part 1', 'Part One'),
-    ('Part 2', 'Part Two'),
-    ('Part 3', 'Part Three'),
-    ('Part 4', 'Part Four'),
-    ('Part 5', 'Part Five'),
-    ('Part 6', 'Part Six'),
-]
+MAPPED_STRINGS = {
+    r' \[cc\]': ' ',
+    r'\(Legendado\)': ' ',
+    r'\(Leg\)': ' ',
+    r'\(Dub PT\)': ' ',
+    r'\(French Dub\)': ' ',
+    r'\(German Dub\)': ' ',
+    r'\(Portuguese Dub\)': ' ',
+    r'\(English Dub\)': ' ',
+    r'\(Spanish Dub\)': ' ',
+    r'\(Dublagens Internacionais\)': ' ',
+    r'\(Dublado .+?\)': ' ',
+    r'\s{1,3}S\d{1,5}\s{1,3}': ' ',
+    r'\s{1,4}\#\d{1,6}\s{1,4}\-\s{1,4}': ' ',
+    r'\.': ' ',
+    r'\:': ' ',
+    r'\/': ' ',
+    r'\"': ' ',
+    r'\$': ' ',
+    r'é': 'e',
+    r'Part 1': 'Part One',
+    r'Part 2': 'Part Two',
+    r'Part 3': 'Part Three',
+    r'Part 4': 'Part Four',
+    r'Part 5': 'Part Five',
+    r'Part 6': 'Part Six',
+    r'Final Season': ' ',
+    r'\s{1,10}': ' ',
+}
 
 if os.name == 'nt':
-    MAPPED_STRINGS += [
-        ('?', ''),
-        ('<', ''),
-        ('>', ''),
-        ('\\', ''),
-        ('*', ''),
-        ('|', ''),
-        #('+', ''),
-        #(',', ''),
-        #(';', ''),
-        #('=', ''),
-        #('[', ''),
-        #(']', ''),
-    ]
+    MAPPED_STRINGS += {
+        '?': ' ',
+        '<': ' ',
+        '>': ' ',
+        '\\': ' ',
+        '*': ' ',
+        '|': ' ',
+    }
+
+    # [
+    #('+', ''),
+    #(',', ''),
+    #(';', ''),
+    #('=', ''),
+    #('[', ''),
+    #(']', ''),
+    # ]
 
 # TODO: NETFLIX find a way to deal with show with Part 1,
 # Part 2 and etc, now, any part will be a season,
@@ -51,22 +69,24 @@ if os.name == 'nt':
 # use system language to auto select:
 
 
-def clean_name(title):
-    """Remove/replace problematic characters/substrings for filenames."""
-    # IDEA: Replace in title directly, not just filename
+class Cleaner(object):
+    """Class with methods to clear strings from content."""
 
-    # TODO: use this function to remove from Show/episode title on,
-    # Show title
-    # episode number
-    # (Legendado)
-    # (Leg)
-    # (Dub PT)
-    # (French Dub)
-    # (German Dub)
-    # (Portuguese Dub)
-    # (English Dub)
-    # (Spanish Dub)
-    # TODO: Efficient algorithm that removes/replaces in a single
-    for key, val in MAPPED_STRINGS:
-        title = title.replace(key, val)
-    return title
+    def __init__(self) -> None:
+        """Cleaner __init__."""
+        super().__init__()
+        self.strings = MAPPED_STRINGS
+
+    def showtitle(self, showtitle):
+        """Function to remove strings from showtitle."""
+        for key, val in self.strings.items():
+            showtitle = re.sub(key, val, showtitle)
+        return showtitle.strip()
+
+    def title(self, title, showtitle=None):
+        """Function to remove strings and showtitle from title."""
+        for key, val in self.strings.items():
+            title = re.sub(key, val, title)
+        return title.replace(self.showtitle(showtitle), ' ').strip()
+
+

@@ -5,7 +5,7 @@
 from os.path import join
 
 from resources.lib.utils import MANAGED_FOLDER
-from resources.lib.manipulator import clean_name
+from resources.lib.manipulator import Cleaner
 from resources.lib.log import logged_function
 
 from resources.lib.abs.item import ABSItemShow
@@ -17,9 +17,15 @@ class EpisodeItem(ABSItemShow):
     def __init__(self, jsonitem, year=None):
         """__init__ EpisodeItem."""
         super(EpisodeItem, self).__init__(jsonitem, year)
+        self.cleaner = Cleaner()
         self._file = jsonitem['file']
-        self._title = jsonitem['title']
-        self._showtitle = jsonitem['showtitle']
+        self._showtitle = self.cleaner.showtitle(
+            jsonitem['showtitle']
+        )
+        self._title = self.cleaner.title(
+            showtitle=jsonitem['showtitle'],
+            title=jsonitem['title']
+        )
         self._season = jsonitem['season']
         self._episode = jsonitem['episode']
         self._year = year if year else jsonitem['year']
@@ -32,12 +38,12 @@ class EpisodeItem(ABSItemShow):
     @property
     def title(self):
         """Return title."""
-        return clean_name(self._title)
+        return self._title
 
     @property
     def showtitle(self):
         """Show title with problematic characters removed."""
-        return str(clean_name(self._showtitle))
+        return self._showtitle
 
     @property
     def season(self):
