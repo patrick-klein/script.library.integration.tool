@@ -8,7 +8,7 @@ import xbmcaddon  # pylint: disable=import-error
 
 from resources.lib.version import Version
 from resources.lib.utils import re_search
-from resources.lib.manipulator import clean_name
+from resources.lib.manipulator import Cleaner, clean_name
 
 from resources import ADDON_NAME, ADDON_VERSION
 
@@ -61,6 +61,42 @@ TESTE_BLOCKED_QUERY = '''
 class TestUtils(unittest.TestCase):
     """Test cases for utils module."""
     @logged_function
+    def test_title_cleaner(self):
+        cleaner = Cleaner()
+        # db = Database()
+        # db.cur.execute(TITLE_CLEAR_TEST)
+        # db.conn.commit()
+        TITLES = {
+            'good_title': 'A Última Pessoa',
+            'bad_title': 'To Your Eternity (Portuguese Dub) #1 - A Última Pessoa',
+            'good_showtitle': 'To Your Eternity',
+            'bad_showtitle': 'To Your Eternity (Portuguese Dub)',
+        }
+        self.assertEqual(cleaner.title(
+            TITLES['bad_title'], TITLES['bad_showtitle']), TITLES['good_title'])
+        self.assertEqual(cleaner.showtitle(
+            TITLES['bad_showtitle']), TITLES['good_showtitle'])
+        # # # # # # # # # # # # # # # # # # # # # # #
+        # test_names = {
+        #     'test1.': 'test1',
+        #     'test2:': 'test2',
+        #     'test3/': 'test3',
+        #     'test4"': 'test4',
+        #     'test5 Part 1': 'test5 Part One',
+        #     'test6 Part 2': 'test6 Part Two',
+        #     'test7 Part 3': 'test7 Part Three',
+        #     'test8 Part 4': 'test8 Part Four',
+        #     'test9 Part 5': 'test9 Part Five',
+        #     'test10 Part 6': 'test10 Part Six',
+        #     'test11 [cc]': 'test11',
+        #     'test12.:/"Part 1Part 5Part 6 [cc]': 'test12Part OnePart FivePart Six',
+        #     'test13é': 'test13e',
+        #     'test14$': 'test14',
+        # }
+        # for key, value in test_names.items():
+        #     self.assertEqual(clean_name(key), value)
+
+    @logged_function
     def test_db_if_is_blocked(self):
         db = Database()
         db.cur.execute(TESTE_BLOCKED_QUERY)
@@ -69,8 +105,10 @@ class TestUtils(unittest.TestCase):
             'exist': 'I exist and need to be finded',
             'notexit': 'I dont exit and need be ignored',
         }
-        self.assertEqual(db.check_if_is_blocked(FAKE_BLOCK_TESTE['exist']), True)
-        self.assertEqual(db.check_if_is_blocked(FAKE_BLOCK_TESTE['notexit']), None)
+        self.assertEqual(db.check_if_is_blocked(
+            FAKE_BLOCK_TESTE['exist']), True)
+        self.assertEqual(db.check_if_is_blocked(
+            FAKE_BLOCK_TESTE['notexit']), None)
         db.delete_entrie_from_blocked(FAKE_BLOCK_TESTE['exist'], 'tvshow')
 
     @logged_function
@@ -113,17 +151,18 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(re_search(item['type'], ['unknown']), True)
         self.assertEqual(re_search(item2['type'], ['tvshow']), True)
         self.assertEqual(re_search(item['type'], ['unknown', 'tvshow']), True)
-        self.assertEqual(re_search(item['label'], ['season', 'temporada', r'S\d{1,4}']), True)
+        self.assertEqual(
+            re_search(item['label'], ['season', 'temporada', r'S\d{1,4}']), True)
         self.assertEqual(re_search(item3['label'], [
                          'season', 'temporada', r'S\d{1,4}']), True)
 
         self.assertNotEqual(re_search(item['type'], ['Xunknown']), True)
         self.assertNotEqual(re_search(item2['type'], ['Xtvshow']), True)
-        self.assertNotEqual(re_search(item['type'], ['Xunknown', 'Xtvshow']), True)
+        self.assertNotEqual(
+            re_search(item['type'], ['Xunknown', 'Xtvshow']), True)
 
         self.assertNotEqual(
             re_search(item2['label'], ['season', 'temporada', r'S\d{1,4}']), True)
-
 
     @logged_function
     def test_constants(self):
@@ -138,29 +177,6 @@ class TestUtils(unittest.TestCase):
             addon.getAddonInfo('version')
         )
         # TODO: test all contants, including type
-
-    @logged_function
-    def test_clean_name(self):
-        """Test keywords in clean_name."""
-        # TODO: Use MAPPED_STRINGS here
-        test_names = {
-            'test1.': 'test1',
-            'test2:': 'test2',
-            'test3/': 'test3',
-            'test4"': 'test4',
-            'test5 Part 1': 'test5 Part One',
-            'test6 Part 2': 'test6 Part Two',
-            'test7 Part 3': 'test7 Part Three',
-            'test8 Part 4': 'test8 Part Four',
-            'test9 Part 5': 'test9 Part Five',
-            'test10 Part 6': 'test10 Part Six',
-            'test11 [cc]': 'test11',
-            'test12.:/"Part 1Part 5Part 6 [cc]': 'test12Part OnePart FivePart Six',
-            'test13é': 'test13e',
-            'test14$': 'test14',
-        }
-        for key, value in test_names.items():
-            self.assertEqual(clean_name(key), value)
 
     @logged_function
     def test_version_comparison(self):
