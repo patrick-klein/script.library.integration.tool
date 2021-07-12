@@ -52,20 +52,13 @@ Forum Thread:
    the downloaded zip.
 3. Run Library Integration Tool for the first time. You will get a message
    letting you know the managed folder was configured.
-4. From Kodi Settings, go to Media Settings --> Library --> Videos.... If you
-   are using a custom managed folder, add it as a source here, otherwise add
-   `special://userdata/addon_data/script.library.integration.tool/`. Set content
-   for ManagedMovies to Movies and check "Movies are in separate folders that
-   match the movie title". Set content for ManagedTV to TV shows. If you plan on
-   using your own metadata, you may want to select "Local information only".
 
-NOTE: By default, the managed folder is in the addon userdata folder. You may
-open the settings for Library Integration Tool if you want to choose a custom
-managed folder instead.
+NOTE: The default paths for the library (managed dir) are:
 
-DISCLAIMER: Do not directly edit the contents of ManagedMovies, ManagedTV, or
-managed.db; you need to use the Library Integration Tool menu to edit these
-items.
+- `special://userdata/addon_data/script.library.integration.tool/`
+- `/home/username/.kodi/userdata/addon_data/script.library.integration.tool/`
+
+The paths above point to the same place.
 
 ### The purpose of LIT
 
@@ -168,3 +161,28 @@ update translated string files.
 For all known bugs and planned feature development, refer to inline TODO tags.
 And thank you for considering improving this project! Full credit for your
 contributions will be given in the release notes and here in the README.
+
+### If you are a Streaming Addon developer:
+
+LIT uses jsonrpc to collect the data that will be used to create the strms and 
+nfos, jsonrpc returns a daaaa json, containing the keys below, some are 
+mandatory as file and others are very important, such as type, showtitle, 
+episode, season year , in fact, by and large they are all essential, so when 
+creating the list of items fill in all of these items, by and large this will 
+just be part of the process you are already doing, but for LIT to make it easier.
+
+
+xbmcgui.ListItem: https://codedocs.xyz/AlwinEsch/kodi/group__python__xbmcgui__listitem.html#details
+
+- art
+- fanart
+- duration
+- season
+- title
+- file
+- showtitle
+- year
+- episode
+
+
+Thanks.
