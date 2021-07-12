@@ -4,7 +4,9 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/luizoti/script.library.integration.tool.svg)](https://github.com/luizoti/script.library.integration.tool/commits/Matrix)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2e2794f8e9fc49108aaa541a03c37ec4)](https://www.codacy.com/gh/luizoti/script.library.integration.tool/dashboard?utm_source=github.com\&utm_medium=referral\&utm_content=luizoti/script.library.integration.tool\&utm_campaign=Badge_Grade)
 
-<img src="https://foswiki.org/pub/Community/DonationButton/donate-button.png" width="258" height="100" href="https://www.paypal.com/donate?hosted_button_id=JM5MHUEW4W5AC"><img src="https://raw.githubusercontent.com/appcraftstudio/buymeacoffee/master/Images/snapshot-bmc-button.png" href="https://www.buymeacoffee.com/luizoti">
+[![](https://raw.githubusercontent.com/appcraftstudio/buymeacoffee/master/Images/snapshot-bmc-button.png)](https://www.buymeacoffee.com/luizoti)
+[![](https://foswiki.org/pub/Community/DonationButton/donate-button.png)](https://www.paypal.com/donate?hosted_button_id=JM5MHUEW4W5AC)
+
 
 </br>
 
