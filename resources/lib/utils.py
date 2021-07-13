@@ -344,26 +344,45 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             yield item
 
 
-def selected_list(results):
+def user_selection(results):
     """Open a dialog and show entries to user select."""
-    mapped = dict()
-    for index, item in enumerate(results):
-        mapped[index] = item
+    # ___ TODO: all select and multselect menus need
+    # something like this to facilitate reordering
+    # in alphabetical order.
+    sorted_labels = sorted([i['label'] for i in results])
+    _sorted = []
+    for i in sorted_labels:
+        for r in results:
+            if r['label'] == i:
+                _sorted.append(r)
+    # ___
     selection = xbmcgui.Dialog().multiselect(
         'Escolha:',
-        list(
-            x['label'] for x in skip_filter(
-                results,
-                'label',
-                SKIP_STRINGS
-            )
-        )
+        [x['label'] for x in _sorted]
     )
-    try:
+    if selection:
         for index in selection:
-            yield mapped[index]
-    except TypeError:
-        yield None
+            yield _sorted[index]
+
+
+def crunchyroll_language_menu(listofitems):
+    try:
+        if 'crunchyroll' in listofitems[0]['file']:
+            if listofitems[0]['type'] == 'season':
+                if bool(any(re.search(r'\(.+? Dub\)', i['title'], re.I) for i in listofitems)):
+                    sel = Select(
+                        heading="escolha uma linguagem",
+                        turnbold=True
+                    )
+                    sel.items(
+                        [i['title'] for i in listofitems]
+                    )
+                    return [listofitems[sel.show(
+                        back=False
+                    )['index']]]
+    except IndexError:
+        pass
+    return listofitems
 
 
 def load_directory_items(progressdialog, _path, recursive=False,
