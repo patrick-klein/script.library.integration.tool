@@ -4,7 +4,7 @@
 """Contains various constants and utility functions used thoughout the addon."""
 
 import re
-import simplejson as json
+import json
 
 from os.path import join
 from os.path import exists
