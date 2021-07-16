@@ -90,20 +90,40 @@ def execute_json_rpc(method, _path):
                 "method": method,
                 "params": {
                     'directory': _path,
-                    'properties': [
-                        'duration',
-                        'season',
-                        'title',
-                        'file',
-                        'showtitle',
-                        'year',
-                        'episode',
-                    ],
-                },
-                'id': 1
-            }, ensure_ascii=False)  # ensure_ascii ONLY scape charters in python3
-        )
-    )
+
+def jsonrpc_getdirectory(_path):
+    """
+    Execute a JSON-RPC with parameter Files.GetDirectory.
+
+    See https://kodi.wiki/view/JSON-RPC_API/v12 for methods and params.
+    """
+    try:
+        return json.loads(
+            xbmc.executeJSONRPC(
+                json.dumps({
+                    'jsonrpc': '2.0',
+                    "method": 'Files.GetDirectory',
+                    "params": {
+                        'directory': _path,
+                        'properties': [
+                            'art',
+                            'fanart',
+                            'duration',
+                            'season',
+                            'title',
+                            'file',
+                            'showtitle',
+                            'year',
+                            'episode',
+                        ],
+                    },
+                    'id': 1
+                }
+                )
+            )
+        )['result']['files']
+    except KeyError:
+        log_msg('KeyError in return of JSONRPC.')
 
 
 def videolibrary(method, database='video', path=None):
@@ -391,10 +411,9 @@ def load_directory_items(progressdialog, _path, recursive=False,
     """Load items in a directory using the JSON-RPC interface."""
     if RECURSION_LIMIT and depth > RECURSION_LIMIT:
         yield []
-    results = execute_json_rpc(
-        'Files.GetDirectory',
+    results = jsonrpc_getdirectory(
         _path=_path
-    )['result']['files']
+    )
     if sync_type == 'filter':
         sync_type = 'all_items'
         results = list(selected_list(results))
