@@ -22,28 +22,41 @@ Forum Thread:
 
 - **Kodi 19+**
 
-## Tested with this streaming addons
+## Working addons:
 
-- NETFLIX - *Works*
-- AMAZON VOD - *Works*
-- CRUNCHYROLL - *Works*
-- DISNEY+ - *Works*
+- [x] NETFLIX
+- [x] AMAZON VOD
+- [x] CRUNCHYROLL
+- [x] DISNEY+
 
-<!-- * ~~ABC Family - by t1m~~ - *Seems to be broken at the moment*
-- Classic Cinema - by Jonathan Beluch (jbel)
-- Cooking Channel - by t1m
-- Comedy Central - by Lunatixz - _Great content and all videos have episode
-  numbers_
-- Crackle - by eracknaphobia
-- DIY Network - by t1m
-- Food Network - by t1m
-- HGTV - by t1m
-- Popcornflix - by t1m - _Lots of content, but most have low ratings_
-- Travel Channel - by t1m
-- TV Land - by Lunatixz - _Double check episode numbers before scraping_
-- WABC Programs - by t1m - _Do not sync entire directory due to infinite load
-  times for some items, but works well with individual TV shows_
-- WNBC Programs - by t1m - _Huge amount of content, but slow to update_ -->
+## NOT working addons:
+
+Pirate addons will not be supported, more information can be read here: [read](https://forum.kodi.tv/showthread.php?tid=327514&pid=3043067#pid3043067)
+
+I only added support to paid addons that I have access to, the ones I don't have won't work, if you have a paid addon and want it to work with LIT, submit a PR adding support to it or wait until it's possible to include it, donations are fine too coming, subscriptions are not cheap.
+
+In many cases it is possible to add movies from addons without support, TV series are the biggest problem, so be free to try.
+
+Music addons may be added in the future, the LIT structure itself supports it, but so far there is no real written code to deal with music.
+
+- [ ] Sansung TV Plus
+- [ ] Pluto TV
+- [ ] HBO Max
+- [ ] ABC Family
+- [ ] Classic Cinema
+- [ ] Cooking Channel
+- [ ] Comedy Central
+- [ ] Crackle
+- [ ] DIY Network
+- [ ] Food Network
+- [ ] HGTV
+- [ ] Popcornflix
+- [ ] Travel Channel
+- [ ] TV Land
+- [ ] WABC Programs
+- [ ] WNBC Programs
+- [ ] BBC iPlayer
+
 
 ## Installation Matrix
 
