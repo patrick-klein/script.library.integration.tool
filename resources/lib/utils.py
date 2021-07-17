@@ -206,10 +206,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
         item['number'] = index + 1
         # 1601 é o ano que aparece quando a informação de ano correta não existe
         if item['year'] == 1601:
-            if year is not False:
-                item['year'] = int(year)
-            else:
-                del item['year']
+            item['year'] = 0
 
         # MOVIES: detect movies in dir
         if item['filetype'] == 'file' and item['type'] == 'movie':
