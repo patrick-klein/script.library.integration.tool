@@ -131,11 +131,11 @@ def entrypoint(func):
     return wrapper
 
 
-def execute_json_rpc(method, _path):
+def jsonrpc_generic(method, _path):
     """
-    Execute a JSON-RPC command with specified method and params (as keyword arguments).
+    Execute a JSON-RPC for command.
 
-    See https://kodi.wiki/view/JSON-RPC_API/v10 for methods and params.
+    See https://kodi.wiki/view/JSON-RPC_API/v12 for methods and params.
     """
     return json.loads(
         xbmc.executeJSONRPC(
@@ -144,6 +144,11 @@ def execute_json_rpc(method, _path):
                 "method": method,
                 "params": {
                     'directory': _path,
+                }, 'id': 1
+            },)
+        )
+    )
+
 
 def jsonrpc_getdirectory(_path):
     """
