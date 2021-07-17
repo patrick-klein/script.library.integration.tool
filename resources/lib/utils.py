@@ -23,6 +23,7 @@ from resources import USING_CUSTOM_MANAGED_FOLDER
 
 from resources.lib.log import log_msg
 from resources.lib.filesystem import mkdir
+from resources.lib.dialog_select import Select
 from resources.lib.version import check_version_file
 
 
@@ -98,7 +99,7 @@ def check_managed_folder():
 
 
 def check_subfolders():
-    """Check the subfolders in the Managed and Metadata folders."""
+    """Check the subfolders in the Managed and folders."""
     # Create subfolders if they don't exist
     subfolders = {
         'movies': MANAGED_FOLDER,
@@ -234,6 +235,7 @@ def is_season(string):
             ['season', 'temporada', r'S\d{1,4}']
         )
     )
+
 
 def list_reorder(contents_json, showtitle, sync_type=False):
     """Return a list of elements reordered by number id."""
@@ -410,16 +412,15 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                     # NETFLIX EPISODE FILE
                     if item['type'] == 'episode':
                         if re_search(item['file'], ['show', 'season', 'episode']):
+                            if item['episode'] != item['number']:
+                                item['episode'] = item['number']
                                 reordered[index] = item
+                            else:
+                                reordered[item['episode'] - 1] = item
                             try:
                                 years.append(item['year'])
                             except KeyError:
                                 pass
-                            if item['episode'] != item['number']:
-                                item['episode'] = item['number']
-                                reordered[item['number'] - 1] = item
-                            else:
-                                reordered[item['episode'] - 1] = item
             # this part of code detect episodes with < 30 in season with 'Next Page'
             # works with CRUNCHYROLL, but can work for all
             if item['filetype'] == 'file' and item['type'] == 'episode':
@@ -491,7 +492,8 @@ def crunchyroll_language_menu(results):
                             )
                             selection = sel.show(back=False)['str']
                             try:
-                                crunchyroll_language_selected = re.findall(lang_regex, selection, re.I)[0]
+                                crunchyroll_language_selected = re.findall(
+                                    lang_regex, selection, re.I)[0]
                             except IndexError:
                                 crunchyroll_language_selected = selection
                     else:
