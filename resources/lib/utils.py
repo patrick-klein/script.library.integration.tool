@@ -291,7 +291,9 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                         item['type'] = 'season'
                         if showtitle:
                             item['showtitle'] = showtitle
-                        if item['season'] == 0:
+                        # TODO: maybe get season is not necessay in
+                        # crunchyroll season
+                        if item['season'] == 0 or -1:
                             item['season'] = 1
                         else:
                             item['season'] = int(
@@ -306,7 +308,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                         # here
                         item['episode'] = item['number']
                         item['type'] = 'episode'
-                        if item['season'] == 0:
+                        if item['season'] == 0 or -1:
                             item['season'] = 1
                         else:
                             item['season'] = int(
