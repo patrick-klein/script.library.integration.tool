@@ -385,24 +385,49 @@ def user_selection(results):
             yield _sorted[index]
 
 
-def crunchyroll_language_menu(listofitems):
+crunchyroll_language_selected = None
+def crunchyroll_language_menu(results):
+    """Menu to select language for crunchyroll."""
+    global crunchyroll_language_selected
+    # TODO: verificar a possibilidade de
+    # adicionar uma opção nas configurações.
+    lang_regex = r'\(.+? Dub\)|\(Leg\)|\(Dub .+?\)'
     try:
-        if 'crunchyroll' in listofitems[0]['file']:
-            if listofitems[0]['type'] == 'season':
-                if bool(any(re.search(r'\(.+? Dub\)', i['title'], re.I) for i in listofitems)):
-                    sel = Select(
-                        heading="escolha uma linguagem",
-                        turnbold=True
-                    )
-                    sel.items(
-                        [i['title'] for i in listofitems]
-                    )
-                    return [listofitems[sel.show(
-                        back=False
-                    )['index']]]
-    except IndexError:
+        for item in results:
+            is_language_episode = bool(
+                any(re.search(lang_regex, i['label'], re.I) for i in results))
+            if 'crunchyroll' in item['file'] and item['filetype'] == 'directory':
+                if re_search(item['file'], r'mode\=series'):
+                    yield item
+                elif re_search(item['file'], r'mode\=episodes'):
+                    if is_language_episode:
+                        if not crunchyroll_language_selected:
+                            sel = Select(
+                                heading="Select one language:",
+                                turnbold=True
+                            )
+                            sel.items(
+                                [i['label'] for i in results]
+                            )
+                            selection = sel.show(back=False)['str']
+                            try:
+                                crunchyroll_language_selected = re.findall(lang_regex, selection, re.I)[0]
+                            except IndexError:
+                                crunchyroll_language_selected = selection
+                    else:
+                        yield item
+            elif not is_language_episode:
+                yield item
+    except Exception:
         pass
-    return listofitems
+    if crunchyroll_language_selected:
+        for lang_dir in results:
+            if not '(' in crunchyroll_language_selected:
+                if crunchyroll_language_selected == lang_dir['label']:
+                    yield lang_dir
+            elif '(' in crunchyroll_language_selected:
+                if crunchyroll_language_selected in lang_dir['label']:
+                    yield lang_dir
 
 
 def load_directory_items(progressdialog, _path, recursive=False,
