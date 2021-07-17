@@ -364,7 +364,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
             yield item
 
 
-def user_selection(results):
+def user_selection_menu(results):
     """Open a dialog and show entries to user select."""
     # ___ TODO: all select and multselect menus need
     # something like this to facilitate reordering
@@ -376,13 +376,13 @@ def user_selection(results):
             if r['label'] == i:
                 _sorted.append(r)
     # ___
-    selection = xbmcgui.Dialog().multiselect(
+    selected_itens = xbmcgui.Dialog().multiselect(
         'Escolha:',
         [x['label'] for x in _sorted]
     )
-    if selection:
-        for index in selection:
-            yield _sorted[index]
+    if selected_itens:
+        for index in selected_itens:
+            yield _sorted[index['number'] - 1]
 
 
 crunchyroll_language_selected = None
