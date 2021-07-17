@@ -24,10 +24,10 @@ Forum Thread:
 
 ## Working addons:
 
-- [x] NETFLIX
-- [x] AMAZON VOD
-- [x] CRUNCHYROLL
-- [x] DISNEY+
+- [x] Netflix
+- [x] Amazon VOD
+- [x] Crunchyroll
+- [x] Disney+
 
 ## NOT working addons:
 
