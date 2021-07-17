@@ -219,29 +219,44 @@ def list_reorder(contents_json, showtitle, sync_type=False):
             if 'crunchyroll' in item['file']:
                 # CRUNCHYROLL SHOW DIRECTORY
                 if item['filetype'] == 'directory':
-                    if re_search(item['type'], ['tvshow', 'unknown']):
-                        if re_search(item['file'], [r'mode\=series']):
+                    if re_search(item['file'], r'mode\=series'):
+                        if item['season'] == -1:
                             item['type'] = 'tvshow'
                             del item['episode']
                             del item['season']
                             del item['title']
                             reordered[index] = item
                     # CRUNCHYROLL SEASON DIRECTORY
-                    if item['type'] == 'unknown':
-                        if not re_search(item['file'], [r'mode\=series']):
-                            if not re_search(item['file'], [r'episode\=']):
-                                del item['episode']
-                                item['type'] = 'season'
-                                item['showtitle'] = showtitle
-                                if item['season'] == 0:
-                                    item['season'] = 1
+                    if re_search(item['file'], r'mode\=episodes'):
+                        item['type'] = 'season'
+                        if showtitle:
+                            item['showtitle'] = showtitle
+                        if item['season'] == 0:
+                            item['season'] = 1
+                        else:
+                            item['season'] = int(
+                                re.findall(
+                                    r'season\=(.+?)',
+                                    item['file'])[0]
+                            )
                         reordered[index] = item
                 elif item['filetype'] == 'file':
                     # CRUNCHYROLL EPISODE FILE
-                    if re_search(item['file'], [r'episode\=']):
+                    if re_search(item['file'], r'mode\=videoplay'):
+                        # here
+                        item['episode'] = item['number']
                         item['type'] = 'episode'
                         if item['season'] == 0:
                             item['season'] = 1
+                        else:
+                            item['season'] = int(
+                                re.findall(
+                                    r'season\=(.+?)',
+                                    item['file'])[0]
+                            )
+                        # TODO: Maybe year can be collected from file
+                        # with regex but aparently not all shows has year=XXXX info
+                        # maybe premiered=XXXX or aired=XXXX can work
                         try:
                             years.append(item['year'])
                         except KeyError:
