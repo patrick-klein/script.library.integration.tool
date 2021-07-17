@@ -160,7 +160,15 @@ def skip_filter(contents_json, _key, toskip):
         yield None
 
 
-def list_reorder(contents_json, showtitle, year=False, sync_type=False):
+def is_season(string):
+    return bool(
+        re_search(
+            string,
+            ['season', 'temporada', r'S\d{1,4}']
+        )
+    )
+
+def list_reorder(contents_json, showtitle, sync_type=False):
     """Return a list of elements reordered by number id."""
     reordered = [''] * len(contents_json)
     years = []
@@ -168,10 +176,6 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
     stored_season = None
     for index, item in enumerate(contents_json):
         # TODO: check if logic is real necessary, test is for all languages eficient
-        IS_A_SEASON = re_search(
-            item['label'],
-            ['season', 'temporada', r'S\d{1,4}']
-        )
         if sync_type != 'all_items':
             if sync_type == 'movie' and item['type'] == 'movie':
                 pass
@@ -246,7 +250,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                 if item['filetype'] == 'directory':
                     # AMAZON SHOW DIRECTORY
                     if item['episode'] == -1:
-                        if not IS_A_SEASON:
+                        if not is_season(item['label']):
                             if re_search(item['type'], ['tvshow', 'unknown']):
                                 item['type'] = 'tvshow'
                                 item['showtitle'] = item['label']
@@ -254,7 +258,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                                 del item['season']
                                 reordered[item['number'] - 1] = item
                     # AMAZON SEASON DIRECTORY
-                    if IS_A_SEASON is True:
+                    if is_season(item['label']):
                         del item['episode']
                         del item['number']
                         item['type'] = 'season'
@@ -280,7 +284,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                 if item['filetype'] == 'directory':
                     if item['type'] == 'tvshow':
                         if item['season'] == -1:
-                            if IS_A_SEASON is False:
+                            if not is_season(item['label']):
                                 item['showtitle'] = item['title']
                                 item['type'] = 'tvshow'
                                 del item['episode']
@@ -288,7 +292,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                                 reordered[item['number'] - 1] = item
                     # DISNEY SEASON DIRECTORY
                     if item['type'] == 'unknown':
-                        if IS_A_SEASON is True:
+                        if is_season(item['label']):
                             item['showtitle'] = showtitle
                             del item['episode']
                             item['type'] = 'season'
@@ -318,7 +322,7 @@ def list_reorder(contents_json, showtitle, year=False, sync_type=False):
                     if item['type'] == 'unknown':
                         if re_search(item['file'], ['show', 'season']):
                             if not re_search(item['file'], ['episode']):
-                                if IS_A_SEASON is True:
+                                if is_season(item['label']):
                                     item['showtitle'] = showtitle
                                     item['type'] = 'season'
                                     del item['episode']
