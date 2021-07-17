@@ -469,12 +469,14 @@ def user_selection_menu(results):
 
 
 crunchyroll_language_selected = None
+
+
 def crunchyroll_language_menu(results):
     """Menu to select language for crunchyroll."""
     global crunchyroll_language_selected
     # TODO: verificar a possibilidade de
     # adicionar uma opção nas configurações.
-    lang_regex = r'\(.+? Dub\)|\(Leg\)|\(Dub .+?\)'
+    lang_regex = r'\(.+? Dub\)|\(Leg\)|\(Dub.+?\)'
     try:
         for item in results:
             is_language_episode = bool(
