@@ -34,6 +34,60 @@ else:
     )
 
 
+def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
+    """Provide a shorthand for xbmc builtin notification with addon name."""
+    xbmcgui.Dialog().notification(
+        ADDON_NAME,
+        str(message),
+        icon,
+        time,
+        True
+    )
+
+
+def tojs(data, filename):
+    """Function to create a json file."""
+    try:
+        with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
+            f.write(str(json.dumps(data, indent=4, sort_keys=True)))
+            f.close()
+    except AttributeError:
+        pass
+
+
+def getstring(string_id):
+    """Shortcut function to return string from String ID."""
+    return str(ADDON.getLocalizedString(string_id))
+
+
+def title_with_color(label, year=None, color='mediumslateblue'):
+    """Create a string to use in title Dialog().select."""
+    # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
+    # TODO: this function can be better, maybe led generic,
+    # now, this func add color and year to movie title,
+    # and any of this actions can be splited
+    if year:
+        return str('[COLOR %s][B]%s (%s)[/B][/COLOR]' % (color, label, year))
+    return str('[COLOR %s][B]%s[/B][/COLOR]' % (color, label))
+
+
+def color(string, colorname='mediumslateblue'):
+    """
+    Return string formated with a selected color.
+    lawngreen
+    mediumseagreen
+    """
+    # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
+    return str('[COLOR %s]%s[/COLOR]' % (colorname, string))
+
+
+def bold(string):
+    """
+    Return string formated with a bold.
+    """
+    return str('[B]%s[/B]' % (string))
+
+
 def check_managed_folder():
     """Check if the managed folder is configured."""
     if not exists(MANAGED_FOLDER):
@@ -553,57 +607,3 @@ def load_directory_items(progressdialog, _path, recursive=False,
             for new in new_items:
                 if item:
                     yield new
-
-
-def notification(message, time=3000, icon=join(ADDON_PATH, 'ntf_icon.png')):
-    """Provide a shorthand for xbmc builtin notification with addon name."""
-    xbmcgui.Dialog().notification(
-        ADDON_NAME,
-        message,
-        icon,
-        time,
-        True
-    )
-
-
-def tojs(data, filename):
-    """Function to create a json file."""
-    try:
-        with open(join(expanduser('~/'), filename) + '.json', 'a+') as f:
-            f.write(str(json.dumps(data, indent=4, sort_keys=True)))
-            f.close()
-    except AttributeError:
-        pass
-
-
-def getstring(string_id):
-    """Shortcut function to return string from String ID."""
-    return str(ADDON.getLocalizedString(string_id))
-
-
-def title_with_color(label, year=None, color='mediumslateblue'):
-    """Create a string to use in title Dialog().select."""
-    # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
-    # TODO: this function can be better, maybe led generic,
-    # now, this func add color and year to movie title,
-    # and any of this actions can be splited
-    if year:
-        return str('[COLOR %s][B]%s (%s)[/B][/COLOR]' % (color, label, year))
-    return str('[COLOR %s][B]%s[/B][/COLOR]' % (color, label))
-
-
-def color(string, colorname='mediumslateblue'):
-    """
-    Return string formated with a selected color.
-    lawngreen
-    mediumseagreen
-    """
-    # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
-    return str('[COLOR %s]%s[/COLOR]' % (colorname, string))
-
-
-def bold(string):
-    """
-    Return string formated with a bold.
-    """
-    return str('[B]%s[/B]' % (string))
