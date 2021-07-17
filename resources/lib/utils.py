@@ -456,8 +456,8 @@ def user_selection_menu(results):
         [x['label'] for x in _sorted]
     )
     if selected_itens:
-        for index in selected_itens:
-            yield _sorted[index['number'] - 1]
+        for index_int in selected_itens:
+            yield _sorted[index_int]
 
 
 crunchyroll_language_selected = None
