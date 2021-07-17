@@ -516,7 +516,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
     )
     if sync_type == 'filter':
         sync_type = 'all_items'
-        results = list(selected_list(results))
+        results = list(user_selection_menu(results))
     try:
         filtered = list(skip_filter(
             results,
@@ -524,25 +524,25 @@ def load_directory_items(progressdialog, _path, recursive=False,
             SKIP_STRINGS
         )
         )
-        listofitems = list(
+        results = list(crunchyroll_language_menu(filtered))
+        results = list(
             list_reorder(
-                filtered,
+                results,
                 showtitle=showtitle,
-                year=year,
                 sync_type=sync_type
             )
         )
     except (KeyError, TypeError):
-        listofitems = []
+        results = []
     if not allow_directories:
-        for item in listofitems:
+        for item in results:
             if item and item['filetype'] == 'file':
                 yield item
     directories = []
-    for index, item in enumerate(listofitems):
+    for index, item in enumerate(results):
         if item['type'] == 'movie':
             progressdialog._update(
-                index / len(listofitems),
+                index / len(results),
                 'Processando items:\n%s' % item['title']
             )
             if item:
@@ -557,7 +557,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 if re_search(item['type'], ['season', 'tvshow']):
                     showtitle = item['showtitle']
                     progressdialog._update(
-                        index / len(listofitems),
+                        index / len(results),
                         'Coletando itens no diretorio!\n%s' % item['label']
                     )
                     directories.append(item)
@@ -566,10 +566,9 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 # change type to 'tvshow' to padronize in build_contentitem
                 item['type'] = 'tvshow'
                 progressdialog._update(
-                    index / len(listofitems),
+                    index / len(results),
                     'Processando items:\n%s' % item['label']
                 )
-                xbmc.sleep(100)
                 item['showtitle'] = showtitle
                 if item:
                     yield item
