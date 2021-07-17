@@ -147,7 +147,16 @@ SKIP_STRINGS = [
 
 def re_search(string, tosearch=None):
     """Function check if string exist with re."""
-    return bool(any(re.search(rgx, string, re.I) for rgx in tosearch))
+    tosearch = tosearch if isinstance(tosearch, list) else [tosearch]
+    return bool(
+        any(
+            re.search(
+                rgx,
+                string,
+                re.I
+            ) for rgx in tosearch
+        )
+    )
 
 
 def skip_filter(contents_json, _key, toskip):
