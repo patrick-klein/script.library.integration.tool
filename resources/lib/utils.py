@@ -135,13 +135,12 @@ def videolibrary(method, database='video', path=None):
     xbmc.executebuiltin(command[method])
 
 
-
 SKIP_STRINGS = [
     'resumo',
     'suggested',
     'extras',
     'trailer',
-    r'(?i)\#(?:\d{1,5}\.\d{1,5}|SP)',
+    r'\#(?:\d{1,5}\.\d{1,5}|SP)',
 ]
 
 
