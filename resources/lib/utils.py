@@ -207,7 +207,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
             del item['episode']
             del item['season']
             del item['showtitle']
-            reordered[item['number'] - 1] = item
+            reordered[index] = item
         else:
             # CRUNCHYROLL
             if 'crunchyroll' in item['file']:
@@ -219,7 +219,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                             del item['episode']
                             del item['season']
                             del item['title']
-                            reordered[item['number'] - 1] = item
+                            reordered[index] = item
                     # CRUNCHYROLL SEASON DIRECTORY
                     if item['type'] == 'unknown':
                         if not re_search(item['file'], [r'mode\=series']):
@@ -229,11 +229,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                                 item['showtitle'] = showtitle
                                 if item['season'] == 0:
                                     item['season'] = 1
-                                try:
-                                    years.append(item['year'])
-                                except KeyError:
-                                    pass
-                                reordered[item['number'] - 1] = item
+                        reordered[index] = item
                 elif item['filetype'] == 'file':
                     # CRUNCHYROLL EPISODE FILE
                     if re_search(item['file'], [r'episode\=']):
@@ -244,7 +240,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                             years.append(item['year'])
                         except KeyError:
                             pass
-                        reordered[item['number'] - 1] = item
+                        reordered[index] = item
             # AMAZON
             if 'amazon' in item['file']:
                 if item['filetype'] == 'directory':
@@ -256,7 +252,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                                 item['showtitle'] = item['label']
                                 del item['episode']
                                 del item['season']
-                                reordered[item['number'] - 1] = item
+                                reordered[index] = item
                     # AMAZON SEASON DIRECTORY
                     if is_season(item['label']):
                         del item['episode']
@@ -289,7 +285,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                                 item['type'] = 'tvshow'
                                 del item['episode']
                                 del item['season']
-                                reordered[item['number'] - 1] = item
+                                reordered[index] = item
                     # DISNEY SEASON DIRECTORY
                     if item['type'] == 'unknown':
                         if is_season(item['label']):
@@ -317,7 +313,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                         if not re_search(item['file'], ['season', 'episode']):
                             del item['episode']
                             del item['season']
-                            reordered[item['number'] - 1] = item
+                            reordered[index] = item
                     # NETFLIX SEASON DIRECTORY
                     if item['type'] == 'unknown':
                         if re_search(item['file'], ['show', 'season']):
@@ -335,6 +331,7 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                     # NETFLIX EPISODE FILE
                     if item['type'] == 'episode':
                         if re_search(item['file'], ['show', 'season', 'episode']):
+                                reordered[index] = item
                             try:
                                 years.append(item['year'])
                             except KeyError:
