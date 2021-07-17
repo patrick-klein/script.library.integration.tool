@@ -69,13 +69,13 @@ class Cleaner(object):
     def showtitle(self, showtitle):
         """Function to remove strings from showtitle."""
         for key, val in self.strings.items():
-            showtitle = re.sub(key, val, showtitle)
+            showtitle = re.sub(key, val, str(showtitle))
         return showtitle.strip()
 
     def title(self, title, showtitle=None):
         """Function to remove strings and showtitle from title."""
         for key, val in self.strings.items():
-            title = re.sub(key, val, title)
+            title = re.sub(key, val, str(title))
         return title.replace(self.showtitle(showtitle), ' ').strip()
 
 
