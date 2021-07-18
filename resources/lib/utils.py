@@ -241,8 +241,6 @@ def list_reorder(contents_json, showtitle, sync_type=False):
     """Return a list of elements reordered by number id."""
     reordered = [''] * len(contents_json)
     years = []
-    stored_title = None
-    stored_season = None
     for index, item in enumerate(contents_json):
         # TODO: check if logic is real necessary, test is for all languages eficient
         if sync_type != 'all_items':
@@ -423,20 +421,6 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                                 years.append(item['year'])
                             except KeyError:
                                 pass
-            # this part of code detect episodes with < 30 in season with 'Next Page'
-            # works with CRUNCHYROLL, but can work for all
-            if item['filetype'] == 'file' and item['type'] == 'episode':
-                if stored_season and stored_title is None:
-                    stored_title = item['showtitle']
-                    stored_season = item['season']
-                if (item['season'] == stored_season and
-                        item['showtitle'] == stored_title and
-                        item['episode'] < 30):
-                    item['episode'] = item['number']
-                if item['season'] != stored_season:
-                    stored_season = item['season']
-                if item['showtitle'] != stored_title:
-                    stored_title = item['showtitle']
     for item in reordered:
         if item:
             try:
