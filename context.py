@@ -38,12 +38,12 @@ LIST_TYPE_MOVIES = ['movie', 'PlayVideo', 'play&_play']
 @entrypoint
 def main():
     """Main entrypoint for context menu item."""
-    label = sys.listitem.getLabel()  # pylint: disable=E1101
+    title = sys.listitem.getLabel()  # pylint: disable=E1101
     year = xbmc.getInfoLabel('ListItem.Year')
     year = int(year) if year else False
     file = sys.listitem.getPath()  # pylint: disable=E1101
     STR_FORMED_TYPE_OF_CONTENT = '%s - %s' % (
-        title_with_color(label=label, year=year),
+        title_with_color(label=title, year=year),
         STR_CHOOSE_CONTENT_TYPE
     )
     lines = [
@@ -65,14 +65,14 @@ def main():
         if selection == STR_IS_A_MOVIE:
             if re_search(file, LIST_TYPE_MOVIES):
                 syncedmenu.add_single_movie(
-                    title=label,
+                    title=title,
                     year=year,
                     file=file
                 )
         elif selection == STR_IS_A_SHOW:
             if re_search(file, LIST_TYPE_SERIES):
                 syncedmenu.add_single_tvshow(
-                    title=label,
+                    title=title,
                     year=year,
                     file=file
                 )
@@ -82,7 +82,7 @@ def main():
         else:
             xbmc.sleep(300)
             notification('%s %s' % (
-                title_with_color(label=label, year=year),
+                title_with_color(label=title, year=year),
                 STR_NOT_SELECTED
                 )
             )

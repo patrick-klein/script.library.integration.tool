@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.8.16" provider-name="patrick-klein">
+<addon id="script.library.integration.tool" name="Library Integration Tool" version="0.8.19" provider-name="luizoti|patrick-klein">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="xbmc.addon" version="18.9.701"/>
-    <import addon="script.module.beautifulsoup4" version="4.9.3"/>
-    <import addon="script.module.simplejson" version="3.17.0"/>
   </requires>
   <extension point="xbmc.python.script" library="default.py">
     <provides>executable</provides>
@@ -51,8 +49,7 @@ See the README for a full tutorial.
       <screenshot>resources/media/screenshot-02.jpg</screenshot>
       <screenshot>resources/media/screenshot-03.jpg</screenshot>
     </assets>
-    <news>v0.8.16 (2021-7-8)
+    <news>v0.8.19 (2021-7-26)
     </news>
   </extension>
-
 </addon>
