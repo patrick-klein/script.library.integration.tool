@@ -513,16 +513,15 @@ def load_directory_items(progressdialog, _path, recursive=False,
         sync_type = 'all_items'
         results = list(user_selection_menu(results))
     try:
-        filtered = list(skip_filter(
+        results = list(skip_filter(
             results,
             'label',
             SKIP_STRINGS
         )
         )
-        results = list(crunchyroll_language_menu(filtered))
         results = list(
             list_reorder(
-                results,
+                list(crunchyroll_language_menu(results)),
                 showtitle=showtitle,
                 sync_type=sync_type
             )
