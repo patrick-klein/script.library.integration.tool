@@ -6,8 +6,8 @@
             default="false" />
         <setting id="managed_folder" label="32141" type="folder"
             enable="eq(-1,true)" source="video" option="writeable" />
-        <!-- <setting id="recursion_limit" label="32139" type="number"
-            default="10" /> -->
+        <setting id="recursion_limit" label="32139" type="number"
+            default="10" />
     </category>
     <!-- Movies -->
     <category label="32109">
