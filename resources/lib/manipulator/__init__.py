@@ -6,8 +6,8 @@
 import os
 import re
 
-# TODO: Use combined list on all platforms. Would need to be combined with version check
-# to re-add all managed items
+from resources.lib.log import logged_function, log_msg
+
 MAPPED_STRINGS = {
     r' \[cc\]': ' ',
     r'\(Legendado\)': ' ',
@@ -79,3 +79,33 @@ class Cleaner(object):
         return title.replace(self.showtitle(showtitle), ' ').strip()
 
 
+@logged_function
+def cleaner(func):
+    '''Decorator that reports the execution time.'''
+    def dict_cleaner(*args, **kwargs):
+        result = func(*args, **kwargs)
+        new_args = [args[0]] if isinstance(args[0], dict) else args[0]
+        for item in new_args:
+            if 'showtitle' in item:
+                showtitle = item['showtitle']
+                for key, val in MAPPED_STRINGS.items():
+                    showtitle = re.sub(key, val, showtitle)
+                    item['showtitle'] = showtitle
+                    log_msg('Cleaner ---> %s' % item)
+                # if 'type' in item and _type:
+                #     item['type'] = 'tvshow'
+            if 'title' in item:
+                title = item['title']
+                for key, val in MAPPED_STRINGS.items():
+                    title = re.sub(key, val, title)
+                    title = title.replace(showtitle, '')
+                    item['title'] = title
+                    log_msg('Cleaner ---> %s' % item)
+            if 'label' in item:
+                label = item['label']
+                for key, val in MAPPED_STRINGS.items():
+                    label = re.sub(key, val, label)
+                    item['label'] = label
+                    log_msg('Cleaner ---> %s' % item)
+        return result
+    return dict_cleaner
