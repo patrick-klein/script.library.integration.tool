@@ -421,6 +421,41 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                                 years.append(item['year'])
                             except KeyError:
                                 pass
+            # HBOMAX
+            if 'slyguy.hbo.max' in item['file']:
+                # HBOMAX SHOW DIRECTORY
+                if item['filetype'] == 'directory':
+                    if re_search(item['type'], ['tvshow', 'unknown']):
+                        if item['season'] == -1:
+                            if not is_season(item['label']):
+                                item['showtitle'] = item['title']
+                                item['type'] = 'tvshow'
+                                del item['episode']
+                                del item['season']
+                                reordered[index] = item
+                    # HBOMAX SEASON DIRECTORY
+                    if item['type'] == 'unknown':
+                        if is_season(item['label']):
+                            item['showtitle'] = showtitle
+                            del item['episode']
+                            item['type'] = 'season'
+                            item['season'] = item['number']
+                            try:
+                                years.append(item['year'])
+                            except KeyError:
+                                pass
+                            reordered[item['season'] - 1] = item
+                elif item['filetype'] == 'file':
+                    # HBOMAX EPISODE FILE
+                    if item['type'] == 'episode':
+                        try:
+                            years.append(item['year'])
+                        except KeyError:
+                            pass
+                        try:
+                            reordered[item['episode'] - 1] = item
+                        except IndexError:
+                            pass
     for item in reordered:
         if item:
             try:
