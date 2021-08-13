@@ -32,10 +32,15 @@ class CreateNfo(object):
         self.type = _type
         self.filepath = filepath
         self.jsondata = jsondata
+        ROOT_TYPES = {
+            'tvshow': '<tvshow>\n%s</tvshow>',
+            'episodedetails': '<episodedetails>\n%s</episodedetails>',
+            'movie': '<movie>\n%s</movie>',
+        }
         self.root = ''.join(
             [
                 '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n',
-                '<{0}>\n%s</{1}>'.format(self.type, self.type)
+                ROOT_TYPES[self.type]
             ]
         )
 
@@ -43,18 +48,14 @@ class CreateNfo(object):
 
     def tvshow(self):
         """Create tvshow nfo file."""
-        try:
+        if self.type == 'tvshow':
             return ''.join(
                 [
-                    '\t<title>{0}</title>\n'.format(
-                        self.jsondata['showtitle']),
-                    '\t<showtitle>{0}</showtitle>\n'.format(
-                        self.jsondata['showtitle']),
-                    '\t<year>{0}</year>\n'.format(self.jsondata['year'])
+                    '\t<title>{showtitle}</title>\n',
+                    '\t<showtitle>{showtitle}</showtitle>\n',
+                    '\t<year>{year}</year>\n'
                 ]
-            )
-        except KeyError:
-            pass
+            ).format(**self.jsondata)
 
     def episodedetails(self):
         """
@@ -63,22 +64,17 @@ class CreateNfo(object):
         Future possible new keys:
             id, uniqueid default="true" type="tvdb", runtime, thumb.
         """
-        try:
+        if self.type == 'episodedetails':
             return ''.join(
                 [
-                    '\t<title>{0}</title>\n'.format(self.jsondata['title']),
-                    '\t<showtitle>{0}</showtitle>\n'.format(
-                        self.jsondata['showtitle']),
-                    '\t<season>{0}</season>\n'.format(self.jsondata['season']),
-                    '\t<episode>{0}</episode_number>\n'.format(
-                        self.jsondata['season']),
-                    '\t<year>{0}</year>\n'.format(self.jsondata['year']),
-                    '\t<original_filename>{0}</original_filename>\n'.format(
-                        self.jsondata['file'])
+                    '\t<title>{title}</title>\n',
+                    '\t<showtitle>{showtitle}</showtitle>\n',
+                    '\t<season>{season}</season>\n',
+                    '\t<episode>{episode}</episode_number>\n',
+                    '\t<year>{year}</year>\n',
+                    '\t<original_filename>{file}</original_filename>\n'
                 ]
-            )
-        except KeyError:
-            pass
+            ).format(**self.jsondata)
 
     def movie(self):
         """
@@ -87,18 +83,14 @@ class CreateNfo(object):
         future possible new keys:
             runtime, thumb aspect="poster", fanart, thumb, id, tmdbid.
         """
-        try:
+        if self.type == 'movie':
             return ''.join(
                 [
-                    '\t<title>{0}</title>\n'.format(
-                        self.jsondata['title']),
-                    '\t<year>{0}</year>\n'.format(self.jsondata['year']),
-                    '\t<original_filename>{0}</original_filename>\n'.format(
-                        self.jsondata['file'])
+                    '\t<title>{title}</title>\n',
+                    '\t<year>{year}</year>\n',
+                    '\t<original_filename>{file}</original_filename>\n'
                 ]
-            )
-        except KeyError:
-            pass
+            ).format(**self.jsondata)
 
     def create(self):
         """
@@ -114,6 +106,7 @@ class CreateNfo(object):
         with open(self.filepath, "w+") as nfofile:
             try:
                 nfofile.write(self.root)
+                log_msg("Created NFO file %s" % self.root)
             except Exception as e:
                 log_msg(e)
             finally:
@@ -125,6 +118,7 @@ def create_stream_file(plugin_path, filepath):
     with open(filepath, "w+") as strm:
         try:
             strm.write(plugin_path)
+            log_msg("Created STRM file %s" % plugin_path)
         except Exception as e:
             log_msg(e)
         finally:
