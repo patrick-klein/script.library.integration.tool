@@ -456,6 +456,29 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                             reordered[item['episode'] - 1] = item
                         except IndexError:
                             pass
+            # CRACKLE
+            if 'crackle' in item['file']:
+                # CRACKLE SHOW DIRECTORY
+                if item['filetype'] == 'directory':
+                    if item['type'] == 'tvshow':
+                        if item['season'] == -1:
+                            if not is_season(item['label']):
+                                item['showtitle'] = item['title']
+                                item['type'] = 'tvshow'
+                                del item['episode']
+                                del item['season']
+                                reordered[index] = item
+                elif item['filetype'] == 'file':
+                    # CRACKLE EPISODE FILE
+                    if item['type'] == 'episode':
+                        try:
+                            years.append(item['year'])
+                        except KeyError:
+                            pass
+                        try:
+                            reordered[item['episode'] - 1] = item
+                        except IndexError:
+                            pass
     for item in reordered:
         if item:
             try:

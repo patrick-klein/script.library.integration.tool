@@ -30,9 +30,18 @@ STR_NOT_SELECTED = getstring(32163)
 STR_CHOOSE_CONTENT_TYPE = getstring(32159)
 
 # possible values ​​that content can have
-LIST_TYPE_SERIES = ['series', 'directory',
-                    'show', 'browse', 'root', 'mode=series']
-LIST_TYPE_MOVIES = ['movie', 'PlayVideo', 'play&_play']
+LIST_TYPE_SERIES = ['series',
+                    'directory',
+                    'show',
+                    'browse',
+                    'root',
+                    'mode=102',
+                    'mode=series']
+LIST_TYPE_MOVIES = ['movie',
+                    'PlayVideo',
+                    'play&_play',
+                    'mode=103',
+                    'type=movies']
 
 
 @entrypoint
@@ -84,8 +93,9 @@ def main():
             notification('%s %s' % (
                 title_with_color(label=title, year=year),
                 STR_NOT_SELECTED
-                )
             )
+            )
+
 
 if __name__ == '__main__':
     main()
