@@ -36,6 +36,7 @@ LIST_TYPE_SERIES = ['series',
                     'browse',
                     'root',
                     'mode=102',
+                    'mode=ondemand',
                     'mode=series']
 LIST_TYPE_MOVIES = ['movie',
                     'PlayVideo',
