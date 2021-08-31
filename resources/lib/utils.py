@@ -512,9 +512,9 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                             pass
             # RAIPLAY
             if 'plugin.video.raitv' in item['file']:
-                # RAIPLAY SHOW DIRECTORY: TODO
                 if item['filetype'] == 'directory':
-                    if re.search('Episodi', item['label']):
+                    # RAIPLAY SHOW DIRECTORY
+                    if re_search(item['label'], 'Episodi'):
                         item['type'] = 'tvshow'
                         del item['episode']
                         del item['season']
