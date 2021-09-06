@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """Defines the MainMenu class, which gets called from the main executable."""
