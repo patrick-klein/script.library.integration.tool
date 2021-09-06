@@ -30,6 +30,7 @@ class Select(xbmcgui.Dialog):
             self.heading = _bold(heading)
         else:
             self.heading = heading
+        self._list = None
         self.listofitems = None
         self.listofopts = None
         self.extra = None
