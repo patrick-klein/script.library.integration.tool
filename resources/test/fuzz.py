@@ -9,8 +9,9 @@ import unittest
 
 import xbmcvfs
 
-from resources.lib.utils import log_msg
-from resources.lib.utils import notification
+from resources.lib.log import log_msg
+
+from resources.lib.misc import notification
 
 
 def fuzz():

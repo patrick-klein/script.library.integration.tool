@@ -1,8 +1,8 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 """Defines BlockedItem class."""
 
-from resources.lib.utils import getstring
+from resources.lib.misc import getstring
 
 
 class BlockedItem(dict):

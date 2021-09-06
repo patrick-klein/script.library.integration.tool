@@ -6,8 +6,11 @@
 import xbmcgui
 
 from resources import ADDON_NAME
+
+from resources.lib.misc import getstring
+
 from resources.lib.log import logged_function
-from resources.lib.utils import getstring
+
 
 
 class BlockedMenu(object):

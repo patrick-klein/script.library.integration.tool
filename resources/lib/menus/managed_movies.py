@@ -16,10 +16,10 @@ from resources.lib.dialog_select import Select
 
 from resources.lib.log import logged_function
 
-from resources.lib.utils import bold
-from resources.lib.utils import color
-from resources.lib.utils import notification
-from resources.lib.utils import getstring
+from resources.lib.misc import bold
+from resources.lib.misc import color
+from resources.lib.misc import notification
+from resources.lib.misc import getstring
 
 
 class ManagedMoviesMenu(object):

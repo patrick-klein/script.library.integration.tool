@@ -11,10 +11,10 @@ import xbmcgui
 from resources import ADDON_ID
 from resources import ADDON_NAME
 
-from resources.lib.utils import bold
-from resources.lib.utils import color
-from resources.lib.utils import videolibrary
-from resources.lib.utils import getstring
+from resources.lib.misc import bold
+from resources.lib.misc import color
+from resources.lib.misc import getstring
+from resources.lib.misc import videolibrary
 
 from resources.lib.menus.managed_movies import ManagedMoviesMenu
 from resources.lib.menus.staged_movies import StagedMoviesMenu

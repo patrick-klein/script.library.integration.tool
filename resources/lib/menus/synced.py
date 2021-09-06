@@ -15,11 +15,13 @@ from resources import ADDON_NAME
 from resources.lib import build_json_item
 from resources.lib import build_contentitem
 
+from resources.lib.log import log_msg
 from resources.lib.log import logged_function
 
-from resources.lib.utils import notification
-from resources.lib.utils import title_with_color
-from resources.lib.utils import getstring
+from resources.lib.misc import getstring
+from resources.lib.misc import notification
+from resources.lib.misc import title_with_color
+
 from resources.lib.utils import load_directory_items
 
 from resources.lib.progressbar import BGProgressBar

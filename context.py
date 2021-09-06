@@ -17,11 +17,12 @@ from resources.lib.database import Database
 from resources.lib.progressbar import ProgressBar
 from resources.lib.menus.synced import SyncedMenu
 
-from resources.lib.utils import re_search
+from resources.lib.misc import re_search
+from resources.lib.misc import getstring
+from resources.lib.misc import notification
+from resources.lib.misc import title_with_color
+
 from resources.lib.utils import entrypoint
-from resources.lib.utils import notification
-from resources.lib.utils import title_with_color
-from resources.lib.utils import getstring
 
 STR_IS_A_MOVIE = getstring(32155)
 STR_IS_A_SHOW = getstring(32156)

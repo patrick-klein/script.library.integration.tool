@@ -9,8 +9,8 @@ from resources import ADDON_NAME
 
 from resources.lib.log import logged_function
 
-from resources.lib.utils import notification
-from resources.lib.utils import getstring
+from resources.lib.misc import getstring
+from resources.lib.misc import notification
 
 
 class StagedMoviesMenu(object):

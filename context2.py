@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """This module gets called from the context menu item "Sync directory to library" (32001).
@@ -9,14 +8,15 @@ The purpose is to stage all movies/tvshows in the current directory, and update 
 import xbmc
 import xbmcgui
 
-from resources.lib.utils import entrypoint
-from resources.lib.utils import notification
-from resources.lib.utils import getstring
+from resources.lib.misc import notification
+from resources.lib.misc import getstring
 
 from resources.lib.database import Database
 from resources.lib.progressbar import ProgressBar
 
 from resources.lib.menus.synced import SyncedMenu
+
+from resources.lib.utils import entrypoint
 
 @entrypoint
 def main():

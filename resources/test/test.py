@@ -11,7 +11,8 @@ import unittest
 import xbmc
 import xbmcvfs
 
-import resources.lib.utils as utils
+from resources.lib.log import log_msg
+from resources.lib.misc import notification
 
 
 def test():

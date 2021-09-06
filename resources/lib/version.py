@@ -5,7 +5,6 @@
 
 import sys
 
-from os.path import join
 from os.path import isfile
 from os.path import dirname
 
@@ -13,12 +12,12 @@ import xbmcvfs
 
 from resources import ADDON
 from resources import ADDON_ID
-from resources import ADDON_NAME
-from resources import ADDON_PATH
 from resources import ADDON_VERSION
 
 from resources.lib.filesystem import mkdir
 
+from resources.lib.misc import getstring
+from resources.lib.misc import notification
 
 class Version(object):
     """Class that implements comparison operators for version numbers."""
@@ -79,12 +78,9 @@ def check_version_file():
         # version = Version(ADDON_VERSION)
         version = Version('0.3.2')
     if version != ADDON_VERSION:
-        # TODO: xbmcgui.Dialog().notification and ADDON.getLocalizedString
-        # in future can be moved from utils and imported here
-        STR_UPDATING = ADDON.getLocalizedString(32133)
-        STR_UPDATED = ADDON.getLocalizedString(32134)
-        xbmcgui.Dialog().notification(ADDON_NAME, STR_UPDATING,
-                                      join(ADDON_PATH, 'ntf_icon.png'), 5000, True)
+        STR_UPDATING = getstring(32133)
+        STR_UPDATED = getstring(32134)
+        notification(message=STR_UPDATING, time=5000)
         if version < '0.4.0':
             # Maintain previous settings if managed folder is already set
             if ADDON.getSetting('managed_folder'):
@@ -94,6 +90,5 @@ def check_version_file():
         # Update version file
         with open(version_file_path, 'w+') as version_file:
             version_file.write(ADDON_VERSION)
-        xbmcgui.Dialog().notification(ADDON_NAME, STR_UPDATED,
-                                      join(ADDON_PATH, 'ntf_icon.png'), 5000, True)
+        notification(message=STR_UPDATED, time=5000)
         sys.exit()

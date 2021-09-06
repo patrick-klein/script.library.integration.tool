@@ -9,7 +9,7 @@ import xbmcgui
 
 from resources import ADDON_NAME
 from resources.lib.log import log_msg
-from resources.lib.utils import notification
+from resources.lib.misc import notification
 
 
 class ProgressBar(xbmcgui.DialogProgress):
