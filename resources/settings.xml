@@ -3,39 +3,39 @@
     <!-- General -->
     <category label="32117">
         <setting id="custom_managed_folder" label="32140" type="bool"
-            default="false" />
+            default="false"/>
         <setting id="managed_folder" label="32141" type="folder"
-            enable="eq(-1,true)" source="video" option="writeable" />
+            enable="eq(-1,true)" source="video" option="writeable"/>
         <setting id="recursion_limit" label="32139" type="number"
-            default="10" />
+            default="10"/>
     </category>
     <!-- Movies -->
     <category label="32109">
         <setting id="auto_add_movies" label="32153" type="bool"
-            default="false" />
+            default="false"/>
         <setting id="auto_create_nfo_movies" label="32186" type="bool"
-            default="true" />
+            default="true"/>
         <!-- TODO: replace label 32129 whith label for movies -->
         <!-- FUTURE: get all artworks from jsonrpc from streaming addon and insert in nfo -->
         <!-- <setting id="use_show_artwork_movie" label="32129" type="bool"
-            default="false" /> -->
+            default="false"/> -->
     </category>
     <!-- TV -->
     <category label="32108">
         <setting id="auto_add_tvshows" label="32153" type="bool"
-            default="false" />
+            default="false"/>
         <setting id="auto_create_nfo_shows" label="32186" type="bool"
-            default="true" />
+            default="true"/>
         <!-- <setting id="use_show_artwork_show" label="32129" type="bool"
-            default="false" /> -->
+            default="false"/> -->
     </category>
     <!-- Development -->
     <category label="32130">
         <setting label="32144" id="in_development" type="bool"
-            default="false" />
+            default="false"/>
         <setting label="32131" type="action"
-            visible="eq(-1,true)" action="RunScript(script.library.integration.tool, test)" />
+            visible="eq(-1,true)" action="RunScript(script.library.integration.tool, test)"/>
         <setting label="32132" type="action"
-            visible="eq(-2,true)" action="RunScript(script.library.integration.tool, fuzz)" />
+            visible="eq(-2,true)" action="RunScript(script.library.integration.tool, fuzz)"/>
     </category>
 </settings>
