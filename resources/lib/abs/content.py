@@ -15,12 +15,6 @@ class ABSContentManagerShow():
 
     def __init__(self, jsondata):
         """__init__ ABSContentManagerShow."""
-        self._file = None
-        self._title = None
-        self._showtitle = None
-        self._season = None
-        self._episode = None
-        self._year = None
 
     def __str__(self):
         """Return str title formated with file path."""
@@ -109,10 +103,6 @@ class ABSContentManagerMovie():
 
     def __init__(self, jsondata):
         """__init__ ABSContentManagerMovie."""
-        self._file = None
-        # type
-        self._title = None
-        self._year = None
 
     def __str__(self):
         """Return str title formated with file path."""
