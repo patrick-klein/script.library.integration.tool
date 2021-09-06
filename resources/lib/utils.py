@@ -409,6 +409,24 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                             reordered[item['episode'] - 1] = item
                         except IndexError:
                             pass
+            # RAIPLAY
+            if 'plugin.video.raitv' in item['file']:
+                if item['filetype'] == 'directory':
+                    # RAIPLAY SHOW DIRECTORY
+                    if re_search(item['label'], 'Episodi'):
+                        item['type'] = 'tvshow'
+                        del item['episode']
+                        del item['season']
+                        reordered[index] = item
+                elif item['filetype'] == 'file':
+                    # RAIPLAY EPISODE FILE
+                    item['type'] = 'episode'
+                    try:
+                        if item['episode'] == 0:
+                            item['episode'] = item['number']
+                        reordered[item['episode'] - 1] = item
+                    except IndexError:
+                        pass
     for item in reordered:
         if item:
             try:
