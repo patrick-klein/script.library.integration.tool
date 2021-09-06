@@ -5,10 +5,11 @@
 
 from os.path import join
 
+from resources.lib.log import log_msg
 from resources.lib.log import logged_function
-from resources.lib.abs.item import ABSItemMovie
 
 from resources.lib.manipulator import Cleaner
+
 from resources.lib.utils import MANAGED_FOLDER
 
 
@@ -17,46 +18,40 @@ class MovieItem():
 
     def __init__(self, jsonitem, year=None):
         """__init__ MovieItem."""
-        super(MovieItem, self).__init__(jsonitem, year)
+        super(MovieItem, self).__init__()
         self.cleaner = Cleaner()
-        self._file = jsonitem['file']
-        self._title = self.cleaner.title(title=jsonitem['title'])
-        self._year = year if year else jsonitem['year']
+        self.jsonitem = jsonitem
+        self.arg_year = year
 
-    @property
     def file(self):
         """Return url from strm."""
-        return self._file
+        return self.jsonitem['file']
 
-    @property
     def title(self):
         """Return the title from content."""
-        return self._title
+        return self.cleaner.title(title=self.jsonitem['title'])
 
-    @property
     def year(self):
         """Return the year from content."""
-        return self._year
+        return self.arg_year if self.arg_year else self.jsonitem['year']
 
-    @property
     def managed_movie_dir(self):
         """Return the managed_movie_dir from content."""
-        if not self._managed_dir:
-            self._managed_dir = join(
-                MANAGED_FOLDER, 'movies', self.title
-            )
-        return self._managed_dir
+        return join(
+            MANAGED_FOLDER, 'movies', self.title()
+        )
 
     @logged_function
     def returasjson(self):
         """Return the json with information from content."""
         try:
             return {
-                'file': self.file,
-                'title': self.title,
-                'managed_movie_dir': self.managed_movie_dir,
-                'year': self.year,
+                'file': self.file(),
+                'title': self.title(),
+                'managed_movie_dir': self.managed_movie_dir(),
+                'year': self.year(),
                 'type': 'movie'
             }
-        except Exception as e:
-            raise e
+        except Exception as error:
+            log_msg('MovieItem.returasjson: %s' % error)
+        return None

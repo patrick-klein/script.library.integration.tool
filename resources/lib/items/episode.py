@@ -2,14 +2,14 @@
 # pylint: disable=broad-except
 
 """Defines the EpisodeItem class."""
+
 from os.path import join
+
+from resources.lib.log import log_msg
+from resources.lib.log import logged_function
 
 from resources.lib.utils import MANAGED_FOLDER
 from resources.lib.manipulator import Cleaner
-from resources.lib.log import logged_function
-
-from resources.lib.abs.item import ABSItemShow
-
 
 
 class EpisodeItem():
@@ -17,99 +17,84 @@ class EpisodeItem():
 
     def __init__(self, jsonitem, year=None):
         """__init__ EpisodeItem."""
-        super(EpisodeItem, self).__init__(jsonitem, year)
         self.cleaner = Cleaner()
-        self._file = jsonitem['file']
-        self._showtitle = self.cleaner.showtitle(
-            jsonitem['showtitle']
-        )
-        self._title = self.cleaner.title(
-            showtitle=jsonitem['showtitle'],
-            title=jsonitem['title']
-        )
-        self._season = jsonitem['season']
-        self._episode = jsonitem['episode']
-        self._year = year if year else jsonitem['year']
+        self.jsonitem = jsonitem
+        self.arg_year = year
 
-    @property
     def file(self):
         """Return file."""
-        return self._file
+        return self.jsonitem['file']
 
-    @property
     def title(self):
         """Return title."""
-        return self._title
+        return self.cleaner.title(
+            showtitle=self.jsonitem['showtitle'],
+            title=self.jsonitem['title']
+        )
 
-    @property
     def showtitle(self):
         """Show title with problematic characters removed."""
-        return self._showtitle
+        return self.cleaner.showtitle(
+            self.jsonitem['showtitle']
+        )
 
-    @property
     def season(self):
         """Show title with problematic characters removed."""
-        if self._season == None:
+        season = self.jsonitem['season']
+        if not season:
             return 1
-        else:
-            return int(self._season)
+        return int(season)
 
-    @property
     def episode(self):
         """Show title with problematic characters removed."""
-        if self._episode == None:
+        episode = self.jsonitem['episode']
+        if not episode:
             return 1
-        else:
-            return int(self._episode)
+        return int(episode)
 
-    @property
     def year(self):
         """Show title with problematic characters removed."""
-        return self._year
+        return self.arg_year if self.arg_year else self.jsonitem['year']
 
-    @property
     def season_dir(self):
         """retirn season_dir."""
-        return ('Season %s' % (self.season))
+        return 'Season %s' % (self.season())
 
-    @property
     def episode_id(self):
         """Return episode_id."""
-        if self.season <= 9:
-            season = ('S0%s' % self.season)
-        else:
-            season = ('S%s' % self.season)
-        if self.episode <= 9:
-            ep = ('E0%s' % self.episode)
-        else:
-            ep = ('E%s' % self.episode)
-        return ('%s%s' % (season, ep))
+        season = ('S%s' % self.season())
+        ep = ('E%s' % self.episode())
 
-    @property
+        if self.season() <= 9:
+            season = ('S0%s' % self.season())
+
+        if self.episode() <= 9:
+            ep = ('E0%s' % self.episode())
+        return '%s%s' % (season, ep)
+
     def managed_show_dir(self):
         """Return managed_show_dir."""
-        if not self._managed_dir:
-            self._managed_dir = join(
-                MANAGED_FOLDER, 'tvshows', self.showtitle
-            )
-        return self._managed_dir
+        return join(
+            MANAGED_FOLDER, 'tvshows', self.showtitle()
+        )
 
     @logged_function
     def returasjson(self):
         """Return a dict with all information about tvshow."""
         try:
             return {
-                'file': self.file,
-                'showtitle': self.showtitle,
-                'episode_title_with_id': ' - '.join([self.episode_id, self.title]),
-                'title': self.title,
-                'episode': self.episode,
-                'episode_id': self.episode_id,
-                'season': self.season,
-                'season_dir': self.season_dir,
-                'managed_show_dir': self.managed_show_dir,
-                'year': self.year,
+                'file': self.file(),
+                'showtitle': self.showtitle(),
+                'episode_title_with_id': ' - '.join([self.episode_id(), self.title()]),
+                'title': self.title(),
+                'episode': self.episode(),
+                'episode_id': self.episode_id(),
+                'season': self.season(),
+                'season_dir': self.season_dir(),
+                'managed_show_dir': self.managed_show_dir(),
+                'year': self.year(),
                 'type': 'tvshow'
             }
-        except Exception as e:
-            raise e
+        except Exception as error:
+            log_msg('EpisodeItem.returasjson: %s' % error)
+        return None
