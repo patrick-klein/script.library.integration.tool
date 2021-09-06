@@ -258,8 +258,8 @@ class SyncedMenu():
                 self.database.add_content_item(contentitem)
                 items_to_stage += 1
                 xbmc.sleep(300)
-            except Exception as e:
-                raise e
+            except Exception as error:
+                log_msg('SyncedMenu.add_single_tvshow: %s' % error)
 
         if num_already_staged > 0 or num_already_managed > 0:
             notification(

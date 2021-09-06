@@ -514,7 +514,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 sync_type=sync_type
             )
         )
-    except (KeyError, TypeError):
+    except (KeyError, TypeError) as error:
         results = []
         log_msg("INFO ERROR -> %s -> %s" % (error, results))
     if not allow_directories:
