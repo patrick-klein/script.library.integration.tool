@@ -160,8 +160,7 @@ class ContentManagerShow(ABSContentManagerShow):
         delete_with_wildcard(self.managed_strm_path)
         # Check if last stream file, and remove entire dir if so
         if isdir(self.show_dir):
-            files = listdir(self.show_dir)
-            for fname in files:
+            for fname in listdir(self.show_dir):
                 if '.strm' in fname:
                     break
             else:
