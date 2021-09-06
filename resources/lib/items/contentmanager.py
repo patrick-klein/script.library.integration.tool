@@ -310,7 +310,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
     def rename_using_metadata(self):
-        # """Rename item using metadata."""
+        """Rename item using metadata."""
         # TODO: Implement
         raise NotImplementedError('contentitem.rename(name) not implemented!')
 
