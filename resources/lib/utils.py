@@ -477,8 +477,8 @@ def crunchyroll_language_menu(results):
                         yield item
             elif not is_language_episode:
                 yield item
-    except Exception:
-        pass
+    except Exception as error:
+        log_msg('crunchyroll_language_menu error: %s' % error)
     if crunchyroll_language_selected:
         for lang_dir in results:
             if not '(' in crunchyroll_language_selected:
@@ -517,6 +517,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
         )
     except (KeyError, TypeError):
         results = []
+        log_msg("INFO ERROR -> %s -> %s" % (error, results))
     if not allow_directories:
         for item in results:
             if item and item['filetype'] == 'file':

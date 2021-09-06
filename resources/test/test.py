@@ -27,7 +27,7 @@ def test():
     suite = unittest.TestSuite()
     suite.addTests(loader.discover(
         os.path.dirname(__file__), pattern='test_*.py'))
-    utils.log_msg('All unit tests: %s' % suite)
+    log_msg('All unit tests: %s' % suite)
 
     # Attempt to load and start coverage module
     try:
@@ -37,13 +37,13 @@ def test():
         import coverage
     except ImportError:
         test_coverage = False
-        utils.log_msg('Coverage module not available.', xbmc.LOGWARNING)
+        log_msg('Coverage module not available.', xbmc.LOGWARNING)
     else:
         test_path_wildcard = os.path.join(test_path, '*')
         cov = coverage.Coverage(omit=test_path_wildcard)
         cov.start()
         test_coverage = True
-        utils.log_msg('Coverage module loaded.')
+        log_msg('Coverage module loaded.')
 
     # Run all unit tests and save to text file
     log_file = os.path.join(test_path, 'test_report.txt')
@@ -60,11 +60,11 @@ def test():
             cov.report(file=f)
         cov_xml_file = os.path.join(test_path, 'coverage.xml')
         cov.xml_report(outfile=cov_xml_file)
-        utils.log_msg('Test coverage complete.')
+        log_msg('Test coverage complete.')
 
     if result.wasSuccessful():
-        utils.notification('Tests successful')
+        notification('Tests successful')
     else:
-        utils.notification('Tests failed')
+        notification('Tests failed')
 
-    utils.log_msg('Test result: %s' % result)
+    log_msg('Test result: %s' % result)
