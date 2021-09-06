@@ -107,8 +107,8 @@ class CreateNfo(object):
             try:
                 nfofile.write(self.root)
                 log_msg("Created NFO file %s" % self.root)
-            except Exception as e:
-                log_msg(e)
+            except Exception as error:
+                log_msg('CreateNfo.create: %s' % error)
             finally:
                 nfofile.close()
 
@@ -119,8 +119,8 @@ def create_stream_file(plugin_path, filepath):
         try:
             strm.write(plugin_path)
             log_msg("Created STRM file %s" % plugin_path)
-        except Exception as e:
-            log_msg(e)
+        except Exception as error:
+            log_msg('filesystem.create_stream_file: %s' % error)
         finally:
             strm.close()
     return True
@@ -134,8 +134,8 @@ def mkdir(dir_path):
             parents=True,
             exist_ok=True
         )
-    except Exception as e:
-        raise e
+    except Exception as error:
+        log_msg('filesystem.mkdir: %s' % error)
     return True
 
 # def mv_with_type(title_path, filetype, title_dst):
