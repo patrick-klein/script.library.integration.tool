@@ -39,17 +39,17 @@ class ManagedMoviesMenu():
     def move_all_to_staged(self, items):
         """Remove all managed movies from library, and add them to staged."""
         STR_MOVING_ALL_MOVIES_BACK_TO_STAGED = getstring(32015)
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_MOVING_ALL_MOVIES_BACK_TO_STAGED
         )
         for index, item in enumerate(items):
-            self.progressdialog._update(
+            self.progressdialog.update_progressdialog(
                 index / len(items),
                 item.title
             )
             item.remove_from_library()
             item.set_as_staged()
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(STR_MOVING_ALL_MOVIES_BACK_TO_STAGED)
 
     @logged_function
@@ -57,17 +57,17 @@ class ManagedMoviesMenu():
         """Remove all managed movies from library."""
         STR_REMOVING_ALL_MOVIES = getstring(32013)
         STR_ALL_MOVIES_REMOVED = getstring(32014)
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_REMOVING_ALL_MOVIES
         )
         for index, item in enumerate(items):
-            self.progressdialog._update(
+            self.progressdialog.update_progressdialog(
                 index / len(items),
                 item.title
             )
             item.remove_from_library()
             item.delete()
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(STR_ALL_MOVIES_REMOVED)
 
     @staticmethod
@@ -90,16 +90,16 @@ class ManagedMoviesMenu():
         """Generate metadata items for all managed movies."""
         STR_GENERATING_ALL_MOVIE_METADATA = getstring(32046)
         STR_ALL_MOVIE_METADTA_CREATED = getstring(32047)
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_GENERATING_ALL_MOVIE_METADATA
         )
         for index, item in enumerate(items):
-            self.progressdialog._update(
+            self.progressdialog.update_progressdialog(
                 index / len(items),
                 item.title
             )
             item.create_metadata_item()
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(STR_ALL_MOVIE_METADTA_CREATED)
 
     @logged_function

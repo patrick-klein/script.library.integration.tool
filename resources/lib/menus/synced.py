@@ -208,7 +208,7 @@ class SyncedMenu():
         STR_i_NEW_i_STAGED_i_MANAGED = getstring(32106)
         STR_GETTING_ITEMS_IN_DIR = getstring(32125)
         # STR_GETTING_ITEMS_IN_x = getstring(32126)
-        self.progressdialog._create(head=ADDON_NAME)
+        self.progressdialog.create_progressdialog(head=ADDON_NAME)
         # Add synced directory to database
         self.database.add_item_to_synced(
             title,
@@ -230,7 +230,7 @@ class SyncedMenu():
         items_to_stage = 0
         num_already_staged = 0
         num_already_managed = 0
-        self.progressdialog._update(0, STR_GETTING_ITEMS_IN_DIR)
+        self.progressdialog.update_progressdialog(0, STR_GETTING_ITEMS_IN_DIR)
         for index, jsonitem in enumerate(files_list):
             try:
                 contentitem = build_contentitem(jsonitem)
@@ -244,7 +244,7 @@ class SyncedMenu():
                     continue
                 elif self.database.check_if_is_blocked(contentitem['showtitle'], 'episode'):
                     continue
-                self.progressdialog._update(
+                self.progressdialog.update_progressdialog(
                     index / len(files_list),
                     '\n'.join(
                         [
@@ -280,7 +280,7 @@ class SyncedMenu():
         STR_GETTING_ITEMS_IN_x = getstring(32126)
         STR_i_EPISODES_STAGED = getstring(32112)
         STR_GETTING_ITEMS_IN_DIR = getstring(32125)
-        self.progressdialog._create(head=ADDON_NAME)
+        self.progressdialog.create_progressdialog(head=ADDON_NAME)
         try:
             # add synced directory to database
             self.database.add_item_to_synced(
@@ -289,7 +289,7 @@ class SyncedMenu():
                 'tvshow'
             )
             # query json-rpc to get files in directory
-            self.progressdialog._update(0, STR_GETTING_ITEMS_IN_DIR)
+            self.progressdialog.update_progressdialog(0, STR_GETTING_ITEMS_IN_DIR)
             files_list = list(
                 load_directory_items(
                     progressdialog=self.progressdialog,
@@ -318,7 +318,7 @@ class SyncedMenu():
                     continue
                 # Check for duplicate paths and blocked items
                 try:
-                    self.progressdialog._update(
+                    self.progressdialog.update_progressdialog(
                         index / len(files_list),
                         '\n'.join(
                             [
@@ -334,7 +334,7 @@ class SyncedMenu():
                     xbmc.sleep(300)
                 except KeyError:
                     # TODO: new dialog str to movie
-                    self.progressdialog._update(
+                    self.progressdialog.update_progressdialog(
                         index / len(files_list),
                         STR_MOVIE_STAGED % content_title,
                     )
@@ -346,7 +346,7 @@ class SyncedMenu():
                 items_to_stage += 1
             notification(STR_i_EPISODES_STAGED % items_to_stage)
         finally:
-            self.progressdialog._close()
+            self.progressdialog.close_progressdialog()
 
     def update_all(self):
         """

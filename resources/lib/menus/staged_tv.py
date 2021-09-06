@@ -44,15 +44,15 @@ class StagedTVMenu():
     #     STR_RENAMING_x_EPISODES_USING_METADATA = getstring(32075)
     #     STR_x_EPISODES_RENAMED_USING_METADATA = getstring(32076)
     #     showtitle = items[0].showtitle
-    #     self.progressdialog._create(
+    #     self.progressdialog.create_progressdialog(
     #         msg=STR_RENAMING_x_EPISODES_USING_METADATA % showtitle
     #     )
     #     for index, item in enumerate(items):
-    #         self.progressdialog._update(
+    #         self.progressdialog.update_progressdialog(
     #             index / len(items),
     #             '\n'.join([item.showtitle, item.episode_title_with_id])
     #         )
-    #     self.progressdialog._close()
+    #     self.progressdialog.close_progressdialog()
     #     notification(STR_x_EPISODES_RENAMED_USING_METADATA % showtitle)
 
     @logged_function
@@ -61,11 +61,11 @@ class StagedTVMenu():
         STR_ADDING_ALL_x_EPISODES = getstring(32071)
         STR_ALL_x_EPISODES_ADDED = getstring(32072)
         showtitle = episodes[0].showtitle
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_ADDING_ALL_x_EPISODES % showtitle
         )
         for index, item in enumerate(episodes):
-            self.progressdialog._update(
+            self.progressdialog.update_progressdialog(
                 index / len(episodes),
                 '\n'.join(
                     [
@@ -75,7 +75,7 @@ class StagedTVMenu():
                 )
             )
             item.add_to_library()
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(
             STR_ALL_x_EPISODES_ADDED % color(
                 bold(showtitle),
@@ -94,11 +94,11 @@ class StagedTVMenu():
                 showtitle=showtitle
             )
         )
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_ADDING_ALL_x_SEASONS % showtitle
         )
         for index, item in enumerate(staged_seasons):
-            self.progressdialog._update(
+            self.progressdialog.update_progressdialog(
                 index / len(staged_seasons),
                 '\n'.join(
                     [
@@ -108,7 +108,7 @@ class StagedTVMenu():
                 )
             )
             item.add_to_library()
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(
             STR_ALL_x_SEASONS_ADDED % color(
                 bold(showtitle),
@@ -121,7 +121,7 @@ class StagedTVMenu():
         """Add all tvshow items to library."""
         STR_ADDING_ALL_TV_SHOWS = getstring(32059)
         STR_ALL_TV_SHOWS_ADDED = getstring(32060)
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_ADDING_ALL_TV_SHOWS
         )
         staged_tv_items = list(
@@ -131,7 +131,7 @@ class StagedTVMenu():
             )
         )
         for index, item in enumerate(staged_tv_items):
-            self.progressdialog._update(
+            self.progressdialog.update_progressdialog(
                 index / len(staged_tv_items),
                 '\n'.join(
                     [
@@ -141,7 +141,7 @@ class StagedTVMenu():
                 )
             )
             item.add_to_library()
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(STR_ALL_TV_SHOWS_ADDED)
 
     @logged_function
@@ -149,14 +149,14 @@ class StagedTVMenu():
         """Remove all staged tvshow items."""
         STR_REMOVING_ALL_TV_SHOWS = getstring(32024)
         STR_ALL_TV_SHOW_REMOVED = getstring(32025)
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_REMOVING_ALL_TV_SHOWS
         )
         self.database.delete_item_from_table_with_status_or_showtitle(
             _type='tvshow',
             status='staged'
         )
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(STR_ALL_TV_SHOW_REMOVED)
 
     @logged_function
@@ -164,7 +164,7 @@ class StagedTVMenu():
         """Remove all seasons from the specified show."""
         STR_REMOVING_ALL_x_SEASONS = getstring(32032) % showtitle
         STR_ALL_x_SEASONS_REMOVED = getstring(32033) % showtitle
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_REMOVING_ALL_x_SEASONS
         )
         self.database.delete_item_from_table_with_status_or_showtitle(
@@ -172,7 +172,7 @@ class StagedTVMenu():
             status='staged',
             showtitle=showtitle
         )
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(STR_ALL_x_SEASONS_REMOVED)
 
     @logged_function
@@ -181,7 +181,7 @@ class StagedTVMenu():
         formed_title = color(bold(showtitle), 'skyblue')
         STR_REMOVING_ALL_x_EPISODES = getstring(32032) % formed_title
         STR_ALL_x_EPISODES_REMOVED = getstring(32033) % formed_title
-        self.progressdialog._create(
+        self.progressdialog.create_progressdialog(
             msg=STR_REMOVING_ALL_x_EPISODES
         )
         self.database.delete_item_from_table_with_status_or_showtitle(
@@ -189,7 +189,7 @@ class StagedTVMenu():
             status='staged',
             showtitle=showtitle
         )
-        self.progressdialog._close()
+        self.progressdialog.close_progressdialog()
         notification(STR_ALL_x_EPISODES_REMOVED)
 
     # TODO: CONTINUE HERE
