@@ -247,7 +247,10 @@ class Database(object):
 
     @logged_function
     def get_all_shows(self, status):
-        """Query Content table for all (not null) distinct showtitles and cast results as list of strings."""
+        """
+            Query Content table for all (not null) distinct showtitles.
+                Cast results as list of strings.
+        """
         # Query database
         self.cur.execute(
             '''
@@ -277,7 +280,9 @@ class Database(object):
     @logged_function
     def get_content_items(self, status, _type):
         """
-        Query Content table for sorted items with given constaints and casts results as contentitem subclasses.
+        Query Content table for sorted items with given constaints.
+
+            Casts results as contentitem subclasses.
 
             keyword arguments:
                 status: string, 'managed' or 'staged'

@@ -22,6 +22,8 @@ def _getstring(string_id):
 
 
 class Select(xbmcgui.Dialog):
+    """Module to provide a Constom xbmcgui.Dialog."""
+
     def __init__(self, heading=ADDON_NAME, turnbold=False):
         """CustonDialog __init__."""
         super(Select, self).__init__()

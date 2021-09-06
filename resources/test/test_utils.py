@@ -63,6 +63,8 @@ class TestUtils(unittest.TestCase):
     """Test cases for utils module."""
     @logged_function
     def test_title_cleaner(self):
+        """Test cleaner function."""
+
         cleaner = Cleaner()
         # db = Database()
         # db.cur.execute(TITLE_CLEAR_TEST)
@@ -99,6 +101,8 @@ class TestUtils(unittest.TestCase):
 
     @logged_function
     def test_db_if_is_blocked(self):
+        """Teste if item if blocked."""
+
         db = Database()
         db.cur.execute(TESTE_BLOCKED_QUERY)
         db.conn.commit()
@@ -114,6 +118,8 @@ class TestUtils(unittest.TestCase):
 
     @logged_function
     def test_db_path_exists(self):
+        """Teste if path exist in db."""
+
         db = Database()
         db.cur.execute(TESTE_MOVIE_QUERY)
         db.cur.execute(TESTE_SHOW_QUERY)
@@ -136,6 +142,8 @@ class TestUtils(unittest.TestCase):
 
     @logged_function
     def test_re_search(self):
+        """Teste re_search function."""
+
         item = {
             "type": "unknown",
             "label": "Karakuri Circus Season 1",
