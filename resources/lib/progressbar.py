@@ -16,7 +16,7 @@ class ProgressBar(xbmcgui.DialogProgress):
 
     def __init__(self):
         """ProgressBar __init__."""
-        super(ProgressBar, self).__init__()
+        super(__class__, self).__init__()
         log_msg("""ProgressBar __init__.""")
 
     def create_progressdialog(self, head=ADDON_NAME, msg=''):
@@ -47,7 +47,7 @@ class BGProgressBar(xbmcgui.DialogProgressBG):
 
     def __init__(self):
         """BGProgressBar __init__."""
-        super(BGProgressBar, self).__init__()
+        super(__class__, self).__init__()
         log_msg("""BGProgressBar __init__.""")
 
     def _create(self, head=ADDON_NAME, msg=''):

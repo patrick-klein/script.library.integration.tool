@@ -27,7 +27,7 @@ class ContentManagerShow(ABSContentManagerShow):
 
     def __init__(self, database, jsondata):
         """__init__ ContentManagerShow."""
-        super(ContentManagerShow, self).__init__(jsondata)
+        super(__class__, self).__init__(jsondata)
         self.database = database
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
@@ -212,7 +212,7 @@ class ContentManagerMovie(ABSContentManagerMovie):
 
     def __init__(self, database, jsondata):
         """__init__ ContentManagerMovie."""
-        super(ContentManagerMovie, self).__init__(jsondata)
+        super(__class__, self).__init__(jsondata)
         self.database = database
         self.jsondata = jsondata
         self.managed_strm_path = join(

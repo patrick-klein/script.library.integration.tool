@@ -64,7 +64,7 @@ class Cleaner():
 
     def __init__(self) -> None:
         """Cleaner __init__."""
-        super().__init__()
+        super(__class__, self).__init__()
         self.strings = MAPPED_STRINGS
 
     def showtitle(self, showtitle):

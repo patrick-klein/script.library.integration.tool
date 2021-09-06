@@ -18,7 +18,7 @@ class MovieItem():
 
     def __init__(self, jsonitem, year=None):
         """__init__ MovieItem."""
-        super(MovieItem, self).__init__()
+        super(__class__, self).__init__()
         self.cleaner = Cleaner()
         self.jsonitem = jsonitem
         self.arg_year = year

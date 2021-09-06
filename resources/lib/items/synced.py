@@ -10,7 +10,7 @@ class SyncedItem(dict):
 
     def __init__(self, directory, label, synced_type):
         """SyncedItem __init__."""
-        super(SyncedItem, self).__init__()
+        super(__class__, self).__init__()
         self['file'] = directory
         self['label'] = label
         self['type'] = synced_type

@@ -25,7 +25,7 @@ class Select(xbmcgui.Dialog):
 
     def __init__(self, heading=ADDON_NAME, turnbold=False):
         """CustonDialog __init__."""
-        super(Select, self).__init__()
+        super(__class__, self).__init__()
         if turnbold:
             self.heading = _bold(heading)
         else:

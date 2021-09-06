@@ -12,7 +12,7 @@ class BlockedItem(dict):
 
     def __init__(self, value, blocked_type):
         """__init__ BlockedItem."""
-        super(BlockedItem, self).__init__()
+        super(__class__, self).__init__()
         self['value'] = value
         self['type'] = blocked_type
         self._localized_type = None
