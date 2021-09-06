@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=broad-except
 
 """Defines the SyncedMenu class."""
 
 # TODO: Different notifications depending on whether items were staged vs. automatically added
 import sys
 
-import xbmc  # pylint: disable=import-error
-import xbmcgui  # pylint: disable=import-error
+import xbmc
+import xbmcgui
 
 from resources import ADDON_NAME
 

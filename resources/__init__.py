@@ -3,8 +3,8 @@
 
 """LIT initial module whith base variables used in all projetct."""
 
-import xbmc  # pylint: disable=import-error
-import xbmcaddon  # pylint: disable=import-error
+import xbmc  # type: ignore
+import xbmcaddon  # type: ignore
 
 # Get settings
 ADDON = xbmcaddon.Addon()

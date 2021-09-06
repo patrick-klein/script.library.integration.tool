@@ -3,7 +3,7 @@
 
 """Defines the StagedTVMenu class."""
 
-import xbmcgui  # pylint: disable=import-error
+import xbmcgui
 
 from resources import ADDON_NAME
 

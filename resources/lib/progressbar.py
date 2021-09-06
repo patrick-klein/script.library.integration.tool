@@ -4,8 +4,8 @@
 
 import sys
 
-import xbmc # pylint: disable=import-error
-import xbmcgui # pylint: disable=import-error
+import xbmc
+import xbmcgui
 
 from resources import ADDON_NAME
 from resources.lib.log import log_msg

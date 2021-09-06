@@ -1,5 +1,5 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=E1101
 
 """
 Add selected item to library.
@@ -10,8 +10,8 @@ The purpose is to stage the currently selected movie/tvshow, and update synced d
 
 import sys
 
-import xbmc  # pylint: disable=import-error
-import xbmcgui  # pylint: disable=import-error
+import xbmc
+import xbmcgui
 
 from resources.lib.database import Database
 from resources.lib.progressbar import ProgressBar
@@ -47,10 +47,10 @@ LIST_TYPE_MOVIES = ['movie',
 @entrypoint
 def main():
     """Main entrypoint for context menu item."""
-    title = sys.listitem.getLabel()  # pylint: disable=E1101
+    title = sys.listitem.getLabel()
     year = xbmc.getInfoLabel('ListItem.Year')
     year = int(year) if year else False
-    file = sys.listitem.getPath()  # pylint: disable=E1101
+    file = sys.listitem.getPath()
     STR_FORMED_TYPE_OF_CONTENT = '%s - %s' % (
         title_with_color(label=title, year=year),
         STR_CHOOSE_CONTENT_TYPE

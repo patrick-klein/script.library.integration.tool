@@ -8,7 +8,7 @@ from os import listdir
 from os.path import join
 from os.path import isdir
 
-import xbmcgui  # pylint: disable=import-error
+import xbmcgui
 
 from resources import ADDON_NAME
 from resources.lib.utils import MANAGED_FOLDER

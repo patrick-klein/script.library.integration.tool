@@ -8,8 +8,8 @@ import os
 import sys
 import unittest
 
-import xbmc  # pylint: disable=import-error
-import xbmcvfs  # pylint: disable=import-error
+import xbmc
+import xbmcvfs
 
 import resources.lib.utils as utils
 

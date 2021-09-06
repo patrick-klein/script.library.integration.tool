@@ -4,7 +4,8 @@
 """Defines class for testing utils module."""
 
 import unittest
-import xbmcaddon  # pylint: disable=import-error
+
+import xbmcaddon
 
 from resources.lib.version import Version
 from resources.lib.utils import re_search

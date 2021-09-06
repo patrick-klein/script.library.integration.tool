@@ -6,8 +6,8 @@
 The purpose is to stage all movies/tvshows in the current directory, and update database.
 """
 
-import xbmc  # pylint: disable=import-error
-import xbmcgui  # pylint: disable=import-error
+import xbmc
+import xbmcgui
 
 from resources.lib.utils import entrypoint
 from resources.lib.utils import notification

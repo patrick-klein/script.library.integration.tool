@@ -9,8 +9,7 @@ from os.path import join
 from os.path import isfile
 from os.path import dirname
 
-import xbmcvfs  # pylint: disable=import-error
-import xbmcgui  # pylint: disable=import-error
+import xbmcvfs
 
 from resources import ADDON
 from resources import ADDON_ID

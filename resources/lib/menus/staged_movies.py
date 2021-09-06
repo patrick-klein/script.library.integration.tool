@@ -3,10 +3,10 @@
 
 """Defines the StagedMoviesMenu class."""
 
-import xbmcgui  # pylint: disable=import-error
-
+import xbmcgui
 
 from resources import ADDON_NAME
+
 from resources.lib.log import logged_function
 
 from resources.lib.utils import notification

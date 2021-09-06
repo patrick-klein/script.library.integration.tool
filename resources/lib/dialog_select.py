@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 """Custon xbmcgui.Dialog.select."""
 
-import xbmcgui  # pylint: disable=import-error
+import xbmcgui
 
 from resources import ADDON
 from resources import ADDON_NAME

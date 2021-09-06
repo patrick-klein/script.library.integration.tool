@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """Defines the MainMenu class, which gets called from the main executable."""
+
 import sys
 
-import xbmc  # pylint: disable=import-error
-import xbmcgui  # pylint: disable=import-error
+import xbmc
+import xbmcgui
 
 from resources import ADDON_ID
 from resources import ADDON_NAME

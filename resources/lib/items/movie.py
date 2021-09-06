@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=broad-except
 
 """Defines the MovieItem class."""
 

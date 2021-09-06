@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=broad-except
+
 """Filesystem utils for Windows/Linux."""
 
 import os

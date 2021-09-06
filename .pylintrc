@@ -1,0 +1,3 @@
+[MASTER]
+ignored-modules=xbmc,xbmcgui,xbmcvfs,xbmcaddon
+disable=invalid-name,global-statement,ungrouped-imports

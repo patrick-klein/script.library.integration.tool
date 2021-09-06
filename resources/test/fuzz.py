@@ -7,7 +7,7 @@
 import os
 import unittest
 
-import xbmcvfs  # pylint: disable=import-error
+import xbmcvfs
 
 from resources.lib.utils import log_msg
 from resources.lib.utils import notification

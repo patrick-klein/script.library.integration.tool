@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=broad-except
 
 """Defines the EpisodeItem class."""
 from os.path import join

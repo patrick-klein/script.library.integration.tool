@@ -1,5 +1,6 @@
 # /usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: disable=broad-except
 
 """Contains various constants and utility functions used thoughout the addon."""
 
@@ -8,11 +9,10 @@ import json
 
 from os.path import join
 from os.path import exists
-from os.path import expanduser
 
-import xbmc  # pylint: disable=import-error
-import xbmcgui  # pylint: disable=import-error
-import xbmcvfs  # pylint: disable=import-error
+import xbmc
+import xbmcgui
+import xbmcvfs
 
 from resources import ADDON
 from resources import ADDON_ID
