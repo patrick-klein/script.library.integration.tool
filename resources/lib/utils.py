@@ -452,7 +452,7 @@ def crunchyroll_language_menu(results):
     try:
         for item in results:
             is_language_episode = bool(
-                any(re.search(lang_regex, i['label'], re.I) for i in results))
+                any(re_search(lang_regex, i['label']) for i in results))
             if 'crunchyroll' in item['file'] and item['filetype'] == 'directory':
                 if re_search(item['file'], r'mode\=series'):
                     yield item
