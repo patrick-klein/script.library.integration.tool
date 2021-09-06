@@ -3,8 +3,8 @@
 
 """LIT initial module whith base variables used in all projetct."""
 
-import xbmc  # type: ignore
-import xbmcaddon  # type: ignore
+import xbmc
+import xbmcaddon
 
 # Get settings
 ADDON = xbmcaddon.Addon()
