@@ -2,13 +2,15 @@
 
 """Module with abs content classes."""
 
-import abc
+from abc import ABCMeta
+from abc import abstractmethod
+from abc import abstractproperty
 
 
 class ABSContentManagerShow():
     """Abstract base class for ContentManager."""
 
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
     # TODO: Make rename on add optional in settings
     # TODO: Save original_label, would be able to rename
     # entire filename using metadata
@@ -23,69 +25,78 @@ class ABSContentManagerShow():
             self.file
         )
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def showtitle(self):
         """Return showtitle str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def season(self):
         """Return season as interger"""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def show_dir(self):
         """Return show_dir path."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def formedyear(self):
         """Return formedyear str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def complete_episode_title(self):
         """Return complete_episode_title str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def file(self):
         """Return file (stream link) str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def episode_title_with_id(self):
         """Return episode_title_with_id str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def episode_id(self):
         """Return episode_id str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def episode_nfo(self):
         """Return episode_nfo str."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def add_to_library(self):
         """Add content to the library."""
         # TODO: add to library using json-rpc
 
-    @abc.abstractmethod
+    @abstractmethod
     def remove_from_library(self):
         """Remove its content from the library, does NOT change/remove item in database."""
         # TODO: remove from library using json-rpc
 
-    @abc.abstractmethod
+    @abstractmethod
     def remove_and_block(self):
         """Remove content from the library, deletes metadata, and adds to blocked list."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def create_metadata_item(self):
         """Add relevent files to metadata folder."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def rename(self, name):
         """Rename title and files."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def delete(self):
         """Remove the item from the database."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def set_as_staged(self):
         """Set the item status as staged in database."""
 
@@ -97,7 +108,7 @@ class ABSContentManagerMovie():
     Defines required and helper methods.
     """
 
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
     # TODO: Make rename on add optional in settings
     # TODO: Save original_label, would be able to rename entire filename using metadata
 
@@ -111,56 +122,62 @@ class ABSContentManagerMovie():
             self.file
         )
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def file(self):
         """Return episode_title_with_id str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def title(self):
         """Return title str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def year(self):
         """Return year str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def formedyear(self):
         """Return formedyear str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def movie_dir(self):
         """Return movie_dir str."""
 
-    @abc.abstractproperty
+    @property
+    @abstractproperty
     def movie_nfo(self):
         """Return movie_nfo str."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def add_to_library(self):
         """Add content to the library."""
         # TODO: add to library using json-rpc
 
-    @abc.abstractmethod
+    @abstractmethod
     def remove_from_library(self):
         """Remove its content from the library, does NOT change/remove item in database."""
         # TODO: remove from library using json-rpc
 
-    @abc.abstractmethod
+    @abstractmethod
     def remove_and_block(self):
         """Remove content from the library, deletes metadata, and adds to blocked list."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def create_metadata_item(self):
         """Add relevent files to metadata folder."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def rename(self, name):
         """Rename title and files."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def delete(self):
         """Remove the item from the database."""
 
-    @abc.abstractmethod
+    @abstractmethod
     def set_as_staged(self):
         """Set the item status as staged in database."""
