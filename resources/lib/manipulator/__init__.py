@@ -5,7 +5,9 @@
 import os
 import re
 
-from resources.lib.log import logged_function, log_msg
+from resources.lib.log import log_msg
+from resources.lib.log import logged_function
+
 
 MAPPED_STRINGS = {
     r' \[cc\]': ' ',

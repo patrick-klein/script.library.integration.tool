@@ -8,13 +8,14 @@ import unittest
 import xbmcaddon
 
 from resources.lib.version import Version
-from resources.lib.utils import re_search
-from resources.lib.manipulator import Cleaner, clean_name
+from resources.lib.manipulator import Cleaner
 
-from resources import ADDON_NAME, ADDON_VERSION
+from resources import ADDON_NAME
+from resources import ADDON_VERSION
 
 from resources.lib.database import Database
 from resources.lib.log import logged_function
+from resources.lib.misc import re_search
 
 TESTE_MOVIE_QUERY = '''
                         INSERT OR IGNORE INTO
