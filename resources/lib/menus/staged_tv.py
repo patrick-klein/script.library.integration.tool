@@ -17,7 +17,7 @@ from resources.lib.misc import notification
 from resources.lib.misc import getstring
 
 
-class StagedTVMenu(object):
+class StagedTVMenu():
     """
     Provide windows for displaying staged tvshows and episodes.
 

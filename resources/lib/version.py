@@ -19,7 +19,8 @@ from resources.lib.filesystem import mkdir
 from resources.lib.misc import getstring
 from resources.lib.misc import notification
 
-class Version(object):
+
+class Version():
     """Class that implements comparison operators for version numbers."""
 
     def __init__(self, version_number):

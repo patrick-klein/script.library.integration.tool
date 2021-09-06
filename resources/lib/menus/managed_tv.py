@@ -14,7 +14,7 @@ from resources.lib.misc import notification
 from resources.lib.misc import getstring
 
 
-class ManagedTVMenu(object):
+class ManagedTVMenu():
     """
     Provide windows for displaying managed shows and episodes.
 

@@ -20,7 +20,7 @@ from os.path import exists
 from resources.lib.log import log_msg
 
 
-class CreateNfo(object):
+class CreateNfo():
     """
     Module to create a .nfo file.
 

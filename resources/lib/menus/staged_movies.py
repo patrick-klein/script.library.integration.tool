@@ -13,7 +13,7 @@ from resources.lib.misc import getstring
 from resources.lib.misc import notification
 
 
-class StagedMoviesMenu(object):
+class StagedMoviesMenu():
     """Provide windows for displaying staged movies, and tools for managing the items."""
 
     # TODO: don't commit sql changes for "... all" until end

@@ -13,7 +13,7 @@ from resources.lib.manipulator import Cleaner
 from resources.lib.utils import MANAGED_FOLDER
 
 
-class MovieItem(ABSItemMovie):
+class MovieItem():
     """Class to build information aboult movies."""
 
     def __init__(self, jsonitem, year=None):

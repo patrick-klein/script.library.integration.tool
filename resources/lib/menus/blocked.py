@@ -12,8 +12,7 @@ from resources.lib.misc import getstring
 from resources.lib.log import logged_function
 
 
-
-class BlockedMenu(object):
+class BlockedMenu():
     """Provide windows for displaying blocked items and tools for managing them."""
 
     def __init__(self, database, progressdialog):

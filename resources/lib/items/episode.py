@@ -12,7 +12,8 @@ from resources.lib.log import logged_function
 from resources.lib.abs.item import ABSItemShow
 
 
-class EpisodeItem(ABSItemShow):
+
+class EpisodeItem():
     """Class to build information aboult shows."""
 
     def __init__(self, jsonitem, year=None):

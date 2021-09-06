@@ -38,7 +38,7 @@ from resources.lib.menus.blocked import BlockedMenu
 # TODO: Put all classes in their own file, change menu classes to ManagedMenu, StagedMenu, etc.
 
 
-class MainMenu(object):
+class MainMenu():
     """
     Perform basic initialization of folder structure.
 

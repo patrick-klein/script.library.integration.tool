@@ -58,7 +58,7 @@ if os.name == 'nt':
 # maybe a api call with trakt or tvdb to get episode info is a way
 
 
-class Cleaner(object):
+class Cleaner():
     """Class with methods to clear strings from content."""
 
     def __init__(self) -> None:

@@ -22,13 +22,14 @@ from resources.lib.items.blocked import BlockedItem
 from resources.lib.items.synced import SyncedItem
 
 
-class Database(object):
+class Database():
     """Database class with all database methods."""
 
     # TODO: Reimplement blocked keywords
     # TODO: Combine remove_content_item functions using **kwargs
     def __init__(self):
         """__init__ database."""
+
         # Connect to database
         self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
         self.conn.text_factory = str

@@ -22,7 +22,7 @@ from resources.lib.misc import notification
 from resources.lib.misc import getstring
 
 
-class ManagedMoviesMenu(object):
+class ManagedMoviesMenu():
     """
     Contain window for displaying managed movies.
 

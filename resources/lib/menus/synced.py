@@ -26,7 +26,8 @@ from resources.lib.utils import load_directory_items
 
 from resources.lib.progressbar import BGProgressBar
 
-class SyncedMenu(object):
+
+class SyncedMenu():
     """
     Provide windows for displaying synced directories.
 

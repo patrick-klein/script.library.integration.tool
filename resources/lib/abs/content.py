@@ -1,11 +1,11 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 """Module with abs content classes."""
 
 import abc
 
 
-class ABSContentManagerShow(object):
+class ABSContentManagerShow():
     """Abstract base class for ContentManager."""
 
     __metaclass__ = abc.ABCMeta
@@ -96,7 +96,7 @@ class ABSContentManagerShow(object):
         """Set the item status as staged in database."""
 
 
-class ABSContentManagerMovie(object):
+class ABSContentManagerMovie():
     """
     Abstract base class for ContentManager.
 
