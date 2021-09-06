@@ -13,7 +13,7 @@ class ABSContentManagerShow():
     # TODO: Save original_label, would be able to rename
     # entire filename using metadata
 
-    def __init__(self, jsondata):
+    def __init__(self, _):
         """__init__ ABSContentManagerShow."""
 
     def __str__(self):
@@ -101,7 +101,7 @@ class ABSContentManagerMovie():
     # TODO: Make rename on add optional in settings
     # TODO: Save original_label, would be able to rename entire filename using metadata
 
-    def __init__(self, jsondata):
+    def __init__(self, _):
         """__init__ ABSContentManagerMovie."""
 
     def __str__(self):
