@@ -65,11 +65,6 @@ class ABSContentManagerShow():
     def episode_id(self):
         """Return episode_id str."""
 
-    @property
-    @abstractproperty
-    def episode_nfo(self):
-        """Return episode_nfo str."""
-
     @abstractmethod
     def add_to_library(self):
         """Add content to the library."""
@@ -88,9 +83,9 @@ class ABSContentManagerShow():
     def create_metadata_item(self):
         """Add relevent files to metadata folder."""
 
-    @abstractmethod
-    def rename(self, name):
-        """Rename title and files."""
+    # @abstractmethod
+    # def rename(self, name):
+    #     """Rename title and files."""
 
     @abstractmethod
     def delete(self):
