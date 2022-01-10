@@ -445,8 +445,8 @@ class Database():
             '''DELETE FROM
                     blocked
                 WHERE
-                            showtitle="%s"
-                        AND
+                    value="%s"
+                AND
                     type=:type''',
             {'value': value, 'type': _type}
         )
