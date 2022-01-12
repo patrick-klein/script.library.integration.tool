@@ -66,7 +66,7 @@ def check_version_file():
     """Check the version file and runs version-specific update actions."""
     # Check version file
     version_file_path = xbmcvfs.translatePath(
-        'special://userdata/addon_data/{}/.version'.format(ADDON_ID)
+        f"special://userdata/addon_data/{ADDON_ID}/.version"
     )
     if isfile(version_file_path):
         with open(version_file_path, 'r') as version_file:

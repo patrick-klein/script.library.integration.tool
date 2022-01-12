@@ -107,21 +107,20 @@ class CreateNfo():
         with open(self.filepath, "w+") as nfofile:
             try:
                 nfofile.write(self.root)
-                log_msg("Created NFO file %s" % self.root)
+                log_msg(f"Created NFO file {self.root}")
             except Exception as error:
-                log_msg('CreateNfo.create: %s' % error)
+                raise f"CreateNfo.create: {error}"
             finally:
                 nfofile.close()
-
 
 def create_stream_file(plugin_path, filepath):
     """Create stream file with plugin_path at filepath."""
     with open(filepath, "w+") as strm:
         try:
             strm.write(plugin_path)
-            log_msg("Created STRM file %s" % plugin_path)
+            log_msg(f"Created STRM file {plugin_path}")
         except Exception as error:
-            log_msg('filesystem.create_stream_file: %s' % error)
+            raise f"filesystem.create_stream_file: {error}"
         finally:
             strm.close()
     return True

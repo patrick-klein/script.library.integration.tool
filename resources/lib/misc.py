@@ -92,8 +92,8 @@ def title_with_color(label, year=None, colorname='mediumslateblue'):
     # now, this func add color and year to movie title,
     # and any of this actions can be splited
     if year:
-        return str('[COLOR %s][B]%s (%s)[/B][/COLOR]' % (colorname, label, year))
-    return str('[COLOR %s][B]%s[/B][/COLOR]' % (colorname, label))
+        return str(f"[COLOR {colorname}][B]{label} ({year})[/B][/COLOR]")
+    return str(f"[COLOR {colorname}][B]{label}[/B][/COLOR]")
 
 
 def color(string, colorname='mediumslateblue'):
@@ -103,14 +103,14 @@ def color(string, colorname='mediumslateblue'):
     mediumseagreen
     """
     # COLORS: https://github.com/xbmc/xbmc/blob/master/system/colors.xml
-    return str('[COLOR %s]%s[/COLOR]' % (colorname, string))
+    return str(f"[COLOR {colorname}]{string}[/COLOR]")
 
 
 def bold(string):
     """
     Return string formated with a bold.
     """
-    return str('[B]%s[/B]' % (string))
+    return str(f"[B]{string}[/B]")
 
 # in future path arg will select the clean method
 
@@ -118,7 +118,7 @@ def bold(string):
 def videolibrary(method, database='video'):
     """A dedicated method to performe jsonrpc VideoLibrary.Scan or VideoLibrary."""
     command = {
-        'scan': 'CleanLibrary(%s)' % database,
-        'clean': 'UpdateLibrary(%s)' % database
+        'scan': f"CleanLibrary({database})",
+        'clean': f"UpdateLibrary({database})"
     }
     xbmc.executebuiltin(command[method])

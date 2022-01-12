@@ -27,7 +27,7 @@ def test():
     suite = unittest.TestSuite()
     suite.addTests(loader.discover(
         os.path.dirname(__file__), pattern='test_*.py'))
-    log_msg('All unit tests: %s' % suite)
+    log_msg(f"All unit tests: {suite}")
 
     # Attempt to load and start coverage module
     try:
@@ -67,4 +67,4 @@ def test():
     else:
         notification('Tests failed')
 
-    log_msg('Test result: %s' % result)
+    log_msg(f"Test result: {result}")

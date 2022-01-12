@@ -35,15 +35,14 @@ if USING_CUSTOM_MANAGED_FOLDER:
     MANAGED_FOLDER = xbmcvfs.validatePath(ADDON.getSetting('managed_folder'))
 else:
     MANAGED_FOLDER = xbmcvfs.translatePath(
-        'special://userdata/addon_data/{}/'.format(ADDON_ID)
+        f"special://userdata/addon_data/{ADDON_ID}/"
     )
 
 
 def check_managed_folder():
     """Check if the managed folder is configured."""
-    if not exists(MANAGED_FOLDER):
-        STR_CHOOSE_FOLDER = 'Created managed folder "{}"'.format(
-            MANAGED_FOLDER)
+    if not xbmcvfs.exists(MANAGED_FOLDER):
+        STR_CHOOSE_FOLDER = f'Created managed folder "{MANAGED_FOLDER}"'
         mkdir(MANAGED_FOLDER)
         log_msg(STR_CHOOSE_FOLDER, xbmc.LOGERROR)
 

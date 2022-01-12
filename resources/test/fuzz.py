@@ -26,7 +26,7 @@ def fuzz():
     suite = unittest.TestSuite()
     suite.addTests(loader.discover(
         os.path.dirname(__file__), pattern='fuzz_*.py'))
-    log_msg('All fuzz tests: %s' % suite)
+    log_msg(f"All fuzz tests: {suite}")
 
     # Run all unit tests and save to text file
     log_file = os.path.join(test_path, 'fuzz_report.txt')
@@ -38,4 +38,4 @@ def fuzz():
     else:
         notification('Fuzz failed')
 
-    log_msg('Fuzz result: %s' % result)
+    log_msg(f"Fuzz result: {result}")
