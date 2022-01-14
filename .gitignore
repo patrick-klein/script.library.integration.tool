@@ -7,3 +7,4 @@ pylint
 lit.code-workspace
 resources/test/test_report.txt
 resources/test/fuzz_report.txt
+resources/test/full
