@@ -35,12 +35,9 @@ class ContentManagerShow(ABSContentManagerShow):
         self.managed_season_dir = join(
             self.show_dir, self.jsondata['season_dir'])
         self.managed_episode_path = join(
-            self.managed_season_dir, self.complete_episode_title)
-        self.managed_thumb_path = ''.join(
-            [self.managed_episode_path, '-thumb.jpg'])
-        self.managed_landscape_path = join(self.show_dir, 'landscape.jpg')
-        self.managed_tvshow_nfo = join(self.show_dir, 'tvshow.nfo')
-        self.managed_strm_path = ''.join([self.managed_episode_path, '.strm'])
+        self.managed_thumb_path = f'{self.managed_episode_path}-thumb.jpg'
+        self.managed_landscape_path = join(
+        self.managed_strm_path = f'{self.managed_episode_path}.strm'
 
     @property
     def showtitle(self):
@@ -55,24 +52,16 @@ class ContentManagerShow(ABSContentManagerShow):
     @property
     def show_dir(self):
         """Return show_dir."""
-        return ' '.join(
-            [self.jsondata['managed_show_dir'], self.formedyear]
-        )
+        return f"{self.jsondata['managed_show_dir']} {self.formedyear()}"
 
-    @property
     def formedyear(self):
         """Return formedyear."""
-        return '(%s)' % self.jsondata['year']
+        return f'({self.jsondata["year"]})'
 
-    @property
     def complete_episode_title(self):
         """Return complete_episode_title."""
-        return '%s - %s' % (
-            ' '.join([self.showtitle, self.formedyear]),
-            self.episode_title_with_id
-        )
+        return f"{self.showtitle()} {self.formedyear()} - {self.episode_title_with_id()}"
 
-    @property
     def file(self):
         """Return file."""
         return self.jsondata['file']
@@ -90,7 +79,7 @@ class ContentManagerShow(ABSContentManagerShow):
     @property
     def managed_episode_nfo_path(self):
         """Return managed_episode_nfo_path."""
-        return ''.join([self.managed_episode_path, '.nfo'])
+        return f'{self.managed_episode_path}.nfo'
 
     @logged_function
     def add_to_library(self):
@@ -219,6 +208,8 @@ class ContentManagerMovie(ABSContentManagerMovie):
             self.managed_movie_dir,
             ''.join([self.title, '.strm'])
         )
+        log_msg(f'self.managed_strm_path {self.managed_strm_path}')
+
 
     @property
     def file(self):
@@ -228,9 +219,8 @@ class ContentManagerMovie(ABSContentManagerMovie):
     @property
     def title(self):
         """Return title."""
-        return ' '.join([self.jsondata['title'], self.formedyear])
+        return f'{self.jsondata["title"]} {self.formedyear()}'
 
-    @property
     def year(self):
         """Return year."""
         return self.jsondata['year']
@@ -238,14 +228,12 @@ class ContentManagerMovie(ABSContentManagerMovie):
     @property
     def formedyear(self):
         """Return formedyear."""
-        return '(%s)' % self.jsondata['year']
+        return f'({self.jsondata["year"]})'
 
-    @property
     def managed_movie_dir(self):
         """Return managed_movie_dir."""
-        return ' '.join([self.jsondata['managed_movie_dir'], self.formedyear])
+        return f'{self.jsondata["managed_movie_dir"]} {self.formedyear()}'
 
-    @property
     def movie_nfo(self):
         """Return movie_nfo."""
         return join(self.managed_movie_dir, ''.join([self.title, '.nfo']))

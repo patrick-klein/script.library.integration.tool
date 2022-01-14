@@ -226,10 +226,12 @@ class StagedTVMenu():
             STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(
-                STR_STAGED_EPISODE_OPTIONS,
-                color(bold(item.showtitle), 'skyblue'),
-                color(bold(item.episode_id), 'green')
+            ' - '.join(
+                [
+                    STR_STAGED_EPISODE_OPTIONS,
+                    color(bold(item.showtitle()), 'skyblue'),
+                    color(bold(item.episode_id()), 'green')
+                ]
             ), lines
         )
         if ret >= 0:
@@ -338,7 +340,7 @@ class StagedTVMenu():
             )
         )
         sel.items(
-            [str('Season %s' % x) for x in season_interger_list]
+            [f'Season {x}' for x in season_interger_list]
         )
         sel.extraopts([getstring(x) for x in OPTIONS])
         if not staged_seasons:

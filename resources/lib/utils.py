@@ -55,11 +55,7 @@ def check_subfolders():
         'tvshows': MANAGED_FOLDER,
     }
     created_folders = False
-    for basepath, diretory in subfolders.items():
-        dest_dir = join(diretory, basepath)
-        if not exists(dest_dir):
-            log_msg('Creating subfolder {}'.format(
-                dest_dir), loglevel=xbmc.LOGINFO)
+            notification(f'Created diretory {dest_dir}')
             mkdir(dest_dir)
             created_folders = True
 

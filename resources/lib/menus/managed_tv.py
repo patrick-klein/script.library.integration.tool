@@ -38,13 +38,7 @@ class ManagedTVMenu():
         for index, item in enumerate(items):
             self.progressdialog.update_progressdialog(
                 index / len(items),
-                msg='\n'.join(
-                    [
-                        color(bold(item.showtitle)),
-                        item.episode_title_with_id
-                    ]
-                )
-            )
+                msg=f'{color(bold(item.showtitle()))}\n{item.episode_title_with_id()}'
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close_progressdialog()
@@ -68,13 +62,7 @@ class ManagedTVMenu():
         for index, item in enumerate(items):
             self.progressdialog.update_progressdialog(
                 index / len(items),
-                msg='\n'.join(
-                    [
-                        color(bold(item.showtitle)),
-                        item.episode_title_with_id
-                    ]
-                )
-            )
+                msg=f'{color(bold(item.showtitle()))}\n{item.episode_title_with_id()}'
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close_progressdialog()
@@ -97,13 +85,7 @@ class ManagedTVMenu():
         for index, item in enumerate(managed_tv_items):
             self.progressdialog.update_progressdialog(
                 index / len(managed_tv_items),
-                msg='\n'.join(
-                    [
-                        color(bold(item.showtitle)),
-                        item.episode_title_with_id
-                    ]
-                )
-            )
+                msg=f'{color(bold(item.showtitle()))}\n{item.episode_title_with_id()}'
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close_progressdialog()
@@ -121,8 +103,10 @@ class ManagedTVMenu():
             self.progressdialog.update_progressdialog(
                 index / len(episodes),
                 '\n'.join(
-                    ["Criando metadados para: %s" % color(bold(item.showtitle)),
-                     'Episode: %s' % item.episode_title_with_id]
+                    [
+                        f"Criando metadados para: {color(bold(item.showtitle()))}",
+                        f"Episode: {item.episode_title_with_id()}"
+                    ]
                 )
             )
             item.create_metadata_item()
@@ -147,8 +131,10 @@ class ManagedTVMenu():
             self.progressdialog.update_progressdialog(
                 index / len(managed_seasons),
                 '\n'.join(
-                    ["Criando metadados para: %s" % color(bold(item.showtitle)),
-                     'Seasons %s' % str (item.season)]
+                    [
+                        f"Criando metadados para: {color(bold(item.showtitle()))}",
+                        f"Seasons {item.season()}"
+                    ]
                 )
             )
             item.create_metadata_item()
@@ -175,8 +161,8 @@ class ManagedTVMenu():
                 '\n'.join(
                     [
                         # TODO: add new string
-                        "Criando metadados para: %s" % color(bold(item.showtitle)),
-                        item.episode_title_with_id
+                        f"Criando metadados para: {color(bold(item.showtitle()))}",
+                        item.episode_title_with_id()
                     ]
                 )
             )
@@ -197,10 +183,12 @@ class ManagedTVMenu():
             STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(
-                STR_MANAGED_EPISODE_OPTIONS,
-                color(bold(item.showtitle), 'skyblue'),
-                color(bold(item.episode_id), 'green')
+            ' - '.join(
+                [
+                    STR_MANAGED_EPISODE_OPTIONS,
+                    color(bold(item.showtitle()), 'skyblue'),
+                    color(bold(item.episode_id()), 'green'),
+                ]
             ), lines
         )
         if ret >= 0:
@@ -293,8 +281,7 @@ class ManagedTVMenu():
             )
             self.view_shows()
             return
-        season_interger_list = list(set([x.season for x in managed_seasons]))
-        lines = [str('[B]Season %s[/B]' % x) for x in season_interger_list]
+        lines=[f'[B]Season {x}[/B]' for x in season_interger_list]
         lines += [
             STR_MOVE_ALL_SEASONS_BACK_TO_STAGED,
             STR_GENERATING_ALL_TV_SEASONS_METADATA,

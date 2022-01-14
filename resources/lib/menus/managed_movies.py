@@ -119,11 +119,14 @@ class ManagedMoviesMenu():
             STR_BACK
         ]
         ret = xbmcgui.Dialog().select(
-            '{0} - {1} - {2}'.format(
-                ADDON_NAME,
-                STR_MANAGED_MOVIE_OPTIONS,
-                bold(color(item.title, colorname='skyblue'))
-            ), lines
+            " - ".join(
+                [
+                    ADDON_NAME,
+                    STR_MANAGED_MOVIE_OPTIONS,
+                    bold(color(item.title(), colorname='skyblue')),
+                ]
+            ),
+            lines
         )
         if ret >= 0:
             if lines[ret] == STR_REMOVE:
@@ -162,10 +165,7 @@ class ManagedMoviesMenu():
             )
         )
         sel = Select(
-            heading='{0} - {1}'.format(
-                ADDON_NAME,
-                STR_MANAGED_MOVIES
-            )
+            heading=f'{ADDON_NAME} - {STR_MANAGED_MOVIES}'
         )
         sel.items([str(x) for x in managed_movies])
         sel.extraopts([getstring(x) for x in OPTIONS])

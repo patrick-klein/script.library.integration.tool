@@ -85,7 +85,7 @@ class EpisodeItem():
             return {
                 'file': self.file(),
                 'showtitle': self.showtitle(),
-                'episode_title_with_id': ' - '.join([self.episode_id(), self.title()]),
+                'episode_title_with_id': f'{self.episode_id()} - {self.title()}',
                 'title': self.title(),
                 'episode': self.episode(),
                 'episode_id': self.episode_id(),
@@ -96,5 +96,5 @@ class EpisodeItem():
                 'type': 'tvshow'
             }
         except Exception as error:
-            log_msg('EpisodeItem.returasjson: %s' % error)
+            log_msg(f'EpisodeItem.returasjson: {error}')
         return None
