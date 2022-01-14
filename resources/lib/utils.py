@@ -7,7 +7,6 @@ import re
 import json
 
 from os.path import join
-from os.path import exists
 
 import xbmc
 import xbmcgui
@@ -26,7 +25,7 @@ from resources import RECURSION_LIMIT
 from resources import USING_CUSTOM_MANAGED_FOLDER
 
 from resources.lib.log import log_msg
-from resources.lib.filesystem import mkdir
+from resources.lib.filesystem import isdir, mkdir
 from resources.lib.dialog_select import Select
 from resources.lib.version import check_version_file
 
@@ -50,11 +49,16 @@ def check_managed_folder():
 def check_subfolders():
     """Check the subfolders in the Managed and folders."""
     # Create subfolders if they don't exist
-    subfolders = {
-        'movies': MANAGED_FOLDER,
-        'tvshows': MANAGED_FOLDER,
-    }
+    folders = [
+        'movies',
+        'tvshows',
+    ]
+    # MANAGED_FOLDER
     created_folders = False
+    for folder in folders:
+        dest_dir = join(MANAGED_FOLDER, folder)
+        if not isdir(dest_dir):
+            # log_msg('Created diretory {}'.format(dest_dir), loglevel=xbmc.LOGINFO)
             notification(f'Created diretory {dest_dir}')
             mkdir(dest_dir)
             created_folders = True

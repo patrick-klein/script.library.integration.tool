@@ -2,12 +2,12 @@
 
 """Defines the ManagedMoviesMenu class."""
 
-from os import remove
-from os import listdir
 from os.path import join
-from os.path import isdir
 
 import xbmcgui
+import xbmcvfs
+
+from resources.lib.filesystem import listdir
 
 from resources import ADDON_NAME
 from resources.lib.utils import MANAGED_FOLDER
@@ -76,13 +76,13 @@ class ManagedMoviesMenu():
         """Remove all unused metadata."""
         STR_MOVIE_METADATA_CLEANED = getstring(32136)
         managed_movies_dir = join(MANAGED_FOLDER, 'movies')
-        for movie_dir in listdir(managed_movies_dir):
-            full_path = join(managed_movies_dir, movie_dir)
-            if isdir(full_path):
-                folder_contents = listdir(full_path)
-                for filepath in folder_contents:
+        for full_path_movie_dir in listdir(managed_movies_dir, True):
+            try:
+                for filepath in listdir(full_path_movie_dir, True):
                     if '.nfo' in filepath:
-                        remove(join(full_path, filepath))
+                        xbmcvfs.delete(filepath)
+            except Exception as error:
+                raise error
         notification(STR_MOVIE_METADATA_CLEANED)
 
     @logged_function
