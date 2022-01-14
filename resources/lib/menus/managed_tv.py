@@ -39,6 +39,7 @@ class ManagedTVMenu():
             self.progressdialog.update_progressdialog(
                 index / len(items),
                 msg=f'{color(bold(item.showtitle()))}\n{item.episode_title_with_id()}'
+            )
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close_progressdialog()
@@ -63,6 +64,7 @@ class ManagedTVMenu():
             self.progressdialog.update_progressdialog(
                 index / len(items),
                 msg=f'{color(bold(item.showtitle()))}\n{item.episode_title_with_id()}'
+            )
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close_progressdialog()
@@ -86,6 +88,7 @@ class ManagedTVMenu():
             self.progressdialog.update_progressdialog(
                 index / len(managed_tv_items),
                 msg=f'{color(bold(item.showtitle()))}\n{item.episode_title_with_id()}'
+            )
             item.remove_from_library()
             item.set_as_staged()
         self.progressdialog.close_progressdialog()
