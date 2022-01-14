@@ -72,8 +72,8 @@ class ManagedMoviesMenu():
 
     @staticmethod
     @logged_function
-    def clean_up_managed_metadata():
-        """Remove all unused metadata."""
+    def clean_up_all_managed_metadata(_=None):
+        """Delete all metada (.nfo only) for all movies."""
         STR_MOVIE_METADATA_CLEANED = getstring(32136)
         managed_movies_dir = join(MANAGED_FOLDER, 'movies')
         for full_path_movie_dir in listdir(managed_movies_dir, True):
@@ -156,7 +156,7 @@ class ManagedMoviesMenu():
             32009: self.remove_all,
             32010: self.move_all_to_staged,
             32040: self.generate_all_managed_metadata,
-            32174: self.clean_up_managed_metadata,
+            32174: self.clean_up_all_managed_metadata,
         }
         managed_movies = list(
             self.database.get_content_items(
