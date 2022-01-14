@@ -197,10 +197,10 @@ class ManagedTVMenu():
             elif lines[ret] == STR_MOVE_BACK_TO_STAGED:
                 item.remove_from_library()
                 item.set_as_staged()
-                self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle(), season)
             elif lines[ret] == STR_BACK:
-                self.view_episodes(item.showtitle, season)
-        self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle(), season)
+        self.view_episodes(item.showtitle(), season)
 
     @logged_function
     def view_episodes(self, showtitle, season):
@@ -281,6 +281,7 @@ class ManagedTVMenu():
             )
             self.view_shows()
             return
+        season_interger_list = list(set([x.season() for x in managed_seasons]))
         lines=[f'[B]Season {x}[/B]' for x in season_interger_list]
         lines += [
             STR_MOVE_ALL_SEASONS_BACK_TO_STAGED,

@@ -45,7 +45,7 @@ class ManagedMoviesMenu():
         for index, item in enumerate(items):
             self.progressdialog.update_progressdialog(
                 index / len(items),
-                item.title
+                item.title()
             )
             item.remove_from_library()
             item.set_as_staged()
@@ -63,7 +63,7 @@ class ManagedMoviesMenu():
         for index, item in enumerate(items):
             self.progressdialog.update_progressdialog(
                 index / len(items),
-                item.title
+                item.title()
             )
             item.remove_from_library()
             item.delete()
@@ -96,7 +96,7 @@ class ManagedMoviesMenu():
         for index, item in enumerate(items):
             self.progressdialog.update_progressdialog(
                 index / len(items),
-                item.title
+                item.title()
             )
             item.create_metadata_item()
         self.progressdialog.close_progressdialog()

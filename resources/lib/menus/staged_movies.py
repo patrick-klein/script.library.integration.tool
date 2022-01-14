@@ -35,7 +35,7 @@ class StagedMoviesMenu():
         for index, item in enumerate(items):
             self.progressdialog.update_progressdialog(
                 index / len(items),
-                item.title
+                item.title()
             )
             item.add_to_library()
         self.progressdialog.close_progressdialog()
@@ -47,7 +47,7 @@ class StagedMoviesMenu():
         # TODO: move to utils or parent class so it's not duplicated
         input_ret = xbmcgui.Dialog().input(
             "Title",
-            defaultt=item.title
+            defaultt=item.title()
         )
         if input_ret:
             item.rename(input_ret)

@@ -33,7 +33,7 @@ class StagedTVMenu():
     #     """Prompt input for new name, and rename if non-empty string."""
     #     input_ret = xbmcgui.Dialog().input(
     #         "Title",
-    #         defaultt=item.showtitle
+    #         defaultt=item.showtitle()
     #     )
     #     if input_ret:
     #         item.rename(input_ret)
@@ -50,7 +50,7 @@ class StagedTVMenu():
     #     for index, item in enumerate(items):
     #         self.progressdialog.update_progressdialog(
     #             index / len(items),
-    #             '\n'.join([item.showtitle, item.episode_title_with_id])
+    #             '\n'.join([item.showtitle(), item.episode_title_with_id()])
     #         )
     #     self.progressdialog.close_progressdialog()
     #     notification(STR_x_EPISODES_RENAMED_USING_METADATA % showtitle)
@@ -69,8 +69,8 @@ class StagedTVMenu():
                 index / len(episodes),
                 '\n'.join(
                     [
-                        color(bold(item.showtitle)),
-                        item.episode_title_with_id
+                        color(bold(item.showtitle())),
+                        item.episode_title_with_id()
                     ]
                 )
             )
@@ -102,8 +102,8 @@ class StagedTVMenu():
                 index / len(staged_seasons),
                 '\n'.join(
                     [
-                        color(bold(item.showtitle)),
-                        item.episode_title_with_id
+                        color(bold(item.showtitle())),
+                        item.episode_title_with_id()
                     ]
                 )
             )
@@ -135,8 +135,8 @@ class StagedTVMenu():
                 index / len(staged_tv_items),
                 '\n'.join(
                     [
-                        color(bold(item.showtitle)),
-                        item.episode_title_with_id
+                        color(bold(item.showtitle())),
+                        item.episode_title_with_id()
                     ]
                 )
             )
@@ -237,13 +237,13 @@ class StagedTVMenu():
         if ret >= 0:
             if lines[ret] == STR_ADD:
                 item.add_to_library()
-                self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle(), season)
             elif lines[ret] == STR_REMOVE:
                 item.delete()
-                self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle(), season)
             elif lines[ret] == STR_REMOVE_AND_BLOCK_EPISODE:
                 item.remove_and_block()
-                self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle(), season)
             # elif lines[ret] == STR_RENAME:
                 # self.rename_dialog(item)
                 self.episode_options(item, season)
@@ -251,10 +251,10 @@ class StagedTVMenu():
                 item.create_metadata_item()
                 self.episode_options(item, season)
             elif lines[ret] == STR_BACK:
-                self.view_episodes(item.showtitle, season)
+                self.view_episodes(item.showtitle(), season)
                 return
         else:
-            self.view_episodes(item.showtitle, season)
+            self.view_episodes(item.showtitle(), season)
 
     @logged_function
     def view_episodes(self, showtitle, season):
@@ -328,7 +328,7 @@ class StagedTVMenu():
             )
         )
         season_interger_list = list(
-            set([x.season for x in staged_seasons])
+            set([x.season() for x in staged_seasons])
         )
         sel = Select(
             heading='%s - %s' % (
