@@ -46,8 +46,8 @@ def check_managed_folder():
         log_msg(STR_CHOOSE_FOLDER, xbmc.LOGERROR)
 
 
-def check_subfolders():
-    """Check the subfolders in the Managed and folders."""
+def create_content_dirs():
+    """Create subdirs in managed folder if not exist."""
     # Create subfolders if they don't exist
     folders = [
         'movies',
@@ -76,7 +76,7 @@ def entrypoint(func):
         """function wrapper."""
         check_version_file()
         check_managed_folder()
-        check_subfolders()
+        create_content_dirs()
         return func(*args, **kwargs)
     return wrapper
 
