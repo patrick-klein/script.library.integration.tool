@@ -3,14 +3,12 @@
 
 """Defines function to call fuzz modules."""
 
-
 import os
 import unittest
 
 import xbmcvfs
 
 from resources.lib.log import log_msg
-
 from resources.lib.misc import notification
 
 
@@ -30,9 +28,11 @@ def fuzz():
 
     # Run all unit tests and save to text file
     log_file = os.path.join(test_path, 'fuzz_report.txt')
-    with open(log_file, "w") as f:
-        result = unittest.TextTestRunner(f, verbosity=2).run(suite)
-
+    with open(log_file, "w", encoding="utf-8") as log_file_write:
+        result = unittest.TextTestRunner(
+            log_file_write,
+            verbosity=2
+        ).run(suite)
     if result.wasSuccessful():
         notification('Fuzz successful')
     else:

@@ -3,8 +3,15 @@
 
 """Defines class for testing utils module."""
 
-import unittest
+import os
 
+from os.path import dirname
+
+import unittest
+from resources.lib import log
+from resources.lib.filesystem import delete_strm, isdir, join, removedirs
+
+import xbmcvfs
 import xbmcaddon
 
 from resources.lib.version import Version
@@ -14,8 +21,11 @@ from resources import ADDON_NAME
 from resources import ADDON_VERSION
 
 from resources.lib.database import Database
-from resources.lib.log import logged_function
-from resources.lib.misc import re_search
+from resources.lib.log import log_msg, logged_function
+from resources.lib.misc import notification, re_search
+
+WORK_DIR = dirname(__file__)
+
 
 TESTE_MOVIE_QUERY = '''
                         INSERT OR IGNORE INTO
@@ -62,6 +72,97 @@ TESTE_BLOCKED_QUERY = '''
 
 class TestUtils(unittest.TestCase):
     """Test cases for utils module."""
+
+    @logged_function
+    def test_isdir(self):
+        """Teste isdir function."""
+        TEST_DIRS = {
+            'full': join([WORK_DIR, "full", "imaginary tvshow", "Season 1"]),
+            'empty': join([WORK_DIR, "empty"]),
+            'file': join([WORK_DIR, "test_isdir.txt"], True),
+        }
+        full_created_dir = xbmcvfs.mkdirs(TEST_DIRS['full'])
+        empty_created_dir = xbmcvfs.mkdirs(TEST_DIRS['empty'])
+        test_isdir_txt = open(TEST_DIRS['file'], 'w', encoding='utf-8')
+
+        self.assertEqual(full_created_dir, True)
+        self.assertEqual(empty_created_dir, True)
+
+        if full_created_dir:
+            self.assertEqual(isdir(TEST_DIRS['full']), True)
+            notification(f"full_created_dir: {isdir(dirname(dirname(TEST_DIRS['full'])))}")
+
+        if empty_created_dir:
+            self.assertEqual(isdir(TEST_DIRS['empty']), True)
+            notification(f"empty_created_dir: {isdir(TEST_DIRS['empty'])}")
+
+        if test_isdir_txt:
+            self.assertEqual(isdir(TEST_DIRS['file']), False)
+            notification(
+                f"empty_created_dir: {isdir(TEST_DIRS['file'])}"
+            )
+
+        open(join([TEST_DIRS['full'], "teste0.txt"], True), "w", encoding="utf-8")
+        open(join([dirname(dirname(TEST_DIRS['full'])), "teste1.txt"], True), "w", encoding="utf-8")
+        fullpath_base_dir = dirname(dirname(dirname(TEST_DIRS['full'])))
+        self.assertEqual(
+            xbmcvfs.rmdir(
+                TEST_DIRS['empty']
+            ),
+            True
+        )
+        self.assertEqual(
+            xbmcvfs.delete(
+                TEST_DIRS['file']
+            ),
+            True
+        )
+
+        for item in "abcdefgh":
+            strm_path = f"{join([fullpath_base_dir, item], True)}.strm"
+            xbmcvfs.File(strm_path, "w+").write('teste')
+        delete_strm(fullpath_base_dir)
+        # removedirs(fullpath_base_dir)
+        # self.assertEqual(xbmcvfs.existis(fullpath_base_dir), False)
+
+
+
+    @logged_function
+    def test_xbmcvfs(self):
+        """test xbmcvfs."""
+        VALID_FILE_PATH = join([WORK_DIR, "valid_file_path.txt"], True)
+        VALID_DIR_PATH = join([WORK_DIR, "teste_dir"])
+        log_msg(f"VALID_FILE_PATH {VALID_FILE_PATH}")
+        log_msg(f"VALID_DIR_PATH {VALID_DIR_PATH}")
+
+        # Teste if not exist file
+        self.assertEqual(os.path.exists(VALID_FILE_PATH), False)
+        self.assertEqual(xbmcvfs.exists(VALID_FILE_PATH), False)
+
+        # Teste if not exist dir
+        # self.assertEqual(os.path.exists(VALID_DIR_PATH), False)
+        self.assertEqual(xbmcvfs.exists(VALID_DIR_PATH), False)
+        log_msg(f"VALID_FILE_PATH not exist: {VALID_FILE_PATH}")
+
+        with open(VALID_FILE_PATH, "w", encoding="utf-8") as valid_file_path:
+            valid_file_path.write('teste')
+            log_msg(f"VALID_FILE_PATH created: {VALID_FILE_PATH}")
+            valid_file_path.close()
+
+        # Teste if exist
+        self.assertEqual(os.path.exists(VALID_FILE_PATH), True)
+        self.assertEqual(xbmcvfs.exists(VALID_FILE_PATH), True)
+
+        os.makedirs(VALID_DIR_PATH, exist_ok=True)
+        # Teste if exist
+        self.assertEqual(os.path.exists(VALID_DIR_PATH), True)
+        self.assertEqual(xbmcvfs.exists(VALID_DIR_PATH), True)
+
+        self.assertEqual(os.path.isfile(VALID_FILE_PATH), True)
+        os.remove(VALID_FILE_PATH)
+        os.removedirs(VALID_DIR_PATH)
+
+
     @logged_function
     def test_title_cleaner(self):
         """Test cleaner function."""
@@ -76,10 +177,18 @@ class TestUtils(unittest.TestCase):
             'good_showtitle': 'To Your Eternity',
             'bad_showtitle': 'To Your Eternity (Portuguese Dub)',
         }
-        self.assertEqual(cleaner.title(
-            TITLES['bad_title'], TITLES['bad_showtitle']), TITLES['good_title'])
-        self.assertEqual(cleaner.showtitle(
-            TITLES['bad_showtitle']), TITLES['good_showtitle'])
+        self.assertEqual(
+            cleaner.title(
+            TITLES['bad_title'],
+            TITLES['bad_showtitle']),
+            TITLES['good_title']
+        )
+        self.assertEqual(
+            cleaner.showtitle(
+                TITLES['bad_showtitle']
+            ),
+            TITLES['good_showtitle']
+        )
         # # # # # # # # # # # # # # # # # # # # # # #
         # test_names = {
         #     'test1.': 'test1',
@@ -112,9 +221,15 @@ class TestUtils(unittest.TestCase):
             'notexit': 'I dont exit and need be ignored',
         }
         self.assertEqual(db.check_if_is_blocked(
-            FAKE_BLOCK_TESTE['exist']), True)
+                FAKE_BLOCK_TESTE['exist']
+            ),
+                True
+            )
         self.assertEqual(db.check_if_is_blocked(
-            FAKE_BLOCK_TESTE['notexit']), None)
+                FAKE_BLOCK_TESTE['notexit']
+            ),
+                None
+        )
         db.delete_entrie_from_blocked(FAKE_BLOCK_TESTE['exist'], 'tvshow')
 
     @logged_function
@@ -158,9 +273,17 @@ class TestUtils(unittest.TestCase):
             "type": "tvshow",
             "label": "Karakuri Circus S01",
         }
-        self.assertEqual(re_search(item['type'], ['unknown']), True)
-        self.assertEqual(re_search(item2['type'], ['tvshow']), True)
-        self.assertEqual(re_search(item['type'], ['unknown', 'tvshow']), True)
+        self.assertEqual(
+            re_search(
+                item['type'],
+                ['unknown']
+            ),
+            True
+        )
+        self.assertEqual(
+            re_search(item2['type'], ['tvshow']), True)
+        self.assertEqual(
+            re_search(item['type'], ['unknown', 'tvshow']), True)
         self.assertEqual(
             re_search(item['label'], ['season', 'temporada', r'S\d{1,4}']), True)
         self.assertEqual(re_search(item3['label'], [

@@ -47,8 +47,11 @@ def test():
 
     # Run all unit tests and save to text file
     log_file = os.path.join(test_path, 'test_report.txt')
-    with open(log_file, 'w') as f:
-        result = unittest.TextTestRunner(f, verbosity=2).run(suite)
+    with open(log_file, 'w', encoding="utf-8") as log_file_write:
+        result = unittest.TextTestRunner(
+            log_file_write,
+            verbosity=2
+        ).run(suite)
 
     # Stop coverage and save output
     if test_coverage:
@@ -56,8 +59,10 @@ def test():
         cov_folder = os.path.join(test_path, 'coverage')
         cov.html_report(directory=cov_folder)
         cov_txt_file = os.path.join(test_path, 'coverage.txt')
-        with open(cov_txt_file, 'w') as f:
-            cov.report(file=f)
+        with open(cov_txt_file, 'w', encoding="utf-8") as cov_txt_file_write:
+            cov.report(
+                file=cov_txt_file_write
+            )
         cov_xml_file = os.path.join(test_path, 'coverage.xml')
         cov.xml_report(outfile=cov_xml_file)
         log_msg('Test coverage complete.')
