@@ -187,24 +187,13 @@ def list_reorder(contents_json, showtitle, sync_type=False):
                         item['type'] = 'season'
                         if showtitle:
                             item['showtitle'] = showtitle
-                        # TODO: maybe get season is not necessay in
-                        # crunchyroll season
-                        if item['season'] == 0 or -1:
-                            item['season'] = 1
-                        else:
-                            item['season'] = int(
-                                re.findall(
-                                    r'season\=(.+?)',
-                                    item['file'])[0]
-                            )
                         reordered[index] = item
                 elif item['filetype'] == 'file':
                     # CRUNCHYROLL EPISODE FILE
                     if re_search(item['file'], r'mode\=videoplay'):
-                        # here
                         item['episode'] = item['number']
                         item['type'] = 'episode'
-                        if item['season'] == 0 or -1:
+                        if item['season'] == 0 or item['season'] == -1:
                             item['season'] = 1
                         else:
                             item['season'] = int(
@@ -465,7 +454,7 @@ def crunchyroll_language_menu(results):
     global crunchyroll_language_selected
     # TODO: verificar a possibilidade de
     # adicionar uma opção nas configurações.
-    lang_regex = r'\(.+? Dub\)|\(Leg\)|\(Dub.+?\)'
+    lang_regex = r'Dublado|\(.+? Dub\)|\(Leg\)|\(Dub.+?\)'
     try:
         for item in results:
             is_language_episode = bool(
