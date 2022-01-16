@@ -5,7 +5,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2e2794f8e9fc49108aaa541a03c37ec4)](https://www.codacy.com/gh/luizoti/script.library.integration.tool/dashboard?utm_source=github.com\&utm_medium=referral\&utm_content=luizoti/script.library.integration.tool\&utm_campaign=Badge_Grade)
 
 [![](https://i.ibb.co/4RL50J2/paypal.png)](https://www.buymeacoffee.com/luizoti)
-[![](https://i.ibb.co/xLSPYB3/snapshot-bmc-button.png)](https://www.paypal.com/donate?hosted_button_id=JM5MHUEW4W5AC)
 
 
 </br>
