@@ -148,7 +148,7 @@ class ContentManagerShow():
 
     @logged_function
     def remove_from_library(self):
-        """Deleta o diretório show_dir e todo o seu conteudo."""
+        """Delete the show_dir directory and all its contents"""
         removedirs(self.show_dir())
 
     # TODO: in future, rename can be usefull to rename showtitle and title (episode_title),
