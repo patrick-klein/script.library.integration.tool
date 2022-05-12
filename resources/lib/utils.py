@@ -532,7 +532,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
         if item['type'] == 'movie':
             progressdialog.update_progressdialog(
                 index / len(results),
-                'Processando items:\n%s' % item['title']
+                'Processing items:\n%s' % item['title']
             )
             if item:
                 yield item
@@ -547,7 +547,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
                     showtitle = item['showtitle']
                     progressdialog.update_progressdialog(
                         index / len(results),
-                        'Coletando itens no diretorio!\n%s' % item['label']
+                        'Collecting items in the directory!\n%s' % item['label']
                     )
                     directories.append(item)
             # if content is a episode, will be stored with yeld
@@ -556,7 +556,7 @@ def load_directory_items(progressdialog, _path, recursive=False,
                 item['type'] = 'tvshow'
                 progressdialog.update_progressdialog(
                     index / len(results),
-                    'Processando items:\n%s' % item['label']
+                    'Processing items:\n%s' % item['label']
                 )
                 item['showtitle'] = showtitle
                 if item:
