@@ -2,6 +2,7 @@
 
 """Defines the ContentManagerShow class."""
 
+import xbmc
 from os.path import splitext
 from resources import AUTO_CREATE_NFO_SHOWS
 from resources import AUTO_CREATE_NFO_MOVIES
@@ -25,22 +26,22 @@ class ContentManagerShow():
         # This regex has the function of detecting the patterns detected by the kodi
         # https://kodi.wiki/view/Naming_video_files/TV_shows
         self.jsondata = jsondata
-        self.managed_season_dir = join(
+        self.managed_season_dir = join([
             self.show_dir(),
-            self.jsondata['season_dir']
+            self.jsondata['season_dir']]
         )
-        self.managed_episode_path = join(
+        self.managed_episode_path = join([
             self.managed_season_dir,
-            self.complete_episode_title()
+            self.complete_episode_title()], True
         )
         self.managed_thumb_path = f'{self.managed_episode_path}-thumb.jpg'
-        self.managed_landscape_path = join(
+        self.managed_landscape_path = join([
             self.show_dir(),
-            'landscape.jpg'
+            'landscape.jpg'], True
         )
-        self.managed_tvshow_nfo = join(
+        self.managed_tvshow_nfo = join([
             self.show_dir(),
-            'tvshow.nfo'
+            'tvshow.nfo'], True
         )
         self.managed_strm_path = f'{self.managed_episode_path}.strm'
 
@@ -160,8 +161,8 @@ class ContentManagerShow():
     #     # becouse the new_title is equal the original
     #     if exists(self.show_dir()):
     #         # Define "title paths" (paths without extensions)
-    #         title_path = join(self.show_dir(), self.showtitle())
-    #         new_title_path = join(self.show_dir(), self.showtitle())
+    #         title_path = join([self.show_dir(), self.showtitle()])
+    #         new_title_path = join([self.show_dir(), self.showtitle()])
     #         # Rename stream placeholder, nfo file, and thumb
     #         mv_with_type(title_path, '.strm', new_title_path)
     #         mv_with_type(title_path, '.nfo', new_title_path)
