@@ -37,8 +37,8 @@ class MovieItem():
 
     def managed_movie_dir(self):
         """Return the managed_movie_dir from content."""
-        return join(
-            MANAGED_FOLDER, 'movies', self.title()
+        return join([
+            MANAGED_FOLDER, 'movies', self.title()]
         )
 
     @logged_function
