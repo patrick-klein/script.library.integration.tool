@@ -38,7 +38,7 @@ MAPPED_STRINGS = {
 
 if os.name == 'nt':
     MAPPED_STRINGS.update({
-#        '?': ' ',
+#        '?': ' ', 
         '<': ' ',
         '>': ' ',
 #        '\\': ' ',
