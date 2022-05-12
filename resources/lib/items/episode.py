@@ -3,6 +3,7 @@
 
 """Defines the EpisodeItem class."""
 
+Import xbmc 
 from os.path import join
 
 from resources.lib.log import log_msg
