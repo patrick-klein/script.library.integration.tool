@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Defines the ContentManagerShow class."""
-
+ 
 import xbmc
 from os.path import splitext
 from resources import AUTO_CREATE_NFO_SHOWS
