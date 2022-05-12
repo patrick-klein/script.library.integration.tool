@@ -2,6 +2,7 @@
 
 """Module dedicate to manipulate title."""
 
+import xbmc 
 import os
 import re
 
