@@ -75,8 +75,8 @@ class EpisodeItem():
 
     def managed_show_dir(self):
         """Return managed_show_dir."""
-        return join([
-            MANAGED_FOLDER, 'tvshows', self.showtitle()]
+        return join(
+            MANAGED_FOLDER, 'tvshows', self.showtitle()
         )
 
     @logged_function
