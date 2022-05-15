@@ -2,7 +2,8 @@
 
 """Defines the DatabaseHandler class."""
 
-import xbmc, xbmcvfs
+import xbmc
+import xbmcvfs
 import sqlite3
 
 from os.path import join
