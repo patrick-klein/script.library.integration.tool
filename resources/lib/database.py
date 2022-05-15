@@ -9,6 +9,8 @@ from os.path import join
 
 from resources import AUTO_ADD_MOVIES
 from resources import AUTO_ADD_TVSHOWS
+from resources import ADDON
+from resources import ADDON_ID
 
 from resources.lib import build_json_item
 from resources.lib import build_contentitem
@@ -29,9 +31,11 @@ class Database():
     # TODO: Combine remove_content_item functions using **kwargs
     def __init__(self):
         """__init__ database."""
-
+        DB_FOLDER = xbmcvfs.translatePath(
+            f"special://userdata/addon_data/{ADDON_ID}/"
+        )
         # Connect to database
-        self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
+        self.conn = sqlite3.connect(join(DB_FOLDER, 'managed.db'))
         self.conn.text_factory = str
         self.cur = self.conn.cursor()
         self.UPDATE_DICT_QUERY = {
