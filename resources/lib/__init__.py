@@ -3,7 +3,7 @@
 
 """Group of Shortcut functions to manipulate and create all type of content."""
 
-import xbmc 
+import xbmc
 from resources.lib.log import logged_function
 
 from resources.lib.items.movie import MovieItem
