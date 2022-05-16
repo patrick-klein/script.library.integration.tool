@@ -2,7 +2,6 @@
 
 """Defines the DatabaseHandler class."""
 
-import xbmc
 import xbmcvfs
 import sqlite3
 
@@ -10,7 +9,6 @@ from os.path import join
 
 from resources import AUTO_ADD_MOVIES
 from resources import AUTO_ADD_TVSHOWS
-from resources import ADDON
 from resources import ADDON_ID
 
 from resources.lib import build_json_item
