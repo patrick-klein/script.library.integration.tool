@@ -2,8 +2,6 @@
 # pylint: disable=broad-except
 
 """Defines the EpisodeItem class."""
-
-import xbmc 
 from os.path import join
 
 from resources.lib.log import log_msg
