@@ -4,8 +4,6 @@
 
 import sqlite3
 
-from os.path import join
-
 from resources import AUTO_ADD_MOVIES
 from resources import AUTO_ADD_TVSHOWS
 
@@ -15,10 +13,10 @@ from resources.lib import build_contentmanager
 
 from resources.lib.log import logged_function
 
-from resources.lib.utils import MANAGED_FOLDER
 
 from resources.lib.items.blocked import BlockedItem
 from resources.lib.items.synced import SyncedItem
+from resources.lib.utils import DATABASE_PATH
 
 
 class Database():
@@ -28,9 +26,8 @@ class Database():
     # TODO: Combine remove_content_item functions using **kwargs
     def __init__(self):
         """__init__ database."""
-
         # Connect to database
-        self.conn = sqlite3.connect(join(MANAGED_FOLDER, 'managed.db'))
+        self.conn = sqlite3.connect(DATABASE_PATH)
         self.conn.text_factory = str
         self.cur = self.conn.cursor()
         self.UPDATE_DICT_QUERY = {

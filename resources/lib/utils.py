@@ -37,6 +37,7 @@ else:
         f"special://userdata/addon_data/{ADDON_ID}/"
     )
 
+DATABASE_PATH = join(MANAGED_FOLDER, 'managed.db')
 
 def check_managed_folder():
     """Check if the managed folder is configured."""
