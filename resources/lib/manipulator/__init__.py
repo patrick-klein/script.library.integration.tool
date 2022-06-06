@@ -37,12 +37,15 @@ MAPPED_STRINGS = {
 
 if os.name == 'nt':
     MAPPED_STRINGS.update({
-        '?': ' ',
+#        '?': ' ',
         '<': ' ',
         '>': ' ',
-        '\\': ' ',
-        '*': ' ',
-        '|': ' ',
+        # TODO: Maybe in only necessary disable -> \\
+        # maybe os.path.abspath, realpath or xbmcvfs.validatePath
+        # xbmcvfs.translatePath can be usefull with windows paths
+#        '\\': ' ',
+#        '*': ' ',
+#        '|': ' ',
     })
 
     # [
